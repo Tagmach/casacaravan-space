@@ -5,42 +5,41 @@
 
 ---
 
-## Phase 1 — Foundation
+## Phase 1 — Foundation ✓
 
 - [x] Register casacaravan.space (Namecheap)
 - [x] Create GitHub repo: casacaravan-space (public)
-- [x] Build corridor prototype (HTML)
-- [x] Package Audio Sanctuary v1 (landing page + studio)
 - [x] Upload index.html to GitHub
 - [x] Enable GitHub Pages (main branch / root)
 - [x] Add DNS records on Namecheap (4x A record + CNAME)
 - [x] Set custom domain: casacaravan.space on GitHub Pages
-- [ ] DNS check passes — casacaravan.space goes live
-- [ ] Enforce HTTPS (after DNS resolves)
-- [ ] Add gong entry sound (self-recorded .mp3 or .wav)
-- [ ] Test on mobile + desktop
+- [x] HTTPS enforced — site live
+- [x] Entrance screen — gong animation, ripple rings, sound
+- [x] Corridor — perspective, warm amber light, all doors clickable
+- [x] Audio Sanctuary — opens from corridor door
+- [x] Gong sounds added (entrance, corridor, door)
+- [x] Recording auto-downloads on stop
+- [ ] Stop corridor ambiance sound when entering a room (bug)
+- [ ] Test on mobile
 
 ---
 
-## Phase 2 — First Door Opens
+## Phase 2 — First Door Polished
 
-- [ ] Record and add gong sound to corridor entrance
-- [ ] Separate corridor (index.html) from Gong Atelier (gong-atelier.html)
-- [ ] Link corridor door → gong-atelier.html
+- [ ] Fix: corridor sound stops when entering room
+- [ ] Gong visual on entrance — review and refine further
 - [ ] Set up Lemon Squeezy account
 - [ ] Create first product listing (Audio Sanctuary, $9–$14)
 - [ ] Share in one relevant community (r/soundhealing or r/binaural)
-- [ ] Push all files to GitHub
 
 ---
 
 ## Phase 3 — Second Door
 
 - [ ] Package Fermentation Lab (existing prototype)
-- [ ] Create fermentation-lab.html
-- [ ] Add Fermentation Lab door to corridor
-- [ ] Add Idea Basket (simple form, no backend yet)
-- [ ] Push to GitHub
+- [ ] Add Fermentation Lab room behind corridor door
+- [ ] Add Idea Basket (simple form)
+- [ ] Push all new files to GitHub
 
 ---
 
@@ -48,8 +47,8 @@
 
 - [ ] Headspace module (breath tool)
 - [ ] Herbal Atelier (plant medicine guide)
-- [ ] /shop page — all modules listed
 - [ ] /about page — one sentence
+- [ ] /shop page — all modules listed
 
 ---
 
