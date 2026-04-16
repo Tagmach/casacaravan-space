@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Caravan Space</title>
+<meta name="description" content="A space that helps you realize yourself. Create with life.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:    #0a0908;
+  --bg2:   #131110;
+  --bg3:   #1e1b18;
+  --gold:  #A08060;
+  --cream: #D2C3AF;
+  --text:  #C8C2B8;
+  --muted: #7A7068;
+  --dim:   #4A443E;
+  --border:#2E2A26;
+  --green: #1D9E75;
+  --red:   #8B3A3A;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; overflow-x:hidden; }
+
+/* ── SHARED TRANSITIONS ── */
+.screen { display:none; animation: fadeIn 0.9s ease forwards; }
+.screen.active { display:block; }
+.screen.flex-screen { display:none; }
+.screen.flex-screen.active { display:flex; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* ════════════════════════════════════════════
+   ENTRANCE
+════════════════════════════════════════════ */
+#entrance {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.entrance-lines span {
+  position: absolute;
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  opacity: 0.4;
+}
+.entrance-lines span:nth-child(1) { top: 25%; }
+.entrance-lines span:nth-child(2) { top: 50%; }
+.entrance-lines span:nth-child(3) { top: 75%; }
+
+.gong-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  cursor: pointer;
+  position: relative;
+}
+
+.gong-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.gong-circle:hover { transform: scale(1.04); }
+.gong-circle:active { transform: scale(0.95); }
+
+.gong-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gong-ring.pulse {
+  animation: ripple 1.8s ease-out forwards;
+}
+
+@keyframes ripple {
+  0%   { width:100px; height:100px; opacity:0.5; top:0; left:0; }
+  100% { width:260px; height:260px; opacity:0; top:-80px; left:-80px; }
+}
+
+.gong-inner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 0.5px solid var(--dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gong-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.entrance-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.entrance-sub {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.entrance-hint {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: 48px;
+}
+
+.entrance-credit {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════
+   CORRIDOR
+════════════════════════════════════════════ */
+#corridor {
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.corridor-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.corridor-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+}
+
+.corridor-tagline {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 1px;
+  opacity: 0.5;
+}
+
+.corridor-scene {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.corridor-scene svg {
+  width: 100%;
+  height: calc(100vh - 65px);
+  display: block;
+}
+
+.door-group { cursor: pointer; }
+.door-group:hover .door-fill { fill: #2a1f12; }
+.door-group:hover .door-name { fill: var(--cream); }
+.door-fill { fill: #1a1208; transition: fill 0.25s; }
+.door-frame-line { stroke: #4a3318; stroke-width: 0.8; fill: none; }
+.door-name { fill: var(--muted); font-family: 'Jost', sans-serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; transition: fill 0.25s; }
+.door-soon { fill: var(--dim); font-family: 'Jost', sans-serif; font-size: 7px; letter-spacing: 1.5px; }
+.door-knob { fill: var(--dim); }
+.candle-glow { fill: #c8a030; }
+
+.corridor-tooltip {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.corridor-tooltip.show { opacity: 1; }
+
+/* ════════════════════════════════════════════
+   WORKSHOP SHELL
+════════════════════════════════════════════ */
+#workshop {
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.workshop-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.workshop-header-left {}
+.workshop-brand { font-family:'Cormorant Garamond',serif; font-size:10px; color:var(--dim); letter-spacing:3px; text-transform:uppercase; margin-bottom:3px; }
+.workshop-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--cream); }
+.workshop-sub { font-size:10px; font-weight:200; color:var(--dim); letter-spacing:1px; margin-top:3px; }
+
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  padding: 7px 18px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.back-btn:hover { border-color: var(--muted); color: var(--muted); }
+
+/* Coming soon rooms */
+#room-soon {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 73px);
+  gap: 16px;
+}
+
+.soon-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--dim);
+}
+
+.soon-sub {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ════════════════════════════════════════════
+   AUDIO SANCTUARY
+════════════════════════════════════════════ */
+#room-gong {
+  display: none;
+}
+
+.sanctuary-landing {
+  min-height: calc(100vh - 73px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+.lp-title-wrap { text-align:center; max-width:480px; margin-bottom:48px; }
+.lp-eyebrow { font-size:10px; letter-spacing:4px; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+.lp-title { font-family:'Cormorant Garamond',serif; font-size:clamp(36px,7vw,58px); font-weight:300; color:var(--cream); line-height:1.1; margin-bottom:18px; }
+.lp-tagline { font-size:12px; font-weight:200; color:var(--muted); letter-spacing:1.5px; line-height:1.8; }
+
+.lp-features { display:flex; gap:28px; flex-wrap:wrap; justify-content:center; margin-bottom:48px; max-width:520px; }
+.lp-feat { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.lp-feat-icon { width:36px; height:36px; border:1px solid var(--border); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--gold); }
+.lp-feat-label { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; text-align:center; }
+
+.lp-enter-btn {
+  background:transparent; border:1px solid var(--gold); color:var(--gold);
+  font-family:'Jost',sans-serif; font-size:11px; font-weight:300; letter-spacing:3px;
+  text-transform:uppercase; padding:14px 44px; border-radius:100px; cursor:pointer;
+  transition:all 0.3s; margin-bottom:40px;
+}
+.lp-enter-btn:hover { background:var(--gold); color:var(--bg); }
+
+.lp-notice { font-size:10px; color:var(--dim); letter-spacing:1px; text-align:center; line-height:1.8; max-width:340px; }
+.lp-notice strong { color:var(--muted); font-weight:300; }
+
+/* Studio */
+.studio-main { padding:32px; display:flex; flex-direction:column; gap:28px; max-width:680px; }
+
+.waveform-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:12px; overflow:hidden; position:relative; }
+canvas#waveform { width:100%; height:120px; display:block; }
+.wave-label { position:absolute; top:8px; left:12px; font-size:10px; color:var(--dim); letter-spacing:1.5px; font-weight:200; }
+.rec-indicator { position:absolute; top:10px; right:12px; display:flex; align-items:center; gap:6px; font-size:10px; color:var(--red); letter-spacing:2px; opacity:0; transition:opacity 0.3s; }
+.rec-indicator.active { opacity:1; }
+.rec-dot { width:7px; height:7px; border-radius:50%; background:var(--red); animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.transport { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.t-btn { background:var(--bg3); border:1px solid var(--border); color:var(--muted); font-family:'Jost',sans-serif; font-size:11px; font-weight:300; letter-spacing:1.5px; padding:10px 20px; border-radius:100px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.t-btn:hover { border-color:var(--gold); color:var(--gold); }
+.t-btn.rec-btn { border-color:var(--red); color:var(--red); }
+.t-btn.rec-btn.active { background:var(--red); color:#fff; }
+.t-btn.play-btn.active { border-color:var(--green); color:var(--green); }
+.timer { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300; color:var(--dim); min-width:70px; letter-spacing:2px; }
+.timer.recording { color:var(--red); }
+
+.sec-label { font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:12px; }
+
+.fx-rows { display:flex; flex-direction:column; gap:12px; }
+.fx-row { display:flex; align-items:center; gap:14px; }
+.fx-name { font-size:11px; font-weight:300; color:var(--muted); width:90px; flex-shrink:0; letter-spacing:0.5px; }
+input[type=range] { flex:1; -webkit-appearance:none; height:2px; background:var(--border); border-radius:1px; outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--gold); cursor:pointer; transition:transform 0.15s; }
+input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
+.fx-val { font-family:'Cormorant Garamond',serif; font-size:14px; color:var(--dim); width:36px; text-align:right; }
+
+.eq-row { display:flex; gap:10px; align-items:center; justify-content:space-between; }
+.eq-band { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.eq-slider-wrap { position:relative; width:80px; height:80px; display:flex; align-items:center; justify-content:center; }
+.eq-slider { -webkit-appearance:none; appearance:none; position:absolute; width:80px; height:2px; background:var(--border); border-radius:1px; outline:none; cursor:pointer; transform:rotate(-90deg); transform-origin:center center; left:0; top:50%; margin-top:-1px; }
+.eq-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%; background:var(--gold); cursor:pointer; }
+.eq-slider::-moz-range-thumb { width:14px; height:14px; border-radius:50%; background:var(--gold); cursor:pointer; border:none; }
+.eq-freq { font-size:9px; color:var(--dim); letter-spacing:0.5px; text-align:center; }
+.eq-gain { font-size:10px; color:var(--muted); font-family:'Cormorant Garamond',serif; }
+
+.rec-list { display:flex; flex-direction:column; gap:10px; }
+.rec-item { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; transition:border-color 0.2s; }
+.rec-item:hover { border-color:var(--dim); }
+.rec-info { flex:1; }
+.rec-name { font-size:12px; color:var(--text); font-weight:300; }
+.rec-meta { font-size:10px; color:var(--dim); margin-top:2px; font-family:'Cormorant Garamond',serif; }
+.rec-actions { display:flex; gap:8px; }
+.action-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-family:'Jost',sans-serif; font-size:10px; letter-spacing:1px; padding:5px 12px; border-radius:100px; cursor:pointer; transition:all 0.15s; }
+.action-btn:hover { border-color:var(--gold); color:var(--gold); }
+.action-btn.dl:hover { border-color:var(--green); color:var(--green); }
+.no-recs { font-size:13px; color:var(--dim); font-style:italic; font-family:'Cormorant Garamond',serif; }
+
+.format-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.fmt-btn { background:transparent; border:1px solid var(--border); color:var(--muted); font-size:10px; letter-spacing:1px; padding:5px 14px; border-radius:100px; cursor:pointer; transition:all 0.15s; font-family:'Jost',sans-serif; }
+.fmt-btn.active { border-color:var(--gold); color:var(--gold); }
+.fmt-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+.studio-footer { border-top:1px solid var(--border); padding:20px 32px; display:flex; align-items:center; justify-content:space-between; }
+.studio-footer-brand { font-size:10px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
+.studio-footer-link { font-size:10px; letter-spacing:1px; color:var(--dim); text-decoration:none; cursor:pointer; transition:color 0.2s; background:none; border:none; }
+.studio-footer-link:hover { color:var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     ENTRANCE
+════════════════════════════════════════════ -->
+<div id="entrance">
+  <div class="entrance-lines">
+    <span></span><span></span><span></span>
+  </div>
+
+  <div class="gong-wrap" id="gongBtn" onclick="enterCorridor()">
+    <div class="gong-circle">
+      <div class="gong-ring" id="ring1"></div>
+      <div class="gong-ring" id="ring2"></div>
+      <div class="gong-inner">
+        <div class="gong-dot"></div>
+      </div>
+    </div>
+    <div class="entrance-title">Casa Caravan<br>Space</div>
+    <div class="entrance-sub">A space that helps you realize yourself</div>
+  </div>
+
+  <div class="entrance-hint">Strike to Enter</div>
+
+  <div class="entrance-credit">Casa Caravan Space by Tağmaç Çankaya</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     CORRIDOR
+════════════════════════════════════════════ -->
+<div id="corridor" class="screen flex-screen" style="flex-direction:column;">
+
+  <div class="corridor-header">
+    <div class="corridor-brand">Casa Caravan Space</div>
+    <div class="corridor-tagline">· create with life</div>
+  </div>
+
+  <div class="corridor-scene">
+    <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+
+      <!-- Floor -->
+      <polygon points="0,600 800,600 560,340 240,340" fill="#12100c"/>
+      <line x1="240" y1="340" x2="0" y2="600" stroke="#1a1408" stroke-width="0.5"/>
+      <line x1="320" y1="340" x2="120" y2="600" stroke="#1a1408" stroke-width="0.5"/>
+      <line x1="400" y1="340" x2="400" y2="600" stroke="#1a1408" stroke-width="0.5"/>
+      <line x1="480" y1="340" x2="640" y2="600" stroke="#1a1408" stroke-width="0.5"/>
+      <line x1="560" y1="340" x2="800" y2="600" stroke="#1a1408" stroke-width="0.5"/>
+
+      <!-- Ceiling -->
+      <polygon points="0,0 800,0 560,240 240,240" fill="#0e0b08"/>
+
+      <!-- Left wall -->
+      <polygon points="0,0 240,240 240,340 0,600" fill="#110e0a"/>
+
+      <!-- Right wall -->
+      <polygon points="800,0 560,240 560,340 800,600" fill="#100d09"/>
+
+      <!-- Back wall -->
+      <rect x="240" y="240" width="320" height="100" fill="#161008"/>
+
+      <!-- Rug -->
+      <ellipse cx="400" cy="510" rx="130" ry="32" fill="none" stroke="#2a1a08" stroke-width="1.5" opacity="0.5"/>
+      <ellipse cx="400" cy="510" rx="110" ry="26" fill="none" stroke="#2a1a08" stroke-width="0.5" opacity="0.3"/>
+
+      <!-- Candles -->
+      <circle cx="148" cy="220" r="3" fill="#c8a030" opacity="0.8"/>
+      <ellipse cx="148" cy="230" rx="10" ry="18" fill="#c8a030" opacity="0.07"/>
+      <circle cx="652" cy="220" r="3" fill="#c8a030" opacity="0.8"/>
+      <ellipse cx="652" cy="230" rx="10" ry="18" fill="#c8a030" opacity="0.07"/>
+
+      <!-- ── DOOR 1: Gong Atelier (left near) ── -->
+      <g class="door-group" id="door-gong" onclick="openRoom('gong')">
+        <rect class="door-frame-line" x="36" y="110" width="128" height="320" rx="2"/>
+        <rect class="door-fill" x="44" y="118" width="112" height="304" rx="1"/>
+        <rect x="52" y="128" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <rect x="52" y="264" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <circle class="door-knob" cx="152" cy="276" r="4.5"/>
+        <text class="door-name" x="100" y="405" text-anchor="middle">Gong Atelier</text>
+      </g>
+
+      <!-- ── DOOR 2: Headspace (left mid) ── -->
+      <g class="door-group" id="door-head" onclick="openRoom('soon', 'Headspace')">
+        <rect class="door-frame-line" x="184" y="178" width="76" height="220" rx="1"/>
+        <rect class="door-fill" x="190" y="184" width="64" height="208" rx="1"/>
+        <rect x="196" y="192" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <rect x="196" y="286" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <circle class="door-knob" cx="248" cy="294" r="3.5"/>
+        <text class="door-name" x="222" y="396" text-anchor="middle">Headspace</text>
+        <text class="door-soon" x="222" y="408" text-anchor="middle">coming soon</text>
+      </g>
+
+      <!-- ── DOOR 3: Fermentation Lab (right mid) ── -->
+      <g class="door-group" id="door-ferm" onclick="openRoom('soon', 'Fermentation Lab')">
+        <rect class="door-frame-line" x="540" y="178" width="76" height="220" rx="1"/>
+        <rect class="door-fill" x="546" y="184" width="64" height="208" rx="1"/>
+        <rect x="552" y="192" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <rect x="552" y="286" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <circle class="door-knob" cx="552" cy="294" r="3.5"/>
+        <text class="door-name" x="578" y="396" text-anchor="middle">Fermentation Lab</text>
+        <text class="door-soon" x="578" y="408" text-anchor="middle">coming soon</text>
+      </g>
+
+      <!-- ── DOOR 4: Herbal Atelier (right near) ── -->
+      <g class="door-group" id="door-herb" onclick="openRoom('soon', 'Herbal Atelier')">
+        <rect class="door-frame-line" x="636" y="110" width="128" height="320" rx="2"/>
+        <rect class="door-fill" x="644" y="118" width="112" height="304" rx="1"/>
+        <rect x="652" y="128" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <rect x="652" y="264" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
+        <circle class="door-knob" cx="648" cy="276" r="4.5"/>
+        <text class="door-name" x="700" y="405" text-anchor="middle">Herbal Atelier</text>
+        <text class="door-soon" x="700" y="417" text-anchor="middle">coming soon</text>
+      </g>
+
+      <!-- ── Back door ── -->
+      <g class="door-group" onclick="openRoom('soon', '...')">
+        <rect class="door-frame-line" x="352" y="248" width="96" height="92" rx="1"/>
+        <rect class="door-fill" x="358" y="253" width="84" height="82" rx="1"/>
+        <circle class="door-knob" cx="360" cy="294" r="2.5"/>
+        <text class="door-soon" x="400" y="340" text-anchor="middle">more rooms</text>
+      </g>
+
+      <!-- Side fog -->
+      <defs>
+        <linearGradient id="fogL" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0a0908" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#0a0908" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="fogR" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#0a0908" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#0a0908" stop-opacity="0.7"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="160" height="600" fill="url(#fogL)"/>
+      <rect x="640" y="0" width="160" height="600" fill="url(#fogR)"/>
+
+    </svg>
+  </div>
+
+  <div class="corridor-tooltip" id="corridorTooltip"></div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     WORKSHOP SHELL
+════════════════════════════════════════════ -->
+<div id="workshop" class="screen flex-screen" style="flex-direction:column;">
+
+  <div class="workshop-header">
+    <div class="workshop-header-left">
+      <div class="workshop-brand">Casa Caravan Space</div>
+      <div class="workshop-title" id="workshopTitle">—</div>
+      <div class="workshop-sub" id="workshopSub">—</div>
+    </div>
+    <button class="back-btn" onclick="backToCorridor()">← Corridor</button>
+  </div>
+
+  <!-- Coming Soon room -->
+  <div id="room-soon">
+    <div class="soon-title" id="soonTitle">Coming soon</div>
+    <div class="soon-sub">This room is being prepared</div>
+  </div>
+
+  <!-- Gong Atelier / Audio Sanctuary -->
+  <div id="room-gong">
+
+    <!-- Sanctuary landing -->
+    <div class="sanctuary-landing" id="sanctuaryLanding">
+      <div class="lp-title-wrap">
+        <div class="lp-eyebrow">Browser Studio</div>
+        <h2 class="lp-title">Audio<br>Sanctuary</h2>
+        <p class="lp-tagline">Headphones on.<br>Every room becomes a studio.</p>
+      </div>
+      <div class="lp-features">
+        <div class="lp-feat"><div class="lp-feat-icon">~</div><div class="lp-feat-label">Live<br>Waveform</div></div>
+        <div class="lp-feat"><div class="lp-feat-icon">⌇</div><div class="lp-feat-label">6-Band<br>EQ</div></div>
+        <div class="lp-feat"><div class="lp-feat-icon">◌</div><div class="lp-feat-label">Reverb<br>& Echo</div></div>
+        <div class="lp-feat"><div class="lp-feat-icon">●</div><div class="lp-feat-label">Record<br>& Download</div></div>
+        <div class="lp-feat"><div class="lp-feat-icon">∅</div><div class="lp-feat-label">No Install<br>No Account</div></div>
+      </div>
+      <button class="lp-enter-btn" onclick="openStudio()">Open Studio</button>
+      <p class="lp-notice"><strong>Microphone access required.</strong><br>Nothing is uploaded or stored. All processing<br>happens locally in your browser.</p>
+    </div>
+
+    <!-- Studio -->
+    <div id="studioPanel" style="display:none;">
+      <div class="studio-main">
+
+        <div class="waveform-wrap">
+          <canvas id="waveform" width="640" height="120"></canvas>
+          <div class="wave-label">INPUT LEVEL</div>
+          <div class="rec-indicator" id="recIndicator"><div class="rec-dot"></div>REC</div>
+        </div>
+
+        <div class="transport">
+          <button class="t-btn rec-btn" id="recBtn" onclick="toggleRecord()">● RECORD</button>
+          <button class="t-btn play-btn" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
+          <button class="t-btn" onclick="stopAll()">■ STOP</button>
+          <div class="timer" id="timer">00:00</div>
+        </div>
+
+        <div>
+          <div class="sec-label">Recording Format</div>
+          <div class="format-row">
+            <button class="fmt-btn active" onclick="setFormat(this,'audio/webm')">WEBM</button>
+            <button class="fmt-btn" onclick="setFormat(this,'audio/ogg')">OGG</button>
+            <button class="fmt-btn" onclick="setFormat(this,'audio/mp4')">MP4</button>
+            <span style="font-size:10px;color:var(--dim);letter-spacing:1px;margin-left:4px;">highest quality available</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-label">Effects</div>
+          <div class="fx-rows">
+            <div class="fx-row"><span class="fx-name">Reverb</span><input type="range" id="reverbMix" min="0" max="100" value="20" oninput="updateFX()"><span class="fx-val" id="reverbVal">20</span></div>
+            <div class="fx-row"><span class="fx-name">Room Size</span><input type="range" id="reverbSize" min="0" max="100" value="40" oninput="updateFX()"><span class="fx-val" id="reverbSizeVal">40</span></div>
+            <div class="fx-row"><span class="fx-name">Echo</span><input type="range" id="delayMix" min="0" max="100" value="0" oninput="updateFX()"><span class="fx-val" id="delayVal">0</span></div>
+            <div class="fx-row"><span class="fx-name">Echo Time</span><input type="range" id="delayTime" min="50" max="800" value="300" oninput="updateFX()"><span class="fx-val" id="delayTimeVal">300ms</span></div>
+            <div class="fx-row"><span class="fx-name">Feedback</span><input type="range" id="delayFeedback" min="0" max="80" value="30" oninput="updateFX()"><span class="fx-val" id="feedbackVal">30</span></div>
+            <div class="fx-row"><span class="fx-name">Low Cut</span><input type="range" id="highpass" min="20" max="500" value="80" oninput="updateFX()"><span class="fx-val" id="highpassVal">80Hz</span></div>
+            <div class="fx-row"><span class="fx-name">Gain</span><input type="range" id="inputGain" min="0" max="200" value="100" oninput="updateFX()"><span class="fx-val" id="gainVal">100</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sec-label">Equalizer</div>
+          <div class="eq-row" id="eqRow"></div>
+        </div>
+
+        <div>
+          <div class="sec-label">Recordings</div>
+          <div class="rec-list" id="recList"><div class="no-recs">No recordings yet — press record to begin.</div></div>
+        </div>
+
+      </div>
+
+      <div class="studio-footer">
+        <div class="studio-footer-brand">Casa Caravan Space</div>
+        <button class="studio-footer-link" onclick="closeStudio()">← Audio Sanctuary</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Sounds ──────────────────────────────────────────────────────
+const sndEntrance = new Audio('gong_entrance.mp3');
+const sndCorridor = new Audio('gong_corridor.mp3');
+const sndDoor     = new Audio('gong_door.mp3');
+sndEntrance.volume = 0.85;
+sndCorridor.volume = 0.4;
+sndDoor.volume     = 0.7;
+
+function playEntrance() {
+  sndEntrance.currentTime = 0;
+  sndEntrance.play().catch(() => {});
+  setTimeout(() => { sndCorridor.currentTime = 0; sndCorridor.play().catch(() => {}); }, 2000);
+}
+
+function playDoor() {
+  sndDoor.currentTime = 0;
+  sndDoor.play().catch(() => {});
+}
+
+// ── Navigation ──────────────────────────────────────────────────
+function show(id, flex) {
+  ['entrance','corridor','workshop'].forEach(s => {
+    const el = document.getElementById(s);
+    el.style.display = 'none';
+  });
+  const target = document.getElementById(id);
+  target.style.display = flex ? 'flex' : 'block';
+  window.scrollTo(0, 0);
+}
+
+function enterCorridor() {
+  const r1 = document.getElementById('ring1');
+  const r2 = document.getElementById('ring2');
+  r1.classList.remove('pulse'); void r1.offsetWidth; r1.classList.add('pulse');
+  setTimeout(() => { r2.classList.remove('pulse'); void r2.offsetWidth; r2.classList.add('pulse'); }, 380);
+  playEntrance();
+  setTimeout(() => show('corridor', true), 900);
+}
+
+function openRoom(type, name) {
+  playDoor();
+  // Hide all rooms
+  document.getElementById('room-gong').style.display = 'none';
+  document.getElementById('room-soon').style.display = 'none';
+
+  if (type === 'gong') {
+    document.getElementById('workshopTitle').textContent = 'Gong Atelier';
+    document.getElementById('workshopSub').textContent = 'sound · record · shape';
+    document.getElementById('room-gong').style.display = 'block';
+    document.getElementById('sanctuaryLanding').style.display = 'flex';
+    document.getElementById('studioPanel').style.display = 'none';
+  } else {
+    document.getElementById('workshopTitle').textContent = name || 'Coming Soon';
+    document.getElementById('workshopSub').textContent = 'this room is being prepared';
+    document.getElementById('soonTitle').textContent = name || 'Coming Soon';
+    document.getElementById('room-soon').style.display = 'flex';
+  }
+
+  setTimeout(() => show('workshop', true), 300);
+}
+
+function backToCorridor() {
+  if (audioCtx) { audioCtx.suspend(); }
+  show('corridor', true);
+}
+
+function openStudio() {
+  playDoor();
+  setTimeout(() => {
+    document.getElementById('sanctuaryLanding').style.display = 'none';
+    document.getElementById('studioPanel').style.display = 'block';
+  }, 300);
+}
+
+function closeStudio() {
+  document.getElementById('studioPanel').style.display = 'none';
+  document.getElementById('sanctuaryLanding').style.display = 'flex';
+}
+
+// ── Corridor door tooltips ───────────────────────────────────────
+const tooltipTexts = {
+  'door-gong': 'Gong Atelier — sound & recording',
+  'door-head': 'Headspace — breath & listening',
+  'door-ferm': 'Fermentation Lab — living foods',
+  'door-herb': 'Herbal Atelier — plant medicine',
+};
+const tooltip = document.getElementById('corridorTooltip');
+Object.keys(tooltipTexts).forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('mouseenter', () => { tooltip.textContent = tooltipTexts[id]; tooltip.classList.add('show'); });
+  el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+});
+
+// ── Audio Sanctuary State ────────────────────────────────────────
+let audioCtx, mediaStream, mediaRecorder;
+let analyser, dataArray;
+let inputGainNode, highpassNode, delayNode, delayGainNode, feedbackNode, reverbNode, reverbGainNode, dryGainNode;
+let eqNodes = [];
+let recordings = [];
+let isRecording = false;
+let currentAudio = null;
+let timerInterval, recordStart;
+let selectedFormat = 'audio/webm';
+let animFrame;
+
+const EQ_BANDS = [
+  { freq:80, label:'80Hz' }, { freq:250, label:'250Hz' }, { freq:800, label:'800Hz' },
+  { freq:2500, label:'2.5K' }, { freq:6000, label:'6K' }, { freq:14000, label:'14K' },
+];
+
+function buildEQ() {
+  const row = document.getElementById('eqRow');
+  EQ_BANDS.forEach((band, i) => {
+    const div = document.createElement('div');
+    div.className = 'eq-band';
+    div.innerHTML = `<span class="eq-gain" id="eqVal${i}">0</span><div class="eq-slider-wrap"><input class="eq-slider" type="range" min="-12" max="12" value="0" oninput="updateEQ(${i}, this.value)"></div><span class="eq-freq">${band.label}</span>`;
+    row.appendChild(div);
+  });
+}
+buildEQ();
+
+async function initAudio() {
+  if (audioCtx) { audioCtx.resume(); return; }
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate:48000, latencyHint:'interactive' });
+  mediaStream = await navigator.mediaDevices.getUserMedia({ audio:{ sampleRate:48000, channelCount:2, echoCancellation:false, noiseSuppression:false, autoGainControl:false } });
+  const source = audioCtx.createMediaStreamSource(mediaStream);
+  inputGainNode = audioCtx.createGain(); inputGainNode.gain.value = 1.0;
+  highpassNode = audioCtx.createBiquadFilter(); highpassNode.type='highpass'; highpassNode.frequency.value=80;
+  eqNodes = EQ_BANDS.map(band => { const f=audioCtx.createBiquadFilter(); f.type='peaking'; f.frequency.value=band.freq; f.Q.value=1.4; f.gain.value=0; return f; });
+  delayNode=audioCtx.createDelay(2.0); delayNode.delayTime.value=0.3;
+  feedbackNode=audioCtx.createGain(); feedbackNode.gain.value=0.3;
+  delayGainNode=audioCtx.createGain(); delayGainNode.gain.value=0;
+  delayNode.connect(feedbackNode); feedbackNode.connect(delayNode); delayNode.connect(delayGainNode);
+  reverbNode=audioCtx.createConvolver(); reverbNode.buffer=buildIR(audioCtx,2.5);
+  reverbGainNode=audioCtx.createGain(); reverbGainNode.gain.value=0.2;
+  dryGainNode=audioCtx.createGain(); dryGainNode.gain.value=1.0;
+  analyser=audioCtx.createAnalyser(); analyser.fftSize=2048;
+  dataArray=new Uint8Array(analyser.frequencyBinCount);
+  let chain=source;
+  chain.connect(inputGainNode); chain=inputGainNode;
+  chain.connect(highpassNode); chain=highpassNode;
+  eqNodes.forEach(eq=>{ chain.connect(eq); chain=eq; });
+  chain.connect(reverbNode); reverbNode.connect(reverbGainNode);
+  chain.connect(delayNode); chain.connect(dryGainNode);
+  dryGainNode.connect(analyser); reverbGainNode.connect(analyser); delayGainNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  drawWaveform();
+}
+
+function buildIR(ctx, duration) {
+  const rate=ctx.sampleRate, length=rate*duration, ir=ctx.createBuffer(2,length,rate);
+  for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/length,2.5);}
+  return ir;
+}
+
+function drawWaveform() {
+  const canvas=document.getElementById('waveform');
+  const ctx2=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  function draw() {
+    animFrame=requestAnimationFrame(draw);
+    analyser.getByteTimeDomainData(dataArray);
+    ctx2.fillStyle='#131110'; ctx2.fillRect(0,0,W,H);
+    ctx2.lineWidth=1.5; ctx2.strokeStyle='#A08060'; ctx2.beginPath();
+    const slice=W/dataArray.length; let x=0;
+    for(let i=0;i<dataArray.length;i++){const v=dataArray[i]/128.0,y=v*H/2;i===0?ctx2.moveTo(x,y):ctx2.lineTo(x,y);x+=slice;}
+    ctx2.stroke();
+    ctx2.strokeStyle='#2E2A26'; ctx2.lineWidth=0.5; ctx2.beginPath(); ctx2.moveTo(0,H/2); ctx2.lineTo(W,H/2); ctx2.stroke();
+  }
+  draw();
+}
+
+function updateFX() {
+  const rv=parseInt(document.getElementById('reverbMix').value);
+  const rs=parseInt(document.getElementById('reverbSize').value);
+  const dl=parseInt(document.getElementById('delayMix').value);
+  const dt=parseInt(document.getElementById('delayTime').value);
+  const df=parseInt(document.getElementById('delayFeedback').value);
+  const hp=parseInt(document.getElementById('highpass').value);
+  const ig=parseInt(document.getElementById('inputGain').value);
+  document.getElementById('reverbVal').textContent=rv;
+  document.getElementById('reverbSizeVal').textContent=rs;
+  document.getElementById('delayVal').textContent=dl;
+  document.getElementById('delayTimeVal').textContent=dt+'ms';
+  document.getElementById('feedbackVal').textContent=df;
+  document.getElementById('highpassVal').textContent=hp+'Hz';
+  document.getElementById('gainVal').textContent=ig;
+  if(!audioCtx)return;
+  reverbGainNode.gain.value=rv/100; dryGainNode.gain.value=1-(rv/200);
+  reverbNode.buffer=buildIR(audioCtx,0.5+(rs/100)*4);
+  delayGainNode.gain.value=dl/100; delayNode.delayTime.value=dt/1000;
+  feedbackNode.gain.value=df/100; highpassNode.frequency.value=hp;
+  inputGainNode.gain.value=ig/100;
+}
+
+function updateEQ(i,val) {
+  document.getElementById(`eqVal${i}`).textContent=(val>0?'+':'')+val;
+  if(eqNodes[i])eqNodes[i].gain.value=parseFloat(val);
+}
+
+async function toggleRecord() {
+  if(!audioCtx) await initAudio();
+  if(!isRecording){
+    const destNode=audioCtx.createMediaStreamDestination();
+    analyser.connect(destNode);
+    const mimeType=[selectedFormat,'audio/webm;codecs=opus','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    const options=mimeType?{mimeType,audioBitsPerSecond:320000}:{audioBitsPerSecond:320000};
+    mediaRecorder=new MediaRecorder(destNode.stream,options);
+    const chunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    mediaRecorder.onstop=()=>{ const blob=new Blob(chunks,{type:mimeType||'audio/webm'}); saveRecording(blob,mimeType); analyser.disconnect(destNode); };
+    mediaRecorder.start(100); isRecording=true; recordStart=Date.now();
+    document.getElementById('recBtn').classList.add('active');
+    document.getElementById('recBtn').textContent='■ STOP REC';
+    document.getElementById('recIndicator').classList.add('active');
+    timerInterval=setInterval(()=>{
+      const s=Math.floor((Date.now()-recordStart)/1000);
+      const m=String(Math.floor(s/60)).padStart(2,'0'), sc=String(s%60).padStart(2,'0');
+      const t=document.getElementById('timer'); t.textContent=`${m}:${sc}`; t.classList.add('recording');
+    },500);
+  } else {
+    mediaRecorder.stop(); isRecording=false; clearInterval(timerInterval);
+    document.getElementById('recBtn').classList.remove('active');
+    document.getElementById('recBtn').textContent='● RECORD';
+    document.getElementById('recIndicator').classList.remove('active');
+    document.getElementById('timer').classList.remove('recording');
+    document.getElementById('timer').textContent='00:00';
+  }
+}
+
+function saveRecording(blob,mimeType){
+  const ext=mimeType.includes('ogg')?'ogg':mimeType.includes('mp4')?'mp4':'webm';
+  const dur=((Date.now()-recordStart)/1000).toFixed(1);
+  const now=new Date();
+  const name=`sanctuary_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
+  const url=URL.createObjectURL(blob);
+  recordings.unshift({blob,name,dur,ext,url});
+  const a=document.createElement('a'); a.href=url; a.download=`${name}.${ext}`; a.click();
+  renderRecordings();
+}
+
+function renderRecordings(){
+  const list=document.getElementById('recList');
+  if(recordings.length===0){list.innerHTML='<div class="no-recs">No recordings yet — press record to begin.</div>';return;}
+  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div class="rec-info"><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s · ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">▶ play</button><button class="action-btn dl" onclick="downloadRec(${i})">↓ save again</button></div></div>`).join('');
+}
+
+function playRec(i){if(currentAudio){currentAudio.pause();currentAudio=null;}currentAudio=new Audio(recordings[i].url);currentAudio.play();}
+function togglePlay(){if(currentAudio&&!currentAudio.paused){currentAudio.pause();document.getElementById('playBtn').classList.remove('active');}else if(currentAudio){currentAudio.play();document.getElementById('playBtn').classList.add('active');}}
+function stopAll(){if(currentAudio){currentAudio.pause();currentAudio.currentTime=0;}if(isRecording)toggleRecord();document.getElementById('playBtn').classList.remove('active');}
+function downloadRec(i){const r=recordings[i];const a=document.createElement('a');a.href=r.url;a.download=`${r.name}.${r.ext}`;a.click();}
+function setFormat(btn,fmt){selectedFormat=fmt;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+</script>
+</body>
+</html>
