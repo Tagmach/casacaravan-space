@@ -527,7 +527,7 @@ footer {
   </div>
 
   <div class="lp-breadcrumb">
-    <a href="#">Casa Caravan Space</a> &nbsp;·&nbsp; Gong Atelier
+    <a href="#">Casa Caravan Space</a>
   </div>
 
   <div class="lp-title-wrap">
@@ -562,7 +562,7 @@ footer {
     </div>
   </div>
 
-  <button class="lp-enter-btn" onclick="enterStudio()">Open Studio</button>
+  <button class="lp-enter-btn" onclick="playEntrance(); enterStudio()">Open Studio</button>
 
   <p class="lp-notice">
     <strong>Microphone access required.</strong><br>
@@ -583,7 +583,7 @@ footer {
 
   <header>
     <div class="header-left">
-      <div class="brand">Casa Caravan · Gong Atelier</div>
+      <div class="brand">Casa Caravan Space</div>
       <div class="title">Audio Sanctuary</div>
       <div class="sub">record · shape · keep</div>
     </div>
@@ -680,18 +680,44 @@ footer {
 
   <footer>
     <div class="footer-brand">Casa Caravan Space</div>
-    <a href="#" class="footer-link" onclick="backToLanding(); return false;">← Gong Atelier</a>
+    <a href="#" class="footer-link" onclick="backToLanding(); return false;">← Casa Caravan Space</a>
   </footer>
 
 </div>
 
 <script>
+// ── Sounds ──────────────────────────────────────────────────────
+const sndEntrance = new Audio('gong_entrance.mp3');
+const sndCorridor = new Audio('gong_corridor.mp3');
+const sndDoor     = new Audio('gong_door.mp3');
+
+sndEntrance.volume = 0.85;
+sndCorridor.volume = 0.4;
+sndDoor.volume     = 0.7;
+
+function playEntrance() {
+  sndEntrance.currentTime = 0;
+  sndEntrance.play().catch(() => {});
+  setTimeout(() => {
+    sndCorridor.currentTime = 0;
+    sndCorridor.play().catch(() => {});
+  }, 2000);
+}
+
+function playDoor() {
+  sndDoor.currentTime = 0;
+  sndDoor.play().catch(() => {});
+}
+
 // ── Navigation ──────────────────────────────────────────────────
 function enterStudio() {
-  document.getElementById('landing').style.display = 'none';
-  const studio = document.getElementById('studio');
-  studio.style.display = 'block';
-  window.scrollTo(0, 0);
+  playDoor();
+  setTimeout(() => {
+    document.getElementById('landing').style.display = 'none';
+    const studio = document.getElementById('studio');
+    studio.style.display = 'block';
+    window.scrollTo(0, 0);
+  }, 400);
 }
 
 function backToLanding() {
