@@ -208,8 +208,8 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
 /* Transparent overlay buttons over SVG doors */
 .door-overlay {
   position: absolute;
-  background: rgba(255, 100, 0, 0.3);
-  border: 2px solid red;
+  background: transparent;
+  border: none;
   cursor: pointer;
   z-index: 10;
 }
@@ -439,11 +439,6 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   </div>
 
   <div class="corridor-scene" id="corridorScene">
-    <!-- Transparent overlay buttons — always clickable regardless of SVG rendering -->
-    <button class="door-overlay" id="overlay-gong" onclick="openRoom('gong')" aria-label="Audio Sanctuary"></button>
-    <button class="door-overlay" id="overlay-head" onclick="openRoom('soon','Headspace')" aria-label="Headspace"></button>
-    <button class="door-overlay" id="overlay-ferm" onclick="openRoom('soon','Fermentation Lab')" aria-label="Fermentation Lab"></button>
-    <button class="door-overlay" id="overlay-herb" onclick="openRoom('soon','Herbal Atelier')" aria-label="Herbal Atelier"></button>
     <svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
       <defs>
         <radialGradient id="ceilGlow" cx="50%" cy="30%" r="60%">
@@ -516,7 +511,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <ellipse cx="400" cy="480" rx="60" ry="14" fill="none" stroke="#4a2e10" stroke-width="0.5" opacity="0.4"/>
 
       <!-- ── DOOR 1: Audio Sanctuary — left wall, fully inside ── -->
-      <g class="door-group" id="door-gong">
+      <g class="door-group" id="door-gong" onclick="openRoom('gong')">
+        <rect x="55" y="55" width="135" height="475" fill="transparent" stroke="none"/>
         <!-- frame -->
         <polygon points="60,60 180,180 180,400 60,520" fill="#1c1409" stroke="#5a3e1e" stroke-width="1"/>
         <!-- door surface -->
@@ -532,7 +528,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </g>
 
       <!-- ── DOOR 2: Headspace — left mid, perspective ── -->
-      <g class="door-group" id="door-head">
+      <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
+        <rect x="196" y="183" width="62" height="218" fill="transparent" stroke="none"/>
         <polygon points="200,185 255,235 255,370 200,400" fill="#1c1409" stroke="#4a3010" stroke-width="0.8"/>
         <polygon points="206,191 249,238 249,364 206,394" fill="#201708"/>
         <polygon points="210,200 244,240 244,295 210,290" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
@@ -543,14 +540,16 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </g>
 
       <!-- ── Back door — vanishing point ── -->
-      <g class="door-group" id="door-back">
+      <g class="door-group" id="door-back" onclick="openRoom('soon','...')">
+        <rect x="348" y="226" width="104" height="68" fill="transparent" stroke="none"/>
         <rect x="352" y="230" width="96" height="60" fill="#1e1508" stroke="#3a2810" stroke-width="0.6" rx="1"/>
         <circle cx="354" cy="260" r="2" fill="#3a2810"/>
         <text class="door-soon" x="400" y="306" text-anchor="middle">more rooms</text>
       </g>
 
       <!-- ── DOOR 3: Fermentation Lab — right mid, perspective ── -->
-      <g class="door-group" id="door-ferm">
+      <g class="door-group" id="door-ferm" onclick="openRoom('soon','Fermentation Lab')">
+        <rect x="542" y="183" width="62" height="218" fill="transparent" stroke="none"/>
         <polygon points="600,185 545,235 545,370 600,400" fill="#1c1409" stroke="#4a3010" stroke-width="0.8"/>
         <polygon points="594,191 551,238 551,364 594,394" fill="#201708"/>
         <polygon points="590,200 556,240 556,295 590,290" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
@@ -561,7 +560,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </g>
 
       <!-- ── DOOR 4: Herbal Atelier — right wall, fully inside ── -->
-      <g class="door-group" id="door-herb">
+      <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
+        <rect x="618" y="55" width="135" height="475" fill="transparent" stroke="none"/>
         <polygon points="740,60 620,180 620,400 740,520" fill="#1c1409" stroke="#5a3e1e" stroke-width="1"/>
         <polygon points="732,72 628,182 628,392 732,508" fill="#211808"/>
         <polygon points="724,90 636,185 636,275 724,270" fill="none" stroke="#2e1f0a" stroke-width="0.6"/>
