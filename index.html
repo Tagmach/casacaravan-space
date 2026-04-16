@@ -453,18 +453,18 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <circle cx="652" cy="220" r="3" fill="#c8a030" opacity="0.8"/>
       <ellipse cx="652" cy="230" rx="10" ry="18" fill="#c8a030" opacity="0.07"/>
 
-      <!-- ── DOOR 1: Gong Atelier (left near) ── -->
-      <g class="door-group" id="door-gong" onclick="openRoom('gong')">
+      <!-- ── DOOR 1: Audio Sanctuary (left near) ── -->
+      <g class="door-group" id="door-gong">
         <rect class="door-frame-line" x="36" y="110" width="128" height="320" rx="2"/>
         <rect class="door-fill" x="44" y="118" width="112" height="304" rx="1"/>
         <rect x="52" y="128" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
         <rect x="52" y="264" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
         <circle class="door-knob" cx="152" cy="276" r="4.5"/>
-        <text class="door-name" x="100" y="405" text-anchor="middle">Gong Atelier</text>
+        <text class="door-name" x="100" y="400" text-anchor="middle">Audio Sanctuary</text>
       </g>
 
       <!-- ── DOOR 2: Headspace (left mid) ── -->
-      <g class="door-group" id="door-head" onclick="openRoom('soon', 'Headspace')">
+      <g class="door-group" id="door-head">
         <rect class="door-frame-line" x="184" y="178" width="76" height="220" rx="1"/>
         <rect class="door-fill" x="190" y="184" width="64" height="208" rx="1"/>
         <rect x="196" y="192" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
@@ -475,7 +475,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </g>
 
       <!-- ── DOOR 3: Fermentation Lab (right mid) ── -->
-      <g class="door-group" id="door-ferm" onclick="openRoom('soon', 'Fermentation Lab')">
+      <g class="door-group" id="door-ferm">
         <rect class="door-frame-line" x="540" y="178" width="76" height="220" rx="1"/>
         <rect class="door-fill" x="546" y="184" width="64" height="208" rx="1"/>
         <rect x="552" y="192" width="52" height="84" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
@@ -486,7 +486,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </g>
 
       <!-- ── DOOR 4: Herbal Atelier (right near) ── -->
-      <g class="door-group" id="door-herb" onclick="openRoom('soon', 'Herbal Atelier')">
+      <g class="door-group" id="door-herb">
         <rect class="door-frame-line" x="636" y="110" width="128" height="320" rx="2"/>
         <rect class="door-fill" x="644" y="118" width="112" height="304" rx="1"/>
         <rect x="652" y="128" width="96" height="126" rx="1" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
@@ -673,8 +673,8 @@ function openRoom(type, name) {
   document.getElementById('room-soon').style.display = 'none';
 
   if (type === 'gong') {
-    document.getElementById('workshopTitle').textContent = 'Gong Atelier';
-    document.getElementById('workshopSub').textContent = 'sound · record · shape';
+    document.getElementById('workshopTitle').textContent = 'Audio Sanctuary';
+    document.getElementById('workshopSub').textContent = 'record · shape · keep';
     document.getElementById('room-gong').style.display = 'block';
     document.getElementById('sanctuaryLanding').style.display = 'flex';
     document.getElementById('studioPanel').style.display = 'none';
@@ -708,7 +708,7 @@ function closeStudio() {
 
 // ── Corridor door tooltips ───────────────────────────────────────
 const tooltipTexts = {
-  'door-gong': 'Gong Atelier — sound & recording',
+  'door-gong': 'Audio Sanctuary — sound & recording',
   'door-head': 'Headspace — breath & listening',
   'door-ferm': 'Fermentation Lab — living foods',
   'door-herb': 'Herbal Atelier — plant medicine',
@@ -720,6 +720,12 @@ Object.keys(tooltipTexts).forEach(id => {
   el.addEventListener('mouseenter', () => { tooltip.textContent = tooltipTexts[id]; tooltip.classList.add('show'); });
   el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
 });
+
+// Door clicks via JS (more reliable than SVG onclick)
+document.getElementById('door-gong').addEventListener('click', () => openRoom('gong'));
+document.getElementById('door-head').addEventListener('click', () => openRoom('soon', 'Headspace'));
+document.getElementById('door-ferm').addEventListener('click', () => openRoom('soon', 'Fermentation Lab'));
+document.getElementById('door-herb').addEventListener('click', () => openRoom('soon', 'Herbal Atelier'));
 
 // ── Audio Sanctuary State ────────────────────────────────────────
 let audioCtx, mediaStream, mediaRecorder;
