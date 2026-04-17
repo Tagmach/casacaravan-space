@@ -550,62 +550,65 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <!-- Candle wall wash right -->
       <polygon points="800,80 720,140 720,340 800,400" fill="#c88020" opacity="0.04"/>
 
-      <!-- === RUG === -->
-      <ellipse cx="400" cy="478" rx="140" ry="34" fill="#221608" stroke="#5a3e18" stroke-width="1.5" opacity="0.85"/>
-      <ellipse cx="400" cy="478" rx="118" ry="28" fill="none" stroke="#4a3212" stroke-width="0.8" opacity="0.6"/>
-      <ellipse cx="400" cy="478" rx="80" ry="18" fill="none" stroke="#3a2810" stroke-width="0.5" opacity="0.4"/>
-      <ellipse cx="400" cy="478" rx="40" ry="10" fill="none" stroke="#2e2008" stroke-width="0.4" opacity="0.3"/>
+      <!-- clean floor — nothing in center -->
 
-      <!-- Small candle on floor, center -->
-      <rect x="395" y="358" width="9" height="22" rx="1" fill="#dcc898" opacity="0.85"/>
-      <ellipse cx="399" cy="357" rx="5" ry="3" fill="#f8e060" opacity="0.95"/>
-      <ellipse cx="399" cy="370" rx="16" ry="8" fill="#e8a820" opacity="0.15"/>
-
-      <!-- === DOOR 1: Audio Sanctuary — left wall === -->
+      <!-- === DOOR 1: Audio Sanctuary — left wall, amber/gold === -->
       <g class="door-group" id="door-gong" onclick="openRoom('gong')">
         <rect x="55" y="40" width="140" height="500" fill="transparent" stroke="none"/>
-        <polygon points="58,42 192,172 192,408 58,538" fill="#1c1208" stroke="#6a4820" stroke-width="1.2"/>
-        <polygon points="66,54 184,175 184,400 66,525" fill="#231508"/>
-        <polygon points="75,72 174,178 174,268 75,252" fill="none" stroke="#3a2510" stroke-width="0.7"/>
-        <polygon points="75,265 174,272 174,392 75,535" fill="none" stroke="#3a2510" stroke-width="0.7" opacity="0.6"/>
-        <circle cx="178" cy="295" r="6" fill="#6a4820"/>
-        <circle cx="178" cy="295" r="3" fill="#8a6030"/>
+        <polygon points="58,42 192,172 192,408 58,538" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
+        <polygon points="66,54 184,175 184,400 66,525" fill="#1e1206"/>
+        <line x1="184" y1="175" x2="184" y2="400" stroke="#e8a830" stroke-width="2.5" opacity="0.6"/>
+        <polygon points="184,175 192,172 192,408 184,400" fill="#c87820" opacity="0.3"/>
+        <polygon points="75,72 174,178 174,268 75,252" fill="none" stroke="#7a5020" stroke-width="0.8"/>
+        <polygon points="75,265 174,272 174,392 75,400" fill="none" stroke="#7a5020" stroke-width="0.8" opacity="0.6"/>
+        <circle cx="178" cy="295" r="6" fill="#b07828"/>
+        <circle cx="178" cy="295" r="3" fill="#e0a840"/>
         <text class="door-name" x="124" y="556" text-anchor="middle">Audio Sanctuary</text>
       </g>
 
-      <!-- === DOOR 2: Headspace — left mid === -->
+      <!-- === DOOR 2: Headspace — left mid, blue/indigo === -->
       <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
         <rect x="196" y="175" width="68" height="230" fill="transparent" stroke="none"/>
-        <polygon points="200,178 262,232 262,378 200,410" fill="#1c1208" stroke="#4a3210" stroke-width="0.9"/>
-        <polygon points="206,184 256,235 256,372 206,404" fill="#201408"/>
-        <polygon points="211,194 250,238 250,296 211,288" fill="none" stroke="#3a2510" stroke-width="0.5"/>
-        <polygon points="211,300 250,300 250,365 211,394" fill="none" stroke="#3a2510" stroke-width="0.5"/>
-        <circle cx="254" cy="308" r="4" fill="#4a3210"/>
+        <polygon points="200,178 262,232 262,378 200,410" fill="#0e1420" stroke="#4a6090" stroke-width="1"/>
+        <polygon points="206,184 256,235 256,372 206,404" fill="#0a1018"/>
+        <polygon points="206,184 256,235 256,372 206,404" fill="#1a2840" opacity="0.6"/>
+        <line x1="256" y1="235" x2="256" y2="372" stroke="#6090c0" stroke-width="2" opacity="0.5"/>
+        <polygon points="256,235 262,232 262,378 256,372" fill="#3060a0" opacity="0.25"/>
+        <polygon points="211,194 250,238 250,296 211,288" fill="none" stroke="#3a5878" stroke-width="0.6"/>
+        <polygon points="211,300 250,300 250,365 211,394" fill="none" stroke="#3a5878" stroke-width="0.6"/>
+        <circle cx="254" cy="308" r="4" fill="#4a6888"/>
+        <circle cx="254" cy="308" r="2" fill="#6090b0"/>
         <text class="door-name" x="231" y="428" text-anchor="middle">Headspace</text>
         <text class="door-soon" x="231" y="440" text-anchor="middle">coming soon</text>
       </g>
 
-      <!-- === DOOR 3: Fermentation Lab — right mid === -->
+      <!-- === DOOR 3: Fermentation Lab — right mid, green === -->
       <g class="door-group" id="door-ferm" onclick="openRoom('soon','Fermentation Lab')">
         <rect x="536" y="175" width="68" height="230" fill="transparent" stroke="none"/>
-        <polygon points="600,178 538,232 538,378 600,410" fill="#1c1208" stroke="#4a3210" stroke-width="0.9"/>
-        <polygon points="594,184 544,235 544,372 594,404" fill="#201408"/>
-        <polygon points="589,194 550,238 550,296 589,288" fill="none" stroke="#3a2510" stroke-width="0.5"/>
-        <polygon points="589,300 550,300 550,365 589,394" fill="none" stroke="#3a2510" stroke-width="0.5"/>
-        <circle cx="546" cy="308" r="4" fill="#4a3210"/>
+        <polygon points="600,178 538,232 538,378 600,410" fill="#0e1a0a" stroke="#4a8030" stroke-width="1"/>
+        <polygon points="594,184 544,235 544,372 594,404" fill="#0a1408"/>
+        <polygon points="594,184 544,235 544,372 594,404" fill="#142810" opacity="0.6"/>
+        <line x1="544" y1="235" x2="544" y2="372" stroke="#60a040" stroke-width="2" opacity="0.5"/>
+        <polygon points="544,235 538,232 538,378 544,372" fill="#308020" opacity="0.25"/>
+        <polygon points="589,194 550,238 550,296 589,288" fill="none" stroke="#3a6828" stroke-width="0.6"/>
+        <polygon points="589,300 550,300 550,365 589,394" fill="none" stroke="#3a6828" stroke-width="0.6"/>
+        <circle cx="546" cy="308" r="4" fill="#4a7830"/>
+        <circle cx="546" cy="308" r="2" fill="#70a850"/>
         <text class="door-name" x="569" y="428" text-anchor="middle">Fermentation Lab</text>
         <text class="door-soon" x="569" y="440" text-anchor="middle">coming soon</text>
       </g>
 
-      <!-- === DOOR 4: Herbal Atelier — right wall === -->
+      <!-- === DOOR 4: Herbal Atelier — right wall, deep green/earth === -->
       <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
         <rect x="605" y="40" width="140" height="500" fill="transparent" stroke="none"/>
-        <polygon points="742,42 608,172 608,408 742,538" fill="#1c1208" stroke="#6a4820" stroke-width="1.2"/>
-        <polygon points="734,54 616,175 616,400 734,525" fill="#231508"/>
-        <polygon points="725,72 626,178 626,268 725,252" fill="none" stroke="#3a2510" stroke-width="0.7"/>
-        <polygon points="725,265 626,272 626,392 725,535" fill="none" stroke="#3a2510" stroke-width="0.7" opacity="0.6"/>
-        <circle cx="622" cy="295" r="6" fill="#6a4820"/>
-        <circle cx="622" cy="295" r="3" fill="#8a6030"/>
+        <polygon points="742,42 608,172 608,408 742,538" fill="#0e1a08" stroke="#5a8828" stroke-width="1.5"/>
+        <polygon points="734,54 616,175 616,400 734,525" fill="#0a1406"/>
+        <line x1="616" y1="175" x2="616" y2="400" stroke="#78b038" stroke-width="2.5" opacity="0.55"/>
+        <polygon points="608,172 616,175 616,400 608,408" fill="#4a8020" opacity="0.28"/>
+        <polygon points="725,72 626,178 626,268 725,252" fill="none" stroke="#4a7020" stroke-width="0.8"/>
+        <polygon points="725,265 626,272 626,392 725,420" fill="none" stroke="#4a7020" stroke-width="0.8" opacity="0.6"/>
+        <circle cx="622" cy="295" r="6" fill="#507828"/>
+        <circle cx="622" cy="295" r="3" fill="#80b040"/>
         <text class="door-name" x="676" y="556" text-anchor="middle">Herbal Atelier</text>
         <text class="door-soon" x="676" y="568" text-anchor="middle">coming soon</text>
       </g>
