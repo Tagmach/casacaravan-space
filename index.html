@@ -3,9 +3,83 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Casa Caravan Space</title>
-<meta name="description" content="A space that helps you realize yourself. Create with life.">
+
+<!-- Primary SEO -->
+<title>Casa Caravan Space — A Space That Helps You Realize Yourself</title>
+<meta name="description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools, studios and experiences. Create with life.">
+<meta name="keywords" content="sound healing, browser recording studio, audio sanctuary, fermentation lab, binaural beats, gong bath, wellness tools, plant medicine, creative space">
+<meta name="author" content="Tağmaç Çankaya">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://casacaravan.space/">
+
+<!-- Open Graph — social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://casacaravan.space/">
+<meta property="og:title" content="Casa Caravan Space — A Space That Helps You Realize Yourself">
+<meta property="og:description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools. No install. No account.">
+<meta property="og:image" content="https://casacaravan.space/og-image.jpg">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Casa Caravan Space">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://casacaravan.space/">
+<meta name="twitter:title" content="Casa Caravan Space">
+<meta name="twitter:description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools. No install. No account.">
+<meta name="twitter:image" content="https://casacaravan.space/og-image.jpg">
+
+<!-- Structured Data — WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Casa Caravan Space",
+  "url": "https://casacaravan.space",
+  "description": "A digital space for sound, fermentation, breath and plant medicine.",
+  "author": {
+    "@type": "Person",
+    "name": "Tağmaç Çankaya"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Audio Sanctuary",
+      "description": "Browser-based recording studio with reverb, EQ and echo. No install required.",
+      "url": "https://casacaravan.space"
+    }
+  ]
+}
+</script>
+
+<!-- Structured Data — SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Audio Sanctuary",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Browser-based recording studio. Reverb, 6-band EQ, echo, live waveform. No install. No account. Works with headphones.",
+  "url": "https://casacaravan.space",
+  "author": {
+    "@type": "Person",
+    "name": "Tağmaç Çankaya"
+  }
+}
+</script>
+
+<!-- Preconnect for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+
+<!-- Favicon placeholder -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 <style>
 :root {
   --bg:    #0a0908;
@@ -656,7 +730,22 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         <div class="lp-feat"><div class="lp-feat-icon">●</div><div class="lp-feat-label">Record<br>& Download</div></div>
         <div class="lp-feat"><div class="lp-feat-icon">∅</div><div class="lp-feat-label">No Install<br>No Account</div></div>
       </div>
-      <button class="lp-enter-btn" onclick="openStudio()">Open Studio</button>
+
+      <!-- Headphone confirmation — required before entering -->
+      <div id="headphoneCheck" style="display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:32px;padding:20px 32px;border:1px solid var(--border);border-radius:12px;max-width:340px;">
+        <div style="font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;">Before you enter</div>
+        <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.8;font-weight:300;">
+          This studio uses your microphone.<br>
+          <strong style="color:var(--cream);font-weight:300;">Headphones are required.</strong><br>
+          Without them, your speakers will feed back<br>into the mic and cause loud feedback loops.
+        </div>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">
+          <input type="checkbox" id="headphoneConfirm" onchange="toggleStudioBtn()" style="width:16px;height:16px;cursor:pointer;accent-color:var(--gold);">
+          My headphones are on
+        </label>
+      </div>
+
+      <button class="lp-enter-btn" id="openStudioBtn" onclick="openStudio()" disabled style="opacity:0.3;cursor:not-allowed;">Open Studio</button>
       <p class="lp-notice"><strong>Microphone access required.</strong><br>Nothing is uploaded or stored. All processing<br>happens locally in your browser.</p>
     </div>
 
@@ -791,9 +880,10 @@ function enterCorridor() {
 
 function openRoom(type, name) {
   playDoor();
-  // Stop corridor ambiance
-  sndCorridor.pause();
-  sndCorridor.currentTime = 0;
+  // Stop ALL corridor sounds
+  sndEntrance.pause(); sndEntrance.currentTime = 0;
+  sndCorridor.pause(); sndCorridor.currentTime = 0;
+  setTimeout(() => { sndDoor.pause(); sndDoor.currentTime = 0; }, 500);
   // Hide all rooms
   document.getElementById('room-gong').style.display = 'none';
   document.getElementById('room-soon').style.display = 'none';
@@ -816,7 +906,26 @@ function openRoom(type, name) {
 
 function backToCorridor() {
   if (audioCtx) { audioCtx.suspend(); }
+  // Reset headphone checkbox
+  const cb = document.getElementById('headphoneConfirm');
+  const btn = document.getElementById('openStudioBtn');
+  if (cb) { cb.checked = false; }
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.3'; btn.style.cursor = 'not-allowed'; }
   show('corridor', true);
+}
+
+function toggleStudioBtn() {
+  const cb  = document.getElementById('headphoneConfirm');
+  const btn = document.getElementById('openStudioBtn');
+  if (cb.checked) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '0.3';
+    btn.style.cursor = 'not-allowed';
+  }
 }
 
 function openStudio() {
