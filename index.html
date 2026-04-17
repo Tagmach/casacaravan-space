@@ -530,14 +530,6 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
           <stop offset="50%" stop-color="#0e2006" stop-opacity="1"/>
           <stop offset="100%" stop-color="#050a03" stop-opacity="1"/>
         </radialGradient>
-        <radialGradient id="candleL" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f0c840" stop-opacity="0.25"/>
-          <stop offset="100%" stop-color="#c88020" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="candleR" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f0c840" stop-opacity="0.25"/>
-          <stop offset="100%" stop-color="#c88020" stop-opacity="0"/>
-        </radialGradient>
         <radialGradient id="centerBeam" cx="50%" cy="0%" r="80%">
           <stop offset="0%" stop-color="#c8a050" stop-opacity="0.18"/>
           <stop offset="100%" stop-color="#c8a050" stop-opacity="0"/>
@@ -610,19 +602,15 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <rect x="22" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
       <ellipse cx="24" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
       <circle cx="24" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
-      <!-- Candle glow left -->
-      <ellipse cx="24" cy="200" rx="80" ry="140" fill="url(#candleL)"/>
-      <!-- Candle wall wash left -->
-      <polygon points="0,80 80,140 80,340 0,400" fill="#c88020" opacity="0.04"/>
+      <ellipse cx="24" cy="200" rx="80" ry="140" fill="#c88020" opacity="0.12"/>
+      <ellipse cx="24" cy="200" rx="40" ry="80" fill="#e8a820" opacity="0.08"/>
 
       <!-- === WALL SCONCE RIGHT === -->
       <rect x="773" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
       <ellipse cx="776" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
       <circle cx="776" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
-      <!-- Candle glow right -->
-      <ellipse cx="776" cy="200" rx="80" ry="140" fill="url(#candleR)"/>
-      <!-- Candle wall wash right -->
-      <polygon points="800,80 720,140 720,340 800,400" fill="#c88020" opacity="0.04"/>
+      <ellipse cx="776" cy="200" rx="80" ry="140" fill="#c88020" opacity="0.12"/>
+      <ellipse cx="776" cy="200" rx="40" ry="80" fill="#e8a820" opacity="0.08"/>
 
       <!-- clean floor — nothing in center -->
 
