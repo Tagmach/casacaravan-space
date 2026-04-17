@@ -85,12 +85,12 @@
   --bg:    #0a0908;
   --bg2:   #131110;
   --bg3:   #1e1b18;
-  --gold:  #A08060;
-  --cream: #D2C3AF;
-  --text:  #C8C2B8;
-  --muted: #7A7068;
-  --dim:   #4A443E;
-  --border:#2E2A26;
+  --gold:  #C0A070;
+  --cream: #EAD8C0;
+  --text:  #D8D0C4;
+  --muted: #A09080;
+  --dim:   #7A6E64;
+  --border:#3E3830;
   --green: #1D9E75;
   --red:   #8B3A3A;
 }
@@ -254,17 +254,16 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
 
 .corridor-brand {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 3px;
-  color: var(--dim);
+  color: var(--cream);
   text-transform: uppercase;
 }
 
 .corridor-tagline {
-  font-size: 10px;
-  color: var(--dim);
+  font-size: 11px;
+  color: var(--muted);
   letter-spacing: 1px;
-  opacity: 0.5;
 }
 
 .corridor-scene {
@@ -291,11 +290,11 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
 
 .door-group { cursor: pointer; }
 .door-group:hover .door-fill { fill: #2a1f12; }
-.door-group:hover .door-name { fill: var(--cream); }
+.door-group:hover .door-name { fill: #f0e0c8; }
 .door-fill { fill: #1a1208; transition: fill 0.25s; }
 .door-frame-line { stroke: #4a3318; stroke-width: 0.8; fill: none; }
-.door-name { fill: var(--muted); font-family: 'Jost', sans-serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; transition: fill 0.25s; }
-.door-soon { fill: var(--dim); font-family: 'Jost', sans-serif; font-size: 7px; letter-spacing: 1.5px; }
+.door-name { fill: #c8b898; font-family: 'Jost', sans-serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; transition: fill 0.25s; }
+.door-soon { fill: #8a7a60; font-family: 'Jost', sans-serif; font-size: 7px; letter-spacing: 1.5px; }
 .door-knob { fill: var(--dim); }
 .candle-glow { fill: #c8a030; }
 
@@ -511,7 +510,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   <div class="corridor-header">
     <div class="corridor-brand">Casa Caravan Space</div>
     <div class="corridor-tagline">· create with life</div>
-    <a href="/about.html" style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">About</a>
+    <a href="/about.html" style="margin-left:auto;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">About</a>
   </div>
 
   <div class="corridor-scene" id="corridorScene">
