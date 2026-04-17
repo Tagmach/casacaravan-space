@@ -278,6 +278,7 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   overflow: hidden;
   width: 100%;
   min-height: 0;
+  background: #0e0b06;
 }
 
 .corridor-scene svg {
@@ -524,7 +525,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   </div>
 
   <div class="corridor-scene" id="corridorScene">
-    <svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;background:#0e0b06">
+    <svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">
       <defs>
         <radialGradient id="ceilGlow" cx="50%" cy="20%" r="70%">
           <stop offset="0%" stop-color="#6a4a1e"/>
@@ -627,8 +628,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <!-- === DOOR 1: Audio Sanctuary — left wall, amber/gold === -->
       <g class="door-group" id="door-gong" onclick="openRoom('gong')">
         <rect x="55" y="40" width="140" height="500" fill="transparent" stroke="none"/>
-        <polygon points="58,42 192,172 192,408 58,538" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
-        <polygon points="66,54 184,175 184,400 66,525" fill="#1e1206"/>
+        <polygon points="58,42 192,172 192,408 58,538" fill="#2a1a06" stroke="#c89030" stroke-width="1.5" opacity="1"/>
+        <polygon points="66,54 184,175 184,400 66,525" fill="#1e1206" opacity="1"/>
         <line x1="184" y1="175" x2="184" y2="400" stroke="#e8a830" stroke-width="2.5" opacity="0.6"/>
         <polygon points="184,175 192,172 192,408 184,400" fill="#c87820" opacity="0.3"/>
         <polygon points="75,72 174,178 174,268 75,252" fill="none" stroke="#7a5020" stroke-width="0.8"/>
@@ -673,8 +674,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <!-- === DOOR 4: Herbal Atelier — right wall, deep green/earth === -->
       <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
         <rect x="605" y="40" width="140" height="500" fill="transparent" stroke="none"/>
-        <polygon points="742,42 608,172 608,408 742,538" fill="#0e1a08" stroke="#5a8828" stroke-width="1.5"/>
-        <polygon points="734,54 616,175 616,400 734,525" fill="#0a1406"/>
+        <polygon points="742,42 608,172 608,408 742,538" fill="#0e1a08" stroke="#5a8828" stroke-width="1.5" opacity="1"/>
+        <polygon points="734,54 616,175 616,400 734,525" fill="#0a1406" opacity="1"/>
         <line x1="616" y1="175" x2="616" y2="400" stroke="#78b038" stroke-width="2.5" opacity="0.55"/>
         <polygon points="608,172 616,175 616,400 608,408" fill="#4a8020" opacity="0.28"/>
         <polygon points="725,72 626,178 626,268 725,252" fill="none" stroke="#4a7020" stroke-width="0.8"/>
