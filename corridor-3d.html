@@ -11,21 +11,27 @@ html, body { width:100%; height:100%; background:#0a0806; overflow:hidden; }
 #canvas-wrap {
   width:100%; height:100%;
   position:relative;
+  display:flex;
+  flex-direction:column;
+}
+
+canvas {
+  display:block;
+  flex:1;
+  min-height:0;
 }
 
 canvas { display:block; }
 
 /* Header */
 #header {
-  position:absolute;
-  top:0; left:0; right:0;
-  padding:18px 28px;
+  flex-shrink:0;
+  padding:16px 28px;
   display:flex;
   align-items:center;
   gap:12px;
   border-bottom:1px solid rgba(200,160,80,0.12);
-  background:rgba(10,8,6,0.7);
-  backdrop-filter:blur(4px);
+  background:rgba(10,8,6,0.95);
   z-index:10;
 }
 #header-brand {
@@ -73,14 +79,13 @@ canvas { display:block; }
 
 /* Walk controls */
 #walk-controls {
-  position:absolute;
-  bottom:0; left:0; right:0;
+  flex-shrink:0;
   padding:12px 0 10px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:20px;
-  background:rgba(10,8,6,0.85);
+  background:rgba(10,8,6,0.95);
   border-top:1px solid rgba(62,56,48,0.8);
   z-index:10;
 }
@@ -222,7 +227,7 @@ scene.background = new THREE.Color(0x0a0806);
 scene.fog = new THREE.Fog(0x0a0806, 18, 38);
 
 const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 60);
-camera.position.set(0, 0, 0);
+camera.position.set(0, 0, 1);
 camera.lookAt(0, 0, -1);
 
 // ── SIZES ────────────────────────────────────────────────────────
@@ -230,12 +235,12 @@ const HEADER_H = 56;
 const FOOTER_H = 68;
 
 function resize() {
-  const w = window.innerWidth;
-  const h = window.innerHeight - HEADER_H - FOOTER_H;
-  renderer.setSize(w, h);
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  if (w === 0 || h === 0) return;
+  renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
-  canvas.style.marginTop = HEADER_H + 'px';
 }
 resize();
 window.addEventListener('resize', resize);
@@ -279,55 +284,12 @@ wallR.rotation.y = -Math.PI/2;
 wallR.position.set(W/2, 0, -L/2);
 scene.add(wallR);
 
-// Back wall (forest)
-const backWall = new THREE.Mesh(new THREE.PlaneGeometry(W, H), forestMat);
+// Back wall — dark, forest door will be in front
+const backWall = new THREE.Mesh(new THREE.PlaneGeometry(W, H), mat(0x080c06, 0.95));
 backWall.position.set(0, 0, -L);
 scene.add(backWall);
 
-// Floor planks — subtle lines
-for (let i = -2; i <= 2; i++) {
-  const plank = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.04, L),
-    new THREE.MeshStandardMaterial({ color:0x2a1c0a, roughness:1 })
-  );
-  plank.rotation.x = -Math.PI/2;
-  plank.position.set(i*(W/4), -H/2+0.001, -L/2);
-  scene.add(plank);
-}
 
-// ── FOREST BACK WALL ─────────────────────────────────────────────
-// Tree silhouettes painted on back wall
-function addTree(x, scale) {
-  const trunk = new THREE.Mesh(
-    new THREE.BoxGeometry(0.15*scale, 0.8*scale, 0.05),
-    new THREE.MeshStandardMaterial({ color:0x081206 })
-  );
-  trunk.position.set(x, -H/2+0.4*scale, -L+0.06);
-  scene.add(trunk);
-
-  const crown = new THREE.Mesh(
-    new THREE.SphereGeometry(0.5*scale, 8, 6),
-    new THREE.MeshStandardMaterial({ color:0x0a1a06 })
-  );
-  crown.position.set(x, -H/2+1.2*scale, -L+0.06);
-  scene.add(crown);
-}
-addTree(-0.8, 1.1);
-addTree(0, 1.35);
-addTree(0.9, 1.0);
-addTree(-0.3, 0.85);
-addTree(0.45, 0.9);
-
-// Firefly particles
-const ffGeo = new THREE.BufferGeometry();
-const ffPos = [];
-for (let i=0; i<12; i++) {
-  ffPos.push((Math.random()-0.5)*W*0.7, (Math.random()-0.3)*H*0.5, -L+0.1+Math.random()*0.5);
-}
-ffGeo.setAttribute('position', new THREE.Float32BufferAttribute(ffPos,3));
-const ffMat = new THREE.PointsMaterial({ color:0xc8e040, size:0.05, transparent:true, opacity:0.7 });
-const fireflies = new THREE.Points(ffGeo, ffMat);
-scene.add(fireflies);
 
 // Forest label
 // (handled via raycasting click on back wall)
@@ -366,19 +328,20 @@ scene.add(fillLight);
 });
 
 // ── DOORS ────────────────────────────────────────────────────────
+const billboardSigns = [];
+
 const doors = [
   { name:'Audio Sanctuary', color:0xc89030, border:0xe8a830, z:-2,  side:'L', action:'sanctuary' },
-  { name:'Idea Basket',     color:0xc06030, border:0xd07040, z:-2,  side:'R', action:'soon' },
+  { name:'Fermentation Lab',color:0x5a9030, border:0x70b040, z:-2,  side:'R', action:'soon' },
   { name:'Games',           color:0x8060c0, border:0x9070d0, z:-10, side:'L', action:'soon' },
-  { name:'Fermentation Lab',color:0x5a9030, border:0x70b040, z:-10, side:'R', action:'soon' },
-  { name:'Headspace',       color:0x4060a0, border:0x6090c0, z:-18, side:'L', action:'soon' },
+  { name:'Headspace',       color:0x4060a0, border:0x6090c0, z:-10, side:'R', action:'soon' },
+  { name:'Idea Basket',     color:0xc06030, border:0xd07040, z:-18, side:'L', action:'soon' },
   { name:'Herbal Atelier',  color:0x508028, border:0x78b038, z:-18, side:'R', action:'soon' },
-  { name:'The Forest',      color:0x1a3a0a, border:0x4a7a1a, z:-L,  side:'C', action:'soon' },
 ];
 
 const doorMeshes = [];
-const DW = 1.4; // door width
-const DH = 2.6; // door height
+const DW = 2.6; // door width
+const DH = 2.8; // door height
 
 doors.forEach(d => {
   const doorGroup = new THREE.Group();
@@ -446,41 +409,62 @@ doors.forEach(d => {
   dLight.position.set(d.side==='L' ? 0.8 : -0.8, 0, 0.5);
   doorGroup.add(dLight);
 
-  // Sign plate with canvas texture
+  // Wall-mounted sign — hangs on the wall beside the door, faces the walker
   const signCanvas = document.createElement('canvas');
-  signCanvas.width = 256; signCanvas.height = 128;
+  signCanvas.width = 512; signCanvas.height = 256;
   const ctx = signCanvas.getContext('2d');
-  ctx.fillStyle = 'rgba(10,8,6,0.92)';
-  ctx.fillRect(0, 0, 256, 128);
-  // Border
+  ctx.fillStyle = '#0c0a06';
+  ctx.fillRect(0, 0, 512, 256);
   const hex = '#' + new THREE.Color(d.border).getHexString();
+  // Border
   ctx.strokeStyle = hex;
-  ctx.lineWidth = 3;
-  ctx.strokeRect(4, 4, 248, 120);
-  // Text
-  ctx.fillStyle = hex;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(5, 5, 502, 246);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = hex + '55';
+  ctx.strokeRect(13, 13, 486, 230);
+  // Text — white, large
+  ctx.fillStyle = '#f0e8d8';
   ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   const words = d.name.toUpperCase().split(' ');
-  if (words.length <= 2) {
-    ctx.font = 'bold 28px sans-serif';
-    ctx.letterSpacing = '3px';
-    words.forEach((w, i) => ctx.fillText(w, 128, 50 + i*36));
+  if (words.length === 1) {
+    ctx.font = '700 80px Arial';
+    ctx.fillText(words[0], 256, 128);
+  } else if (words.length === 2) {
+    ctx.font = '700 62px Arial';
+    ctx.fillText(words[0], 256, 92);
+    ctx.fillText(words[1], 256, 164);
   } else {
-    // 3+ words: split into 2 lines
-    const mid = Math.ceil(words.length/2);
-    const line1 = words.slice(0,mid).join(' ');
-    const line2 = words.slice(mid).join(' ');
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText(line1, 128, 48);
-    ctx.fillText(line2, 128, 78);
+    const mid = Math.ceil(words.length / 2);
+    ctx.font = '700 50px Arial';
+    ctx.fillText(words.slice(0, mid).join(' '), 256, 88);
+    ctx.fillText(words.slice(mid).join(' '), 256, 152);
   }
+  // Small bracket decorations
+  ctx.strokeStyle = hex;
+  ctx.lineWidth = 2;
+  [[30,220,70,220],[442,220,482,220]].forEach(([x1,y1,x2,y2]) => {
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  });
   const signTex = new THREE.CanvasTexture(signCanvas);
-  const signMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(DW*0.75, DH*0.28),
-    new THREE.MeshStandardMaterial({ map:signTex, emissiveMap:signTex, emissive:new THREE.Color(0xffffff), emissiveIntensity:0.4 })
+  signTex.needsUpdate = true;
+  const SIGN_W = 1.8;
+  const SIGN_H = 0.9;
+  const wallSign = new THREE.Mesh(
+    new THREE.PlaneGeometry(SIGN_W, SIGN_H),
+    new THREE.MeshStandardMaterial({
+      map: signTex,
+      emissiveMap: signTex,
+      emissive: new THREE.Color(0xffffff),
+      emissiveIntensity: 3.0
+    })
   );
-  signMesh.position.set(0, DH*0.12, 0.02);
-  doorGroup.add(signMesh);
+  // Place sign floating in corridor — well away from wall, at eye level
+  const signX = d.side === 'L' ? -1.0 : 1.0;
+  wallSign.position.set(signX, 0.3, d.z - 0.3);
+  scene.add(wallSign);
+  billboardSigns.push(wallSign);
 
   doorGroup.rotation.y = rotY;
   doorGroup.position.set(x, -H/2 + DH/2, d.z);
@@ -488,7 +472,7 @@ doors.forEach(d => {
 });
 
 // ── CAMERA WALK ──────────────────────────────────────────────────
-const POSITIONS = [0, -8, -16, -22];
+const POSITIONS = [1, -6, -14, -20];
 let currentPos = 0;
 let targetZ = POSITIONS[0];
 let isMoving = false;
@@ -527,6 +511,189 @@ document.getElementById('btnBack').onclick = () => corridorWalk(-1);
 document.addEventListener('keydown', e => {
   if (e.key==='ArrowUp'||e.key==='ArrowRight')    corridorWalk(1);
   if (e.key==='ArrowDown'||e.key==='ArrowLeft')   corridorWalk(-1);
+});
+
+// ── FOREST DOOR — open door at end ───────────────────────────────
+const FDW = W * 0.88;
+const FDH = 3.0;
+const FZ  = -L + 0.1;
+
+// Frame
+const fFrameMat = new THREE.MeshStandardMaterial({ color:0x2a4010, roughness:0.7 });
+const fft = new THREE.Mesh(new THREE.BoxGeometry(FDW+0.14, 0.1, 0.1), fFrameMat);
+fft.position.set(0, -H/2+FDH+0.05, FZ); scene.add(fft);
+[-FDW/2-0.07, FDW/2+0.07].forEach(fx => {
+  const s = new THREE.Mesh(new THREE.BoxGeometry(0.1, FDH, 0.1), fFrameMat);
+  s.position.set(fx, -H/2+FDH/2, FZ); scene.add(s);
+});
+
+// Double doors — both swung open outward
+const doorMat2 = new THREE.MeshStandardMaterial({ color:0x1a3008, roughness:0.85 });
+// Left panel — swung to left wall
+const doorL = new THREE.Mesh(new THREE.BoxGeometry(0.07, FDH, FDW/2), doorMat2);
+doorL.rotation.y = Math.PI/2 * 0.82;
+doorL.position.set(-FDW/2 + 0.05, -H/2+FDH/2, FZ - FDW*0.28);
+scene.add(doorL);
+// Right panel — swung to right wall
+const doorR = new THREE.Mesh(new THREE.BoxGeometry(0.07, FDH, FDW/2), doorMat2);
+doorR.rotation.y = -Math.PI/2 * 0.82;
+doorR.position.set(FDW/2 - 0.05, -H/2+FDH/2, FZ - FDW*0.28);
+scene.add(doorR);
+// Center split line
+const splitMat = new THREE.MeshStandardMaterial({ color:0x2a4010, roughness:0.7 });
+const split = new THREE.Mesh(new THREE.BoxGeometry(0.06, FDH, 0.06), splitMat);
+split.position.set(0, -H/2+FDH/2, FZ+0.01);
+scene.add(split);
+
+// Knob
+const fKnob = new THREE.Mesh(
+  new THREE.SphereGeometry(0.06, 8, 8),
+  new THREE.MeshStandardMaterial({ color:0x90c050, metalness:0.8, roughness:0.2, emissive:new THREE.Color(0x90c050), emissiveIntensity:0.5 })
+);
+fKnob.position.set(-FDW*0.25, -H/2+FDH*0.48, FZ+0.05);
+scene.add(fKnob);
+
+// Green glow through doorway
+const forestGlow = new THREE.PointLight(0x2a6010, 2.0, 10);
+forestGlow.position.set(0, -H/2+FDH*0.5, FZ+0.5);
+scene.add(forestGlow);
+
+// Trees through open door
+[-0.5, 0.05, 0.55, -0.22, 0.32].forEach((tx, ti) => {
+  const sc = 0.65 + ti*0.08;
+  const tr = new THREE.Mesh(new THREE.BoxGeometry(0.1*sc, 0.6*sc, 0.08), new THREE.MeshStandardMaterial({ color:0x081206 }));
+  tr.position.set(tx, -H/2+0.3*sc, FZ+0.5); scene.add(tr);
+  const cr = new THREE.Mesh(new THREE.SphereGeometry(0.35*sc, 7, 5), new THREE.MeshStandardMaterial({ color:0x0c1e08 }));
+  cr.position.set(tx, -H/2+0.9*sc, FZ+0.5); scene.add(cr);
+});
+
+// Fireflies
+const ffGeo = new THREE.BufferGeometry();
+const ffArr = [];
+for (let i=0; i<14; i++) ffArr.push((Math.random()-0.5)*FDW*0.7, -H/2+(Math.random()*FDH*0.7), FZ+Math.random()*1.2);
+ffGeo.setAttribute('position', new THREE.Float32BufferAttribute(ffArr,3));
+const ffMat = new THREE.PointsMaterial({ color:0xc8e040, size:0.05, transparent:true, opacity:0.8 });
+const fireflies = new THREE.Points(ffGeo, ffMat);
+scene.add(fireflies);
+
+// Clickable overlay
+const forestClick = new THREE.Mesh(
+  new THREE.PlaneGeometry(FDW, FDH),
+  new THREE.MeshStandardMaterial({ transparent:true, opacity:0 })
+);
+forestClick.position.set(0, -H/2+FDH/2, FZ+0.02);
+forestClick.userData = { door:{ name:'The Forest', action:'soon' } };
+scene.add(forestClick);
+doorMeshes.push(forestClick);
+
+// Sign above door
+const fsC = document.createElement('canvas');
+fsC.width=1024; fsC.height=300;
+const fsX = fsC.getContext('2d');
+fsX.fillStyle='#0a0e06'; fsX.fillRect(0,0,1024,300);
+fsX.strokeStyle='#4a7a1a'; fsX.lineWidth=6; fsX.strokeRect(6,6,1012,288);
+fsX.fillStyle='#e8f0e0'; fsX.font='300 100px Arial'; fsX.textAlign='center'; fsX.textBaseline='middle';
+fsX.fillText('THE FOREST', 512, 150);
+
+const fsTex = new THREE.CanvasTexture(fsC);
+const forestSign = new THREE.Mesh(
+  new THREE.PlaneGeometry(FDW*1.4, 0.7),
+  new THREE.MeshStandardMaterial({ map:fsTex, emissiveMap:fsTex, emissive:new THREE.Color(0xffffff), emissiveIntensity:2.2 })
+);
+forestSign.position.set(0, -H/2+FDH+0.45, FZ+0.03);
+scene.add(forestSign);
+
+// Floor planks — subtle lines
+for (let i = -2; i <= 2; i++) {
+  const plank = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.04, L),
+    new THREE.MeshStandardMaterial({ color:0x2a1c0a, roughness:1 })
+  );
+  plank.rotation.x = -Math.PI/2;
+  plank.position.set(i*(W/4), -H/2+0.001, -L/2);
+  scene.add(plank);
+}
+
+// ── WINDOWS — high on wall, near ceiling, spaced along corridor
+[-2, -6, -10, -14, -18, -22, -26, -30].forEach((wz, wi) => {
+  [-W/2, W/2].forEach((wx, side) => {
+    const isLeft = side === 0;
+    const WW = 0.7;  // window width
+    const WH = 0.5;  // window height
+    const WY = H/2 - 0.45; // near ceiling
+
+    // Frame
+    const fm = new THREE.MeshStandardMaterial({ color:0x2a1808, roughness:0.9 });
+    [[WW+0.06, 0.05, 0.05, 0, WH/2+0.02, 0],   // top
+     [WW+0.06, 0.05, 0.05, 0, -WH/2-0.02, 0],  // bottom
+     [0.05, WH+0.06, 0.05, -WW/2-0.02, 0, 0],  // left
+     [0.05, WH+0.06, 0.05, WW/2+0.02, 0, 0],   // right
+     [0.04, WH, 0.04, 0, 0, 0]                  // center vertical
+    ].forEach(([gw,gh,gd,ox,oy,oz]) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(gw,gh,gd), fm);
+      m.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
+      m.position.set(wx, WY + oy, wz + oz);
+      scene.add(m);
+    });
+
+    // Night sky outside
+    const sky = new THREE.Mesh(
+      new THREE.PlaneGeometry(WW, WH),
+      new THREE.MeshStandardMaterial({
+        color:0x040810,
+        emissive: new THREE.Color(0x0a1828),
+        emissiveIntensity: 1.5,
+        side: THREE.DoubleSide
+      })
+    );
+    sky.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
+    sky.position.set(isLeft ? wx - 0.02 : wx + 0.02, WY, wz);
+    scene.add(sky);
+
+    // Glass
+    const glass = new THREE.Mesh(
+      new THREE.PlaneGeometry(WW, WH),
+      new THREE.MeshStandardMaterial({
+        color:0x6090b0, transparent:true, opacity:0.12,
+        emissive: new THREE.Color(0x304868), emissiveIntensity:0.8,
+        side: THREE.DoubleSide
+      })
+    );
+    glass.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
+    glass.position.set(wx, WY, wz);
+    scene.add(glass);
+
+    // Cool light into corridor
+    const wl = new THREE.PointLight(0x5080a0, 0.7, 6);
+    wl.position.set(isLeft ? wx + 0.8 : wx - 0.8, WY - 0.3, wz);
+    scene.add(wl);
+
+    // Stars — tiny dots outside
+    for (let s = 0; s < 4; s++) {
+      const star = new THREE.Mesh(
+        new THREE.CircleGeometry(0.012, 6),
+        new THREE.MeshStandardMaterial({ color:0xffffff, emissive:new THREE.Color(0xffffff), emissiveIntensity:4 })
+      );
+      star.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
+      star.position.set(
+        isLeft ? wx - 0.03 : wx + 0.03,
+        WY + (Math.random()-0.5)*0.3,
+        wz + (Math.random()-0.5)*0.5
+      );
+      scene.add(star);
+    }
+
+    // Moon through first window
+    if (wi === 0 && isLeft) {
+      const moon = new THREE.Mesh(
+        new THREE.CircleGeometry(0.06, 16),
+        new THREE.MeshStandardMaterial({ color:0xf8f0d8, emissive:new THREE.Color(0xf8f0d8), emissiveIntensity:3.5 })
+      );
+      moon.rotation.y = Math.PI/2;
+      moon.position.set(wx - 0.03, WY + 0.1, wz + 0.15);
+      scene.add(moon);
+    }
+  });
 });
 
 // ── RAYCASTING (click/hover on doors) ───────────────────────────
@@ -617,6 +784,12 @@ function animate() {
     camera.position.z = targetZ;
     isMoving = false;
   }
+
+  // Billboard signs always face camera
+  billboardSigns.forEach(s => s.quaternion.copy(camera.quaternion));
+
+  // Billboard signs always face camera
+  billboardSigns.forEach(s => s.quaternion.copy(camera.quaternion));
 
   // Slight camera bob
   camera.position.y = Math.sin(clock.elapsedTime * 0.4) * 0.015;

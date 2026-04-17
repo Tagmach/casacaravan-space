@@ -244,8 +244,8 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   height: 100dvh;
   flex-direction: column;
   overflow: hidden;
+  display: flex;
 }
-
 .corridor-header {
   padding: 16px 24px;
   border-bottom: 1px solid var(--border);
@@ -255,7 +255,6 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   flex-wrap: nowrap;
   white-space: nowrap;
 }
-
 .corridor-brand {
   font-family: 'Cormorant Garamond', serif;
   font-size: 10px;
@@ -264,127 +263,65 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   text-transform: uppercase;
   white-space: nowrap;
 }
-
 .corridor-tagline {
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 1px;
   white-space: nowrap;
 }
-
 .corridor-scene {
   flex: 1;
+  min-height: 0;
   position: relative;
   overflow: hidden;
-  width: 100%;
-  min-height: 0;
-  background: #0e0b06;
-}
-
-.corridor-scene svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  background: #0a0806;
   display: block;
 }
-
-/* Transparent overlay buttons over SVG doors */
-.door-overlay {
+.corridor-scene svg {
   position: absolute;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-
-.door-group { cursor: pointer; }
-.door-group:hover .door-fill { fill: #2a1f12; }
-.door-group:hover .door-name { fill: #f0e0c8; }
-.door-fill { fill: #1a1208; transition: fill 0.25s; }
-.door-frame-line { stroke: #4a3318; stroke-width: 0.8; fill: none; }
-.door-name { fill: #c8b898; font-family: 'Jost', sans-serif; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; transition: fill 0.25s; }
-.door-soon { fill: #8a7a60; font-family: 'Jost', sans-serif; font-size: 7px; letter-spacing: 1.5px; }
-.door-knob { fill: var(--dim); }
-.candle-glow { fill: #c8a030; }
-
 .corridor-tooltip {
   position: fixed;
-  bottom: 28px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 10px;
   letter-spacing: 2px;
   color: var(--muted);
   text-transform: uppercase;
-  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
+  pointer-events: none;
 }
-
 .corridor-tooltip.show { opacity: 1; }
-
-.corridor-scene svg {
-  transform-origin: 50% 49%;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .corridor-walk {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 24px;
   padding: 10px 0 8px;
   background: var(--bg);
   border-top: 1px solid var(--border);
 }
-
 .walk-btn {
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
-  width: 44px;
-  height: 44px;
+  width: 44px; height: 44px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
   font-size: 16px;
-  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
 }
-
-.walk-btn .walk-label {
-  font-size: 7px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  display: none;
-}
-
 .walk-btn:hover { border-color: var(--gold); color: var(--gold); }
 .walk-btn:disabled { opacity: 0.2; cursor: default; }
-
-.corridor-dots {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.corridor-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
-  transition: background 0.3s;
-  cursor: pointer;
-}
-
-.corridor-dot.active { background: var(--gold); }
-
+.door-group { cursor: pointer; }
+.door-group:hover polygon:first-child { filter: brightness(1.3); }
 /* --------------------------------------------
    MOBILE CORRIDOR
 -------------------------------------------- */
@@ -667,204 +604,264 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   </div>
 
   <div class="corridor-scene" id="corridorScene">
-
-    <!-- Mobile corridor - CSS only, shown on small screens -->
-    <div class="mobile-corridor" id="mobileCorridor">
-      <div class="mc-ceiling"></div>
-      <div class="mc-floor"></div>
-      <div class="mc-left-wall"></div>
-      <div class="mc-right-wall"></div>
-      <div class="mc-doors">
-        <div class="mc-door mc-door-audio" onclick="openRoom('gong')">
-          <div class="mc-door-light mc-light-amber"></div>
-          <div class="mc-door-name">Audio Sanctuary</div>
-        </div>
-        <div class="mc-door mc-door-head" onclick="openRoom('soon','Headspace')">
-          <div class="mc-door-light mc-light-blue"></div>
-          <div class="mc-door-name">Headspace<span class="mc-soon">coming soon</span></div>
-        </div>
-        <div class="mc-door mc-door-forest" onclick="openRoom('soon','The Forest')">
-          <div class="mc-door-light mc-light-green"></div>
-          <div class="mc-door-name">The Forest</div>
-        </div>
-        <div class="mc-door mc-door-ferm" onclick="openRoom('soon','Fermentation Lab')">
-          <div class="mc-door-light mc-light-green2"></div>
-          <div class="mc-door-name">Fermentation Lab<span class="mc-soon">coming soon</span></div>
-        </div>
-        <div class="mc-door mc-door-herb" onclick="openRoom('soon','Herbal Atelier')">
-          <div class="mc-door-light mc-light-earth"></div>
-          <div class="mc-door-name">Herbal Atelier<span class="mc-soon">coming soon</span></div>
-        </div>
-      </div>
-    </div>
-
-    <svg id="corridorSVG" viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block;transform-origin:50% 49%;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1),opacity 0.45s ease">
+    <svg id="view1" viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;position:absolute;top:0;left:0;opacity:1;transition:opacity 0.35s ease">
       <defs>
-        <radialGradient id="ceilGlow" cx="50%" cy="20%" r="70%">
-          <stop offset="0%" stop-color="#6a4a1e"/>
-          <stop offset="60%" stop-color="#2a1c0a"/>
-          <stop offset="100%" stop-color="#0e0b06"/>
-        </radialGradient>
-        <radialGradient id="floorGlow" cx="50%" cy="70%" r="70%">
-          <stop offset="0%" stop-color="#3a2a0e"/>
-          <stop offset="100%" stop-color="#0e0b06"/>
-        </radialGradient>
-        <radialGradient id="forestGlow" cx="50%" cy="50%" r="60%">
-          <stop offset="0%" stop-color="#1a3a0a"/>
-          <stop offset="50%" stop-color="#0e2006"/>
-          <stop offset="100%" stop-color="#050a03"/>
-        </radialGradient>
-        <radialGradient id="centerBeam" cx="50%" cy="0%" r="80%">
-          <stop offset="0%" stop-color="#c8a050" stop-opacity="0.18"/>
-          <stop offset="100%" stop-color="#c8a050" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="forestLight" cx="50%" cy="40%" r="50%">
-          <stop offset="0%" stop-color="#4a7a20" stop-opacity="0.3"/>
-          <stop offset="100%" stop-color="#1a3a08" stop-opacity="0"/>
-        </radialGradient>
+        <radialGradient id="cg1" cx="50%" cy="18%" r="72%"><stop offset="0%" stop-color="#6a4a1e"/><stop offset="55%" stop-color="#2a1c0a"/><stop offset="100%" stop-color="#0e0b06"/></radialGradient>
+        <radialGradient id="fg1" cx="50%" cy="72%" r="72%"><stop offset="0%" stop-color="#3a2a0e"/><stop offset="100%" stop-color="#0a0806"/></radialGradient>
+        <radialGradient id="for1" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#1a3a0a"/><stop offset="55%" stop-color="#0c1e06"/><stop offset="100%" stop-color="#030602"/></radialGradient>
+        <radialGradient id="beam1" cx="50%" cy="0%" r="75%"><stop offset="0%" stop-color="#c8a050" stop-opacity="0.16"/><stop offset="100%" stop-color="#c8a050" stop-opacity="0"/></radialGradient>
       </defs>
-
-      <rect x="0" y="0" width="800" height="580" fill="#0e0b06"/>
-      <polygon points="0,0 800,0 560,285 240,285" fill="url(#ceilGlow)"/>
-      <polygon points="0,580 800,580 560,285 240,285" fill="url(#floorGlow)"/>
-      <polygon points="0,0 240,285 0,580" fill="#221608"/>
-      <polygon points="800,0 560,285 800,580" fill="#1e1406"/>
-      <line x1="240" y1="285" x2="0" y2="580" stroke="#2a1c0a" stroke-width="1.2"/>
-      <line x1="275" y1="285" x2="50" y2="580" stroke="#261808" stroke-width="0.9"/>
-      <line x1="315" y1="285" x2="160" y2="580" stroke="#221406" stroke-width="0.7"/>
-      <line x1="358" y1="285" x2="300" y2="580" stroke="#1e1206" stroke-width="0.5"/>
-      <line x1="400" y1="285" x2="400" y2="580" stroke="#1e1206" stroke-width="0.5"/>
-      <line x1="442" y1="285" x2="500" y2="580" stroke="#1e1206" stroke-width="0.5"/>
-      <line x1="485" y1="285" x2="640" y2="580" stroke="#221406" stroke-width="0.7"/>
-      <line x1="525" y1="285" x2="750" y2="580" stroke="#261808" stroke-width="0.9"/>
-      <line x1="560" y1="285" x2="800" y2="580" stroke="#2a1c0a" stroke-width="1.2"/>
-      <line x1="80" y1="380" x2="720" y2="380" stroke="#221408" stroke-width="0.4" opacity="0.5"/>
-      <line x1="20" y1="450" x2="780" y2="450" stroke="#221408" stroke-width="0.4" opacity="0.4"/>
-      <polygon points="330,0 470,0 435,285 365,285" fill="url(#centerBeam)"/>
-
-      <!-- FOREST at vanishing point -->
-      <g id="door-forest" onclick="openRoom('soon','The Forest')" style="cursor:pointer">
-        <ellipse cx="400" cy="285" rx="145" ry="92" fill="url(#forestGlow)"/>
-        <ellipse cx="370" cy="240" rx="22" ry="38" fill="#0a1a06" opacity="0.85"/>
-        <ellipse cx="400" cy="225" rx="26" ry="46" fill="#0c2008" opacity="0.8"/>
-        <ellipse cx="430" cy="242" rx="20" ry="36" fill="#081806" opacity="0.85"/>
-        <ellipse cx="400" cy="265" rx="80" ry="40" fill="url(#forestLight)"/>
-        <circle cx="362" cy="258" r="1.5" fill="#c8e040" opacity="0.5"/>
-        <circle cx="438" cy="252" r="1.5" fill="#c8e040" opacity="0.4"/>
-        <circle cx="395" cy="245" r="1" fill="#c8e040" opacity="0.35"/>
-        <ellipse cx="400" cy="284" rx="70" ry="8" fill="#0e1a08" opacity="0.6"/>
-        <rect x="310" y="200" width="180" height="120" fill="transparent"/>
-        <text font-family="'Jost',sans-serif" font-size="7" letter-spacing="2" fill="#3a5a1a" x="400" y="308" text-anchor="middle">the forest</text>
+      <rect x="0" y="0" width="800" height="580" fill="#0a0806"/>
+      <polygon points="0,0 800,0 400,290" fill="url(#cg1)"/>
+      <polygon points="0,580 800,580 400,290" fill="url(#fg1)"/>
+      <polygon points="0,0 400,290 0,580" fill="#1e1408"/>
+      <polygon points="800,0 400,290 800,580" fill="#1a1206"/>
+      <line x1="400" y1="290" x2="0" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="400" y1="290" x2="100" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="220" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="340" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="400" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="460" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="580" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="700" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="800" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="30" y1="390" x2="770" y2="390" stroke="#1a1008" stroke-width="0.4" opacity="0.5"/>
+      <line x1="5" y1="460" x2="795" y2="460" stroke="#1a1008" stroke-width="0.4" opacity="0.35"/>
+      <polygon points="355,0 445,0 425,290 375,290" fill="url(#beam1)"/>
+      <rect x="14" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="16" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="16" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="16" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <rect x="781" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="784" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="784" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="784" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <g onclick="openRoom('soon','The Forest')" style="cursor:pointer">
+        <ellipse cx="400" cy="290" rx="96" ry="62" fill="url(#for1)"/>
+        <ellipse cx="381" cy="270" rx="24" ry="31" fill="#0a1a06" opacity="0.92"/>
+        <ellipse cx="400" cy="259" rx="32" ry="40" fill="#0c2008" opacity="0.88"/>
+        <ellipse cx="419" cy="275" rx="24" ry="31" fill="#081806" opacity="0.92"/>
+        <circle cx="376" cy="280" r="1.5" fill="#c8e040" opacity="0.55"/>
+        <circle cx="424" cy="278" r="1.5" fill="#c8e040" opacity="0.45"/>
+        <circle cx="400" cy="270" r="1" fill="#c8e040" opacity="0.38"/>
+        <text font-family="'Jost',sans-serif" font-size="6" letter-spacing="2" fill="#4a7a1a" x="400" y="364" text-anchor="middle">the forest</text>
       </g>
-
-      <!-- Sconces -->
-      <rect x="22" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
-      <ellipse cx="24" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
-      <circle cx="24" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
-      <ellipse cx="24" cy="200" rx="80" ry="140" fill="#c88020" opacity="0.12"/>
-      <rect x="773" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
-      <ellipse cx="776" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
-      <circle cx="776" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
-      <ellipse cx="776" cy="200" rx="80" ry="140" fill="#c88020" opacity="0.12"/>
-
-      <!-- DOOR 1: Audio Sanctuary - left near -->
-      <g class="door-group" id="door-gong" onclick="openRoom('gong')">
-        <rect x="30" y="20" width="170" height="540" fill="transparent" stroke="none"/>
-        <polygon points="32,22 200,170 200,418 32,548" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
-        <polygon points="44,38 188,174 188,410 44,534" fill="#1e1206"/>
-        <line x1="188" y1="174" x2="188" y2="410" stroke="#e8a830" stroke-width="2.5" opacity="0.55"/>
-        <polygon points="188,174 200,170 200,418 188,410" fill="#c87820" opacity="0.28"/>
-        <polygon points="56,68 180,180 180,272 56,256" fill="none" stroke="#7a5020" stroke-width="0.8"/>
-        <polygon points="56,268 180,276 180,402 56,418" fill="none" stroke="#7a5020" stroke-width="0.8" opacity="0.6"/>
-        <circle cx="184" cy="300" r="6" fill="#b07828"/>
-        <circle cx="184" cy="300" r="3" fill="#e0a840"/>
-        <rect x="62" y="210" width="118" height="38" rx="2" fill="#1a1006" stroke="#c89030" stroke-width="0.8" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d4a860" x="121" y="226" text-anchor="middle">AUDIO</text>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d4a860" x="121" y="239" text-anchor="middle">SANCTUARY</text>
+      <!-- Headspace small deep left -->
+      <polygon points="244,246 282,264 282,330 244,342" fill="#0e1420" stroke="#4060a0" stroke-width="0.8"/>
+      <line x1="279" y1="264" x2="279" y2="328" stroke="#6090c0" stroke-width="1" opacity="0.4"/>
+      <rect x="245" y="278" width="36" height="20" rx="1" fill="#080e18" stroke="#4060a0" stroke-width="0.5"/>
+      <text font-family="'Jost',sans-serif" font-size="5" fill="#6090c0" x="263" y="287" text-anchor="middle">HEAD</text>
+      <text font-family="'Jost',sans-serif" font-size="5" fill="#6090c0" x="263" y="294" text-anchor="middle">SPACE</text>
+      <!-- Herbal small deep right -->
+      <polygon points="556,246 518,264 518,330 556,342" fill="#0e1a08" stroke="#4a8030" stroke-width="0.8"/>
+      <line x1="521" y1="264" x2="521" y2="328" stroke="#70b038" stroke-width="1" opacity="0.4"/>
+      <rect x="519" y="278" width="36" height="20" rx="1" fill="#081408" stroke="#4a8030" stroke-width="0.5"/>
+      <text font-family="'Jost',sans-serif" font-size="5" fill="#80b040" x="537" y="287" text-anchor="middle">HERBAL</text>
+      <text font-family="'Jost',sans-serif" font-size="5" fill="#80b040" x="537" y="294" text-anchor="middle">ATELIER</text>
+      <!-- Games medium left -->
+      <polygon points="196,190 252,228 252,374 196,408" fill="#1a0e2a" stroke="#8060c0" stroke-width="1"/>
+      <line x1="248" y1="228" x2="248" y2="372" stroke="#9070d0" stroke-width="1.5" opacity="0.45"/>
+      <polygon points="248,228 252,226 252,374 248,372" fill="#9070d0" opacity="0.16"/>
+      <rect x="200" y="272" width="50" height="26" rx="2" fill="#0e0818" stroke="#8060c0" stroke-width="0.6"/>
+      <text font-family="'Jost',sans-serif" font-size="6" letter-spacing="1.5" fill="#9070d0" x="225" y="283" text-anchor="middle">GAMES</text>
+      <text font-family="'Jost',sans-serif" font-size="4.5" fill="#503880" x="225" y="291" text-anchor="middle">coming soon</text>
+      <!-- Ferm medium right -->
+      <polygon points="604,190 548,228 548,374 604,408" fill="#0e1a0a" stroke="#5a9030" stroke-width="1"/>
+      <line x1="552" y1="228" x2="552" y2="372" stroke="#70b040" stroke-width="1.5" opacity="0.45"/>
+      <polygon points="552,228 548,226 548,374 552,372" fill="#70b040" opacity="0.16"/>
+      <rect x="550" y="270" width="54" height="30" rx="2" fill="#081408" stroke="#5a9030" stroke-width="0.6"/>
+      <text font-family="'Jost',sans-serif" font-size="5.5" fill="#70b040" x="577" y="282" text-anchor="middle">FERMENTATION</text>
+      <text font-family="'Jost',sans-serif" font-size="5.5" fill="#70b040" x="577" y="291" text-anchor="middle">LAB</text>
+      <!-- Audio Sanctuary big left — clickable -->
+      <g id="door-gong" class="door-group" onclick="openRoom('gong')" style="cursor:pointer">
+        <polygon points="0,20 164,182 164,418 0,548" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
+        <polygon points="8,36 156,186 156,410 8,534" fill="#1e1206"/>
+        <line x1="156" y1="186" x2="156" y2="410" stroke="#e8a830" stroke-width="2" opacity="0.5"/>
+        <polygon points="156,186 164,182 164,418 156,410" fill="#c87820" opacity="0.22"/>
+        <polygon points="18,72 148,192 148,272 18,258" fill="none" stroke="#7a5020" stroke-width="0.8"/>
+        <polygon points="18,270 148,278 148,402 18,432" fill="none" stroke="#7a5020" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="152" cy="300" r="5" fill="#b07828"/><circle cx="152" cy="300" r="2.5" fill="#e0a840"/>
+        <rect x="16" y="222" width="126" height="40" rx="2" fill="#1a1006" stroke="#c89030" stroke-width="0.8"/>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="2" fill="#d4a860" x="79" y="238" text-anchor="middle">AUDIO</text>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="2" fill="#d4a860" x="79" y="252" text-anchor="middle">SANCTUARY</text>
       </g>
-
-      <!-- DOOR 2: Games - left mid-far (purple) -->
-      <g class="door-group" id="door-journal" onclick="openRoom('soon','Games')">
-        <rect x="196" y="148" width="72" height="268" fill="transparent" stroke="none"/>
-        <polygon points="200,152 268,210 268,392 200,430" fill="#1a0e2a" stroke="#8060c0" stroke-width="1"/>
-        <polygon points="207,159 260,214 260,386 207,424" fill="#120a1e"/>
-        <polygon points="207,159 260,214 260,386 207,424" fill="#2a1850" opacity="0.5"/>
-        <line x1="260" y1="214" x2="260" y2="386" stroke="#9070d0" stroke-width="2" opacity="0.45"/>
-        <polygon points="260,214 268,210 268,392 260,386" fill="#6040a0" opacity="0.22"/>
-        <polygon points="213,172 254,216 254,278 213,270" fill="none" stroke="#5040a0" stroke-width="0.6"/>
-        <polygon points="213,282 254,282 254,374 213,408" fill="none" stroke="#5040a0" stroke-width="0.6"/>
-        <circle cx="258" cy="295" r="4" fill="#503880"/>
-        <circle cx="258" cy="295" r="2" fill="#8060c0"/>
-        <rect x="207" y="250" width="54" height="28" rx="2" fill="#0e0818" stroke="#8060c0" stroke-width="0.7" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="6.5" letter-spacing="1.5" fill="#9878d0" x="234" y="261" text-anchor="middle">GAMES</text>
-        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#5040a0" x="234" y="271" text-anchor="middle">coming soon</text>
+      <!-- Idea Basket big right — clickable -->
+      <g class="door-group" onclick="openRoom('soon','Idea Basket')" style="cursor:pointer">
+        <polygon points="800,20 636,182 636,418 800,548" fill="#2a1008" stroke="#c06030" stroke-width="1.5"/>
+        <polygon points="792,36 644,186 644,410 792,534" fill="#1e0c06"/>
+        <line x1="644" y1="186" x2="644" y2="410" stroke="#d07040" stroke-width="2" opacity="0.5"/>
+        <polygon points="644,186 636,182 636,418 644,410" fill="#a05020" opacity="0.22"/>
+        <polygon points="782,72 652,192 652,272 782,258" fill="none" stroke="#804020" stroke-width="0.8"/>
+        <polygon points="782,270 652,278 652,402 782,432" fill="none" stroke="#804020" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="648" cy="300" r="5" fill="#804020"/><circle cx="648" cy="300" r="2.5" fill="#c06030"/>
+        <rect x="658" y="222" width="126" height="40" rx="2" fill="#180806" stroke="#c06030" stroke-width="0.8"/>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="2" fill="#d07848" x="721" y="238" text-anchor="middle">IDEA</text>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="2" fill="#d07848" x="721" y="252" text-anchor="middle">BASKET</text>
       </g>
-
-      <!-- DOOR 3: Fermentation Lab - right mid-far (green) -->
-      <g class="door-group" id="door-ferm" onclick="openRoom('soon','Fermentation Lab')">
-        <rect x="532" y="148" width="72" height="268" fill="transparent" stroke="none"/>
-        <polygon points="600,152 532,210 532,392 600,430" fill="#0e1a0a" stroke="#4a8030" stroke-width="1"/>
-        <polygon points="593,159 540,214 540,386 593,424" fill="#0a1408"/>
-        <polygon points="593,159 540,214 540,386 593,424" fill="#142810" opacity="0.5"/>
-        <line x1="540" y1="214" x2="540" y2="386" stroke="#60a040" stroke-width="2" opacity="0.45"/>
-        <polygon points="540,214 532,210 532,392 540,386" fill="#308020" opacity="0.22"/>
-        <polygon points="587,172 546,216 546,278 587,270" fill="none" stroke="#3a6828" stroke-width="0.6"/>
-        <polygon points="587,282 546,282 546,374 587,408" fill="none" stroke="#3a6828" stroke-width="0.6"/>
-        <circle cx="542" cy="295" r="4" fill="#4a7830"/>
-        <circle cx="542" cy="295" r="2" fill="#70a850"/>
-        <rect x="535" y="248" width="62" height="32" rx="2" fill="#081408" stroke="#4a8030" stroke-width="0.7" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="566" y="261" text-anchor="middle">FERMENTATION</text>
-        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="566" y="272" text-anchor="middle">LAB</text>
+    </svg>
+    <svg id="view2" viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;position:absolute;top:0;left:0;opacity:0;transition:opacity 0.35s ease">
+      <defs>
+        <radialGradient id="cg2" cx="50%" cy="18%" r="72%"><stop offset="0%" stop-color="#6a4a1e"/><stop offset="55%" stop-color="#2a1c0a"/><stop offset="100%" stop-color="#0e0b06"/></radialGradient>
+        <radialGradient id="fg2" cx="50%" cy="72%" r="72%"><stop offset="0%" stop-color="#3a2a0e"/><stop offset="100%" stop-color="#0a0806"/></radialGradient>
+        <radialGradient id="for2" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#1a3a0a"/><stop offset="55%" stop-color="#0c1e06"/><stop offset="100%" stop-color="#030602"/></radialGradient>
+        <radialGradient id="beam2" cx="50%" cy="0%" r="75%"><stop offset="0%" stop-color="#c8a050" stop-opacity="0.16"/><stop offset="100%" stop-color="#c8a050" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect x="0" y="0" width="800" height="580" fill="#0a0806"/>
+      <polygon points="0,0 800,0 400,290" fill="url(#cg2)"/>
+      <polygon points="0,580 800,580 400,290" fill="url(#fg2)"/>
+      <polygon points="0,0 400,290 0,580" fill="#1e1408"/>
+      <polygon points="800,0 400,290 800,580" fill="#1a1206"/>
+      <line x1="400" y1="290" x2="0" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="400" y1="290" x2="100" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="220" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="340" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="400" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="460" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="580" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="700" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="800" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="30" y1="390" x2="770" y2="390" stroke="#1a1008" stroke-width="0.4" opacity="0.5"/>
+      <line x1="5" y1="460" x2="795" y2="460" stroke="#1a1008" stroke-width="0.4" opacity="0.35"/>
+      <polygon points="355,0 445,0 425,290 375,290" fill="url(#beam2)"/>
+      <rect x="14" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="16" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="16" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="16" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <rect x="781" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="784" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="784" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="784" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <g onclick="openRoom('soon','The Forest')" style="cursor:pointer">
+        <ellipse cx="400" cy="290" rx="114" ry="74" fill="url(#for2)"/>
+        <ellipse cx="378" cy="266" rx="28" ry="37" fill="#0a1a06" opacity="0.92"/>
+        <ellipse cx="400" cy="253" rx="38" ry="48" fill="#0c2008" opacity="0.88"/>
+        <ellipse cx="422" cy="272" rx="28" ry="37" fill="#081806" opacity="0.92"/>
+        <circle cx="372" cy="278" r="1.5" fill="#c8e040" opacity="0.55"/>
+        <circle cx="428" cy="276" r="1.5" fill="#c8e040" opacity="0.45"/>
+        <circle cx="400" cy="266" r="1" fill="#c8e040" opacity="0.38"/>
+        <text font-family="'Jost',sans-serif" font-size="6" letter-spacing="2" fill="#4a7a1a" x="400" y="376" text-anchor="middle">the forest</text>
       </g>
-
-      <!-- DOOR 4: Idea Basket - right near (terracotta) -->
-      <g class="door-group" id="door-basket" onclick="openRoom('soon','Idea Basket')">
-        <rect x="600" y="20" width="170" height="540" fill="transparent" stroke="none"/>
-        <polygon points="768,22 600,170 600,418 768,548" fill="#2a1008" stroke="#c06030" stroke-width="1.5"/>
-        <polygon points="756,38 612,174 612,410 756,534" fill="#1e0c06"/>
-        <line x1="612" y1="174" x2="612" y2="410" stroke="#d07040" stroke-width="2.5" opacity="0.5"/>
-        <polygon points="600,170 612,174 612,410 600,418" fill="#a05020" opacity="0.25"/>
-        <polygon points="744,68 620,180 620,272 744,256" fill="none" stroke="#804020" stroke-width="0.8"/>
-        <polygon points="744,268 620,276 620,402 744,418" fill="none" stroke="#804020" stroke-width="0.8" opacity="0.6"/>
-        <circle cx="616" cy="300" r="6" fill="#804020"/>
-        <circle cx="616" cy="300" r="3" fill="#c06030"/>
-        <rect x="620" y="210" width="118" height="38" rx="2" fill="#180806" stroke="#c06030" stroke-width="0.8" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d07848" x="679" y="226" text-anchor="middle">IDEA</text>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d07848" x="679" y="239" text-anchor="middle">BASKET</text>
+      <!-- Headspace medium left -->
+      <polygon points="224,208 274,240 274,348 224,368" fill="#0e1420" stroke="#4060a0" stroke-width="1"/>
+      <line x1="270" y1="240" x2="270" y2="346" stroke="#6090c0" stroke-width="1.5" opacity="0.45"/>
+      <polygon points="270,240 274,238 274,348 270,346" fill="#6090c0" opacity="0.15"/>
+      <rect x="226" y="264" width="46" height="26" rx="2" fill="#080e18" stroke="#4060a0" stroke-width="0.6"/>
+      <text font-family="'Jost',sans-serif" font-size="6" fill="#6090c0" x="249" y="276" text-anchor="middle">HEADSPACE</text>
+      <text font-family="'Jost',sans-serif" font-size="4.5" fill="#3a5060" x="249" y="284" text-anchor="middle">coming soon</text>
+      <!-- Herbal medium right -->
+      <polygon points="576,208 526,240 526,348 576,368" fill="#0e1a08" stroke="#4a8030" stroke-width="1"/>
+      <line x1="530" y1="240" x2="530" y2="346" stroke="#70b038" stroke-width="1.5" opacity="0.45"/>
+      <polygon points="530,240 526,238 526,348 530,346" fill="#70b038" opacity="0.15"/>
+      <rect x="528" y="264" width="46" height="26" rx="2" fill="#081408" stroke="#4a8030" stroke-width="0.6"/>
+      <text font-family="'Jost',sans-serif" font-size="6" fill="#80b040" x="551" y="276" text-anchor="middle">HERBAL ATL.</text>
+      <text font-family="'Jost',sans-serif" font-size="4.5" fill="#3a5818" x="551" y="284" text-anchor="middle">coming soon</text>
+      <!-- GAMES BIG LEFT -->
+      <g class="door-group" onclick="openRoom('soon','Games')" style="cursor:pointer">
+        <polygon points="0,20 164,182 164,418 0,548" fill="#1a0e2a" stroke="#8060c0" stroke-width="1.5"/>
+        <polygon points="8,36 156,186 156,410 8,534" fill="#120a1e"/>
+        <polygon points="8,36 156,186 156,410 8,534" fill="#2a1850" opacity="0.4"/>
+        <line x1="156" y1="186" x2="156" y2="410" stroke="#9070d0" stroke-width="2.5" opacity="0.55"/>
+        <polygon points="156,186 164,182 164,418 156,410" fill="#7050c0" opacity="0.22"/>
+        <polygon points="18,72 148,192 148,272 18,258" fill="none" stroke="#6040a0" stroke-width="0.8"/>
+        <polygon points="18,270 148,278 148,402 18,432" fill="none" stroke="#6040a0" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="152" cy="300" r="5" fill="#503880"/><circle cx="152" cy="300" r="2.5" fill="#8060c0"/>
+        <rect x="16" y="222" width="126" height="44" rx="2" fill="#0e0818" stroke="#8060c0" stroke-width="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="9" letter-spacing="2" fill="#9878d0" x="79" y="240" text-anchor="middle">GAMES</text>
+        <text font-family="'Jost',sans-serif" font-size="6" fill="#503880" x="79" y="256" text-anchor="middle">coming soon</text>
       </g>
-
-      <!-- DOOR 5: Headspace - left deepest (blue) -->
-      <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
-        <rect x="230" y="220" width="50" height="120" fill="transparent" stroke="none"/>
-        <polygon points="234,224 276,254 276,348 234,374" fill="#0e1420" stroke="#4a6090" stroke-width="0.8"/>
-        <polygon points="238,229 272,257 272,344 238,370" fill="#0a1018"/>
-        <polygon points="238,229 272,257 272,344 238,370" fill="#1a2840" opacity="0.5"/>
-        <line x1="272" y1="257" x2="272" y2="344" stroke="#6090c0" stroke-width="1.5" opacity="0.4"/>
-        <circle cx="270" cy="305" r="3" fill="#4a6888"/>
-        <rect x="237" y="275" width="36" height="22" rx="2" fill="#080e18" stroke="#4a6090" stroke-width="0.6" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#6090c0" x="255" y="284" text-anchor="middle">HEAD</text>
-        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#6090c0" x="255" y="293" text-anchor="middle">SPACE</text>
+      <!-- FERMENTATION BIG RIGHT -->
+      <g class="door-group" onclick="openRoom('soon','Fermentation Lab')" style="cursor:pointer">
+        <polygon points="800,20 636,182 636,418 800,548" fill="#0e1a0a" stroke="#5a9030" stroke-width="1.5"/>
+        <polygon points="792,36 644,186 644,410 792,534" fill="#0a1408"/>
+        <polygon points="792,36 644,186 644,410 792,534" fill="#142810" opacity="0.4"/>
+        <line x1="644" y1="186" x2="644" y2="410" stroke="#70b040" stroke-width="2.5" opacity="0.55"/>
+        <polygon points="644,186 636,182 636,418 644,410" fill="#408020" opacity="0.22"/>
+        <polygon points="782,72 652,192 652,272 782,258" fill="none" stroke="#4a8030" stroke-width="0.8"/>
+        <polygon points="782,270 652,278 652,402 782,432" fill="none" stroke="#4a8030" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="648" cy="300" r="5" fill="#4a7830"/><circle cx="648" cy="300" r="2.5" fill="#70a850"/>
+        <rect x="654" y="218" width="130" height="48" rx="2" fill="#081408" stroke="#5a9030" stroke-width="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="1.5" fill="#70b040" x="719" y="236" text-anchor="middle">FERMENTATION</text>
+        <text font-family="'Jost',sans-serif" font-size="8.5" letter-spacing="1.5" fill="#70b040" x="719" y="250" text-anchor="middle">LAB</text>
+        <text font-family="'Jost',sans-serif" font-size="6" fill="#3a6020" x="719" y="264" text-anchor="middle">coming soon</text>
       </g>
-
-      <!-- DOOR 6: Herbal Atelier - right deepest (deep green) -->
-      <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
-        <rect x="520" y="220" width="50" height="120" fill="transparent" stroke="none"/>
-        <polygon points="566,224 524,254 524,348 566,374" fill="#0e1a08" stroke="#5a8828" stroke-width="0.8"/>
-        <polygon points="562,229 528,257 528,344 562,370" fill="#0a1406"/>
-        <polygon points="562,229 528,257 528,344 562,370" fill="#1a3010" opacity="0.5"/>
-        <line x1="528" y1="257" x2="528" y2="344" stroke="#78b038" stroke-width="1.5" opacity="0.4"/>
-        <circle cx="530" cy="305" r="3" fill="#507828"/>
-        <rect x="527" y="275" width="36" height="22" rx="2" fill="#080e06" stroke="#5a8828" stroke-width="0.6" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#80b040" x="545" y="284" text-anchor="middle">HERBAL</text>
-        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#80b040" x="545" y="293" text-anchor="middle">ATELIER</text>
+    </svg>
+    <svg id="view3" viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;position:absolute;top:0;left:0;opacity:0;transition:opacity 0.35s ease">
+      <defs>
+        <radialGradient id="cg3" cx="50%" cy="18%" r="72%"><stop offset="0%" stop-color="#6a4a1e"/><stop offset="55%" stop-color="#2a1c0a"/><stop offset="100%" stop-color="#0e0b06"/></radialGradient>
+        <radialGradient id="fg3" cx="50%" cy="72%" r="72%"><stop offset="0%" stop-color="#3a2a0e"/><stop offset="100%" stop-color="#0a0806"/></radialGradient>
+        <radialGradient id="for3" cx="50%" cy="50%" r="55%"><stop offset="0%" stop-color="#1a3a0a"/><stop offset="55%" stop-color="#0c1e06"/><stop offset="100%" stop-color="#030602"/></radialGradient>
+        <radialGradient id="beam3" cx="50%" cy="0%" r="75%"><stop offset="0%" stop-color="#c8a050" stop-opacity="0.16"/><stop offset="100%" stop-color="#c8a050" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect x="0" y="0" width="800" height="580" fill="#0a0806"/>
+      <polygon points="0,0 800,0 400,290" fill="url(#cg3)"/>
+      <polygon points="0,580 800,580 400,290" fill="url(#fg3)"/>
+      <polygon points="0,0 400,290 0,580" fill="#1e1408"/>
+      <polygon points="800,0 400,290 800,580" fill="#1a1206"/>
+      <line x1="400" y1="290" x2="0" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="400" y1="290" x2="100" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="220" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="340" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="400" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="460" y2="580" stroke="#1a1004" stroke-width="0.4"/>
+      <line x1="400" y1="290" x2="580" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="290" x2="700" y2="580" stroke="#221408" stroke-width="0.7"/>
+      <line x1="400" y1="290" x2="800" y2="580" stroke="#2a1c0a" stroke-width="1"/>
+      <line x1="30" y1="390" x2="770" y2="390" stroke="#1a1008" stroke-width="0.4" opacity="0.5"/>
+      <line x1="5" y1="460" x2="795" y2="460" stroke="#1a1008" stroke-width="0.4" opacity="0.35"/>
+      <polygon points="355,0 445,0 425,290 375,290" fill="url(#beam3)"/>
+      <rect x="14" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="16" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="16" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="16" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <rect x="781" y="172" width="5" height="44" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="784" cy="170" rx="16" ry="7" fill="#5a3e1a"/>
+      <circle cx="784" cy="162" r="8" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="784" cy="192" rx="70" ry="130" fill="#c88020" opacity="0.09"/>
+      <g onclick="openRoom('soon','The Forest')" style="cursor:pointer">
+        <ellipse cx="400" cy="290" rx="140" ry="90" fill="url(#for3)"/>
+        <ellipse cx="372" cy="260" rx="35" ry="45" fill="#0a1a06" opacity="0.92"/>
+        <ellipse cx="400" cy="245" rx="46" ry="58" fill="#0c2008" opacity="0.88"/>
+        <ellipse cx="428" cy="268" rx="35" ry="45" fill="#081806" opacity="0.92"/>
+        <circle cx="365" cy="275" r="1.5" fill="#c8e040" opacity="0.55"/>
+        <circle cx="435" cy="272" r="1.5" fill="#c8e040" opacity="0.45"/>
+        <circle cx="400" cy="260" r="1" fill="#c8e040" opacity="0.38"/>
+        <text font-family="'Jost',sans-serif" font-size="7" letter-spacing="2" fill="#4a7a1a" x="400" y="392" text-anchor="middle">the forest</text>
       </g>
-
+      <!-- HEADSPACE BIG LEFT -->
+      <g id="door-head" class="door-group" onclick="openRoom('soon','Headspace')" style="cursor:pointer">
+        <polygon points="0,20 164,182 164,418 0,548" fill="#0e1420" stroke="#5070b0" stroke-width="1.5"/>
+        <polygon points="8,36 156,186 156,410 8,534" fill="#0a1018"/>
+        <polygon points="8,36 156,186 156,410 8,534" fill="#1a2840" opacity="0.45"/>
+        <line x1="156" y1="186" x2="156" y2="410" stroke="#7090c0" stroke-width="2.5" opacity="0.55"/>
+        <polygon points="156,186 164,182 164,418 156,410" fill="#3060a0" opacity="0.22"/>
+        <polygon points="18,72 148,192 148,272 18,258" fill="none" stroke="#3a5878" stroke-width="0.8"/>
+        <polygon points="18,270 148,278 148,402 18,432" fill="none" stroke="#3a5878" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="152" cy="300" r="5" fill="#4a6888"/><circle cx="152" cy="300" r="2.5" fill="#7090b0"/>
+        <rect x="16" y="218" width="126" height="44" rx="2" fill="#080e18" stroke="#5070b0" stroke-width="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="9" letter-spacing="2" fill="#7090c0" x="79" y="236" text-anchor="middle">HEADSPACE</text>
+        <text font-family="'Jost',sans-serif" font-size="6" fill="#3a5060" x="79" y="252" text-anchor="middle">coming soon</text>
+      </g>
+      <!-- HERBAL ATELIER BIG RIGHT -->
+      <g id="door-herb" class="door-group" onclick="openRoom('soon','Herbal Atelier')" style="cursor:pointer">
+        <polygon points="800,20 636,182 636,418 800,548" fill="#0e1a08" stroke="#5a8828" stroke-width="1.5"/>
+        <polygon points="792,36 644,186 644,410 792,534" fill="#0a1406"/>
+        <polygon points="792,36 644,186 644,410 792,534" fill="#1a3010" opacity="0.45"/>
+        <line x1="644" y1="186" x2="644" y2="410" stroke="#80b040" stroke-width="2.5" opacity="0.55"/>
+        <polygon points="644,186 636,182 636,418 644,410" fill="#4a8020" opacity="0.22"/>
+        <polygon points="782,72 652,192 652,272 782,258" fill="none" stroke="#4a7020" stroke-width="0.8"/>
+        <polygon points="782,270 652,278 652,402 782,432" fill="none" stroke="#4a7020" stroke-width="0.7" opacity="0.55"/>
+        <circle cx="648" cy="300" r="5" fill="#507828"/><circle cx="648" cy="300" r="2.5" fill="#90c050"/>
+        <rect x="654" y="218" width="130" height="48" rx="2" fill="#080e06" stroke="#5a8828" stroke-width="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="9" letter-spacing="2" fill="#90c050" x="719" y="236" text-anchor="middle">HERBAL</text>
+        <text font-family="'Jost',sans-serif" font-size="9" letter-spacing="2" fill="#90c050" x="719" y="250" text-anchor="middle">ATELIER</text>
+        <text font-family="'Jost',sans-serif" font-size="6" fill="#3a5818" x="719" y="264" text-anchor="middle">coming soon</text>
+      </g>
     </svg>
   </div>
 
-  <!-- Walk navigation -->
   <div class="corridor-walk">
     <button class="walk-btn" id="walkBack" onclick="corridorWalk(-1)" disabled>&#8593;</button>
+    <div id="walkDots" style="display:flex;gap:7px;align-items:center;"></div>
     <button class="walk-btn" id="walkFwd" onclick="corridorWalk(1)">&#8595;</button>
   </div>
 
@@ -1053,7 +1050,7 @@ function enterCorridor() {
   setTimeout(() => { r2.classList.remove('pulse'); void r2.offsetWidth; r2.classList.add('pulse'); }, 380);
   setTimeout(() => { r3.classList.remove('pulse'); void r3.offsetWidth; r3.classList.add('pulse'); }, 760);
   playEntrance();
-  setTimeout(() => show('corridor', true), 900);
+  setTimeout(() => window.location.href = 'corridor-3d.html', 900);
 }
 
 function openRoom(type, name) {
@@ -1122,32 +1119,39 @@ function closeStudio() {
   document.getElementById('sanctuaryLanding').style.display = 'flex';
 }
 
-// -- Corridor zoom walk -------------------------------------------
-let corridorZoom = 1;
-let isWalking = false;
-const ZOOM_STEP = 0.28;
-const ZOOM_MAX  = 1.85;
-const ZOOM_MIN  = 1;
+// -- Corridor 3-view fade system
+let corridorView = 1;
+const TOTAL_VIEWS = 3;
 
-function buildCorridorDots() {}  // no dots needed
+function buildCorridorDots() {
+  const el = document.getElementById('walkDots');
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 1; i <= TOTAL_VIEWS; i++) {
+    const d = document.createElement('div');
+    d.id = 'wdot' + i;
+    d.style.cssText = 'width:7px;height:7px;border-radius:50%;cursor:pointer;transition:background 0.3s;background:' + (i===1?'#C0A070':'#3E3830');
+    d.onclick = (function(v){ return function(){ goToView(v); }; })(i);
+    el.appendChild(d);
+  }
+}
+
+function goToView(n) {
+  if (n < 1 || n > TOTAL_VIEWS) return;
+  document.getElementById('view' + corridorView).style.opacity = '0';
+  corridorView = n;
+  document.getElementById('view' + n).style.opacity = '1';
+  document.getElementById('walkBack').disabled = n <= 1;
+  document.getElementById('walkFwd').disabled  = n >= TOTAL_VIEWS;
+  for (let i = 1; i <= TOTAL_VIEWS; i++) {
+    const d = document.getElementById('wdot' + i);
+    if (d) d.style.background = i === n ? '#C0A070' : '#3E3830';
+  }
+  updateTooltips();
+}
 
 function corridorWalk(dir) {
-  if (isWalking) return;
-  const next = corridorZoom + dir * ZOOM_STEP;
-  if (next < ZOOM_MIN - 0.01 || next > ZOOM_MAX + 0.01) return;
-  isWalking = true;
-  corridorZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
-
-  const svg = document.getElementById('corridorSVG');
-  if (!svg) { isWalking = false; return; }
-  svg.style.transform = 'scale(' + corridorZoom + ')';
-
-  const back = document.getElementById('walkBack');
-  const fwd  = document.getElementById('walkFwd');
-  if (back) back.disabled = corridorZoom <= ZOOM_MIN;
-  if (fwd)  fwd.disabled  = corridorZoom >= ZOOM_MAX;
-
-  setTimeout(() => { isWalking = false; }, 600);
+  goToView(corridorView + dir);
 }
 
 document.addEventListener('keydown', e => {
@@ -1158,9 +1162,18 @@ document.addEventListener('keydown', e => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-  const back = document.getElementById('walkBack');
-  if (back) back.disabled = true;
-  updateTooltips();
+  buildCorridorDots();
+  goToView(1);
+  // If coming from corridor-3d with #sanctuary anchor, open studio directly
+  if (window.location.hash === '#sanctuary') {
+    show('workshop', true);
+    document.getElementById('workshopTitle').textContent = 'Audio Sanctuary';
+    document.getElementById('workshopSub').textContent = 'record · shape · keep';
+    document.getElementById('room-gong').style.display = 'block';
+    document.getElementById('room-soon').style.display = 'none';
+    document.getElementById('sanctuaryLanding').style.display = 'flex';
+    document.getElementById('studioPanel').style.display = 'none';
+  }
 });
 
 function updateTooltips() {
@@ -1171,15 +1184,14 @@ function updateTooltips() {
     'door-herb':    'Herbal Atelier - plant medicine',
     'door-journal': 'Games - short, playful, philosophical',
     'door-basket':  'Idea Basket - leave something, find something',
-    'door-forest':  'The Forest - where the known ends',
   };
-  const tooltip = document.getElementById('corridorTooltip');
-  if (!tooltip) return;
+  const tip = document.getElementById('corridorTooltip');
+  if (!tip) return;
   Object.keys(all).forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.onmouseenter = () => { tooltip.textContent = all[id]; tooltip.classList.add('show'); };
-    el.onmouseleave = () => tooltip.classList.remove('show');
+    el.onmouseenter = () => { tip.textContent = all[id]; tip.classList.add('show'); };
+    el.onmouseleave = () => tip.classList.remove('show');
   });
 }
 
