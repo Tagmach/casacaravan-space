@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Caravan Space</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; background:#0a0806; overflow:hidden; }
+
+#canvas-wrap {
+  width:100%; height:100%;
+  position:relative;
+}
+
+canvas { display:block; }
+
+/* Header */
+#header {
+  position:absolute;
+  top:0; left:0; right:0;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-bottom:1px solid rgba(200,160,80,0.12);
+  background:rgba(10,8,6,0.7);
+  backdrop-filter:blur(4px);
+  z-index:10;
+}
+#header-brand {
+  font-family:'Cormorant Garamond', serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:#EAD8C0;
+  text-transform:uppercase;
+}
+#header-tag {
+  font-family:'Jost', sans-serif;
+  font-size:10px;
+  color:#A09080;
+  letter-spacing:1px;
+}
+#header-about {
+  margin-left:auto;
+  font-family:'Jost', sans-serif;
+  font-size:9px;
+  letter-spacing:2.5px;
+  color:#7A6E64;
+  text-transform:uppercase;
+  text-decoration:none;
+  transition:color 0.2s;
+}
+#header-about:hover { color:#C0A070; }
+
+/* Door label overlay */
+#door-label {
+  position:absolute;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'Jost', sans-serif;
+  font-size:10px;
+  letter-spacing:3px;
+  color:#C0A070;
+  text-transform:uppercase;
+  opacity:0;
+  transition:opacity 0.3s;
+  pointer-events:none;
+  text-align:center;
+}
+#door-label.show { opacity:1; }
+
+/* Walk controls */
+#walk-controls {
+  position:absolute;
+  bottom:0; left:0; right:0;
+  padding:12px 0 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  background:rgba(10,8,6,0.85);
+  border-top:1px solid rgba(62,56,48,0.8);
+  z-index:10;
+}
+.walk-btn {
+  width:44px; height:44px;
+  border-radius:50%;
+  border:1px solid #3E3830;
+  background:none;
+  color:#A09080;
+  font-size:17px;
+  cursor:pointer;
+  transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.walk-btn:hover { border-color:#C0A070; color:#C0A070; }
+.walk-btn:disabled { opacity:0.2; cursor:default; }
+#walk-dots { display:flex; gap:8px; align-items:center; }
+.walk-dot {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:#3E3830;
+  cursor:pointer;
+  transition:background 0.3s;
+}
+.walk-dot.active { background:#C0A070; }
+
+/* Click hint -->
+#click-hint {
+  position:absolute;
+  bottom:90px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'Jost', sans-serif;
+  font-size:9px;
+  letter-spacing:2px;
+  color:#4A443E;
+  text-transform:uppercase;
+  opacity:1;
+  transition:opacity 0.5s;
+  pointer-events:none;
+}
+#click-hint.hide { opacity:0; }
+
+/* Room overlay (coming soon / sanctuary landing) */
+#room-overlay {
+  position:absolute;
+  inset:0;
+  background:rgba(10,8,6,0.0);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+  transition:background 0.4s;
+}
+#room-overlay.open {
+  display:flex;
+  background:rgba(10,8,6,0.96);
+}
+#room-content {
+  text-align:center;
+  max-width:420px;
+  padding:40px;
+}
+#room-name {
+  font-family:'Cormorant Garamond', serif;
+  font-size:36px;
+  font-weight:300;
+  color:#EAD8C0;
+  letter-spacing:0.06em;
+  margin-bottom:12px;
+}
+#room-sub {
+  font-family:'Jost', sans-serif;
+  font-size:10px;
+  letter-spacing:3px;
+  color:#7A6E64;
+  text-transform:uppercase;
+  margin-bottom:32px;
+}
+#room-back {
+  font-family:'Jost', sans-serif;
+  font-size:10px;
+  letter-spacing:2px;
+  color:#7A6E64;
+  text-transform:uppercase;
+  background:none;
+  border:1px solid #3E3830;
+  padding:10px 28px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+#room-back:hover { border-color:#C0A070; color:#C0A070; }
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap');
+</style>
+</head>
+<body>
+
+<div id="canvas-wrap">
+
+  <div id="header">
+    <div id="header-brand">Casa Caravan Space</div>
+    <div id="header-tag">· create with life</div>
+    <a href="about.html" id="header-about">About</a>
+  </div>
+
+  <canvas id="c"></canvas>
+
+  <div id="door-label"></div>
+  <div id="click-hint">walk to explore</div>
+
+  <div id="walk-controls">
+    <button class="walk-btn" id="btnBack" disabled>&#8593;</button>
+    <div id="walk-dots"></div>
+    <button class="walk-btn" id="btnFwd">&#8595;</button>
+  </div>
+
+  <div id="room-overlay">
+    <div id="room-content">
+      <div id="room-name">—</div>
+      <div id="room-sub">coming soon</div>
+      <button id="room-back" onclick="closeRoom()">&#8592; Back to corridor</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ── SCENE SETUP ──────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0806);
+scene.fog = new THREE.Fog(0x0a0806, 18, 38);
+
+const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 60);
+camera.position.set(0, 0, 0);
+camera.lookAt(0, 0, -1);
+
+// ── SIZES ────────────────────────────────────────────────────────
+const HEADER_H = 56;
+const FOOTER_H = 68;
+
+function resize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight - HEADER_H - FOOTER_H;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  canvas.style.marginTop = HEADER_H + 'px';
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── MATERIALS ───────────────────────────────────────────────────
+function mat(hex, rough=0.95, metal=0) {
+  return new THREE.MeshStandardMaterial({ color:new THREE.Color(hex), roughness:rough, metalness:metal });
+}
+
+const wallMat    = mat(0x1a1208, 0.95);
+const floorMat   = mat(0x221608, 0.98);
+const ceilMat    = mat(0x161008, 0.97);
+const forestMat  = mat(0x0a1806, 0.95);
+
+// ── CORRIDOR GEOMETRY ───────────────────────────────────────────
+const W = 5;   // corridor width
+const H = 4;   // corridor height
+const L = 32;  // corridor length
+
+// Floor
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, L), floorMat);
+floor.rotation.x = -Math.PI/2;
+floor.position.set(0, -H/2, -L/2);
+scene.add(floor);
+
+// Ceiling
+const ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, L), ceilMat);
+ceil.rotation.x = Math.PI/2;
+ceil.position.set(0, H/2, -L/2);
+scene.add(ceil);
+
+// Left wall
+const wallL = new THREE.Mesh(new THREE.PlaneGeometry(L, H), wallMat);
+wallL.rotation.y = Math.PI/2;
+wallL.position.set(-W/2, 0, -L/2);
+scene.add(wallL);
+
+// Right wall
+const wallR = new THREE.Mesh(new THREE.PlaneGeometry(L, H), wallMat);
+wallR.rotation.y = -Math.PI/2;
+wallR.position.set(W/2, 0, -L/2);
+scene.add(wallR);
+
+// Back wall (forest)
+const backWall = new THREE.Mesh(new THREE.PlaneGeometry(W, H), forestMat);
+backWall.position.set(0, 0, -L);
+scene.add(backWall);
+
+// Floor planks — subtle lines
+for (let i = -2; i <= 2; i++) {
+  const plank = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.04, L),
+    new THREE.MeshStandardMaterial({ color:0x2a1c0a, roughness:1 })
+  );
+  plank.rotation.x = -Math.PI/2;
+  plank.position.set(i*(W/4), -H/2+0.001, -L/2);
+  scene.add(plank);
+}
+
+// ── FOREST BACK WALL ─────────────────────────────────────────────
+// Tree silhouettes painted on back wall
+function addTree(x, scale) {
+  const trunk = new THREE.Mesh(
+    new THREE.BoxGeometry(0.15*scale, 0.8*scale, 0.05),
+    new THREE.MeshStandardMaterial({ color:0x081206 })
+  );
+  trunk.position.set(x, -H/2+0.4*scale, -L+0.06);
+  scene.add(trunk);
+
+  const crown = new THREE.Mesh(
+    new THREE.SphereGeometry(0.5*scale, 8, 6),
+    new THREE.MeshStandardMaterial({ color:0x0a1a06 })
+  );
+  crown.position.set(x, -H/2+1.2*scale, -L+0.06);
+  scene.add(crown);
+}
+addTree(-0.8, 1.1);
+addTree(0, 1.35);
+addTree(0.9, 1.0);
+addTree(-0.3, 0.85);
+addTree(0.45, 0.9);
+
+// Firefly particles
+const ffGeo = new THREE.BufferGeometry();
+const ffPos = [];
+for (let i=0; i<12; i++) {
+  ffPos.push((Math.random()-0.5)*W*0.7, (Math.random()-0.3)*H*0.5, -L+0.1+Math.random()*0.5);
+}
+ffGeo.setAttribute('position', new THREE.Float32BufferAttribute(ffPos,3));
+const ffMat = new THREE.PointsMaterial({ color:0xc8e040, size:0.05, transparent:true, opacity:0.7 });
+const fireflies = new THREE.Points(ffGeo, ffMat);
+scene.add(fireflies);
+
+// Forest label
+// (handled via raycasting click on back wall)
+
+// ── LIGHTING ─────────────────────────────────────────────────────
+// Strong ambient — base visibility
+scene.add(new THREE.AmbientLight(0x6a4a28, 1.8));
+
+// Main warm overhead fill
+const mainLight = new THREE.DirectionalLight(0xc8a050, 1.4);
+mainLight.position.set(0, 8, 4);
+scene.add(mainLight);
+
+// Forward fill light — illuminates what you see
+const fillLight = new THREE.DirectionalLight(0xd4a870, 0.9);
+fillLight.position.set(0, 2, 6);
+scene.add(fillLight);
+
+// Sconce lights along corridor — brighter
+[-2, -8, -14, -20, -26].forEach(z => {
+  const sL = new THREE.PointLight(0xf0b840, 1.8, 7);
+  sL.position.set(-W/2+0.4, H/2-0.4, z);
+  scene.add(sL);
+  const sR = new THREE.PointLight(0xf0b840, 1.8, 7);
+  sR.position.set(W/2-0.4, H/2-0.4, z);
+  scene.add(sR);
+
+  [-W/2+0.08, W/2-0.08].forEach(sx => {
+    const bulb = new THREE.Mesh(
+      new THREE.SphereGeometry(0.1, 8, 6),
+      new THREE.MeshStandardMaterial({ color:0xf8e060, emissive:0xf8e060, emissiveIntensity:3 })
+    );
+    bulb.position.set(sx, H/2-0.35, z);
+    scene.add(bulb);
+  });
+});
+
+// ── DOORS ────────────────────────────────────────────────────────
+const doors = [
+  { name:'Audio Sanctuary', color:0xc89030, border:0xe8a830, z:-2,  side:'L', action:'sanctuary' },
+  { name:'Idea Basket',     color:0xc06030, border:0xd07040, z:-2,  side:'R', action:'soon' },
+  { name:'Games',           color:0x8060c0, border:0x9070d0, z:-10, side:'L', action:'soon' },
+  { name:'Fermentation Lab',color:0x5a9030, border:0x70b040, z:-10, side:'R', action:'soon' },
+  { name:'Headspace',       color:0x4060a0, border:0x6090c0, z:-18, side:'L', action:'soon' },
+  { name:'Herbal Atelier',  color:0x508028, border:0x78b038, z:-18, side:'R', action:'soon' },
+  { name:'The Forest',      color:0x1a3a0a, border:0x4a7a1a, z:-L,  side:'C', action:'soon' },
+];
+
+const doorMeshes = [];
+const DW = 1.4; // door width
+const DH = 2.6; // door height
+
+doors.forEach(d => {
+  const doorGroup = new THREE.Group();
+
+  if (d.side === 'C') {
+    // Forest — back wall clickable overlay already exists
+    const clickMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(W, H),
+      new THREE.MeshStandardMaterial({ color:0x0a1806, transparent:true, opacity:0 })
+    );
+    clickMesh.position.set(0, 0, -L+0.02);
+    clickMesh.userData = { door:d };
+    scene.add(clickMesh);
+    doorMeshes.push(clickMesh);
+    return;
+  }
+
+  const x = d.side === 'L' ? -W/2+0.02 : W/2-0.02;
+  const rotY = d.side === 'L' ? Math.PI/2 : -Math.PI/2;
+
+  // Frame
+  const frameMat = new THREE.MeshStandardMaterial({
+    color:new THREE.Color(d.color), roughness:0.6, metalness:0.3
+  });
+  // Top bar
+  const frameTop = new THREE.Mesh(new THREE.BoxGeometry(DW+0.1, 0.08, 0.06), frameMat);
+  frameTop.position.set(0, DH/2+0.04, 0);
+  doorGroup.add(frameTop);
+  // Side bars
+  [-DW/2-0.04, DW/2+0.04].forEach(fx => {
+    const fb = new THREE.Mesh(new THREE.BoxGeometry(0.08, DH+0.1, 0.06), frameMat);
+    fb.position.set(fx, 0, 0);
+    doorGroup.add(fb);
+  });
+
+  // Door surface
+  const surfaceMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(d.color).multiplyScalar(0.15),
+    roughness:0.9
+  });
+  const surface = new THREE.Mesh(new THREE.PlaneGeometry(DW, DH), surfaceMat);
+  surface.userData = { door:d };
+  doorGroup.add(surface);
+  doorMeshes.push(surface);
+
+  // Light crack
+  const crackMat = new THREE.MeshStandardMaterial({
+    color:new THREE.Color(d.border), emissive:new THREE.Color(d.border),
+    emissiveIntensity:1.2
+  });
+  const crack = new THREE.Mesh(new THREE.BoxGeometry(0.025, DH*0.8, 0.01), crackMat);
+  crack.position.set(DW/2-0.01, 0, 0.01);
+  doorGroup.add(crack);
+
+  // Knob
+  const knob = new THREE.Mesh(
+    new THREE.SphereGeometry(0.06, 8, 8),
+    new THREE.MeshStandardMaterial({ color:new THREE.Color(d.border), metalness:0.8, roughness:0.2, emissive:new THREE.Color(d.border), emissiveIntensity:0.3 })
+  );
+  knob.position.set(DW/2*0.6, 0, 0.05);
+  doorGroup.add(knob);
+
+  // Glow light on door — brighter
+  const dLight = new THREE.PointLight(new THREE.Color(d.border), 1.2, 4);
+  dLight.position.set(d.side==='L' ? 0.8 : -0.8, 0, 0.5);
+  doorGroup.add(dLight);
+
+  // Sign plate with canvas texture
+  const signCanvas = document.createElement('canvas');
+  signCanvas.width = 256; signCanvas.height = 128;
+  const ctx = signCanvas.getContext('2d');
+  ctx.fillStyle = 'rgba(10,8,6,0.92)';
+  ctx.fillRect(0, 0, 256, 128);
+  // Border
+  const hex = '#' + new THREE.Color(d.border).getHexString();
+  ctx.strokeStyle = hex;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(4, 4, 248, 120);
+  // Text
+  ctx.fillStyle = hex;
+  ctx.textAlign = 'center';
+  const words = d.name.toUpperCase().split(' ');
+  if (words.length <= 2) {
+    ctx.font = 'bold 28px sans-serif';
+    ctx.letterSpacing = '3px';
+    words.forEach((w, i) => ctx.fillText(w, 128, 50 + i*36));
+  } else {
+    // 3+ words: split into 2 lines
+    const mid = Math.ceil(words.length/2);
+    const line1 = words.slice(0,mid).join(' ');
+    const line2 = words.slice(mid).join(' ');
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText(line1, 128, 48);
+    ctx.fillText(line2, 128, 78);
+  }
+  const signTex = new THREE.CanvasTexture(signCanvas);
+  const signMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(DW*0.75, DH*0.28),
+    new THREE.MeshStandardMaterial({ map:signTex, emissiveMap:signTex, emissive:new THREE.Color(0xffffff), emissiveIntensity:0.4 })
+  );
+  signMesh.position.set(0, DH*0.12, 0.02);
+  doorGroup.add(signMesh);
+
+  doorGroup.rotation.y = rotY;
+  doorGroup.position.set(x, -H/2 + DH/2, d.z);
+  scene.add(doorGroup);
+});
+
+// ── CAMERA WALK ──────────────────────────────────────────────────
+const POSITIONS = [0, -8, -16, -22];
+let currentPos = 0;
+let targetZ = POSITIONS[0];
+let isMoving = false;
+
+function buildDots() {
+  const el = document.getElementById('walk-dots');
+  el.innerHTML = '';
+  POSITIONS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'walk-dot' + (i===0?' active':'');
+    d.id = 'dot'+i;
+    d.onclick = () => walkTo(i);
+    el.appendChild(d);
+  });
+}
+
+function walkTo(idx) {
+  if (idx < 0 || idx >= POSITIONS.length || isMoving) return;
+  currentPos = idx;
+  targetZ = POSITIONS[idx];
+  document.getElementById('btnBack').disabled = idx <= 0;
+  document.getElementById('btnFwd').disabled  = idx >= POSITIONS.length-1;
+  POSITIONS.forEach((_, i) => {
+    const d = document.getElementById('dot'+i);
+    if (d) d.className = 'walk-dot' + (i===idx?' active':'');
+  });
+  // Hide hint after first move
+  document.getElementById('click-hint').classList.add('hide');
+}
+
+function corridorWalk(dir) { walkTo(currentPos+dir); }
+
+document.getElementById('btnFwd').onclick  = () => corridorWalk(1);
+document.getElementById('btnBack').onclick = () => corridorWalk(-1);
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowUp'||e.key==='ArrowRight')    corridorWalk(1);
+  if (e.key==='ArrowDown'||e.key==='ArrowLeft')   corridorWalk(-1);
+});
+
+// ── RAYCASTING (click/hover on doors) ───────────────────────────
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const labelEl = document.getElementById('door-label');
+let hoveredDoor = null;
+
+function getMouseNDC(e) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x:  ((e.clientX - rect.left) / rect.width)  * 2 - 1,
+    y: -((e.clientY - rect.top)  / rect.height) * 2 + 1
+  };
+}
+
+canvas.addEventListener('mousemove', e => {
+  const m = getMouseNDC(e);
+  mouse.set(m.x, m.y);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(doorMeshes);
+  if (hits.length > 0 && hits[0].object.userData.door) {
+    const d = hits[0].object.userData.door;
+    hoveredDoor = d;
+    labelEl.textContent = d.name;
+    labelEl.classList.add('show');
+    canvas.style.cursor = 'pointer';
+  } else {
+    hoveredDoor = null;
+    labelEl.classList.remove('show');
+    canvas.style.cursor = 'default';
+  }
+});
+
+canvas.addEventListener('click', e => {
+  const m = getMouseNDC(e);
+  mouse.set(m.x, m.y);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(doorMeshes);
+  if (hits.length > 0 && hits[0].object.userData.door) {
+    const d = hits[0].object.userData.door;
+    openRoom(d.name, d.action);
+  }
+});
+
+// Touch
+canvas.addEventListener('touchend', e => {
+  const t = e.changedTouches[0];
+  const m = getMouseNDC(t);
+  mouse.set(m.x, m.y);
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(doorMeshes);
+  if (hits.length > 0 && hits[0].object.userData.door) {
+    openRoom(hits[0].object.userData.door.name, hits[0].object.userData.door.action);
+  }
+});
+
+// ── ROOM OPEN/CLOSE ──────────────────────────────────────────────
+function openRoom(name, action) {
+  const overlay = document.getElementById('room-overlay');
+  document.getElementById('room-name').textContent = name;
+  if (action === 'sanctuary') {
+    // redirect to main index with sanctuary open
+    window.location.href = 'index.html#sanctuary';
+  } else {
+    document.getElementById('room-sub').textContent = 'coming soon';
+    overlay.classList.add('open');
+  }
+}
+
+function closeRoom() {
+  document.getElementById('room-overlay').classList.remove('open');
+}
+
+// ── ANIMATION LOOP ───────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getDelta();
+
+  // Smooth camera movement
+  const dz = targetZ - camera.position.z;
+  if (Math.abs(dz) > 0.001) {
+    camera.position.z += dz * Math.min(t * 4, 0.12);
+    isMoving = true;
+  } else {
+    camera.position.z = targetZ;
+    isMoving = false;
+  }
+
+  // Slight camera bob
+  camera.position.y = Math.sin(clock.elapsedTime * 0.4) * 0.015;
+
+  // Firefly flicker
+  fireflies.material.opacity = 0.4 + Math.sin(clock.elapsedTime * 2.1) * 0.3;
+
+  renderer.render(scene, camera);
+}
+
+buildDots();
+animate();
+</script>
+</body>
+</html>
