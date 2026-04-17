@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Primary SEO -->
-<title>Casa Caravan Space — A Space That Helps You Realize Yourself</title>
+<title>Casa Caravan Space - A Space That Helps You Realize Yourself</title>
 <meta name="description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools, studios and experiences. Create with life.">
 <meta name="keywords" content="sound healing, browser recording studio, audio sanctuary, fermentation lab, binaural beats, gong bath, wellness tools, plant medicine, creative space">
 <meta name="author" content="Tağmaç Çankaya">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://casacaravan.space/">
 
-<!-- Open Graph — social sharing -->
+<!-- Open Graph - social sharing -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://casacaravan.space/">
-<meta property="og:title" content="Casa Caravan Space — A Space That Helps You Realize Yourself">
+<meta property="og:title" content="Casa Caravan Space - A Space That Helps You Realize Yourself">
 <meta property="og:description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools. No install. No account.">
 <meta property="og:image" content="https://casacaravan.space/og-image.jpg">
 <meta property="og:locale" content="en_US">
@@ -28,7 +28,7 @@
 <meta name="twitter:description" content="A digital space for sound, fermentation, breath and plant medicine. Browser-based tools. No install. No account.">
 <meta name="twitter:image" content="https://casacaravan.space/og-image.jpg">
 
-<!-- Structured Data — WebSite -->
+<!-- Structured Data - WebSite -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -51,7 +51,7 @@
 }
 </script>
 
-<!-- Structured Data — SoftwareApplication -->
+<!-- Structured Data - SoftwareApplication -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -98,16 +98,16 @@
 html { scroll-behavior: smooth; }
 body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; overflow-x:hidden; }
 
-/* ── SHARED TRANSITIONS ── */
+/* -- SHARED TRANSITIONS -- */
 .screen { display:none; animation: fadeIn 0.9s ease forwards; }
 .screen.active { display:block; }
 .screen.flex-screen { display:none; }
 .screen.flex-screen.active { display:flex; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-/* ════════════════════════════════════════════
+/* --------------------------------------------
    ENTRANCE
-════════════════════════════════════════════ */
+-------------------------------------------- */
 #entrance {
   min-height: 100vh;
   display: flex;
@@ -236,9 +236,9 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   white-space: nowrap;
 }
 
-/* ════════════════════════════════════════════
+/* --------------------------------------------
    CORRIDOR
-════════════════════════════════════════════ */
+-------------------------------------------- */
 #corridor {
   height: 100vh;
   height: 100dvh;
@@ -325,34 +325,48 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
 
 .corridor-tooltip.show { opacity: 1; }
 
-.corridor-nav {
+.corridor-scene svg {
+  transform-origin: 50% 49%;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.corridor-walk {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 12px 0 8px;
+  gap: 32px;
+  padding: 10px 0 8px;
   background: var(--bg);
   border-top: 1px solid var(--border);
 }
 
-.nav-arrow {
+.walk-btn {
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
-  font-size: 18px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0;
+  font-size: 16px;
   line-height: 1;
 }
 
-.nav-arrow:hover { border-color: var(--gold); color: var(--gold); }
-.nav-arrow:disabled { opacity: 0.2; cursor: default; }
+.walk-btn .walk-label {
+  font-size: 7px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: none;
+}
+
+.walk-btn:hover { border-color: var(--gold); color: var(--gold); }
+.walk-btn:disabled { opacity: 0.2; cursor: default; }
 
 .corridor-dots {
   display: flex;
@@ -366,13 +380,14 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   border-radius: 50%;
   background: var(--border);
   transition: background 0.3s;
+  cursor: pointer;
 }
 
 .corridor-dot.active { background: var(--gold); }
 
-/* ════════════════════════════════════════════
+/* --------------------------------------------
    MOBILE CORRIDOR
-════════════════════════════════════════════ */
+-------------------------------------------- */
 .mobile-corridor {
   display: none;
   width: 100%;
@@ -452,9 +467,9 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   .corridor-scene svg { display: block; }
 }
 
-/* ════════════════════════════════════════════
+/* --------------------------------------------
    WORKSHOP SHELL
-════════════════════════════════════════════ */
+-------------------------------------------- */
 #workshop {
   min-height: 100vh;
   flex-direction: column;
@@ -513,9 +528,9 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
   opacity: 0.5;
 }
 
-/* ════════════════════════════════════════════
+/* --------------------------------------------
    AUDIO SANCTUARY
-════════════════════════════════════════════ */
+-------------------------------------------- */
 #room-gong {
   display: none;
 }
@@ -614,9 +629,9 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════
+<!-- --------------------------------------------
      ENTRANCE
-════════════════════════════════════════════ -->
+-------------------------------------------- -->
 <div id="entrance">
   <div class="entrance-lines">
     <span></span><span></span><span></span>
@@ -640,20 +655,20 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   <div class="entrance-credit">Casa Caravan Space by Tağmaç Çankaya</div>
 </div>
 
-<!-- ════════════════════════════════════════════
+<!-- --------------------------------------------
      CORRIDOR
-════════════════════════════════════════════ -->
+-------------------------------------------- -->
 <div id="corridor" class="screen flex-screen" style="flex-direction:column;">
 
   <div class="corridor-header">
     <div class="corridor-brand">Casa Caravan Space</div>
-    <div class="corridor-tagline">· create with life</div>
+    <div class="corridor-tagline">. create with life</div>
     <a href="/about.html" style="margin-left:auto;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">About</a>
   </div>
 
   <div class="corridor-scene" id="corridorScene">
 
-    <!-- Mobile corridor — CSS only, shown on small screens -->
+    <!-- Mobile corridor - CSS only, shown on small screens -->
     <div class="mobile-corridor" id="mobileCorridor">
       <div class="mc-ceiling"></div>
       <div class="mc-floor"></div>
@@ -683,7 +698,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       </div>
     </div>
 
-    <svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">
+    <svg id="corridorSVG" viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block;transform-origin:50% 49%;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1),opacity 0.45s ease">
       <defs>
         <radialGradient id="ceilGlow" cx="50%" cy="20%" r="70%">
           <stop offset="0%" stop-color="#6a4a1e"/>
@@ -695,9 +710,9 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
           <stop offset="100%" stop-color="#0e0b06"/>
         </radialGradient>
         <radialGradient id="forestGlow" cx="50%" cy="50%" r="60%">
-          <stop offset="0%" stop-color="#1a3a0a" stop-opacity="1"/>
-          <stop offset="50%" stop-color="#0e2006" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#050a03" stop-opacity="1"/>
+          <stop offset="0%" stop-color="#1a3a0a"/>
+          <stop offset="50%" stop-color="#0e2006"/>
+          <stop offset="100%" stop-color="#050a03"/>
         </radialGradient>
         <radialGradient id="centerBeam" cx="50%" cy="0%" r="80%">
           <stop offset="0%" stop-color="#c8a050" stop-opacity="0.18"/>
@@ -727,6 +742,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <line x1="20" y1="450" x2="780" y2="450" stroke="#221408" stroke-width="0.4" opacity="0.4"/>
       <polygon points="330,0 470,0 435,285 365,285" fill="url(#centerBeam)"/>
 
+      <!-- FOREST at vanishing point -->
       <g id="door-forest" onclick="openRoom('soon','The Forest')" style="cursor:pointer">
         <ellipse cx="400" cy="285" rx="145" ry="92" fill="url(#forestGlow)"/>
         <ellipse cx="370" cy="240" rx="22" ry="38" fill="#0a1a06" opacity="0.85"/>
@@ -741,6 +757,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         <text font-family="'Jost',sans-serif" font-size="7" letter-spacing="2" fill="#3a5a1a" x="400" y="308" text-anchor="middle">the forest</text>
       </g>
 
+      <!-- Sconces -->
       <rect x="22" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
       <ellipse cx="24" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
       <circle cx="24" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
@@ -750,7 +767,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <circle cx="776" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
       <ellipse cx="776" cy="200" rx="80" ry="140" fill="#c88020" opacity="0.12"/>
 
-      <!-- DOOR 1: Audio Sanctuary -->
+      <!-- DOOR 1: Audio Sanctuary - left near -->
       <g class="door-group" id="door-gong" onclick="openRoom('gong')">
         <rect x="30" y="20" width="170" height="540" fill="transparent" stroke="none"/>
         <polygon points="32,22 200,170 200,418 32,548" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
@@ -766,76 +783,42 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d4a860" x="121" y="239" text-anchor="middle">SANCTUARY</text>
       </g>
 
-      <!-- DOOR 2: Headspace -->
-      <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
-        <rect x="196" y="170" width="72" height="244" fill="transparent" stroke="none"/>
-        <polygon points="200,174 268,228 268,382 200,414" fill="#0e1420" stroke="#4a6090" stroke-width="1"/>
-        <polygon points="207,181 260,232 260,376 207,408" fill="#0a1018"/>
-        <polygon points="207,181 260,232 260,376 207,408" fill="#1a2840" opacity="0.55"/>
-        <line x1="260" y1="232" x2="260" y2="376" stroke="#6090c0" stroke-width="2" opacity="0.45"/>
-        <polygon points="260,232 268,228 268,382 260,376" fill="#3060a0" opacity="0.22"/>
-        <polygon points="213,192 254,234 254,294 213,286" fill="none" stroke="#3a5878" stroke-width="0.6"/>
-        <polygon points="213,298 254,298 254,368 213,396" fill="none" stroke="#3a5878" stroke-width="0.6"/>
-        <circle cx="258" cy="310" r="4" fill="#4a6888"/>
-        <circle cx="258" cy="310" r="2" fill="#6090b0"/>
-        <rect x="209" y="268" width="52" height="30" rx="2" fill="#080e18" stroke="#4a6090" stroke-width="0.7" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="6" letter-spacing="1" fill="#6090c0" x="235" y="281" text-anchor="middle">HEAD</text>
-        <text font-family="'Jost',sans-serif" font-size="6" letter-spacing="1" fill="#6090c0" x="235" y="291" text-anchor="middle">SPACE</text>
+      <!-- DOOR 2: Games - left mid-far (purple) -->
+      <g class="door-group" id="door-journal" onclick="openRoom('soon','Games')">
+        <rect x="196" y="148" width="72" height="268" fill="transparent" stroke="none"/>
+        <polygon points="200,152 268,210 268,392 200,430" fill="#1a0e2a" stroke="#8060c0" stroke-width="1"/>
+        <polygon points="207,159 260,214 260,386 207,424" fill="#120a1e"/>
+        <polygon points="207,159 260,214 260,386 207,424" fill="#2a1850" opacity="0.5"/>
+        <line x1="260" y1="214" x2="260" y2="386" stroke="#9070d0" stroke-width="2" opacity="0.45"/>
+        <polygon points="260,214 268,210 268,392 260,386" fill="#6040a0" opacity="0.22"/>
+        <polygon points="213,172 254,216 254,278 213,270" fill="none" stroke="#5040a0" stroke-width="0.6"/>
+        <polygon points="213,282 254,282 254,374 213,408" fill="none" stroke="#5040a0" stroke-width="0.6"/>
+        <circle cx="258" cy="295" r="4" fill="#503880"/>
+        <circle cx="258" cy="295" r="2" fill="#8060c0"/>
+        <rect x="207" y="250" width="54" height="28" rx="2" fill="#0e0818" stroke="#8060c0" stroke-width="0.7" opacity="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="6.5" letter-spacing="1.5" fill="#9878d0" x="234" y="261" text-anchor="middle">GAMES</text>
+        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#5040a0" x="234" y="271" text-anchor="middle">coming soon</text>
       </g>
 
-      <!-- DOOR 3: Fermentation Lab -->
+      <!-- DOOR 3: Fermentation Lab - right mid-far (green) -->
       <g class="door-group" id="door-ferm" onclick="openRoom('soon','Fermentation Lab')">
-        <rect x="532" y="170" width="72" height="244" fill="transparent" stroke="none"/>
-        <polygon points="600,174 532,228 532,382 600,414" fill="#0e1a0a" stroke="#4a8030" stroke-width="1"/>
-        <polygon points="593,181 540,232 540,376 593,408" fill="#0a1408"/>
-        <polygon points="593,181 540,232 540,376 593,408" fill="#142810" opacity="0.55"/>
-        <line x1="540" y1="232" x2="540" y2="376" stroke="#60a040" stroke-width="2" opacity="0.45"/>
-        <polygon points="540,232 532,228 532,382 540,376" fill="#308020" opacity="0.22"/>
-        <polygon points="587,192 546,234 546,294 587,286" fill="none" stroke="#3a6828" stroke-width="0.6"/>
-        <polygon points="587,298 546,298 546,368 587,396" fill="none" stroke="#3a6828" stroke-width="0.6"/>
-        <circle cx="542" cy="310" r="4" fill="#4a7830"/>
-        <circle cx="542" cy="310" r="2" fill="#70a850"/>
-        <rect x="533" y="264" width="64" height="36" rx="2" fill="#081408" stroke="#4a8030" stroke-width="0.7" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="565" y="277" text-anchor="middle">FERMENTATION</text>
-        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="565" y="289" text-anchor="middle">LAB</text>
+        <rect x="532" y="148" width="72" height="268" fill="transparent" stroke="none"/>
+        <polygon points="600,152 532,210 532,392 600,430" fill="#0e1a0a" stroke="#4a8030" stroke-width="1"/>
+        <polygon points="593,159 540,214 540,386 593,424" fill="#0a1408"/>
+        <polygon points="593,159 540,214 540,386 593,424" fill="#142810" opacity="0.5"/>
+        <line x1="540" y1="214" x2="540" y2="386" stroke="#60a040" stroke-width="2" opacity="0.45"/>
+        <polygon points="540,214 532,210 532,392 540,386" fill="#308020" opacity="0.22"/>
+        <polygon points="587,172 546,216 546,278 587,270" fill="none" stroke="#3a6828" stroke-width="0.6"/>
+        <polygon points="587,282 546,282 546,374 587,408" fill="none" stroke="#3a6828" stroke-width="0.6"/>
+        <circle cx="542" cy="295" r="4" fill="#4a7830"/>
+        <circle cx="542" cy="295" r="2" fill="#70a850"/>
+        <rect x="535" y="248" width="62" height="32" rx="2" fill="#081408" stroke="#4a8030" stroke-width="0.7" opacity="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="566" y="261" text-anchor="middle">FERMENTATION</text>
+        <text font-family="'Jost',sans-serif" font-size="5.5" letter-spacing="1" fill="#60a040" x="566" y="272" text-anchor="middle">LAB</text>
       </g>
 
-      <!-- DOOR 4: Herbal Atelier -->
-      <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
-        <rect x="600" y="20" width="170" height="540" fill="transparent" stroke="none"/>
-        <polygon points="768,22 600,170 600,418 768,548" fill="#0e1a08" stroke="#5a8828" stroke-width="1.5"/>
-        <polygon points="756,38 612,174 612,410 756,534" fill="#0a1406"/>
-        <line x1="612" y1="174" x2="612" y2="410" stroke="#78b038" stroke-width="2.5" opacity="0.5"/>
-        <polygon points="600,170 612,174 612,410 600,418" fill="#4a8020" opacity="0.25"/>
-        <polygon points="744,68 620,180 620,272 744,256" fill="none" stroke="#4a7020" stroke-width="0.8"/>
-        <polygon points="744,268 620,276 620,402 744,418" fill="none" stroke="#4a7020" stroke-width="0.8" opacity="0.6"/>
-        <circle cx="616" cy="300" r="6" fill="#507828"/>
-        <circle cx="616" cy="300" r="3" fill="#80b040"/>
-        <rect x="620" y="210" width="118" height="38" rx="2" fill="#080e06" stroke="#5a8828" stroke-width="0.8" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#90c050" x="679" y="226" text-anchor="middle">HERBAL</text>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#90c050" x="679" y="239" text-anchor="middle">ATELIER</text>
-      </g>
-
-      <!-- SEGMENT 2: Sound Journal + Idea Basket (hidden by default) -->
-
-      <!-- Sound Journal — left wall, deep purple -->
-      <g class="door-group" id="door-journal" onclick="openRoom('soon','Sound Journal')" style="display:none">
-        <rect x="30" y="20" width="170" height="540" fill="transparent" stroke="none"/>
-        <polygon points="32,22 200,170 200,418 32,548" fill="#1a0e2a" stroke="#8060c0" stroke-width="1.5"/>
-        <polygon points="44,38 188,174 188,410 44,534" fill="#120a1e"/>
-        <line x1="188" y1="174" x2="188" y2="410" stroke="#9070d0" stroke-width="2.5" opacity="0.55"/>
-        <polygon points="188,174 200,170 200,418 188,410" fill="#6040a0" opacity="0.28"/>
-        <polygon points="56,68 180,180 180,272 56,256" fill="none" stroke="#6040a0" stroke-width="0.8"/>
-        <polygon points="56,268 180,276 180,402 56,418" fill="none" stroke="#6040a0" stroke-width="0.8" opacity="0.6"/>
-        <circle cx="184" cy="300" r="6" fill="#503880"/>
-        <circle cx="184" cy="300" r="3" fill="#8060c0"/>
-        <rect x="62" y="210" width="118" height="38" rx="2" fill="#0e0818" stroke="#8060c0" stroke-width="0.8" opacity="0.9"/>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#9878d0" x="121" y="226" text-anchor="middle">SOUND</text>
-        <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#9878d0" x="121" y="239" text-anchor="middle">JOURNAL</text>
-      </g>
-
-      <!-- Idea Basket — right wall, warm terracotta -->
-      <g class="door-group" id="door-basket" onclick="openRoom('soon','Idea Basket')" style="display:none">
+      <!-- DOOR 4: Idea Basket - right near (terracotta) -->
+      <g class="door-group" id="door-basket" onclick="openRoom('soon','Idea Basket')">
         <rect x="600" y="20" width="170" height="540" fill="transparent" stroke="none"/>
         <polygon points="768,22 600,170 600,418 768,548" fill="#2a1008" stroke="#c06030" stroke-width="1.5"/>
         <polygon points="756,38 612,174 612,410 756,534" fill="#1e0c06"/>
@@ -850,31 +833,56 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         <text font-family="'Jost',sans-serif" font-size="8" letter-spacing="2" fill="#d07848" x="679" y="239" text-anchor="middle">BASKET</text>
       </g>
 
+      <!-- DOOR 5: Headspace - left deepest (blue) -->
+      <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
+        <rect x="230" y="220" width="50" height="120" fill="transparent" stroke="none"/>
+        <polygon points="234,224 276,254 276,348 234,374" fill="#0e1420" stroke="#4a6090" stroke-width="0.8"/>
+        <polygon points="238,229 272,257 272,344 238,370" fill="#0a1018"/>
+        <polygon points="238,229 272,257 272,344 238,370" fill="#1a2840" opacity="0.5"/>
+        <line x1="272" y1="257" x2="272" y2="344" stroke="#6090c0" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="270" cy="305" r="3" fill="#4a6888"/>
+        <rect x="237" y="275" width="36" height="22" rx="2" fill="#080e18" stroke="#4a6090" stroke-width="0.6" opacity="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#6090c0" x="255" y="284" text-anchor="middle">HEAD</text>
+        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#6090c0" x="255" y="293" text-anchor="middle">SPACE</text>
+      </g>
+
+      <!-- DOOR 6: Herbal Atelier - right deepest (deep green) -->
+      <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
+        <rect x="520" y="220" width="50" height="120" fill="transparent" stroke="none"/>
+        <polygon points="566,224 524,254 524,348 566,374" fill="#0e1a08" stroke="#5a8828" stroke-width="0.8"/>
+        <polygon points="562,229 528,257 528,344 562,370" fill="#0a1406"/>
+        <polygon points="562,229 528,257 528,344 562,370" fill="#1a3010" opacity="0.5"/>
+        <line x1="528" y1="257" x2="528" y2="344" stroke="#78b038" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="530" cy="305" r="3" fill="#507828"/>
+        <rect x="527" y="275" width="36" height="22" rx="2" fill="#080e06" stroke="#5a8828" stroke-width="0.6" opacity="0.9"/>
+        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#80b040" x="545" y="284" text-anchor="middle">HERBAL</text>
+        <text font-family="'Jost',sans-serif" font-size="5" letter-spacing="1" fill="#80b040" x="545" y="293" text-anchor="middle">ATELIER</text>
+      </g>
+
     </svg>
   </div>
 
-  <!-- Navigation arrows -->
-  <div class="corridor-nav">
-    <button class="nav-arrow" id="navLeft" onclick="corridorNav(-1)">&#8592;</button>
-    <div class="corridor-dots" id="corridorDots"></div>
-    <button class="nav-arrow" id="navRight" onclick="corridorNav(1)">&#8594;</button>
+  <!-- Walk navigation -->
+  <div class="corridor-walk">
+    <button class="walk-btn" id="walkBack" onclick="corridorWalk(-1)" disabled>&#8593;</button>
+    <button class="walk-btn" id="walkFwd" onclick="corridorWalk(1)">&#8595;</button>
   </div>
 
   <div class="corridor-tooltip" id="corridorTooltip"></div>
 </div>
 
-<!-- ════════════════════════════════════════════
+<!-- --------------------------------------------
      WORKSHOP SHELL
-════════════════════════════════════════════ -->
+-------------------------------------------- -->
 <div id="workshop" class="screen flex-screen" style="flex-direction:column;">
 
   <div class="workshop-header">
     <div class="workshop-header-left">
       <div class="workshop-brand">Casa Caravan Space</div>
-      <div class="workshop-title" id="workshopTitle">—</div>
-      <div class="workshop-sub" id="workshopSub">—</div>
+      <div class="workshop-title" id="workshopTitle">-</div>
+      <div class="workshop-sub" id="workshopSub">-</div>
     </div>
-    <button class="back-btn" onclick="backToCorridor()">← Corridor</button>
+    <button class="back-btn" onclick="backToCorridor()">< Corridor</button>
   </div>
 
   <!-- Coming Soon room -->
@@ -901,7 +909,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         <div class="lp-feat"><div class="lp-feat-icon">∅</div><div class="lp-feat-label">No Install<br>No Account</div></div>
       </div>
 
-      <!-- Headphone confirmation — required before entering -->
+      <!-- Headphone confirmation - required before entering -->
       <div id="headphoneCheck" style="display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:32px;padding:20px 32px;border:1px solid var(--border);border-radius:12px;max-width:340px;">
         <div style="font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;">Before you enter</div>
         <div style="font-size:13px;color:var(--muted);text-align:center;line-height:1.8;font-weight:300;">
@@ -930,9 +938,9 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
         </div>
 
         <div class="transport">
-          <button class="t-btn rec-btn" id="recBtn" onclick="toggleRecord()">● RECORD</button>
-          <button class="t-btn play-btn" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
-          <button class="t-btn" onclick="stopAll()">■ STOP</button>
+          <button class="t-btn rec-btn" id="recBtn" onclick="toggleRecord()">* RECORD</button>
+          <button class="t-btn play-btn" id="playBtn" onclick="togglePlay()">- PLAY</button>
+          <button class="t-btn" onclick="stopAll()">- STOP</button>
           <div class="timer" id="timer">00:00</div>
         </div>
 
@@ -966,14 +974,14 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 
         <div>
           <div class="sec-label">Recordings</div>
-          <div class="rec-list" id="recList"><div class="no-recs">No recordings yet — press record to begin.</div></div>
+          <div class="rec-list" id="recList"><div class="no-recs">No recordings yet - press record to begin.</div></div>
         </div>
 
       </div>
 
       <div class="studio-footer">
         <div class="studio-footer-brand">Casa Caravan Space</div>
-        <button class="studio-footer-link" onclick="closeStudio()">← Audio Sanctuary</button>
+        <button class="studio-footer-link" onclick="closeStudio()">< Audio Sanctuary</button>
       </div>
     </div>
 
@@ -981,7 +989,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 </div>
 
 <script>
-// ── Sounds ──────────────────────────────────────────────────────
+// -- Sounds ------------------------------------------------------
 const sndEntrance = new Audio('gong_entrance.mp3');
 const sndCorridor = new Audio('gong_corridor.mp3');
 const sndDoor     = new Audio('gong_door.mp3');
@@ -1000,7 +1008,7 @@ function playDoor() {
   sndDoor.play().catch(() => {});
 }
 
-// ── Navigation ──────────────────────────────────────────────────
+// -- Navigation --------------------------------------------------
 function show(id, flex) {
   ['entrance','corridor','workshop'].forEach(s => {
     const el = document.getElementById(s);
@@ -1060,7 +1068,7 @@ function openRoom(type, name) {
 
   if (type === 'gong') {
     document.getElementById('workshopTitle').textContent = 'Audio Sanctuary';
-    document.getElementById('workshopSub').textContent = 'record · shape · keep';
+    document.getElementById('workshopSub').textContent = 'record . shape . keep';
     document.getElementById('room-gong').style.display = 'block';
     document.getElementById('sanctuaryLanding').style.display = 'flex';
     document.getElementById('studioPanel').style.display = 'none';
@@ -1114,90 +1122,59 @@ function closeStudio() {
   document.getElementById('sanctuaryLanding').style.display = 'flex';
 }
 
-// ── Corridor navigation ──────────────────────────────────────────
-const corridorSegments = [
-  {
-    doors: [
-      { id:'door-gong',   label:'Audio Sanctuary — sound & recording' },
-      { id:'door-head',   label:'Headspace — breath & listening' },
-      { id:'door-ferm',   label:'Fermentation Lab — living foods' },
-      { id:'door-herb',   label:'Herbal Atelier — plant medicine' },
-    ]
-  },
-  {
-    doors: [
-      { id:'door-journal', label:'Sound Journal — your voice archive' },
-      { id:'door-basket',  label:'Idea Basket — leave something, find something' },
-    ]
-  }
-];
+// -- Corridor zoom walk -------------------------------------------
+let corridorZoom = 1;
+let isWalking = false;
+const ZOOM_STEP = 0.28;
+const ZOOM_MAX  = 1.85;
+const ZOOM_MIN  = 1;
 
-let currentSegment = 0;
+function buildCorridorDots() {}  // no dots needed
 
-// SVG door groups per segment
-const segmentDoors = [
-  ['door-gong','door-head','door-ferm','door-herb','door-forest'],
-  ['door-journal','door-basket','door-forest2']
-];
+function corridorWalk(dir) {
+  if (isWalking) return;
+  const next = corridorZoom + dir * ZOOM_STEP;
+  if (next < ZOOM_MIN - 0.01 || next > ZOOM_MAX + 0.01) return;
+  isWalking = true;
+  corridorZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
 
-function buildCorridorDots() {
-  const dotsEl = document.getElementById('corridorDots');
-  if (!dotsEl) return;
-  dotsEl.innerHTML = '';
-  corridorSegments.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'corridor-dot' + (i === currentSegment ? ' active' : '');
-    d.onclick = () => { currentSegment = i; renderSegment(); };
-    dotsEl.appendChild(d);
-  });
+  const svg = document.getElementById('corridorSVG');
+  if (!svg) { isWalking = false; return; }
+  svg.style.transform = 'scale(' + corridorZoom + ')';
+
+  const back = document.getElementById('walkBack');
+  const fwd  = document.getElementById('walkFwd');
+  if (back) back.disabled = corridorZoom <= ZOOM_MIN;
+  if (fwd)  fwd.disabled  = corridorZoom >= ZOOM_MAX;
+
+  setTimeout(() => { isWalking = false; }, 600);
 }
 
-function renderSegment() {
-  // Show/hide door groups per segment
-  const seg1 = ['door-gong','door-head','door-ferm','door-herb','door-forest'];
-  const seg2 = ['door-journal','door-basket'];
+document.addEventListener('keydown', e => {
+  const corridor = document.getElementById('corridor');
+  if (!corridor || corridor.style.display === 'none') return;
+  if (e.key === 'ArrowUp'   || e.key === 'ArrowRight') corridorWalk(1);
+  if (e.key === 'ArrowDown' || e.key === 'ArrowLeft')  corridorWalk(-1);
+});
 
-  seg1.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = currentSegment === 0 ? '' : 'none';
-  });
-  seg2.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = currentSegment === 1 ? '' : 'none';
-  });
-
-  // Update dots
-  document.querySelectorAll('.corridor-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === currentSegment);
-  });
-
-  // Update arrows
-  const left = document.getElementById('navLeft');
-  const right = document.getElementById('navRight');
-  if (left) left.disabled = currentSegment === 0;
-  if (right) right.disabled = currentSegment === corridorSegments.length - 1;
-
-  // Update tooltips
+window.addEventListener('DOMContentLoaded', () => {
+  const back = document.getElementById('walkBack');
+  if (back) back.disabled = true;
   updateTooltips();
-}
-
-function corridorNav(dir) {
-  const next = currentSegment + dir;
-  if (next < 0 || next >= corridorSegments.length) return;
-  currentSegment = next;
-  renderSegment();
-}
+});
 
 function updateTooltips() {
   const all = {
-    'door-gong':    'Audio Sanctuary — sound & recording',
-    'door-head':    'Headspace — breath & listening',
-    'door-ferm':    'Fermentation Lab — living foods',
-    'door-herb':    'Herbal Atelier — plant medicine',
-    'door-journal': 'Sound Journal — your voice archive',
-    'door-basket':  'Idea Basket — leave something, find something',
+    'door-gong':    'Audio Sanctuary - sound & recording',
+    'door-head':    'Headspace - breath & listening',
+    'door-ferm':    'Fermentation Lab - living foods',
+    'door-herb':    'Herbal Atelier - plant medicine',
+    'door-journal': 'Games - short, playful, philosophical',
+    'door-basket':  'Idea Basket - leave something, find something',
+    'door-forest':  'The Forest - where the known ends',
   };
   const tooltip = document.getElementById('corridorTooltip');
+  if (!tooltip) return;
   Object.keys(all).forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1206,27 +1183,8 @@ function updateTooltips() {
   });
 }
 
-// Keyboard navigation
-document.addEventListener('keydown', e => {
-  if (document.getElementById('corridor').style.display !== 'none') {
-    if (e.key === 'ArrowLeft')  corridorNav(-1);
-    if (e.key === 'ArrowRight') corridorNav(1);
-  }
-});
-
-// Init on load
-window.addEventListener('DOMContentLoaded', () => {
-  buildCorridorDots();
-  renderSegment();
-});
-
-// ── Corridor door tooltips ───────────────────────────────────────
-const tooltipTexts = {
-  'door-gong': 'Audio Sanctuary — sound & recording',
-  'door-head': 'Headspace — breath & listening',
-  'door-ferm': 'Fermentation Lab — living foods',
-  'door-herb': 'Herbal Atelier — plant medicine',
-};
+// -- Corridor tooltips (legacy init)
+const tooltip = document.getElementById('corridorTooltip'); -----------------------------
 const tooltip = document.getElementById('corridorTooltip');
 Object.keys(tooltipTexts).forEach(id => {
   const el = document.getElementById(id);
@@ -1235,7 +1193,7 @@ Object.keys(tooltipTexts).forEach(id => {
   el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
 });
 
-// ── Audio Sanctuary State ────────────────────────────────────────
+// -- Audio Sanctuary State ----------------------------------------
 let audioCtx, mediaStream, mediaRecorder;
 let analyser, dataArray;
 let inputGainNode, highpassNode, delayNode, delayGainNode, feedbackNode, reverbNode, reverbGainNode, dryGainNode;
@@ -1355,7 +1313,7 @@ async function toggleRecord() {
     mediaRecorder.onstop=()=>{ const blob=new Blob(chunks,{type:mimeType||'audio/webm'}); saveRecording(blob,mimeType); analyser.disconnect(destNode); };
     mediaRecorder.start(100); isRecording=true; recordStart=Date.now();
     document.getElementById('recBtn').classList.add('active');
-    document.getElementById('recBtn').textContent='■ STOP REC';
+    document.getElementById('recBtn').textContent='- STOP REC';
     document.getElementById('recIndicator').classList.add('active');
     timerInterval=setInterval(()=>{
       const s=Math.floor((Date.now()-recordStart)/1000);
@@ -1365,7 +1323,7 @@ async function toggleRecord() {
   } else {
     mediaRecorder.stop(); isRecording=false; clearInterval(timerInterval);
     document.getElementById('recBtn').classList.remove('active');
-    document.getElementById('recBtn').textContent='● RECORD';
+    document.getElementById('recBtn').textContent='* RECORD';
     document.getElementById('recIndicator').classList.remove('active');
     document.getElementById('timer').classList.remove('recording');
     document.getElementById('timer').textContent='00:00';
@@ -1384,8 +1342,8 @@ function saveRecording(blob,mimeType){
 
 function renderRecordings(){
   const list=document.getElementById('recList');
-  if(recordings.length===0){list.innerHTML='<div class="no-recs">No recordings yet — press record to begin.</div>';return;}
-  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div class="rec-info"><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s · ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">▶ play</button><button class="action-btn dl" onclick="downloadRec(${i})">↓ save</button></div></div>`).join('');
+  if(recordings.length===0){list.innerHTML='<div class="no-recs">No recordings yet - press record to begin.</div>';return;}
+  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div class="rec-info"><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s . ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">- play</button><button class="action-btn dl" onclick="downloadRec(${i})">v save</button></div></div>`).join('');
 }
 
 function playRec(i){if(currentAudio){currentAudio.pause();currentAudio=null;}currentAudio=new Audio(recordings[i].url);currentAudio.play();}
