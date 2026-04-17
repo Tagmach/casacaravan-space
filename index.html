@@ -442,134 +442,172 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   <div class="corridor-scene" id="corridorScene">
     <svg viewBox="0 0 800 580" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
       <defs>
-        <radialGradient id="ceilGlow" cx="50%" cy="30%" r="60%">
-          <stop offset="0%" stop-color="#5a3e1a" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#1a1208" stop-opacity="1"/>
+        <radialGradient id="ceilGlow" cx="50%" cy="20%" r="70%">
+          <stop offset="0%" stop-color="#6a4a1e"/>
+          <stop offset="60%" stop-color="#2a1c0a"/>
+          <stop offset="100%" stop-color="#0e0b06"/>
         </radialGradient>
-        <radialGradient id="floorGlow" cx="50%" cy="60%" r="70%">
-          <stop offset="0%" stop-color="#3a2a10" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#1a1408" stop-opacity="1"/>
+        <radialGradient id="floorGlow" cx="50%" cy="70%" r="70%">
+          <stop offset="0%" stop-color="#3a2a0e"/>
+          <stop offset="100%" stop-color="#0e0b06"/>
         </radialGradient>
-        <radialGradient id="backGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#7a5a28" stop-opacity="1"/>
-          <stop offset="100%" stop-color="#2e1f08" stop-opacity="1"/>
+        <radialGradient id="forestGlow" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#1a3a0a" stop-opacity="1"/>
+          <stop offset="50%" stop-color="#0e2006" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#050a03" stop-opacity="1"/>
         </radialGradient>
-        <radialGradient id="lightBeam" cx="50%" cy="0%" r="80%">
-          <stop offset="0%" stop-color="#c8a050" stop-opacity="0.22"/>
+        <radialGradient id="candleL" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f0c840" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#c88020" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="candleR" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f0c840" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#c88020" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="centerBeam" cx="50%" cy="0%" r="80%">
+          <stop offset="0%" stop-color="#c8a050" stop-opacity="0.18"/>
           <stop offset="100%" stop-color="#c8a050" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="forestLight" cx="50%" cy="40%" r="50%">
+          <stop offset="0%" stop-color="#4a7a20" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#1a3a08" stop-opacity="0"/>
         </radialGradient>
       </defs>
 
-      <!-- Vanishing point: 400, 290 -->
+      <!-- Background fill -->
+      <rect x="0" y="0" width="800" height="580" fill="#0e0b06"/>
 
       <!-- Ceiling -->
-      <polygon points="0,0 800,0 560,290 240,290" fill="url(#ceilGlow)"/>
+      <polygon points="0,0 800,0 540,285 260,285" fill="url(#ceilGlow)"/>
 
       <!-- Floor -->
-      <polygon points="0,580 800,580 560,290 240,290" fill="url(#floorGlow)"/>
+      <polygon points="0,580 800,580 540,285 260,285" fill="url(#floorGlow)"/>
 
       <!-- Left wall -->
-      <polygon points="0,0 240,290 0,580" fill="#2a1e10"/>
+      <polygon points="0,0 260,285 0,580" fill="#221608"/>
 
       <!-- Right wall -->
-      <polygon points="800,0 560,290 800,580" fill="#261c0e"/>
+      <polygon points="800,0 540,285 800,580" fill="#1e1406"/>
 
-      <!-- Back wall glow -->
-      <rect x="240" y="290" width="320" height="1" fill="#7a5a28" opacity="0.8"/>
-      <ellipse cx="400" cy="290" rx="160" ry="80" fill="url(#backGlow)" opacity="0.8"/>
+      <!-- Floor planks converging to vanishing point -->
+      <line x1="260" y1="285" x2="0" y2="580" stroke="#2a1c0a" stroke-width="1.2"/>
+      <line x1="290" y1="285" x2="60" y2="580" stroke="#261808" stroke-width="0.9"/>
+      <line x1="325" y1="285" x2="180" y2="580" stroke="#221406" stroke-width="0.7"/>
+      <line x1="362" y1="285" x2="310" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="400" y1="285" x2="400" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="438" y1="285" x2="490" y2="580" stroke="#1e1206" stroke-width="0.5"/>
+      <line x1="475" y1="285" x2="620" y2="580" stroke="#221406" stroke-width="0.7"/>
+      <line x1="510" y1="285" x2="740" y2="580" stroke="#261808" stroke-width="0.9"/>
+      <line x1="540" y1="285" x2="800" y2="580" stroke="#2a1c0a" stroke-width="1.2"/>
 
-      <!-- Ceiling light beam -->
-      <polygon points="320,0 480,0 440,290 360,290" fill="url(#lightBeam)"/>
+      <!-- Horizontal floor lines (depth) -->
+      <line x1="100" y1="380" x2="700" y2="380" stroke="#221408" stroke-width="0.4" opacity="0.5"/>
+      <line x1="40" y1="450" x2="760" y2="450" stroke="#221408" stroke-width="0.4" opacity="0.4"/>
+      <line x1="0" y1="520" x2="800" y2="520" stroke="#221408" stroke-width="0.4" opacity="0.3"/>
 
-      <!-- Floor planks -->
-      <line x1="240" y1="290" x2="0" y2="580" stroke="#2e2010" stroke-width="1"/>
-      <line x1="280" y1="290" x2="70" y2="580" stroke="#281c0e" stroke-width="0.8"/>
-      <line x1="320" y1="290" x2="200" y2="580" stroke="#241a0c" stroke-width="0.6"/>
-      <line x1="360" y1="290" x2="320" y2="580" stroke="#221808" stroke-width="0.5"/>
-      <line x1="400" y1="290" x2="400" y2="580" stroke="#221808" stroke-width="0.5"/>
-      <line x1="440" y1="290" x2="480" y2="580" stroke="#221808" stroke-width="0.5"/>
-      <line x1="480" y1="290" x2="600" y2="580" stroke="#241a0c" stroke-width="0.6"/>
-      <line x1="520" y1="290" x2="730" y2="580" stroke="#281c0e" stroke-width="0.8"/>
-      <line x1="560" y1="290" x2="800" y2="580" stroke="#2e2010" stroke-width="1"/>
+      <!-- Center light beam from ceiling -->
+      <polygon points="340,0 460,0 425,285 375,285" fill="url(#centerBeam)"/>
 
-      <!-- Wall sconce left -->
-      <rect x="28" y="180" width="4" height="48" fill="#5a3e1e" rx="1"/>
-      <ellipse cx="30" cy="178" rx="16" ry="7" fill="#5a3e1e"/>
-      <circle cx="30" cy="170" r="7" fill="#f0d070" opacity="0.95"/>
-      <ellipse cx="30" cy="200" rx="30" ry="80" fill="#e8a820" opacity="0.14"/>
-      <ellipse cx="30" cy="200" rx="60" ry="120" fill="#e8a820" opacity="0.05"/>
+      <!-- === FOREST AT END OF CORRIDOR === -->
+      <!-- Forest replaces back door — this is where the known ends -->
+      <g id="door-forest" onclick="openRoom('soon','The Forest')" style="cursor:pointer">
+        <!-- Forest darkness filling the back wall -->
+        <ellipse cx="400" cy="285" rx="140" ry="90" fill="url(#forestGlow)"/>
+        <!-- Tree silhouettes deep in corridor -->
+        <ellipse cx="370" cy="240" rx="22" ry="38" fill="#0a1a06" opacity="0.85"/>
+        <ellipse cx="400" cy="225" rx="26" ry="46" fill="#0c2008" opacity="0.8"/>
+        <ellipse cx="430" cy="242" rx="20" ry="36" fill="#081806" opacity="0.85"/>
+        <ellipse cx="385" cy="215" rx="14" ry="28" fill="#0e2409" opacity="0.7"/>
+        <ellipse cx="415" cy="218" rx="12" ry="24" fill="#0c2007" opacity="0.7"/>
+        <!-- Soft green light from forest -->
+        <ellipse cx="400" cy="265" rx="80" ry="40" fill="url(#forestLight)"/>
+        <!-- Fireflies — subtle -->
+        <circle cx="362" cy="258" r="1.5" fill="#c8e040" opacity="0.5"/>
+        <circle cx="438" cy="252" r="1.5" fill="#c8e040" opacity="0.4"/>
+        <circle cx="395" cy="245" r="1" fill="#c8e040" opacity="0.35"/>
+        <!-- Forest floor hint -->
+        <ellipse cx="400" cy="284" rx="70" ry="8" fill="#0e1a08" opacity="0.6"/>
+        <!-- Hit area -->
+        <rect x="310" y="200" width="180" height="120" fill="transparent"/>
+        <text class="door-soon" x="400" y="310" text-anchor="middle" fill="#2a4014" font-family="'Jost',sans-serif" font-size="7" letter-spacing="2.5">the forest</text>
+      </g>
 
-      <!-- Wall sconce right -->
-      <rect x="768" y="180" width="4" height="48" fill="#5a3e1e" rx="1"/>
-      <ellipse cx="770" cy="178" rx="16" ry="7" fill="#5a3e1e"/>
-      <circle cx="770" cy="170" r="7" fill="#f0d070" opacity="0.95"/>
-      <ellipse cx="770" cy="200" rx="30" ry="80" fill="#e8a820" opacity="0.14"/>
-      <ellipse cx="770" cy="200" rx="60" ry="120" fill="#e8a820" opacity="0.05"/>
+      <!-- === WALL SCONCE LEFT === -->
+      <rect x="22" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="24" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
+      <circle cx="24" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
+      <!-- Candle glow left -->
+      <ellipse cx="24" cy="200" rx="80" ry="140" fill="url(#candleL)"/>
+      <!-- Candle wall wash left -->
+      <polygon points="0,80 80,140 80,340 0,400" fill="#c88020" opacity="0.04"/>
 
-      <!-- Rug -->
-      <ellipse cx="400" cy="480" rx="120" ry="28" fill="#2a1a08" fill-opacity="0.5" stroke="#6a4820" stroke-width="1.5" opacity="0.8"/>
-      <ellipse cx="400" cy="480" rx="100" ry="22" fill="none" stroke="#5a3810" stroke-width="0.8" opacity="0.6"/>
-      <ellipse cx="400" cy="480" rx="60" ry="14" fill="none" stroke="#4a2e10" stroke-width="0.5" opacity="0.4"/>
+      <!-- === WALL SCONCE RIGHT === -->
+      <rect x="773" y="168" width="5" height="52" fill="#5a3e1a" rx="1"/>
+      <ellipse cx="776" cy="166" rx="18" ry="8" fill="#5a3e1a"/>
+      <circle cx="776" cy="157" r="8" fill="#f8e060" opacity="0.95"/>
+      <!-- Candle glow right -->
+      <ellipse cx="776" cy="200" rx="80" ry="140" fill="url(#candleR)"/>
+      <!-- Candle wall wash right -->
+      <polygon points="800,80 720,140 720,340 800,400" fill="#c88020" opacity="0.04"/>
 
-      <!-- ── DOOR 1: Audio Sanctuary — left wall, fully inside ── -->
+      <!-- === RUG === -->
+      <ellipse cx="400" cy="478" rx="140" ry="34" fill="#221608" stroke="#5a3e18" stroke-width="1.5" opacity="0.85"/>
+      <ellipse cx="400" cy="478" rx="118" ry="28" fill="none" stroke="#4a3212" stroke-width="0.8" opacity="0.6"/>
+      <ellipse cx="400" cy="478" rx="80" ry="18" fill="none" stroke="#3a2810" stroke-width="0.5" opacity="0.4"/>
+      <ellipse cx="400" cy="478" rx="40" ry="10" fill="none" stroke="#2e2008" stroke-width="0.4" opacity="0.3"/>
+
+      <!-- Small candle on floor, center -->
+      <rect x="395" y="358" width="9" height="22" rx="1" fill="#dcc898" opacity="0.85"/>
+      <ellipse cx="399" cy="357" rx="5" ry="3" fill="#f8e060" opacity="0.95"/>
+      <ellipse cx="399" cy="370" rx="16" ry="8" fill="#e8a820" opacity="0.15"/>
+
+      <!-- === DOOR 1: Audio Sanctuary — left wall === -->
       <g class="door-group" id="door-gong" onclick="openRoom('gong')">
-        <rect x="55" y="55" width="135" height="475" fill="transparent" stroke="none"/>
-        <!-- frame -->
-        <polygon points="60,60 180,180 180,400 60,520" fill="#1c1409" stroke="#5a3e1e" stroke-width="1"/>
-        <!-- door surface -->
-        <polygon points="68,72 172,182 172,392 68,508" fill="#211808"/>
-        <!-- panel top -->
-        <polygon points="76,90 164,185 164,275 76,270" fill="none" stroke="#2e1f0a" stroke-width="0.6"/>
-        <!-- panel bottom -->
-        <polygon points="76,285 164,280 164,385 76,496" fill="none" stroke="#2e1f0a" stroke-width="0.6"/>
-        <!-- knob -->
-        <circle cx="163" cy="300" r="5" fill="#5a3e1e"/>
-        <!-- label -->
-        <text class="door-name" x="118" y="540" text-anchor="middle">Audio Sanctuary</text>
+        <rect x="55" y="40" width="140" height="500" fill="transparent" stroke="none"/>
+        <polygon points="58,42 192,172 192,408 58,538" fill="#1c1208" stroke="#6a4820" stroke-width="1.2"/>
+        <polygon points="66,54 184,175 184,400 66,525" fill="#231508"/>
+        <polygon points="75,72 174,178 174,268 75,252" fill="none" stroke="#3a2510" stroke-width="0.7"/>
+        <polygon points="75,265 174,272 174,392 75,535" fill="none" stroke="#3a2510" stroke-width="0.7" opacity="0.6"/>
+        <circle cx="178" cy="295" r="6" fill="#6a4820"/>
+        <circle cx="178" cy="295" r="3" fill="#8a6030"/>
+        <text class="door-name" x="124" y="556" text-anchor="middle">Audio Sanctuary</text>
       </g>
 
-      <!-- ── DOOR 2: Headspace — left mid, perspective ── -->
+      <!-- === DOOR 2: Headspace — left mid === -->
       <g class="door-group" id="door-head" onclick="openRoom('soon','Headspace')">
-        <rect x="196" y="183" width="62" height="218" fill="transparent" stroke="none"/>
-        <polygon points="200,185 255,235 255,370 200,400" fill="#1c1409" stroke="#4a3010" stroke-width="0.8"/>
-        <polygon points="206,191 249,238 249,364 206,394" fill="#201708"/>
-        <polygon points="210,200 244,240 244,295 210,290" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
-        <polygon points="210,298 244,298 244,358 210,386" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
-        <circle cx="248" cy="305" r="3.5" fill="#4a3010"/>
-        <text class="door-name" x="227" y="418" text-anchor="middle">Headspace</text>
-        <text class="door-soon" x="227" y="430" text-anchor="middle">coming soon</text>
+        <rect x="196" y="175" width="68" height="230" fill="transparent" stroke="none"/>
+        <polygon points="200,178 262,232 262,378 200,410" fill="#1c1208" stroke="#4a3210" stroke-width="0.9"/>
+        <polygon points="206,184 256,235 256,372 206,404" fill="#201408"/>
+        <polygon points="211,194 250,238 250,296 211,288" fill="none" stroke="#3a2510" stroke-width="0.5"/>
+        <polygon points="211,300 250,300 250,365 211,394" fill="none" stroke="#3a2510" stroke-width="0.5"/>
+        <circle cx="254" cy="308" r="4" fill="#4a3210"/>
+        <text class="door-name" x="231" y="428" text-anchor="middle">Headspace</text>
+        <text class="door-soon" x="231" y="440" text-anchor="middle">coming soon</text>
       </g>
 
-      <!-- ── Back door — vanishing point ── -->
-      <g class="door-group" id="door-back" onclick="openRoom('soon','...')">
-        <rect x="348" y="226" width="104" height="68" fill="transparent" stroke="none"/>
-        <rect x="352" y="230" width="96" height="60" fill="#1e1508" stroke="#3a2810" stroke-width="0.6" rx="1"/>
-        <circle cx="354" cy="260" r="2" fill="#3a2810"/>
-        <text class="door-soon" x="400" y="306" text-anchor="middle">more rooms</text>
-      </g>
-
-      <!-- ── DOOR 3: Fermentation Lab — right mid, perspective ── -->
+      <!-- === DOOR 3: Fermentation Lab — right mid === -->
       <g class="door-group" id="door-ferm" onclick="openRoom('soon','Fermentation Lab')">
-        <rect x="542" y="183" width="62" height="218" fill="transparent" stroke="none"/>
-        <polygon points="600,185 545,235 545,370 600,400" fill="#1c1409" stroke="#4a3010" stroke-width="0.8"/>
-        <polygon points="594,191 551,238 551,364 594,394" fill="#201708"/>
-        <polygon points="590,200 556,240 556,295 590,290" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
-        <polygon points="590,298 556,298 556,358 590,386" fill="none" stroke="#2e1f0a" stroke-width="0.5"/>
-        <circle cx="552" cy="305" r="3.5" fill="#4a3010"/>
-        <text class="door-name" x="573" y="418" text-anchor="middle">Fermentation Lab</text>
-        <text class="door-soon" x="573" y="430" text-anchor="middle">coming soon</text>
+        <rect x="536" y="175" width="68" height="230" fill="transparent" stroke="none"/>
+        <polygon points="600,178 538,232 538,378 600,410" fill="#1c1208" stroke="#4a3210" stroke-width="0.9"/>
+        <polygon points="594,184 544,235 544,372 594,404" fill="#201408"/>
+        <polygon points="589,194 550,238 550,296 589,288" fill="none" stroke="#3a2510" stroke-width="0.5"/>
+        <polygon points="589,300 550,300 550,365 589,394" fill="none" stroke="#3a2510" stroke-width="0.5"/>
+        <circle cx="546" cy="308" r="4" fill="#4a3210"/>
+        <text class="door-name" x="569" y="428" text-anchor="middle">Fermentation Lab</text>
+        <text class="door-soon" x="569" y="440" text-anchor="middle">coming soon</text>
       </g>
 
-      <!-- ── DOOR 4: Herbal Atelier — right wall, fully inside ── -->
+      <!-- === DOOR 4: Herbal Atelier — right wall === -->
       <g class="door-group" id="door-herb" onclick="openRoom('soon','Herbal Atelier')">
-        <rect x="618" y="55" width="135" height="475" fill="transparent" stroke="none"/>
-        <polygon points="740,60 620,180 620,400 740,520" fill="#1c1409" stroke="#5a3e1e" stroke-width="1"/>
-        <polygon points="732,72 628,182 628,392 732,508" fill="#211808"/>
-        <polygon points="724,90 636,185 636,275 724,270" fill="none" stroke="#2e1f0a" stroke-width="0.6"/>
-        <polygon points="724,285 636,280 636,385 724,496" fill="none" stroke="#2e1f0a" stroke-width="0.6"/>
-        <circle cx="637" cy="300" r="5" fill="#5a3e1e"/>
-        <text class="door-name" x="682" y="540" text-anchor="middle">Herbal Atelier</text>
-        <text class="door-soon" x="682" y="553" text-anchor="middle">coming soon</text>
+        <rect x="605" y="40" width="140" height="500" fill="transparent" stroke="none"/>
+        <polygon points="742,42 608,172 608,408 742,538" fill="#1c1208" stroke="#6a4820" stroke-width="1.2"/>
+        <polygon points="734,54 616,175 616,400 734,525" fill="#231508"/>
+        <polygon points="725,72 626,178 626,268 725,252" fill="none" stroke="#3a2510" stroke-width="0.7"/>
+        <polygon points="725,265 626,272 626,392 725,535" fill="none" stroke="#3a2510" stroke-width="0.7" opacity="0.6"/>
+        <circle cx="622" cy="295" r="6" fill="#6a4820"/>
+        <circle cx="622" cy="295" r="3" fill="#8a6030"/>
+        <text class="door-name" x="676" y="556" text-anchor="middle">Herbal Atelier</text>
+        <text class="door-soon" x="676" y="568" text-anchor="middle">coming soon</text>
       </g>
 
     </svg>
