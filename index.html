@@ -1183,15 +1183,8 @@ function updateTooltips() {
   });
 }
 
-// -- Corridor tooltips (legacy init)
-const tooltip = document.getElementById('corridorTooltip'); -----------------------------
-const tooltip = document.getElementById('corridorTooltip');
-Object.keys(tooltipTexts).forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener('mouseenter', () => { tooltip.textContent = tooltipTexts[id]; tooltip.classList.add('show'); });
-  el.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
-});
+// -- Corridor tooltips init
+updateTooltips();
 
 // -- Audio Sanctuary State ----------------------------------------
 let audioCtx, mediaStream, mediaRecorder;
