@@ -1103,14 +1103,13 @@ function saveRecording(blob,mimeType){
   const name=`sanctuary_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
   const url=URL.createObjectURL(blob);
   recordings.unshift({blob,name,dur,ext,url});
-  const a=document.createElement('a'); a.href=url; a.download=`${name}.${ext}`; a.click();
   renderRecordings();
 }
 
 function renderRecordings(){
   const list=document.getElementById('recList');
   if(recordings.length===0){list.innerHTML='<div class="no-recs">No recordings yet — press record to begin.</div>';return;}
-  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div class="rec-info"><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s · ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">▶ play</button><button class="action-btn dl" onclick="downloadRec(${i})">↓ save again</button></div></div>`).join('');
+  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div class="rec-info"><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s · ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">▶ play</button><button class="action-btn dl" onclick="downloadRec(${i})">↓ save</button></div></div>`).join('');
 }
 
 function playRec(i){if(currentAudio){currentAudio.pause();currentAudio=null;}currentAudio=new Audio(recordings[i].url);currentAudio.play();}
