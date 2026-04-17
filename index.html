@@ -511,6 +511,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
   <div class="corridor-header">
     <div class="corridor-brand">Casa Caravan Space</div>
     <div class="corridor-tagline">· create with life</div>
+    <a href="/about.html" style="margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--dim)'">About</a>
   </div>
 
   <div class="corridor-scene" id="corridorScene">
@@ -929,11 +930,14 @@ function toggleStudioBtn() {
 }
 
 function openStudio() {
-  playDoor();
+  // Stop all sounds before entering studio
+  sndEntrance.pause(); sndEntrance.currentTime = 0;
+  sndCorridor.pause(); sndCorridor.currentTime = 0;
+  sndDoor.pause();     sndDoor.currentTime = 0;
   setTimeout(() => {
     document.getElementById('sanctuaryLanding').style.display = 'none';
     document.getElementById('studioPanel').style.display = 'block';
-  }, 300);
+  }, 100);
 }
 
 function closeStudio() {
