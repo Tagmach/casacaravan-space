@@ -333,7 +333,7 @@ const billboardSigns = [];
 const doors = [
   { name:'Audio Sanctuary', color:0xc89030, border:0xe8a830, z:-2,  side:'L', action:'sanctuary' },
   { name:'Fermentation Lab',color:0x5a9030, border:0x70b040, z:-2,  side:'R', action:'soon' },
-  { name:'Games',           color:0x8060c0, border:0x9070d0, z:-10, side:'L', action:'soon' },
+  { name:'Games',           color:0x8060c0, border:0x9070d0, z:-10, side:'L', action:'games' },
   { name:'Headspace',       color:0x4060a0, border:0x6090c0, z:-10, side:'R', action:'soon' },
   { name:'Idea Basket',     color:0xc06030, border:0xd07040, z:-18, side:'L', action:'soon' },
   { name:'Herbal Atelier',  color:0x508028, border:0x78b038, z:-18, side:'R', action:'soon' },
@@ -753,6 +753,7 @@ canvas.addEventListener('touchend', e => {
 
 // ── ROOM OPEN/CLOSE ──────────────────────────────────────────────
 function openRoom(name, action) {
+  if (action === 'games') { window.location.href = 'games.html'; return; }
   const overlay = document.getElementById('room-overlay');
   document.getElementById('room-name').textContent = name;
   if (action === 'sanctuary') {

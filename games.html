@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Games — Casa Caravan Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+:root {
+  --bg: #0a0806;
+  --gold: #C0A070;
+  --cream: #EAD8C0;
+  --muted: #A09080;
+  --border: #3E3830;
+  --purple: #8060c0;
+  --purple-dim: #2a1850;
+}
+html, body {
+  width:100%; min-height:100vh;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+}
+
+/* Header */
+#header {
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,8,6,0.95);
+}
+#header-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+#header-room {
+  font-size: 10px;
+  color: var(--purple);
+  letter-spacing: 2px;
+}
+#header-back {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 6px 16px;
+  border-radius: 100px;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: none;
+}
+#header-back:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Game selector */
+#game-selector {
+  padding: 32px 28px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#game-selector-label {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.game-tab {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.game-tab:hover { border-color: var(--purple); color: var(--purple); }
+.game-tab.active { border-color: var(--purple); color: var(--cream); background: var(--purple-dim); }
+
+/* Game area */
+#game-area {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 20px 40px;
+}
+
+/* ── MAGIC BALL ── */
+#magic-ball-game {
+  width: 100%;
+  max-width: 480px;
+}
+
+.ball-wrap {
+  text-align: center;
+  padding: 20px 0 10px;
+}
+
+.ball {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 0 auto 24px;
+  background: radial-gradient(circle at 35% 30%, #1e1e2f, #03030c);
+  border-radius: 50%;
+  box-shadow:
+    0 20px 40px rgba(128,96,192,0.25),
+    inset 0 -8px 0 rgba(0,0,0,0.4),
+    inset 0 4px 12px rgba(255,255,255,0.08),
+    0 0 60px rgba(128,96,192,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ball:hover { transform: scale(1.02); }
+.ball.shake {
+  animation: shakeBall 0.5s cubic-bezier(0.36,0.07,0.19,0.97) both;
+}
+@keyframes shakeBall {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  20%  { transform: translate(-6px,4px) rotate(-4deg); }
+  40%  { transform: translate(6px,-3px) rotate(3deg); }
+  60%  { transform: translate(-4px,2px) rotate(-2deg); }
+  80%  { transform: translate(4px,-1px) rotate(1deg); }
+  100% { transform: translate(0,0) rotate(0); }
+}
+
+.answer-window {
+  width: 130px;
+  height: 130px;
+  background: radial-gradient(circle at 40% 40%, #141c28, #020408);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 0 0 3px #2e3b4e,
+    inset 0 0 0 6px #1a2030,
+    0 4px 12px rgba(0,0,0,0.6);
+}
+.answer-text {
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: #c8d8f0;
+  text-shadow: 0 0 8px #3b82f6, 0 0 16px #1e3a8a;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 8px;
+  line-height: 1.4;
+}
+
+.ball-hint {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+/* Question input */
+.question-wrap {
+  margin-bottom: 16px;
+}
+.question-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.question-input {
+  width: 100%;
+  background: #131008;
+  border: 1px solid var(--border);
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  border-radius: 100px;
+  color: var(--cream);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+  letter-spacing: 0.5px;
+}
+.question-input:focus { border-color: var(--purple); }
+.question-input::placeholder { color: var(--border); }
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.mb-btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 9px 22px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mb-btn:hover { border-color: var(--purple); color: var(--cream); }
+.mb-btn.primary { border-color: var(--purple); color: var(--purple); }
+.mb-btn.primary:hover { background: var(--purple-dim); color: var(--cream); }
+
+.warning-msg {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #c07060;
+  text-align: center;
+  min-height: 20px;
+  margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-brand">Casa Caravan Space</div>
+  <div id="header-room">· Games</div>
+  <button id="header-back" onclick="history.back()">← Corridor</button>
+</div>
+
+<div id="game-selector">
+  <span id="game-selector-label">Play</span>
+  <button class="game-tab active" onclick="showGame('magic-ball')">Magic Ball</button>
+  <button class="game-tab" style="opacity:0.4;cursor:default">More coming</button>
+</div>
+
+<div id="game-area">
+
+  <!-- MAGIC BALL -->
+  <div id="magic-ball-game">
+    <div class="ball-wrap">
+      <div class="ball" id="magicBall">
+        <div class="answer-window">
+          <div class="answer-text" id="answerDisplay">✦</div>
+        </div>
+      </div>
+      <div class="ball-hint">tap the ball · ask wisely</div>
+    </div>
+
+    <div class="question-wrap">
+      <label class="question-label">Your yes / no question</label>
+      <input class="question-input" type="text" id="questionInput" placeholder="Will this work out?" autocomplete="off">
+      <div class="warning-msg" id="warningMsg"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="mb-btn primary" onclick="askAndShake()">Ask the ball</button>
+      <button class="mb-btn" onclick="justShake()">Shake</button>
+      <button class="mb-btn" onclick="resetBall()">Clear</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const YES = [
+  "YES","YES","ABSOLUTELY","IT IS CERTAIN","WITHOUT DOUBT",
+  "SIGNS POINT TO YES","MOST LIKELY","OUTLOOK GOOD","DEFINITELY",
+  "YOU MAY RELY ON IT","IT WILL HAPPEN","YES — TRUST IT"
+];
+const NO = [
+  "NO","NO","MY REPLY IS NO","VERY DOUBTFUL","OUTLOOK NOT SO GOOD",
+  "DON'T COUNT ON IT","NEGATIVE","NO — NOT THIS TIME",
+  "FUTURE SAYS NO","CERTAINLY NOT","NO CHANCE","TRUST THE NO"
+];
+
+let isShaking = false;
+let lastQ = "";
+
+function rnd(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+function getAnswer() { return Math.random()<0.5 ? rnd(YES) : rnd(NO); }
+
+function warn(msg) {
+  const el = document.getElementById('warningMsg');
+  el.textContent = msg;
+  setTimeout(() => { if(el.textContent===msg) el.textContent=''; }, 2800);
+}
+
+function shake(answer) {
+  if (isShaking) return;
+  isShaking = true;
+  const ball = document.getElementById('magicBall');
+  const disp = document.getElementById('answerDisplay');
+  ball.classList.add('shake');
+  disp.textContent = '·';
+  if (navigator.vibrate) navigator.vibrate(60);
+  setTimeout(() => {
+    ball.classList.remove('shake');
+    disp.textContent = answer;
+    disp.style.textShadow = '0 0 16px #9070d0, 0 0 32px #6040a0';
+    setTimeout(() => { disp.style.textShadow = ''; }, 500);
+    isShaking = false;
+  }, 500);
+}
+
+function askAndShake() {
+  const q = document.getElementById('questionInput').value.trim();
+  if (!q) { warn('Ask something first.'); document.getElementById('questionInput').focus(); return; }
+  if (q.length < 3) { warn('Ask a little more.'); return; }
+  lastQ = q;
+  shake(getAnswer());
+}
+
+function justShake() {
+  if (!lastQ && !document.getElementById('questionInput').value.trim()) {
+    warn('Type your question first.');
+    return;
+  }
+  const q = document.getElementById('questionInput').value.trim() || lastQ;
+  lastQ = q;
+  shake(getAnswer());
+}
+
+function resetBall() {
+  document.getElementById('questionInput').value = '';
+  document.getElementById('answerDisplay').textContent = '✦';
+  document.getElementById('warningMsg').textContent = '';
+  lastQ = '';
+}
+
+function showGame(id) {
+  document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+document.getElementById('magicBall').addEventListener('click', justShake);
+document.getElementById('questionInput').addEventListener('keypress', e => {
+  if (e.key==='Enter') { e.preventDefault(); askAndShake(); }
+});
+
+// Device shake
+let lx=0,ly=0,lz=0,lt=0;
+function onMotion(e) {
+  if (isShaking) return;
+  const a = e.accelerationIncludingGravity;
+  if (!a) return;
+  const d = Math.abs(a.x-lx)+Math.abs(a.y-ly)+Math.abs(a.z-lz);
+  if (d>22 && Date.now()-lt>900) { lt=Date.now(); justShake(); }
+  lx=a.x; ly=a.y; lz=a.z;
+}
+document.body.addEventListener('click', function initMotion() {
+  if (typeof DeviceMotionEvent!=='undefined' && typeof DeviceMotionEvent.requestPermission==='function') {
+    DeviceMotionEvent.requestPermission().then(p => { if(p==='granted') window.addEventListener('devicemotion',onMotion); });
+  } else {
+    window.addEventListener('devicemotion', onMotion);
+  }
+  document.body.removeEventListener('click', initMotion);
+}, {once:true});
+</script>
+</body>
+</html>
