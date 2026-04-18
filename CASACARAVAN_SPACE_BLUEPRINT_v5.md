@@ -14,52 +14,82 @@
 
 ---
 
-## Canlı Mimari (Nisan 2026)
+## Vizyon
+
+Amaç ormana gitmek.
+Ama çıkıldığında dönülecek bir ev olmalı.
+
+Koridor ev. Bahçe geçiş. Orman asıl.
+
+---
+
+## Mimari
 
 ```
 casacaravan.space/
 │
-├── index.html
-│   └── Entrance — gong strike → corridor-3d.html
-│
-├── corridor-3d.html  ← YENİ
-│   └── Three.js 3D koridor
-│       ├── Audio Sanctuary (L, z=-2)     → index.html#sanctuary
-│       ├── Fermentation Lab (R, z=-2)    → coming soon
-│       ├── Games (L, z=-10)              → coming soon
-│       ├── Headspace (R, z=-10)          → coming soon
-│       ├── Idea Basket (L, z=-18)        → coming soon
-│       ├── Herbal Atelier (R, z=-18)     → coming soon
-│       └── The Forest (arka duvar)       → coming soon
-│
-├── about.html
-│   └── Guatemala hikayesi + Casa Caravan origin
-│
-└── og-image.png, gong sounds, CNAME
+├── index.html — Giriş (gong strike)
+│       ↓
+├── corridor-3d.html — Koridor (ev, odalar, araçlar)
+│   ├── Audio Sanctuary    — ses stüdyosu ✓
+│   ├── Fermentation Lab   — coming soon
+│   ├── Games              — Magic Ball ✓
+│   ├── Headspace          — coming soon
+│   ├── Idea Basket        — coming soon
+│   ├── Herbal Atelier     — coming soon
+│   └── The Forest kapısı  → garden.html
+│           ↓
+├── garden.html — Bahçe (mevsimsel, organik, topluluk)
+│   ├── Idea Basket buraya taşınır
+│   ├── Ukiyo köşesi
+│   └── Orman kapısı → forest.html
+│           ↓
+└── forest.html — Orman (bilinmez, generatif, sonsuz)
+        Çıkış var ama harita yok.
+        Her girişte farklı.
+        Kiracı götüremez, satılamaz.
 ```
 
 ---
 
-## Koridor Teknik Detaylar
+## Şu An Canlı (Nisan 2026)
 
-- **Engine:** Three.js r128 (CDN)
-- **Perspektif:** PerspectiveCamera, FOV 65
-- **Koridor:** W=5, H=4, L=32 birim
-- **Kamera pozisyonları:** z=1, -6, -14, -20 (4 adım)
-- **Kapılar:** MeshStandardMaterial, canvas texture tabelalar, billboard
-- **Pencereler:** Her 4 birimde bir, gece gökyüzü, ay, yıldızlar
-- **Işıklandırma:** Ambient + Directional + sconce PointLights
-- **Hareket:** Smooth lerp (t*4), 0.75s geçiş hissi
+- `index.html` — giriş, gong, animasyon
+- `corridor-3d.html` — Three.js 3D koridor, 6 kapı
+- `about.html` — hikaye
+- `games.html` — Magic Ball
+- Full SEO, OG image
 
 ---
 
-## Felsefe
+## Koridor Teknik
 
-Koridorun sonunda bilinen biter, orman başlar.
-Işığı kapattığında ateş böceklerini görürsün.
+- Three.js r128, PerspectiveCamera FOV 65
+- W=5, H=4, L=32 birim
+- 4 kamera pozisyonu, smooth lerp
+- Billboard tabelalar, canvas texture
+- Gece pencereleri, ay, yıldızlar
+- 40Hz ses eklenecek (Phase 4)
 
-Beden ve rezonans aynı şeyin iki yüzü.
-Beslenme ve ses. Fermentasyon ve nefes.
+---
+
+## Üç Alan Felsefesi
+
+**Koridor (Ev)**
+Araçlar burada. Üreticiler burada çalışır.
+Kiracılar bu koridorda oda açar.
+Günlük hayata dokunan, fonksiyonel.
+
+**Bahçe**
+Mevsimsel. Değişir. Büyür.
+Koridorun sertliği yok, ormanın belirsizliği de yok.
+Geçiş alanı. Nefes yeri.
+
+**Orman**
+Amaç bu.
+Generatif, sonsuz, her girişte farklı.
+Satılamaz, kiralanamaz.
+Bilinen biter, bilinmez başlar.
 
 ---
 
@@ -67,37 +97,36 @@ Beslenme ve ses. Fermentasyon ve nefes.
 
 | Kapı | Renk | Dünya |
 |------|------|-------|
-| Audio Sanctuary | Amber/altın | Ses, kayıt, sıcaklık |
+| Audio Sanctuary | Amber/altın | Ses, kayıt |
 | Fermentation Lab | Yeşil | Canlı, büyüyen |
 | Games | Mor/indigo | Oyun, felsefe |
-| Headspace | Mavi | Sessizlik, nefes |
-| Idea Basket | Turuncu/terracotta | Bırak, bul |
+| Headspace | Mavi | Sessizlik |
+| Idea Basket | Turuncu | Bırak, bul |
 | Herbal Atelier | Koyu yeşil | Bitki, kök |
-| The Forest | Gece yeşili | Bilinmez, sürpriz |
+| The Forest | Gece yeşili | Bilinmez |
+
+---
+
+## Kiracı Modeli (Değerlendirmede)
+
+Bağımsız üreticiler koridorda oda açabilir.
+Aracını getirir, biz yerleştiririz.
+Aylık kira + satış komisyonu (karar verilmedi).
+Detay: TENANT_MODEL_v1.md
 
 ---
 
 ## Hedef Kitle
 
 28–50 yaş. Üretici, meraklı, derinlik arayan.
-Dijitalde kalite arayan, marjinal değil ama ana akımdan sıkılmış.
-
----
-
-## Gelir Modeli
-
-| Aşama | Ne | Durum |
-|-------|-----|-------|
-| 1 | Audio Sanctuary — Lemon Squeezy | Bekliyor |
-| 2 | Fermentation Lab, physical products | Planlandı |
-| 3 | Membership — Supabase | Phase 5 |
+Dijitalde kalite arayan.
 
 ---
 
 ## Paralel Projeler
 
-- **casacaravanshop.com** — fiziksel ürünler, Kuzey Kıbrıs
-- **Tagmac Wellness App** — Flutter/Supabase, ayrı proje
+- `casacaravanshop.com` — fiziksel ürünler, Kuzey Kıbrıs
+- Tagmac Wellness App — Flutter/Supabase
 
 ---
 
