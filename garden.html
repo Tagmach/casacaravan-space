@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Garden — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg:     #060a0e;
+  --gold:   #A08060;
+  --cream:  #D2C3AF;
+  --text:   #C8C2B8;
+  --muted:  #7A7068;
+  --dim:    #6B5F52;
+  --border: #2E2A26;
+  --green:  #1D9E75;
+}
+
+html, body {
+  width:100%; height:100%;
+  background: var(--bg);
+  overflow: hidden;
+  font-family: 'Jost', sans-serif;
+}
+
+/* Sky canvas */
+#sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Header */
+#header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+  background: linear-gradient(to bottom, rgba(6,10,14,0.8) 0%, transparent 100%);
+}
+#header-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+#header-sep { font-size: 10px; color: var(--dim); }
+#header-room {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+}
+#header-back {
+  margin-left: auto;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 7px 18px;
+  border-radius: 100px;
+  transition: all 0.25s;
+  cursor: pointer;
+  background: none;
+  font-family: 'Jost', sans-serif;
+}
+#header-back:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Garden scene */
+#garden-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* Ground */
+#ground {
+  width: 100%;
+  height: 35%;
+  background: linear-gradient(
+    to top,
+    #0a1408 0%,
+    #0c1a0a 30%,
+    #0a1608 60%,
+    transparent 100%
+  );
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Grass texture — subtle lines */
+#ground::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    85deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(30,60,20,0.08) 3px,
+    rgba(30,60,20,0.08) 4px
+  );
+}
+
+/* Trees silhouette */
+#trees {
+  position: absolute;
+  bottom: 100%;
+  left: 0; right: 0;
+  height: 260px;
+  pointer-events: none;
+}
+
+/* Moon */
+#moon {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #f8f4e0, #e8e0c0);
+  box-shadow: 0 0 40px rgba(240,230,180,0.4), 0 0 80px rgba(240,230,180,0.15);
+  top: 12%;
+  right: 18%;
+  z-index: 2;
+  animation: moonFloat 8s ease-in-out infinite;
+}
+@keyframes moonFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Fireflies */
+.firefly {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #c8e040;
+  box-shadow: 0 0 6px #c8e040;
+  animation: ffFloat var(--dur) ease-in-out infinite, ffBlink var(--blink) ease-in-out infinite;
+  z-index: 3;
+}
+@keyframes ffFloat {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(var(--dx1), var(--dy1)); }
+  50%  { transform: translate(var(--dx2), var(--dy2)); }
+  75%  { transform: translate(var(--dx3), var(--dy3)); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes ffBlink {
+  0%,100% { opacity: 0.1; }
+  50% { opacity: 0.9; }
+}
+
+/* Stars */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: starTwinkle var(--dur) ease-in-out infinite;
+}
+@keyframes starTwinkle {
+  0%,100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+/* Center content */
+#center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  text-align: center;
+  pointer-events: none;
+}
+
+#garden-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeUp 1.2s ease forwards 0.4s;
+}
+
+#garden-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  line-height: 1.7;
+  max-width: 520px;
+  opacity: 0;
+  animation: fadeUp 1.4s ease forwards 0.8s;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Corner spots — coming soon activities */
+.garden-spot {
+  position: absolute;
+  z-index: 6;
+  pointer-events: all;
+  cursor: pointer;
+  transition: opacity 0.25s;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards;
+}
+.garden-spot:hover .spot-ring { border-color: var(--gold); }
+.garden-spot:hover .spot-label { color: var(--cream); }
+
+.spot-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s;
+  margin: 0 auto 8px;
+  backdrop-filter: blur(2px);
+  background: rgba(6,10,14,0.4);
+}
+.spot-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.spot-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  text-transform: uppercase;
+  text-align: center;
+  transition: color 0.25s;
+  white-space: nowrap;
+}
+.spot-soon {
+  font-size: 7px;
+  color: var(--border);
+  letter-spacing: 1px;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Forest path — bottom center */
+#forest-path {
+  position: absolute;
+  bottom: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+  text-align: center;
+  pointer-events: all;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeUp 1.6s ease forwards 1.8s;
+}
+#forest-path:hover .path-ring { border-color: var(--green); }
+#forest-path:hover .path-label { color: #D2C3AF; }
+.path-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid #2a3a20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  background: rgba(6,10,14,0.5);
+  transition: border-color 0.3s;
+}
+.path-icon { font-size: 22px; }
+.path-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  font-style: italic;
+  transition: color 0.3s;
+}
+
+/* Breathing indicator — subtle pulse in ground */
+#breath-pulse {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to top, var(--gold), transparent);
+  z-index: 4;
+  opacity: 0.3;
+  animation: breathPulse 5s ease-in-out infinite;
+}
+@keyframes breathPulse {
+  0%,100% { height: 40px; opacity: 0.15; }
+  50% { height: 80px; opacity: 0.4; }
+}
+
+/* Footer hint */
+#footer-hint {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  color: var(--border);
+  text-transform: uppercase;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+/* Sound toggle */
+#sound-toggle {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--dim);
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all 0.2s;
+  background: rgba(6,10,14,0.6);
+  font-family: 'Jost', sans-serif;
+}
+#sound-toggle:hover { border-color: var(--gold); color: var(--gold); }
+#sound-toggle.playing { border-color: var(--green); color: var(--green); }
+
+/* Chat */
+#chat-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20;
+  font-family: 'Jost', sans-serif;
+}
+
+#chat-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: rgba(6,10,14,0.85);
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(6px);
+}
+#chat-toggle:hover { border-color: var(--gold); }
+#chat-icon { font-size: 12px; color: var(--gold); }
+#chat-label { font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+#chat-count {
+  font-size: 9px; color: var(--cream);
+  background: var(--gold);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+
+#chat-panel {
+  display: none;
+  flex-direction: column;
+  width: 300px;
+  height: 380px;
+  background: rgba(8,6,4,0.95);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  backdrop-filter: blur(8px);
+}
+#chat-panel.open { display: flex; }
+
+#chat-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#chat-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: 1px;
+}
+#chat-online {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--green);
+}
+#chat-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+#chat-close:hover { color: var(--cream); }
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#chat-messages:empty::after {
+  content: 'The garden is quiet. Say something.';
+  font-size: 11px;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--dim);
+  text-align: center;
+  margin: auto;
+}
+
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.chat-msg-name {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.chat-msg-text {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+  font-weight: 300;
+}
+.chat-msg-time {
+  font-size: 7px;
+  color: var(--border);
+  letter-spacing: 1px;
+}
+.chat-msg.self .chat-msg-name { color: var(--green); }
+
+#chat-input-wrap {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#chat-input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 14px;
+  font-size: 11px;
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#chat-input:focus { border-color: var(--gold); }
+#chat-input::placeholder { color: var(--border); }
+#chat-send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+#chat-send:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Sign in */
+#chat-signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px 20px;
+  flex: 1;
+}
+#signin-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--cream);
+  text-align: center;
+}
+#signin-input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+#signin-input:focus { border-color: var(--gold); }
+#signin-input::placeholder { color: var(--border); }
+#signin-btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 9px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--gold);
+  background: none;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#signin-btn:hover { background: rgba(160,128,96,0.12); }
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+
+<div id="header">
+  <div id="header-brand">Casa Caravan Space</div>
+  <div id="header-sep">·</div>
+  <div id="header-room">The Garden</div>
+  <button id="header-back" onclick="history.back()">← Back inside</button>
+</div>
+
+<div id="garden-scene">
+  <div id="ground">
+    <svg id="trees" viewBox="0 0 1200 260" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Tree silhouettes — organic, irregular -->
+      <ellipse cx="60" cy="200" rx="28" ry="55" fill="#060e04" opacity="0.95"/>
+      <ellipse cx="60" cy="160" rx="22" ry="40" fill="#080e06" opacity="0.9"/>
+      <ellipse cx="55" cy="130" rx="16" ry="30" fill="#0a1008" opacity="0.85"/>
+      <rect x="55" y="200" width="10" height="60" fill="#050c04"/>
+
+      <ellipse cx="160" cy="210" rx="22" ry="42" fill="#060e04" opacity="0.9"/>
+      <ellipse cx="162" cy="175" rx="18" ry="34" fill="#080e06" opacity="0.85"/>
+      <rect x="156" y="210" width="8" height="50" fill="#050c04"/>
+
+      <ellipse cx="280" cy="195" rx="35" ry="65" fill="#060e04" opacity="0.95"/>
+      <ellipse cx="278" cy="148" rx="26" ry="48" fill="#070e05" opacity="0.9"/>
+      <ellipse cx="282" cy="110" rx="18" ry="35" fill="#0a1208" opacity="0.85"/>
+      <rect x="273" y="200" width="12" height="60" fill="#050c04"/>
+
+      <ellipse cx="420" cy="220" rx="18" ry="35" fill="#060e04" opacity="0.85"/>
+      <rect x="415" y="220" width="7" height="40" fill="#050c04"/>
+
+      <!-- Right side -->
+      <ellipse cx="1140" cy="200" rx="28" ry="55" fill="#060e04" opacity="0.95"/>
+      <ellipse cx="1140" cy="158" rx="22" ry="40" fill="#080e06" opacity="0.9"/>
+      <rect x="1135" y="200" width="10" height="60" fill="#050c04"/>
+
+      <ellipse cx="1040" cy="210" rx="24" ry="45" fill="#060e04" opacity="0.9"/>
+      <ellipse cx="1038" cy="170" rx="19" ry="38" fill="#080e06" opacity="0.85"/>
+      <rect x="1034" y="210" width="9" height="50" fill="#050c04"/>
+
+      <ellipse cx="920" cy="195" rx="32" ry="60" fill="#060e04" opacity="0.95"/>
+      <ellipse cx="918" cy="148" rx="24" ry="46" fill="#070e05" opacity="0.9"/>
+      <ellipse cx="922" cy="110" rx="17" ry="33" fill="#0a1208" opacity="0.85"/>
+      <rect x="914" y="200" width="12" height="60" fill="#050c04"/>
+
+      <ellipse cx="780" cy="225" rx="16" ry="30" fill="#060e04" opacity="0.8"/>
+      <rect x="775" y="225" width="7" height="35" fill="#050c04"/>
+
+      <!-- Center path opening -->
+      <ellipse cx="580" cy="240" rx="14" ry="22" fill="#060e04" opacity="0.7"/>
+      <ellipse cx="630" cy="238" rx="12" ry="20" fill="#060e04" opacity="0.65"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Sound toggle -->
+<div id="sound-toggle" onclick="toggleSound()">♪ forest sounds</div>
+
+<!-- Moon -->
+<div id="moon"></div>
+
+<!-- Fireflies (generated by JS) -->
+
+<!-- Stars (generated by JS) -->
+
+<!-- Center text -->
+<div id="center">
+  <div id="garden-title">The Garden</div>
+  <div id="garden-quote">
+    Turn off the light.<br>
+    Wait.<br>
+    Your sight will return.
+  </div>
+</div>
+
+<!-- Corner activities -->
+<div class="garden-spot" style="top:22%;left:4%;animation-delay:1.2s" onclick="spotClick('Idea Basket')">
+  <div class="spot-ring"><div class="spot-icon">✦</div></div>
+  <div class="spot-label">Idea Basket<span class="spot-soon">coming soon</span></div>
+</div>
+
+<div class="garden-spot" style="bottom:22%;left:6%;animation-delay:1.6s" onclick="spotClick('Sit & Breathe')">
+  <div class="spot-ring"><div class="spot-icon">~</div></div>
+  <div class="spot-label">Sit & Breathe<span class="spot-soon">coming soon</span></div>
+</div>
+
+<div class="garden-spot" style="bottom:22%;right:6%;animation-delay:1.8s" onclick="spotClick('Seasonal Table')">
+  <div class="spot-ring"><div class="spot-icon">⊕</div></div>
+  <div class="spot-label">Seasonal<span class="spot-soon">coming soon</span></div>
+</div>
+
+<!-- Forest path -->
+<div id="forest-path" onclick="spotClick('The Forest')">
+  <div class="path-ring"><div class="path-icon">↓</div></div>
+  <div class="path-label">The Forest</div>
+</div>
+
+<!-- Breath pulse -->
+<div id="breath-pulse"></div>
+
+<!-- Forest night sounds -->
+<audio id="forestAudio" loop preload="auto">
+  <!-- We use Web Audio API to generate ambient forest sound -->
+</audio>
+
+<!-- Chat Room -->
+<div id="chat-wrap">
+  <div id="chat-toggle" onclick="toggleChat()">
+    <span id="chat-icon">✦</span>
+    <span id="chat-label">Garden Chat</span>
+    <span id="chat-count" style="display:none"></span>
+  </div>
+  <div id="chat-panel">
+    <div id="chat-header">
+      <span id="chat-title">The Garden</span>
+      <span id="chat-online">· open</span>
+      <button id="chat-close" onclick="toggleChat()">×</button>
+    </div>
+    <!-- Sign in gate -->
+    <div id="chat-signin">
+      <div id="signin-text">What shall we call you?</div>
+      <input id="signin-input" type="text" placeholder="a name or nothing..." maxlength="30" autocomplete="off">
+      <button id="signin-btn" onclick="signIn()">Enter the garden</button>
+    </div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-wrap">
+      <input id="chat-input" type="text" placeholder="say something..." maxlength="200" autocomplete="off">
+      <button id="chat-send" onclick="sendMessage()">↑</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div id="footer-hint">breathe · stay a while · or go deeper</div>
+
+<script>
+// ── Night sky canvas ─────────────────────────────────────────────
+const sky = document.getElementById('sky');
+const sctx = sky.getContext('2d');
+
+function drawSky() {
+  sky.width = window.innerWidth;
+  sky.height = window.innerHeight;
+  const grad = sctx.createLinearGradient(0, 0, 0, sky.height);
+  grad.addColorStop(0, '#020508');
+  grad.addColorStop(0.4, '#060a10');
+  grad.addColorStop(0.7, '#080e08');
+  grad.addColorStop(1, '#060a04');
+  sctx.fillStyle = grad;
+  sctx.fillRect(0, 0, sky.width, sky.height);
+}
+drawSky();
+window.addEventListener('resize', drawSky);
+
+// ── Stars ────────────────────────────────────────────────────────
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() < 0.85 ? 1 : Math.random() < 0.7 ? 2 : 3;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*65}%;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;opacity:${0.3+Math.random()*0.5}`;
+  document.body.appendChild(s);
+}
+
+// ── Fireflies ────────────────────────────────────────────────────
+for (let i = 0; i < 18; i++) {
+  const f = document.createElement('div');
+  f.className = 'firefly';
+  const dx = () => (Math.random()-0.5)*80+'px';
+  const dy = () => (Math.random()-0.5)*60+'px';
+  f.style.cssText = `left:${10+Math.random()*80}%;top:${35+Math.random()*50}%;--dur:${6+Math.random()*8}s;--blink:${1.5+Math.random()*2.5}s;--dx1:${dx()};--dy1:${dy()};--dx2:${dx()};--dy2:${dy()};--dx3:${dx()};--dy3:${dy()};animation-delay:${Math.random()*6}s`;
+  document.body.appendChild(f);
+}
+
+// ── Forest Audio (Web Audio API) ─────────────────────────────────
+let audioCtx = null;
+let forestNodes = [];
+let audioPlaying = false;
+
+function buildForestSound() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Real cricket audio — CC0 license
+  // Download cricket.mp3 from Pixabay and upload to GitHub repo
+  const audio = new Audio('cricket.mp3');
+  audio.loop = true;
+  audio.volume = 0;
+
+  const source = audioCtx.createMediaElementSource(audio);
+  const gain = audioCtx.createGain();
+  const lpf = audioCtx.createBiquadFilter();
+  lpf.type = 'lowpass';
+  lpf.frequency.value = 4000;
+
+  source.connect(lpf);
+  lpf.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 4);
+
+  audio.play().catch(() => {});
+  forestNodes._audio = audio;
+  forestNodes._gain = gain;
+
+  return gain;
+}
+
+function toggleSound() {
+  const btn = document.getElementById('sound-toggle');
+  if (!audioPlaying) {
+    if (!audioCtx) buildForestSound();
+    else {
+      audioCtx.resume();
+      if (forestNodes._audio) forestNodes._audio.play();
+    }
+    audioPlaying = true;
+    btn.classList.add('playing');
+  } else {
+    if (forestNodes._audio) forestNodes._audio.pause();
+    audioCtx.suspend();
+    audioPlaying = false;
+    btn.classList.remove('playing');
+  }
+}
+
+// ── Chat Room ────────────────────────────────────────────────────
+let chatOpen = false;
+let userName = localStorage.getItem('garden_name') || '';
+let signedIn = !!userName;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const panel = document.getElementById('chat-panel');
+  panel.classList.toggle('open', chatOpen);
+  if (chatOpen) {
+    if (signedIn) {
+      showChatRoom();
+    } else {
+      showSignIn();
+    }
+  }
+}
+
+function showSignIn() {
+  document.getElementById('chat-signin').style.display = 'flex';
+  document.getElementById('chat-messages').style.display = 'none';
+  document.getElementById('chat-input-wrap').style.display = 'none';
+  setTimeout(() => document.getElementById('signin-input').focus(), 100);
+}
+
+function showChatRoom() {
+  document.getElementById('chat-signin').style.display = 'none';
+  document.getElementById('chat-messages').style.display = 'flex';
+  document.getElementById('chat-input-wrap').style.display = 'flex';
+  renderMessages();
+  setTimeout(() => document.getElementById('chat-input').focus(), 100);
+}
+
+function signIn() {
+  const input = document.getElementById('signin-input');
+  const name = input.value.trim() || 'wanderer';
+  userName = name;
+  signedIn = true;
+  localStorage.setItem('garden_name', name);
+  showChatRoom();
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const name = userName || 'wanderer';
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const stored = JSON.parse(localStorage.getItem('garden_chat') || '[]');
+  stored.push({ name, text, time });
+  if (stored.length > 60) stored.shift();
+  localStorage.setItem('garden_chat', JSON.stringify(stored));
+  input.value = '';
+  renderMessages();
+}
+
+function renderMessages() {
+  const el = document.getElementById('chat-messages');
+  const stored = JSON.parse(localStorage.getItem('garden_chat') || '[]');
+  if (stored.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = stored.map(m => `
+    <div class="chat-msg${m.name === userName ? ' self' : ''}">
+      <div class="chat-msg-name">${escHtml(m.name)}</div>
+      <div class="chat-msg-text">${escHtml(m.text)}</div>
+      <div class="chat-msg-time">${m.time}</div>
+    </div>
+  `).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (chatOpen && signedIn) sendMessage();
+    if (chatOpen && !signedIn) signIn();
+  }
+});
+
+// ── Spot click ───────────────────────────────────────────────────
+function spotClick(name) {
+  if (name === 'The Forest') {
+    showHint('The forest is ahead. Not yet.');
+    return;
+  }
+  showHint(name + ' — coming soon.');
+}
+
+function showHint(msg) {
+  const el = document.getElementById('footer-hint');
+  const orig = el.textContent;
+  el.textContent = msg;
+  el.style.color = '#A08060';
+  setTimeout(() => {
+    el.textContent = orig;
+    el.style.color = '';
+  }, 2800);
+}
+</script>
+
+</body>
+</html>
