@@ -828,7 +828,13 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-document.fonts.ready.then(() => {
+// Force load Cormorant before canvas signs are drawn
+document.fonts.load('300 72px "Cormorant Garamond"').then(() => {
+  return document.fonts.load('300 110px "Cormorant Garamond"');
+}).then(() => {
+  buildDots();
+  animate();
+}).catch(() => {
   buildDots();
   animate();
 });
