@@ -743,52 +743,24 @@ for (let i = 0; i < 18; i++) {
 }
 
 // ── Forest Audio (Web Audio API) ─────────────────────────────────
-let audioCtx = null;
-let forestNodes = [];
 let audioPlaying = false;
-
-function buildForestSound() {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-  // Real cricket audio — CC0 license
-  // Download cricket.mp3 from Pixabay and upload to GitHub repo
-  const audio = new Audio('cricket.mp3');
-  audio.loop = true;
-  audio.volume = 0;
-
-  const source = audioCtx.createMediaElementSource(audio);
-  const gain = audioCtx.createGain();
-  const lpf = audioCtx.createBiquadFilter();
-  lpf.type = 'lowpass';
-  lpf.frequency.value = 4000;
-
-  source.connect(lpf);
-  lpf.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  gain.gain.setValueAtTime(0, audioCtx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 4);
-
-  audio.play().catch(() => {});
-  forestNodes._audio = audio;
-  forestNodes._gain = gain;
-
-  return gain;
-}
+let audioEl = null;
 
 function toggleSound() {
   const btn = document.getElementById('sound-toggle');
+  if (!audioEl) {
+    audioEl = document.getElementById('forestAudio');
+    audioEl.src = 'cricket.mp3';
+    audioEl.loop = true;
+    audioEl.volume = 0.35;
+  }
   if (!audioPlaying) {
-    if (!audioCtx) buildForestSound();
-    else {
-      audioCtx.resume();
-      if (forestNodes._audio) forestNodes._audio.play();
-    }
-    audioPlaying = true;
-    btn.classList.add('playing');
+    audioEl.play().then(() => {
+      audioPlaying = true;
+      btn.classList.add('playing');
+    }).catch(e => console.log('Audio error:', e));
   } else {
-    if (forestNodes._audio) forestNodes._audio.pause();
-    audioCtx.suspend();
+    audioEl.pause();
     audioPlaying = false;
     btn.classList.remove('playing');
   }
