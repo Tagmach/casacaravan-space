@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -744,23 +745,33 @@ for (let i = 0; i < 18; i++) {
 
 // ── Forest Audio (Web Audio API) ─────────────────────────────────
 let audioPlaying = false;
-let audioEl = null;
+let cricketSound = null;
 
 function toggleSound() {
   const btn = document.getElementById('sound-toggle');
-  if (!audioEl) {
-    audioEl = document.getElementById('forestAudio');
-    audioEl.src = 'cricket.mp3';
-    audioEl.loop = true;
-    audioEl.volume = 0.35;
-  }
-  if (!audioPlaying) {
-    audioEl.play().then(() => {
-      audioPlaying = true;
-      btn.classList.add('playing');
-    }).catch(e => console.log('Audio error:', e));
+  if (!cricketSound) {
+    cricketSound = new Howl({
+      src: ['cricket.mp3'],
+      loop: true,
+      volume: 0,
+      onload: function() {
+        cricketSound.play();
+        cricketSound.fade(0, 0.4, 3000);
+        audioPlaying = true;
+        btn.classList.add('playing');
+      },
+      onloaderror: function(id, err) {
+        console.log('Howler error:', err);
+      }
+    });
+  } else if (!audioPlaying) {
+    cricketSound.play();
+    cricketSound.fade(0, 0.4, 2000);
+    audioPlaying = true;
+    btn.classList.add('playing');
   } else {
-    audioEl.pause();
+    cricketSound.fade(0.4, 0, 2000);
+    setTimeout(() => cricketSound.pause(), 2000);
     audioPlaying = false;
     btn.classList.remove('playing');
   }
