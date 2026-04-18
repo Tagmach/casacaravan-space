@@ -85,12 +85,12 @@
   --bg:    #0a0908;
   --bg2:   #131110;
   --bg3:   #1e1b18;
-  --gold:  #C0A070;
-  --cream: #EAD8C0;
-  --text:  #D8D0C4;
-  --muted: #A09080;
-  --dim:   #7A6E64;
-  --border:#3E3830;
+  --gold:  #A08060;
+  --cream: #D2C3AF;
+  --text:  #C8C2B8;
+  --muted: #7A7068;
+  --dim:   #6B5F52;
+  --border:#2E2A26;
   --green: #1D9E75;
   --red:   #8B3A3A;
 }
@@ -576,7 +576,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 
   <div class="gong-wrap" id="gongBtn" onclick="enterCorridor()">
     <div class="entrance-title">Casa Caravan<br>Space</div>
-    <div class="entrance-sub">A space that helps you realize yourself</div>
+    <div class="entrance-sub">· create with life</div>
     <div class="gong-circle">
       <div class="gong-ring" id="ring1"></div>
       <div class="gong-ring" id="ring2"></div>
@@ -1050,7 +1050,7 @@ function enterCorridor() {
   setTimeout(() => { r2.classList.remove('pulse'); void r2.offsetWidth; r2.classList.add('pulse'); }, 380);
   setTimeout(() => { r3.classList.remove('pulse'); void r3.offsetWidth; r3.classList.add('pulse'); }, 760);
   playEntrance();
-  setTimeout(() => window.location.href = 'corridor-3d.html', 900);
+  setTimeout(() => window.location.href = 'corridor-3d.html', 3200);
 }
 
 function openRoom(type, name) {
@@ -1130,7 +1130,7 @@ function buildCorridorDots() {
   for (let i = 1; i <= TOTAL_VIEWS; i++) {
     const d = document.createElement('div');
     d.id = 'wdot' + i;
-    d.style.cssText = 'width:7px;height:7px;border-radius:50%;cursor:pointer;transition:background 0.3s;background:' + (i===1?'#C0A070':'#3E3830');
+    d.style.cssText = 'width:7px;height:7px;border-radius:50%;cursor:pointer;transition:background 0.3s;background:' + (i===1?'#A08060':'#2E2A26');
     d.onclick = (function(v){ return function(){ goToView(v); }; })(i);
     el.appendChild(d);
   }
@@ -1145,7 +1145,7 @@ function goToView(n) {
   document.getElementById('walkFwd').disabled  = n >= TOTAL_VIEWS;
   for (let i = 1; i <= TOTAL_VIEWS; i++) {
     const d = document.getElementById('wdot' + i);
-    if (d) d.style.background = i === n ? '#C0A070' : '#3E3830';
+    if (d) d.style.background = i === n ? '#A08060' : '#2E2A26';
   }
   updateTooltips();
 }
