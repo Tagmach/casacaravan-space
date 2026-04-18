@@ -38,13 +38,13 @@ canvas { display:block; }
   font-family:'Cormorant Garamond', serif;
   font-size:11px;
   letter-spacing:3px;
-  color:#EAD8C0;
+  color:#D2C3AF;
   text-transform:uppercase;
 }
 #header-tag {
   font-family:'Jost', sans-serif;
   font-size:10px;
-  color:#A09080;
+  color:#7A7068;
   letter-spacing:1px;
 }
 #header-about {
@@ -52,12 +52,12 @@ canvas { display:block; }
   font-family:'Jost', sans-serif;
   font-size:9px;
   letter-spacing:2.5px;
-  color:#7A6E64;
+  color:#6B5F52;
   text-transform:uppercase;
   text-decoration:none;
   transition:color 0.2s;
 }
-#header-about:hover { color:#C0A070; }
+#header-about:hover { color:#A08060; }
 
 /* Door label overlay */
 #door-label {
@@ -68,7 +68,7 @@ canvas { display:block; }
   font-family:'Jost', sans-serif;
   font-size:10px;
   letter-spacing:3px;
-  color:#C0A070;
+  color:#A08060;
   text-transform:uppercase;
   opacity:0;
   transition:opacity 0.3s;
@@ -92,25 +92,25 @@ canvas { display:block; }
 .walk-btn {
   width:44px; height:44px;
   border-radius:50%;
-  border:1px solid #3E3830;
+  border:1px solid #2E2A26;
   background:none;
-  color:#A09080;
+  color:#7A7068;
   font-size:17px;
   cursor:pointer;
   transition:all 0.2s;
   display:flex; align-items:center; justify-content:center;
 }
-.walk-btn:hover { border-color:#C0A070; color:#C0A070; }
+.walk-btn:hover { border-color:#A08060; color:#A08060; }
 .walk-btn:disabled { opacity:0.2; cursor:default; }
 #walk-dots { display:flex; gap:8px; align-items:center; }
 .walk-dot {
   width:7px; height:7px;
   border-radius:50%;
-  background:#3E3830;
+  background:#2E2A26;
   cursor:pointer;
   transition:background 0.3s;
 }
-.walk-dot.active { background:#C0A070; }
+.walk-dot.active { background:#A08060; }
 
 /* Click hint -->
 #click-hint {
@@ -153,7 +153,7 @@ canvas { display:block; }
   font-family:'Cormorant Garamond', serif;
   font-size:36px;
   font-weight:300;
-  color:#EAD8C0;
+  color:#D2C3AF;
   letter-spacing:0.06em;
   margin-bottom:12px;
 }
@@ -161,7 +161,7 @@ canvas { display:block; }
   font-family:'Jost', sans-serif;
   font-size:10px;
   letter-spacing:3px;
-  color:#7A6E64;
+  color:#6B5F52;
   text-transform:uppercase;
   margin-bottom:32px;
 }
@@ -169,16 +169,16 @@ canvas { display:block; }
   font-family:'Jost', sans-serif;
   font-size:10px;
   letter-spacing:2px;
-  color:#7A6E64;
+  color:#6B5F52;
   text-transform:uppercase;
   background:none;
-  border:1px solid #3E3830;
+  border:1px solid #2E2A26;
   padding:10px 28px;
   border-radius:100px;
   cursor:pointer;
   transition:all 0.2s;
 }
-#room-back:hover { border-color:#C0A070; color:#C0A070; }
+#room-back:hover { border-color:#A08060; color:#A08060; }
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap');
 </style>
@@ -224,7 +224,7 @@ renderer.shadowMap.enabled = true;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0806);
-scene.fog = new THREE.Fog(0x0a0806, 18, 38);
+scene.fog = new THREE.FogExp2(0x0a0806, 0.032);
 
 const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 60);
 camera.position.set(0, 0, 1);
@@ -296,7 +296,7 @@ scene.add(backWall);
 
 // ── LIGHTING ─────────────────────────────────────────────────────
 // Strong ambient — base visibility
-scene.add(new THREE.AmbientLight(0x6a4a28, 1.8));
+scene.add(new THREE.AmbientLight(0x5a4020, 1.4));
 
 // Main warm overhead fill
 const mainLight = new THREE.DirectionalLight(0xc8a050, 1.4);
@@ -413,40 +413,50 @@ doors.forEach(d => {
   const signCanvas = document.createElement('canvas');
   signCanvas.width = 512; signCanvas.height = 256;
   const ctx = signCanvas.getContext('2d');
-  ctx.fillStyle = '#0c0a06';
+  // Background
+  ctx.fillStyle = '#0a0806';
   ctx.fillRect(0, 0, 512, 256);
   const hex = '#' + new THREE.Color(d.border).getHexString();
-  // Border
+  // Thin elegant border — brand style
   ctx.strokeStyle = hex;
-  ctx.lineWidth = 4;
-  ctx.strokeRect(5, 5, 502, 246);
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = hex + '55';
-  ctx.strokeRect(13, 13, 486, 230);
-  // Text — white, large
-  ctx.fillStyle = '#f0e8d8';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(8, 8, 496, 240);
+  // Small corner marks
+  [[8,8],[504,8],[8,248],[504,248]].forEach(([cx,cy]) => {
+    ctx.beginPath();
+    ctx.moveTo(cx + (cx<256?8:-8), cy);
+    ctx.lineTo(cx, cy);
+    ctx.lineTo(cx, cy + (cy<128?8:-8));
+    ctx.stroke();
+  });
+  // Text — Cormorant Garamond light, brand cream
+  ctx.fillStyle = '#D2C3AF';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const words = d.name.toUpperCase().split(' ');
+  const words = d.name.split(' ');
+  // Mixed case — brand voice is not all caps
   if (words.length === 1) {
-    ctx.font = '700 80px Arial';
+    ctx.font = '300 72px "Cormorant Garamond", serif';
     ctx.fillText(words[0], 256, 128);
   } else if (words.length === 2) {
-    ctx.font = '700 62px Arial';
-    ctx.fillText(words[0], 256, 92);
+    ctx.font = '300 58px "Cormorant Garamond", serif';
+    ctx.fillText(words[0], 256, 96);
     ctx.fillText(words[1], 256, 164);
   } else {
     const mid = Math.ceil(words.length / 2);
-    ctx.font = '700 50px Arial';
-    ctx.fillText(words.slice(0, mid).join(' '), 256, 88);
-    ctx.fillText(words.slice(mid).join(' '), 256, 152);
+    ctx.font = '300 46px "Cormorant Garamond", serif';
+    ctx.fillText(words.slice(0, mid).join(' '), 256, 90);
+    ctx.fillText(words.slice(mid).join(' '), 256, 155);
   }
-  // Small bracket decorations
+  // Thin gold line below text — brand divider
   ctx.strokeStyle = hex;
-  ctx.lineWidth = 2;
-  [[30,220,70,220],[442,220,482,220]].forEach(([x1,y1,x2,y2]) => {
-    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
-  });
+  ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(80, 215);
+  ctx.lineTo(432, 215);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
   const signTex = new THREE.CanvasTexture(signCanvas);
   signTex.needsUpdate = true;
   const SIGN_W = 1.8;
@@ -519,7 +529,7 @@ const FDH = 3.0;
 const FZ  = -L + 0.1;
 
 // Frame
-const fFrameMat = new THREE.MeshStandardMaterial({ color:0x2a4010, roughness:0.7 });
+const fFrameMat = new THREE.MeshStandardMaterial({ color:0x3a2810, roughness:0.7 });
 const fft = new THREE.Mesh(new THREE.BoxGeometry(FDW+0.14, 0.1, 0.1), fFrameMat);
 fft.position.set(0, -H/2+FDH+0.05, FZ); scene.add(fft);
 [-FDW/2-0.07, FDW/2+0.07].forEach(fx => {
@@ -528,7 +538,7 @@ fft.position.set(0, -H/2+FDH+0.05, FZ); scene.add(fft);
 });
 
 // Double doors — both swung open outward
-const doorMat2 = new THREE.MeshStandardMaterial({ color:0x1a3008, roughness:0.85 });
+const doorMat2 = new THREE.MeshStandardMaterial({ color:0x1e1608, roughness:0.85 });
 // Left panel — swung to left wall
 const doorL = new THREE.Mesh(new THREE.BoxGeometry(0.07, FDH, FDW/2), doorMat2);
 doorL.rotation.y = Math.PI/2 * 0.82;
@@ -554,7 +564,7 @@ fKnob.position.set(-FDW*0.25, -H/2+FDH*0.48, FZ+0.05);
 scene.add(fKnob);
 
 // Green glow through doorway
-const forestGlow = new THREE.PointLight(0x2a6010, 2.0, 10);
+const forestGlow = new THREE.PointLight(0x806030, 1.8, 10);
 forestGlow.position.set(0, -H/2+FDH*0.5, FZ+0.5);
 scene.add(forestGlow);
 
@@ -582,7 +592,7 @@ const forestClick = new THREE.Mesh(
   new THREE.MeshStandardMaterial({ transparent:true, opacity:0 })
 );
 forestClick.position.set(0, -H/2+FDH/2, FZ+0.02);
-forestClick.userData = { door:{ name:'The Forest', action:'soon' } };
+forestClick.userData = { door:{ name:'The Garden', action:'garden' } };
 scene.add(forestClick);
 doorMeshes.push(forestClick);
 
@@ -591,9 +601,26 @@ const fsC = document.createElement('canvas');
 fsC.width=1024; fsC.height=300;
 const fsX = fsC.getContext('2d');
 fsX.fillStyle='#0a0e06'; fsX.fillRect(0,0,1024,300);
-fsX.strokeStyle='#4a7a1a'; fsX.lineWidth=6; fsX.strokeRect(6,6,1012,288);
-fsX.fillStyle='#e8f0e0'; fsX.font='300 100px Arial'; fsX.textAlign='center'; fsX.textBaseline='middle';
-fsX.fillText('THE FOREST', 512, 150);
+// Thin border
+fsX.strokeStyle='#A08060'; fsX.lineWidth=1.5; fsX.strokeRect(8,8,1008,284);
+// Corner marks
+[[8,8],[1016,8],[8,292],[1016,292]].forEach(([cx,cy]) => {
+  fsX.strokeStyle='#A08060';
+  fsX.beginPath();
+  fsX.moveTo(cx+(cx<512?10:-10), cy);
+  fsX.lineTo(cx, cy);
+  fsX.lineTo(cx, cy+(cy<150?10:-10));
+  fsX.stroke();
+});
+// Cormorant Garamond light — brand voice
+fsX.fillStyle='#D2C3AF';
+fsX.font='300 110px "Cormorant Garamond", serif';
+fsX.textAlign='center'; fsX.textBaseline='middle';
+fsX.fillText('The Garden', 512, 150);
+// Thin divider
+fsX.strokeStyle='#A08060'; fsX.lineWidth=1; fsX.globalAlpha=0.5;
+fsX.beginPath(); fsX.moveTo(200,230); fsX.lineTo(824,230); fsX.stroke();
+fsX.globalAlpha=1;
 
 const fsTex = new THREE.CanvasTexture(fsC);
 const forestSign = new THREE.Mesh(
@@ -801,8 +828,10 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-buildDots();
-animate();
+document.fonts.ready.then(() => {
+  buildDots();
+  animate();
+});
 </script>
 </body>
 </html>
