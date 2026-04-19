@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbal Atelier — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0A0908;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;
+  --muted:#7A7068;--dim:#6B5F52;--border:#2E2A26;
+  --green:#4a7a2a;--green-light:#7ab040;--green-dim:#0e1a08;
+  --card:#0f0d0b;
+}
+html,body{
+  min-height:100%;background:var(--bg);
+  color:var(--text);font-family:'Jost',sans-serif;
+  overflow-x:hidden;
+}
+
+/* ── HEADER ── */
+#hdr{
+  position:sticky;top:0;z-index:100;
+  padding:14px 32px;display:flex;align-items:center;gap:12px;
+  background:rgba(10,9,8,0.96);border-bottom:1px solid var(--border);
+}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--cream);text-transform:uppercase;}
+#hdr-sep{color:var(--dim);font-size:10px;}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;color:var(--green-light);font-style:italic;}
+#hdr-back{
+  margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;text-decoration:none;border:1px solid var(--border);
+  padding:6px 16px;border-radius:100px;transition:all 0.2s;background:none;cursor:pointer;
+  font-family:'Jost',sans-serif;
+}
+#hdr-back:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── LAYOUT ── */
+.page{max-width:960px;margin:0 auto;padding:48px 32px 80px;}
+
+/* ── HERO ── */
+.hero{text-align:center;margin-bottom:64px;}
+.hero-eyebrow{font-size:9px;letter-spacing:3px;color:var(--green-light);text-transform:uppercase;margin-bottom:16px;}
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,6vw,64px);font-weight:300;
+  color:var(--cream);line-height:1.1;margin-bottom:20px;letter-spacing:0.02em;
+}
+.hero-title em{font-style:italic;color:var(--green-light);}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;font-style:italic;
+  color:var(--muted);line-height:1.8;max-width:540px;margin:0 auto;
+}
+
+/* ── SECTION TITLES ── */
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(22px,3vw,30px);font-weight:300;
+  color:var(--cream);letter-spacing:0.04em;
+  margin-bottom:8px;
+}
+.section-label{
+  font-size:8px;letter-spacing:3px;color:var(--green-light);
+  text-transform:uppercase;margin-bottom:24px;display:block;
+}
+.divider{
+  width:40px;height:1px;background:var(--border);margin:48px 0;
+}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;margin-bottom:40px;border-bottom:1px solid var(--border);}
+.tab{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:10px 20px;cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;transition:all 0.2s;
+  font-family:'Jost',sans-serif;background:none;border-top:none;border-left:none;border-right:none;
+}
+.tab:hover{color:var(--cream);}
+.tab.active{color:var(--green-light);border-bottom-color:var(--green-light);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ── HERB GRID ── */
+.herb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:40px;}
+.herb-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:20px;cursor:pointer;transition:all 0.2s;
+}
+.herb-card:hover{border-color:var(--green);background:#121008;}
+.herb-card.selected{border-color:var(--green-light);background:var(--green-dim);}
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--cream);margin-bottom:4px;}
+.herb-latin{font-size:9px;letter-spacing:1px;color:var(--muted);font-style:italic;margin-bottom:10px;}
+.herb-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.herb-tag{
+  font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 8px;border-radius:100px;
+  border:1px solid var(--border);color:var(--dim);
+}
+.herb-tag.primary{border-color:var(--green);color:var(--green-light);}
+.herb-desc{font-size:11px;color:var(--muted);line-height:1.7;font-weight:300;}
+
+/* ── CALCULATOR ── */
+.calc-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;}
+@media(max-width:600px){.calc-grid{grid-template-columns:1fr;}}
+
+.field{display:flex;flex-direction:column;gap:8px;}
+.field-label{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.field select, .field input{
+  background:#0a0908;border:1px solid var(--border);
+  color:var(--cream);padding:10px 14px;border-radius:6px;
+  font-family:'Jost',sans-serif;font-size:13px;outline:none;
+  transition:border-color 0.2s;width:100%;
+}
+.field select:focus,.field input:focus{border-color:var(--green);}
+.field select option{background:#0a0908;}
+
+.calc-btn{
+  width:100%;padding:14px;
+  background:var(--green-dim);border:1px solid var(--green);
+  color:var(--green-light);border-radius:8px;
+  font-family:'Jost',sans-serif;font-size:10px;letter-spacing:2.5px;
+  text-transform:uppercase;cursor:pointer;transition:all 0.2s;
+  margin-bottom:24px;
+}
+.calc-btn:hover{background:var(--green);color:var(--cream);}
+
+.results{display:none;}
+.results.show{display:block;}
+.results-title{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;
+  color:var(--cream);margin-bottom:20px;
+  border-bottom:1px solid var(--border);padding-bottom:12px;
+}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.result-box{
+  background:#080706;border:1px solid var(--border);border-radius:6px;
+  padding:14px;text-align:center;
+}
+.result-val{
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;
+  color:var(--green-light);line-height:1.1;
+}
+.result-unit{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:3px;}
+.result-label{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-top:6px;}
+
+.ratio-note{
+  font-size:11px;color:var(--muted);line-height:1.8;
+  padding:14px;background:#080706;border-radius:6px;
+  border-left:2px solid var(--green);
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+}
+
+/* ── INSTRUCTIONS ── */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{
+  display:flex;gap:24px;padding:28px 0;
+  border-bottom:1px solid var(--border);
+}
+.step:last-child{border-bottom:none;}
+.step-num{
+  font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;
+  color:var(--border);line-height:1;flex-shrink:0;width:48px;
+  padding-top:2px;
+}
+.step-body{}
+.step-title{
+  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
+  color:var(--cream);margin-bottom:8px;
+}
+.step-text{font-size:12px;color:var(--muted);line-height:1.9;font-weight:300;}
+.step-tip{
+  margin-top:10px;font-size:11px;color:var(--green-light);
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+}
+
+/* ── SOLVENT TABLE ── */
+.solvent-table{width:100%;border-collapse:collapse;margin-bottom:32px;}
+.solvent-table th{
+  font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--border);
+}
+.solvent-table td{
+  font-size:12px;color:var(--text);padding:12px 14px;
+  border-bottom:1px solid rgba(46,42,38,0.5);vertical-align:top;
+  line-height:1.6;
+}
+.solvent-table tr:hover td{background:#0f0d0b;}
+
+/* ── DISCLAIMER ── */
+.disclaimer{
+  margin-top:48px;padding:20px 24px;
+  border:1px solid var(--border);border-radius:8px;
+  background:#0a0806;
+}
+.disclaimer-title{font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.disclaimer-text{font-size:11px;color:var(--dim);line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">Herbal Atelier</div>
+  <button id="hdr-back" onclick="history.back()">← Corridor</button>
+</div>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="hero-eyebrow">Herbal Atelier · Extract Laboratory</div>
+    <h1 class="hero-title">Full Spectrum<br><em>Herbal Extracts</em></h1>
+    <p class="hero-sub">From raw plant to concentrated essence — water, alcohol, and the slow art of extraction.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('herbs')">Herb Guide</button>
+    <button class="tab" onclick="showTab('calculator')">Calculator</button>
+    <button class="tab" onclick="showTab('instructions')">Instructions</button>
+    <button class="tab" onclick="showTab('solvents')">Solvents</button>
+  </div>
+
+  <!-- TAB: HERBS -->
+  <div id="tab-herbs" class="tab-panel active">
+    <span class="section-label">Click a herb to explore</span>
+    <div class="herb-grid" id="herbGrid"></div>
+    <div id="herbDetail" style="display:none;"></div>
+  </div>
+
+  <!-- TAB: CALCULATOR -->
+  <div id="tab-calculator" class="tab-panel">
+    <span class="section-label">Full Spectrum Extract Calculator</span>
+    <div class="calc-wrap">
+      <div class="calc-grid">
+        <div class="field">
+          <label class="field-label">Herb</label>
+          <select id="calcHerb">
+            <option value="">— Select herb —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Solvent</label>
+          <select id="calcSolvent">
+            <option value="water">Water (Aqueous)</option>
+            <option value="alcohol">Alcohol 70–96%</option>
+            <option value="hydro">Hydroalcoholic 30–50%</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Dry herb amount (g)</label>
+          <input type="number" id="calcAmount" value="100" min="1" max="5000">
+        </div>
+        <div class="field">
+          <label class="field-label">Target extract ratio</label>
+          <select id="calcRatio">
+            <option value="4">4:1 — Standard</option>
+            <option value="8" selected>8:1 — Concentrated</option>
+            <option value="10">10:1 — High potency</option>
+            <option value="20">20:1 — Full spectrum premium</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">Calculate Extract</button>
+
+      <div class="results" id="calcResults">
+        <div class="results-title">Extract Protocol</div>
+        <div class="result-grid" id="resultGrid"></div>
+        <div class="ratio-note" id="ratioNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: INSTRUCTIONS -->
+  <div id="tab-instructions" class="tab-panel">
+    <span class="section-label">Full Spectrum Extraction — Step by Step</span>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Prepare your material</div>
+          <div class="step-text">Use dried, high-quality plant material. Grind coarsely — not to powder. Powder over-extracts tannins and creates filtration problems. Aim for a rough, irregular texture like coarse coffee grounds. Weigh precisely. Label everything: herb, date, batch number.</div>
+          <div class="step-tip">Full spectrum means preserving the whole plant intelligence — volatile aromatics, alkaloids, polyphenols, terpenes together.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Choose your solvent</div>
+          <div class="step-text">Water extracts polysaccharides, minerals, and water-soluble compounds. Alcohol extracts alkaloids, resins, and fat-soluble constituents. A hydroalcoholic mix (30–50% alcohol) extracts the broadest spectrum — the closest to what your body recognises. For most full spectrum extracts, begin with a 40–50% hydroalcoholic maceration.</div>
+          <div class="step-tip">The solvent ratio determines what enters your extract. Think of it as a conversation with the plant — different languages reach different compounds.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Maceration — first extraction</div>
+          <div class="step-text">Combine herb and solvent in a sealed glass jar. Ratio: 1 part herb to 8–10 parts solvent by weight. Store in a cool, dark place. Shake once or twice daily. Minimum maceration time: 14 days for alcohol, 3–5 days for hot water decoction. Longer maceration increases alkaloid and resin extraction but may add bitterness.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Press and filter</div>
+          <div class="step-text">After maceration, press the plant material firmly through a cloth (muslin or fine cheesecloth). Collect all liquid — this is your primary extract. Filter through coffee filter or Buchner funnel to remove fine particles. For water extracts: strain while hot. Save the pressed material — it can be decocted again in water for a secondary extraction.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Concentration — evaporation</div>
+          <div class="step-text">Pour the filtered extract into a wide, shallow stainless steel or glass vessel. Evaporate at low heat — below 50°C (122°F) to protect volatile compounds. Use a double boiler or a dehydrator. Stir frequently as it thickens. For alcohol extracts: a rotary evaporator recovers the alcohol. At home, slow evaporation at room temperature in a well-ventilated space works for small batches. Target consistency: thick syrup for 8:1, dense paste for 20:1.</div>
+          <div class="step-tip">Never boil. Heat above 60°C begins destroying terpenes and certain alkaloids. Patience is the technique.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">06</div>
+        <div class="step-body">
+          <div class="step-title">Spray-drying or powder (optional)</div>
+          <div class="step-text">To convert your extract to powder: mix concentrated extract with a carrier (maltodextrin, acacia, or rice flour) at roughly 1:1 ratio. Spread on parchment and dry at 40°C until brittle. Break into powder. Store in airtight, dark glass containers. This produces a true dry extract — stable, concentrated, measurable.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">07</div>
+        <div class="step-body">
+          <div class="step-title">Storage and labelling</div>
+          <div class="step-text">Label every container: herb name, botanical name, extraction date, solvent used, ratio achieved, batch number. Store liquid extracts with 20–25% alcohol content for preservation. Dry extracts in sealed dark glass, away from heat and moisture. Shelf life: liquid tinctures 2–5 years, dry extracts 1–3 years properly stored.</div>
+          <div class="step-tip">The extract knows what it is. Your job is to remember too.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: SOLVENTS -->
+  <div id="tab-solvents" class="tab-panel">
+    <span class="section-label">Solvent selection guide</span>
+    <table class="solvent-table">
+      <thead>
+        <tr>
+          <th>Solvent</th>
+          <th>What it extracts</th>
+          <th>Best for</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Water (cold)</strong></td>
+          <td>Polysaccharides, mucilages, minerals, water-soluble vitamins</td>
+          <td>Mushrooms, slippery elm, marshmallow root</td>
+          <td>Short shelf life, refrigerate, use within days</td>
+        </tr>
+        <tr>
+          <td><strong>Water (hot decoction)</strong></td>
+          <td>Polysaccharides, saponins, minerals, some alkaloids</td>
+          <td>Ashwagandha, ginger, astragalus, reishi</td>
+          <td>Simmer 20–40 min, do not boil volatile herbs</td>
+        </tr>
+        <tr>
+          <td><strong>Alcohol 95–96%</strong></td>
+          <td>Resins, alkaloids, essential oils, fat-soluble compounds</td>
+          <td>Ginkgo, cannabis, propolis, resins</td>
+          <td>Highest potency, poor for polar compounds</td>
+        </tr>
+        <tr>
+          <td><strong>Alcohol 60–70%</strong></td>
+          <td>Wide spectrum — alkaloids, glycosides, tannins, resins</td>
+          <td>Most herbs — standard tincture</td>
+          <td>The classic pharmacy standard</td>
+        </tr>
+        <tr>
+          <td><strong>Hydroalcoholic 30–50%</strong></td>
+          <td>Broadest spectrum — both water and alcohol soluble</td>
+          <td>Full spectrum extracts — olive leaf, ashwagandha, ginger</td>
+          <td>Best for full spectrum. Mix food-grade alcohol with water.</td>
+        </tr>
+        <tr>
+          <td><strong>Glycerin (vegetable)</strong></td>
+          <td>Sugars, some glycosides, mild tannins</td>
+          <td>Children's preparations, alcohol-free extracts</td>
+          <td>Lower potency, sweet, stable shelf life</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="disclaimer">
+      <div class="disclaimer-title">Important Note</div>
+      <div class="disclaimer-text">The information in this guide is for educational purposes related to traditional herbal preparation methods. Nothing here constitutes medical advice. Herbal extracts can interact with medications and may not be suitable for everyone. Consult a qualified herbalist or healthcare professional before using concentrated herbal extracts, especially if pregnant, nursing, or managing a health condition. Some herbs require specific preparation to remove naturally occurring compounds that may be harmful in concentrated form.</div>
+    </div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ── HERB DATA ────────────────────────────────────────────────────
+const herbs = [
+  {
+    id:'olive-leaf',
+    name:'Olive Leaf',
+    latin:'Olea europaea',
+    tags:['antiviral','antimicrobial','cardiovascular','primary'],
+    desc:'Rich in oleuropein, a potent polyphenol. Traditionally used to support immune function, blood pressure, and cardiovascular health. Research suggests significant antimicrobial and antiviral activity.',
+    activeCompounds:'Oleuropein, hydroxytyrosol, verbascoside, rutin',
+    solventNote:'Hydroalcoholic 40–60% extracts the highest oleuropein content. Water extracts polysaccharides but loses much of the oleuropein.',
+    ratio:'8:1 to 20:1',
+    uses:[
+      'May support healthy blood pressure',
+      'Traditionally used for immune resilience',
+      'Research suggests antiviral properties',
+      'Used in Mediterranean traditional medicine for centuries',
+      'May support healthy blood sugar levels'
+    ]
+  },
+  {
+    id:'ashwagandha',
+    name:'Ashwagandha',
+    latin:'Withania somnifera',
+    tags:['adaptogen','stress','energy','primary'],
+    desc:'One of the most researched adaptogens in Ayurvedic medicine. Contains withanolides that may help the body adapt to physical and psychological stress. Used for thousands of years for vitality and resilience.',
+    activeCompounds:'Withanolides (4–10%), alkaloids, saponins, iron',
+    solventNote:'Root requires hot water or hydroalcoholic extraction to release withanolides. Traditional preparation always involved milk decoction — the fat helps absorption.',
+    ratio:'5:1 to 15:1',
+    uses:[
+      'Adaptogenic — may help the body manage stress response',
+      'Traditionally used to support energy and vitality',
+      'Research suggests support for healthy cortisol levels',
+      'Used for cognitive function and mental clarity',
+      'May support healthy testosterone levels in men',
+      'Traditional use for sleep quality'
+    ]
+  },
+  {
+    id:'ginkgo',
+    name:'Ginkgo Biloba',
+    latin:'Ginkgo biloba',
+    tags:['cognitive','circulation','antioxidant','primary'],
+    desc:'Ancient tree — 200 million years old. Leaves contain flavonoids and terpenoids that support cerebral circulation. One of the most studied herbal preparations in clinical research.',
+    activeCompounds:'Ginkgo flavone glycosides (24%), terpene lactones (6%), ginkgolides A, B, C',
+    solventNote:'Alcohol 60–70% is required. The active ginkgolides are poorly water soluble. Standardised extracts specify 24% flavone glycosides and 6% terpene lactones.',
+    ratio:'40:1 to 50:1 (standardised)',
+    uses:[
+      'Research supports cognitive function and memory',
+      'May support healthy cerebral blood flow',
+      'Traditionally used for age-related cognitive changes',
+      'Research suggests support for eye health',
+      'May support hearing and tinnitus management',
+      'Antioxidant — may protect against oxidative stress'
+    ]
+  },
+  {
+    id:'ginger',
+    name:'Ginger',
+    latin:'Zingiber officinale',
+    tags:['digestive','anti-inflammatory','warming','primary'],
+    desc:'Rhizome with thousands of years of culinary and medicinal use. Gingerols and shogaols give both the heat and the therapeutic action. One of the most versatile plants in the herbal world.',
+    activeCompounds:'Gingerols (6-gingerol primary), shogaols, paradols, zingerone, volatile oils',
+    solventNote:'Fresh ginger: alcohol 70–80% for gingerols. Dried ginger: more shogaols, water extraction effective. Hydroalcoholic mix captures broadest spectrum.',
+    ratio:'5:1 to 10:1',
+    uses:[
+      'Well-documented support for digestive comfort',
+      'Research supports reduction of nausea and motion sickness',
+      'Anti-inflammatory — may support joint comfort',
+      'Traditionally used for circulation and warming',
+      'May support healthy blood sugar regulation',
+      'Used in Ayurvedic and Chinese medicine for respiratory support'
+    ]
+  },
+  {
+    id:'echinacea',
+    name:'Echinacea',
+    latin:'Echinacea purpurea / angustifolia',
+    tags:['immune','antiviral','primary'],
+    desc:'Native American plant, one of the most widely used herbs for immune support. Alkylamides from the root and polysaccharides from aerial parts have complementary activity — hence the value of full spectrum.',
+    activeCompounds:'Alkylamides, caffeic acid derivatives (echinacoside), polysaccharides, glycoproteins',
+    solventNote:'Root requires alcohol 60%+ for alkylamides. Aerial parts: water extracts polysaccharides. Full spectrum = combine both extractions. The tingly sensation on the tongue indicates alkylamide presence — a quality marker.',
+    ratio:'4:1 to 12:1',
+    uses:[
+      'Widely researched for immune support',
+      'Traditionally used at first sign of infection',
+      'May support upper respiratory health',
+      'Research suggests antiviral properties',
+      'Used by indigenous North Americans for wound healing'
+    ]
+  },
+  {
+    id:'turmeric',
+    name:'Turmeric',
+    latin:'Curcuma longa',
+    tags:['anti-inflammatory','antioxidant','digestive','primary'],
+    desc:'The golden rhizome. Curcumin is poorly bioavailable alone — full spectrum extract retains the natural oils and turmerones that dramatically enhance absorption. Always combine with black pepper (piperine) or fat.',
+    activeCompounds:'Curcuminoids (curcumin, bisdemethoxycurcumin), turmerones, sesquiterpenes',
+    solventNote:'Curcumin is fat-soluble. Alcohol 70–95% needed for curcuminoid extraction. Full spectrum: include the volatile oils (ethanol), then emulsify with a small amount of oil for bioavailability.',
+    ratio:'5:1 to 20:1',
+    uses:[
+      'Well-researched anti-inflammatory activity',
+      'May support joint health and comfort',
+      'Traditional Ayurvedic use for digestive support',
+      'Research suggests liver support',
+      'May support brain health — crosses blood-brain barrier',
+      'Significant antioxidant capacity'
+    ]
+  },
+  {
+    id:'lions-mane',
+    name:'Lion\'s Mane',
+    latin:'Hericium erinaceus',
+    tags:['cognitive','neurological','adaptogen','primary'],
+    desc:'Medicinal mushroom containing hericenones and erinacines — the only natural compounds known to stimulate Nerve Growth Factor (NGF) synthesis. Full spectrum requires dual extraction: water and alcohol.',
+    activeCompounds:'Hericenones (fruiting body), erinacines (mycelium), beta-glucans, polysaccharides',
+    solventNote:'Dual extraction essential. Beta-glucans: hot water decoction 2+ hours. Hericenones: alcohol 70%. Combine both fractions for full spectrum. Neither extraction alone captures the complete profile.',
+    ratio:'8:1 to 15:1 (dual extracted)',
+    uses:[
+      'Research suggests support for nerve growth factor',
+      'May support cognitive function and memory',
+      'Used in traditional Chinese medicine for centuries',
+      'Research suggests neuroprotective properties',
+      'May support mood and stress resilience',
+      'Used for digestive support in traditional medicine'
+    ]
+  },
+  {
+    id:'valerian',
+    name:'Valerian',
+    latin:'Valeriana officinalis',
+    tags:['sleep','nervous system','calming'],
+    desc:'European herb used since ancient Greece for sleep and anxiety. The characteristic odour (isovaleric acid) is not the active component — valerenic acid and the labile valepotriates are. Full spectrum preserves these unstable compounds.',
+    activeCompounds:'Valerenic acid, isovaleric acid, valepotriates, GABA, glutamine',
+    solventNote:'Hydroalcoholic 40–60%. Valepotriates are unstable — avoid heat above 40°C. Fresh root is preferred for valepotriate extraction. Store in cool, dark conditions.',
+    ratio:'4:1 to 8:1',
+    uses:[
+      'Traditional use for sleep quality',
+      'Research suggests support for sleep onset',
+      'Used for nervous tension and mild anxiety',
+      'May support muscle relaxation',
+      'Traditional use combined with hops, lemon balm, passionflower'
+    ]
+  },
+  {
+    id:'milk-thistle',
+    name:'Milk Thistle',
+    latin:'Silybum marianum',
+    tags:['liver','antioxidant','protective'],
+    desc:'Seeds contain silymarin — a complex of flavonolignans with well-documented hepatoprotective activity. One of the most researched liver herbs. Full spectrum seed extract preserves the complete silymarin complex.',
+    activeCompounds:'Silymarin complex (silybin, silydianin, silychristin), fatty acids, tocopherols',
+    solventNote:'Seeds must be ground before extraction. Silymarin is poorly water-soluble — alcohol 60–70% required. Standardised extracts specify 70–80% silymarin.',
+    ratio:'10:1 to 30:1',
+    uses:[
+      'Well-researched for liver support and protection',
+      'May support liver regeneration',
+      'Traditionally used after alcohol exposure',
+      'Research suggests antioxidant hepatoprotective activity',
+      'Used in European herbal medicine as primary liver herb'
+    ]
+  },
+  {
+    id:'elderberry',
+    name:'Elderberry',
+    latin:'Sambucus nigra',
+    tags:['immune','antiviral','antioxidant'],
+    desc:'Dark berries rich in anthocyanins and sambucol. Research has specifically investigated antiviral activity against influenza viruses. Traditional use across European folk medicine for generations.',
+    activeCompounds:'Anthocyanins (cyanidin-3-glucoside), sambucol, quercetin, rutin, vitamin C',
+    solventNote:'Water extraction (syrup/decoction) captures anthocyanins effectively. For full spectrum including flavonoids, hydroalcoholic 30–40%. Never consume raw elderberries — cooking or extraction removes sambunigrin.',
+    ratio:'3:1 to 8:1',
+    uses:[
+      'Research supports immune function during cold/flu season',
+      'Well-studied antiviral activity',
+      'High antioxidant content',
+      'Traditionally used for respiratory support',
+      'European folk medicine staple for winter wellness'
+    ]
+  }
+];
+
+// ── RENDER HERBS ─────────────────────────────────────────────────
+function renderHerbs(){
+  const grid = document.getElementById('herbGrid');
+  grid.innerHTML = herbs.map(h=>`
+    <div class="herb-card" onclick="showHerbDetail('${h.id}')" id="card-${h.id}">
+      <div class="herb-name">${h.name}</div>
+      <div class="herb-latin">${h.latin}</div>
+      <div class="herb-tags">${h.tags.map(t=>`<span class="herb-tag${t==='primary'?' primary':''}">${t==='primary'?'full spectrum':t}</span>`).join('')}</div>
+      <div class="herb-desc">${h.desc.substring(0,120)}...</div>
+    </div>
+  `).join('');
+
+  // Populate calc herb select
+  const sel = document.getElementById('calcHerb');
+  herbs.forEach(h=>{
+    const opt=document.createElement('option');
+    opt.value=h.id; opt.textContent=h.name;
+    sel.appendChild(opt);
+  });
+}
+
+function showHerbDetail(id){
+  const h = herbs.find(x=>x.id===id);
+  if(!h) return;
+
+  // Highlight selected card
+  document.querySelectorAll('.herb-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('card-'+id).classList.add('selected');
+
+  const detail = document.getElementById('herbDetail');
+  detail.style.display='block';
+  detail.innerHTML=`
+    <div style="background:var(--card);border:1px solid var(--green);border-radius:12px;padding:32px;margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--cream);">${h.name}</div>
+          <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);font-style:italic;">${h.latin}</div>
+        </div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--green-light);text-transform:uppercase;padding:6px 14px;border:1px solid var(--green);border-radius:100px;">Suggested ratio: ${h.ratio}</div>
+      </div>
+
+      <div style="font-size:13px;color:var(--muted);line-height:1.9;margin-bottom:24px;">${h.desc}</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <div style="background:#080706;border-radius:8px;padding:16px;">
+          <div style="font-size:8px;letter-spacing:2px;color:var(--green-light);text-transform:uppercase;margin-bottom:8px;">Active Compounds</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.7;">${h.activeCompounds}</div>
+        </div>
+        <div style="background:#080706;border-radius:8px;padding:16px;">
+          <div style="font-size:8px;letter-spacing:2px;color:var(--green-light);text-transform:uppercase;margin-bottom:8px;">Solvent Guide</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.7;">${h.solventNote}</div>
+        </div>
+      </div>
+
+      <div style="font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">Traditional & Research-Supported Uses</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:6px;">
+        ${h.uses.map(u=>`<li style="font-size:12px;color:var(--text);padding:8px 14px;background:#080706;border-radius:4px;border-left:2px solid var(--green);line-height:1.6;">· ${u}</li>`).join('')}
+      </ul>
+    </div>
+  `;
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ── CALCULATOR ───────────────────────────────────────────────────
+function calculate(){
+  const herbId  = document.getElementById('calcHerb').value;
+  const solvent = document.getElementById('calcSolvent').value;
+  const amount  = parseFloat(document.getElementById('calcAmount').value) || 100;
+  const ratio   = parseInt(document.getElementById('calcRatio').value);
+
+  const herb = herbs.find(h=>h.id===herbId);
+
+  // Core calculations
+  const solventMultiplier = {water:8, alcohol:6, hydro:8}[solvent];
+  const solventAmount = amount * solventMultiplier;
+  const extractYield  = amount / ratio;
+  const evaporationTarget = solventAmount - extractYield * 3; // rough liquid to evaporate
+  const macerationDays = solvent==='water' ? '3–5' : '14–21';
+
+  const results = document.getElementById('calcResults');
+  const grid    = document.getElementById('resultGrid');
+
+  grid.innerHTML = `
+    <div class="result-box">
+      <div class="result-val">${amount}g</div>
+      <div class="result-unit">dry herb</div>
+      <div class="result-label">Starting material</div>
+    </div>
+    <div class="result-box">
+      <div class="result-val">${solventAmount}ml</div>
+      <div class="result-unit">solvent needed</div>
+      <div class="result-label">${solventMultiplier}× herb weight</div>
+    </div>
+    <div class="result-box">
+      <div class="result-val">${extractYield.toFixed(1)}g</div>
+      <div class="result-unit">target extract</div>
+      <div class="result-label">${ratio}:1 ratio</div>
+    </div>
+    <div class="result-box">
+      <div class="result-val">${macerationDays}</div>
+      <div class="result-unit">days</div>
+      <div class="result-label">Maceration time</div>
+    </div>
+    <div class="result-box">
+      <div class="result-val">≤50°C</div>
+      <div class="result-unit">max temperature</div>
+      <div class="result-label">During evaporation</div>
+    </div>
+    <div class="result-box">
+      <div class="result-val">${Math.round(evaporationTarget)}ml</div>
+      <div class="result-unit">to evaporate</div>
+      <div class="result-label">Approx. liquid removal</div>
+    </div>
+  `;
+
+  const solventNames = {water:'hot water decoction',alcohol:'alcohol (60–70%)',hydro:'hydroalcoholic (40% alcohol)'};
+  const herbNote = herb ? `<strong style="color:var(--cream)">${herb.name}:</strong> ${herb.solventNote}` : 'Select a herb for specific solvent guidance.';
+
+  document.getElementById('ratioNote').innerHTML = `
+    ${herbNote}<br><br>
+    <span style="color:var(--dim)">Protocol: Macerate ${amount}g in ${solventAmount}ml ${solventNames[solvent]} for ${macerationDays} days. Press and filter. Evaporate gently below 50°C until ${extractYield.toFixed(1)}g dry weight remains. Target: ${ratio}:1 full spectrum extract.</span>
+  `;
+
+  results.classList.add('show');
+}
+
+// ── TABS ─────────────────────────────────────────────────────────
+function showTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const ids=['herbs','calculator','instructions','solvents'];
+    t.classList.toggle('active', ids[i]===id);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p=>{
+    p.classList.toggle('active', p.id==='tab-'+id);
+  });
+}
+
+renderHerbs();
+</script>
+</body>
+</html>
