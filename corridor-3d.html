@@ -155,13 +155,16 @@ mainLight.position.set(0, 8, 4); scene.add(mainLight);
 const fillLight = new THREE.DirectionalLight(0xd4a870, 0.9);
 fillLight.position.set(0, 2, 6); scene.add(fillLight);
 
-[-2, -8, -14, -20, -26].forEach(z => {
-  [-W/2+0.4, W/2-0.4].forEach(x => {
+// Sconce lights — centered between windows, at window height
+// Windows at z: -2,-6,-10,-14,-18,-22,-26,-30
+// Between windows: -4,-8,-12,-16,-20,-24,-28
+[-4, -8, -12, -16, -20, -24, -28].forEach(z => {
+  [-W/2+0.08, W/2-0.08].forEach(x => {
     const l = new THREE.PointLight(0xf0b840, 1.8, 7);
-    l.position.set(x, H/2-0.4, z); scene.add(l);
+    l.position.set(x, H/2-0.45, z); scene.add(l);
     const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),
       new THREE.MeshStandardMaterial({color:0xf8e060,emissive:0xf8e060,emissiveIntensity:3}));
-    bulb.position.set(x, H/2-0.35, z); scene.add(bulb);
+    bulb.position.set(x, H/2-0.45, z); scene.add(bulb);
   });
 });
 
