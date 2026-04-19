@@ -113,7 +113,7 @@ function resize() {
 window.addEventListener('resize', resize);
 
 // ── DIMENSIONS ──────────────────────────────────────────────────
-const W = 5, H = 4, L = 32;
+const W = 5, H = 4, L = 27;
 
 // ── CORRIDOR WALLS ───────────────────────────────────────────────
 function mat(hex, rough=0.95) {
@@ -225,20 +225,56 @@ doors.forEach(d => {
   const py = -H/2 + DH/2;
   const bc = new THREE.Color(d.border);
 
-  // Frame — top + sides only (no bottom, z-fighting with floor)
+  // Door shape — arched top (rounded upper corners)
+  const archShape = new THREE.Shape();
+  const hw = DW/2, hh = DH/2;
+  const archR = DW * 0.22; // arch radius — how round the top is
+  archShape.moveTo(-hw, -hh);
+  archShape.lineTo(-hw,  hh - archR);
+  archShape.quadraticCurveTo(-hw, hh,  -hw + archR, hh);
+  archShape.lineTo( hw - archR, hh);
+  archShape.quadraticCurveTo( hw, hh,   hw, hh - archR);
+  archShape.lineTo( hw, -hh);
+  archShape.lineTo(-hw, -hh);
+
+  // Frame — arch shaped outline
   const fmat = new THREE.MeshStandardMaterial({color:bc,roughness:0.7,metalness:0.1});
-  // Top bar
-  const ftop=new THREE.Mesh(new THREE.BoxGeometry(DW+0.1,0.06,0.06),fmat);
-  ftop.rotation.y=rotY; ftop.position.set(px,py+DH/2+0.035,d.z+0.03); scene.add(ftop);
-  // Side bars
+  const frameShape = new THREE.Shape();
+  const fo = 0.06; // frame offset
+  frameShape.moveTo(-hw-fo, -hh);
+  frameShape.lineTo(-hw-fo,  hh - archR - fo);
+  frameShape.quadraticCurveTo(-hw-fo, hh+fo, -hw + archR - fo, hh+fo);
+  frameShape.lineTo( hw - archR + fo, hh+fo);
+  frameShape.quadraticCurveTo( hw+fo, hh+fo,  hw+fo, hh - archR - fo);
+  frameShape.lineTo( hw+fo, -hh);
+  // Inner cutout
+  const hole = new THREE.Path();
+  hole.moveTo(-hw, -hh);
+  hole.lineTo(-hw,  hh - archR);
+  hole.quadraticCurveTo(-hw, hh, -hw + archR, hh);
+  hole.lineTo( hw - archR, hh);
+  hole.quadraticCurveTo( hw, hh,  hw, hh - archR);
+  hole.lineTo( hw, -hh);
+  hole.lineTo(-hw, -hh);
+  frameShape.holes.push(hole);
+
+  const frameGeo = new THREE.ExtrudeGeometry(frameShape, {depth:0.05, bevelEnabled:false});
+  const frame = new THREE.Mesh(frameGeo, fmat);
+  frame.rotation.y = rotY;
+  frame.position.set(px, py, d.z + 0.02);
+  scene.add(frame);
+
+  // Side bars (bottom half straight sides)
   [[-DW/2-0.035],[DW/2+0.035]].forEach(([oz])=>{
-    const b=new THREE.Mesh(new THREE.BoxGeometry(0.06,DH+0.06,0.06),fmat);
-    b.rotation.y=rotY; b.position.set(px,py,d.z+oz); scene.add(b);
+    const b=new THREE.Mesh(new THREE.BoxGeometry(0.06,DH*0.55,0.06),fmat);
+    b.rotation.y=rotY; b.position.set(px,py-DH*0.22,d.z+oz); scene.add(b);
   });
 
-  // Surface
-  const surf=new THREE.Mesh(new THREE.PlaneGeometry(DW,DH),
-    new THREE.MeshStandardMaterial({color:new THREE.Color(d.color).multiplyScalar(0.1),roughness:0.92}));
+  // Surface — arched
+  const surf = new THREE.Mesh(
+    new THREE.ShapeGeometry(archShape),
+    new THREE.MeshStandardMaterial({color:new THREE.Color(d.color).multiplyScalar(0.1),roughness:0.92})
+  );
   surf.rotation.y=rotY; surf.position.set(px,py,d.z+0.08);
   surf.userData={door:d}; scene.add(surf); doorMeshes.push(surf);
 
@@ -272,87 +308,234 @@ doors.forEach(d => {
   ctx.strokeStyle=hex; ctx.lineWidth=3; ctx.globalAlpha=0.35;
   ctx.beginPath(); ctx.moveTo(140,420); ctx.lineTo(884,420); ctx.stroke(); ctx.globalAlpha=1;
   const tex=new THREE.CanvasTexture(sc); tex.needsUpdate=true;
-  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.8,0.9),
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.53,0.77),
     new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6}));
   const sx=d.side==='L'?-1.0:1.0;
   sign.position.set(sx,0.3,d.z-0.3); scene.add(sign); billboardSigns.push(sign);
+
+  // Arrow chevron — points toward door wall
+  const ac2=document.createElement('canvas'); ac2.width=128; ac2.height=128;
+  const ax2=ac2.getContext('2d');
+  ax2.strokeStyle='#'+bc.getHexString(); ax2.lineWidth=10;
+  ax2.lineCap='round'; ax2.lineJoin='round'; ax2.globalAlpha=0.65;
+  if(d.side==='L'){ ax2.beginPath(); ax2.moveTo(88,28); ax2.lineTo(36,64); ax2.lineTo(88,100); ax2.stroke(); }
+  else             { ax2.beginPath(); ax2.moveTo(40,28); ax2.lineTo(92,64); ax2.lineTo(40,100); ax2.stroke(); }
+  const atex=new THREE.CanvasTexture(ac2); atex.needsUpdate=true;
+  const arrow=new THREE.Mesh(new THREE.PlaneGeometry(0.2,0.2),
+    new THREE.MeshStandardMaterial({map:atex,emissiveMap:atex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6,transparent:true,depthWrite:false}));
+  const arx=d.side==='L'?-1.6:1.6;
+  arrow.position.set(arx,0.3,d.z-0.3); scene.add(arrow); billboardSigns.push(arrow);
 });
 
-// ── GARDEN DOOR ───────────────────────────────────────────────────
-const GW=W*0.68, GH=2.8, GZ=-L+0.2, gpy=-H/2+GH/2;
+// ── GARDEN DOOR ─────────────────────────────────────────────────
+const GW=W*0.598, GH=2.60, GZ=-L+0.2, gpy=-H/2+GH/2;
 
-// Frame
-const gfm=new THREE.MeshStandardMaterial({color:0x3a2810,roughness:0.6,metalness:0.2});
-[[GW+0.1,0.07,0.07,0,GH/2+0.035,0.035],[GW+0.1,0.07,0.07,0,-GH/2-0.035,0.035],
- [0.07,GH+0.07,0.07,-GW/2-0.035,0,0.035],[0.07,GH+0.07,0.07,GW/2+0.035,0,0.035],
- [0.05,GH,0.05,0,0,0.035],[GW,0.05,0.05,0,0,0.035]
-].forEach(([fw,fh,fd,ox,oy,oz])=>{
-  const b=new THREE.Mesh(new THREE.BoxGeometry(fw,fh,fd),gfm);
-  b.position.set(ox,gpy+oy,GZ+oz); scene.add(b);
+// ── BACK WALL — neutral plaster, lit by corridor ──────────────
+const backWall = new THREE.Mesh(
+  new THREE.PlaneGeometry(W, H),
+  new THREE.MeshStandardMaterial({color:0x2a2018, roughness:0.92})
+);
+backWall.position.set(0, 0, GZ-0.12); scene.add(backWall);
+
+// ── ARCH FRAME — solid stone, one integrated shape ────────────
+const archFrameMat = new THREE.MeshStandardMaterial({color:0x2e2418, roughness:0.92, metalness:0.0});
+
+// Outer arch shape (solid stone surround)
+const archOuter = new THREE.Shape();
+const ow=GW/2+0.22, oh=GH/2, archTop=gpy+GH/2, archBase=-H/2;
+// Outer rectangle bottom to top
+archOuter.moveTo(-ow, archBase-gpy);
+archOuter.lineTo(-ow, oh);
+// Left side of arch up to spring point
+archOuter.lineTo(-ow, oh);
+// Outer arch curve — semicircle
+for(let i=0;i<=18;i++){
+  const a=Math.PI-(i/18)*Math.PI;
+  archOuter.lineTo(Math.cos(a)*ow, oh+Math.sin(a)*ow*0.52);
+}
+archOuter.lineTo(ow, oh);
+archOuter.lineTo(ow, archBase-gpy);
+archOuter.lineTo(-ow, archBase-gpy);
+
+// Inner hole — door opening
+const doorHole = new THREE.Path();
+const iw=GW/2+0.02, ih=GH/2;
+doorHole.moveTo(-iw, archBase-gpy);
+doorHole.lineTo(-iw, ih);
+for(let i=0;i<=18;i++){
+  const a=Math.PI-(i/18)*Math.PI;
+  doorHole.lineTo(Math.cos(a)*iw, ih+Math.sin(a)*iw*0.52);
+}
+doorHole.lineTo(iw, ih);
+doorHole.lineTo(iw, archBase-gpy);
+doorHole.lineTo(-iw, archBase-gpy);
+archOuter.holes.push(doorHole);
+
+const archGeo = new THREE.ExtrudeGeometry(archOuter,{depth:0.18,bevelEnabled:false});
+const archMesh = new THREE.Mesh(archGeo, archFrameMat);
+archMesh.position.set(0, gpy, GZ+0.04); scene.add(archMesh);
+
+// Stone texture — subtle variation
+const archFront = new THREE.Mesh(
+  new THREE.ExtrudeGeometry(archOuter,{depth:0.01,bevelEnabled:false}),
+  new THREE.MeshStandardMaterial({color:0x352a1a,roughness:0.95})
+);
+archFront.position.set(0,gpy,GZ+0.22); scene.add(archFront);
+
+// ── DOUBLE GLASS DOORS ────────────────────────────────────────
+// Wooden door frame
+const doorFrameMat = new THREE.MeshStandardMaterial({color:0x4a3418, roughness:0.82});
+
+// Left door — no top bar (arch fills it)
+const leftDoor = new THREE.Group();
+[[GW*0.48, 0.06, 0, -GH/2],   // bottom
+ [0.06, GH, -GW*0.24, 0],      // left side
+ [0.06, GH,  GW*0.24, 0]].forEach(([fw,fh,fx,fy])=>{  // right side
+  const b = new THREE.Mesh(new THREE.BoxGeometry(fw,fh,0.06), doorFrameMat);
+  b.position.set(fx,fy,0); leftDoor.add(b);
+});
+// Glass panel
+const lglass = new THREE.Mesh(
+  new THREE.PlaneGeometry(GW*0.44, GH*0.88),
+  new THREE.MeshStandardMaterial({color:0x8ab0c8, transparent:true, opacity:0.08, side:THREE.DoubleSide})
+);
+lglass.position.set(0,0,0.02); leftDoor.add(lglass);
+// Horizontal cross bar
+const lbar = new THREE.Mesh(new THREE.BoxGeometry(GW*0.44,0.04,0.05), doorFrameMat);
+lbar.position.set(0,0.3,0.02); leftDoor.add(lbar);
+leftDoor.position.set(-GW*0.25, gpy, GZ+0.05); scene.add(leftDoor);
+
+// Right door — no top bar
+const rightDoor = new THREE.Group();
+[[GW*0.48, 0.06, 0, -GH/2],
+ [0.06, GH, -GW*0.24, 0],
+ [0.06, GH,  GW*0.24, 0]].forEach(([fw,fh,fx,fy])=>{
+  const b = new THREE.Mesh(new THREE.BoxGeometry(fw,fh,0.06), doorFrameMat);
+  b.position.set(fx,fy,0); rightDoor.add(b);
+});
+const rglass = new THREE.Mesh(
+  new THREE.PlaneGeometry(GW*0.44, GH*0.88),
+  new THREE.MeshStandardMaterial({color:0x8ab0c8, transparent:true, opacity:0.08, side:THREE.DoubleSide})
+);
+rglass.position.set(0,0,0.02); rightDoor.add(rglass);
+const rbar = new THREE.Mesh(new THREE.BoxGeometry(GW*0.44,0.04,0.05), doorFrameMat);
+rbar.position.set(0,0.3,0.02); rightDoor.add(rbar);
+rightDoor.position.set(GW*0.25, gpy, GZ+0.05); scene.add(rightDoor);
+
+// Center split
+const split = new THREE.Mesh(new THREE.BoxGeometry(0.04,GH+GW*0.26,0.08), doorFrameMat);
+split.position.set(0, gpy+GW*0.13, GZ+0.07); scene.add(split);
+
+// Door handles — simple wooden pull bars
+const handleMat = new THREE.MeshStandardMaterial({color:0x6a4820, roughness:0.6});
+[-0.1, 0.1].forEach(hx=>{
+  const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.018,0.32,8), handleMat);
+  bar.position.set(hx, gpy+0.1, GZ+0.1); scene.add(bar);
+  [-0.16,0.16].forEach(oy=>{
+    const nub = new THREE.Mesh(new THREE.SphereGeometry(0.025,7,6), handleMat);
+    nub.position.set(hx, gpy+0.1+oy, GZ+0.1); scene.add(nub);
+  });
 });
 
-// Night sky
-const ns=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
-  new THREE.MeshStandardMaterial({color:0x020408,emissive:new THREE.Color(0x040810),emissiveIntensity:2.2}));
-ns.position.set(0,gpy,GZ-0.5); scene.add(ns);
+// Garden scene behind glass — visible through doors
+const sceneBg = (()=>{
+  const c=document.createElement('canvas'); c.width=512; c.height=512;
+  const x=c.getContext('2d');
+  // Night sky
+  const sg=x.createLinearGradient(0,0,0,512);
+  sg.addColorStop(0,'#010302'); sg.addColorStop(1,'#020804');
+  x.fillStyle=sg; x.fillRect(0,0,512,512);
+  // Moon
+  const mg=x.createRadialGradient(380,60,0,380,60,120);
+  mg.addColorStop(0,'rgba(200,230,170,0.5)'); mg.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=mg; x.fillRect(0,0,512,512);
+  x.beginPath(); x.arc(380,60,18,0,Math.PI*2);
+  x.fillStyle='rgba(228,248,205,0.82)'; x.fill();
+  // Trees
+  [[60,400,16,180],[130,420,12,150],[220,410,20,200],[340,425,14,160],[430,415,18,185],[490,430,11,140]].forEach(([tx,ty,tw,th])=>{
+    x.fillStyle='#010502'; x.fillRect(tx-tw/2,ty-th,tw,th);
+    x.beginPath(); x.ellipse(tx,ty-th,tw*2.5,th*0.4,0,0,Math.PI*2); x.fillStyle='#020804'; x.fill();
+    x.beginPath(); x.ellipse(tx,ty-th*1.4,tw*1.8,th*0.32,0,0,Math.PI*2); x.fill();
+  });
+  // Ground glow
+  const gg=x.createLinearGradient(0,380,0,512);
+  gg.addColorStop(0,'rgba(10,20,6,0)'); gg.addColorStop(1,'rgba(6,14,4,0.8)');
+  x.fillStyle=gg; x.fillRect(0,380,512,132);
+  // Fireflies
+  for(let i=0;i<12;i++){
+    const fx=40+Math.random()*432, fy=180+Math.random()*200;
+    const fg=x.createRadialGradient(fx,fy,0,fx,fy,8);
+    fg.addColorStop(0,'rgba(190,220,40,0.95)'); fg.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=fg; x.beginPath(); x.arc(fx,fy,8,0,Math.PI*2); x.fill();
+  }
+  return new THREE.CanvasTexture(c);
+})();
+const bgMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(W*0.95, H*0.95),
+  new THREE.MeshStandardMaterial({map:sceneBg, emissiveMap:sceneBg, emissive:new THREE.Color(0x060e04), emissiveIntensity:1.4})
+);
+bgMesh.position.set(0, 0, GZ-0.08); scene.add(bgMesh);
 
-// Trees
-[-0.8,-0.05,0.72,-0.42,0.38].forEach((tx,ti)=>{
-  const s=0.55+ti*0.06;
-  const tr=new THREE.Mesh(new THREE.BoxGeometry(0.07*s,0.44*s,0.05),new THREE.MeshStandardMaterial({color:0x050c03}));
-  tr.position.set(tx,-H/2+0.22*s,GZ-0.35); scene.add(tr);
-  const cr=new THREE.Mesh(new THREE.SphereGeometry(0.25*s,7,5),new THREE.MeshStandardMaterial({color:0x091504}));
-  cr.position.set(tx,-H/2+0.66*s,GZ-0.35); scene.add(cr);
+// "Garden" — white, spanning both glass panels
+const garC=document.createElement('canvas');
+garC.width=2048; garC.height=512;
+const garX=garC.getContext('2d');
+garX.clearRect(0,0,2048,512);
+garX.fillStyle='rgba(255,255,255,0.95)';
+garX.font='300 230px "Cormorant Garamond",serif';
+garX.textAlign='center'; garX.textBaseline='middle';
+garX.fillText('Garden',1024,256);
+const garTex=new THREE.CanvasTexture(garC); garTex.needsUpdate=true;
+const garMesh=new THREE.Mesh(
+  new THREE.PlaneGeometry(GW*1.058, GH*0.322),
+  new THREE.MeshStandardMaterial({map:garTex,transparent:true,alphaTest:0.01,
+    emissiveMap:garTex,emissive:new THREE.Color(0xffffff),emissiveIntensity:2.2,depthWrite:false})
+);
+garMesh.position.set(GW*0.25, gpy+GH*0.56, GZ+0.12); scene.add(garMesh);
+
+// Floor arrow — pointing toward garden door
+const arC=document.createElement('canvas');
+arC.width=512; arC.height=512;
+const arX=arC.getContext('2d');
+arX.clearRect(0,0,512,512);
+arX.strokeStyle='rgba(210,195,175,0.7)';
+arX.fillStyle='rgba(210,195,175,0.55)';
+arX.lineWidth=6; arX.lineCap='round'; arX.lineJoin='round';
+// Arrow pointing up (toward door)
+arX.beginPath();
+arX.moveTo(256,460); arX.lineTo(256,120);
+arX.stroke();
+// Arrowhead
+arX.beginPath();
+arX.moveTo(180,220); arX.lineTo(256,80); arX.lineTo(332,220);
+arX.closePath(); arX.fill();
+const arTex=new THREE.CanvasTexture(arC); arTex.needsUpdate=true;
+const arMesh=new THREE.Mesh(
+  new THREE.PlaneGeometry(1.0,1.6),
+  new THREE.MeshStandardMaterial({map:arTex,transparent:true,alphaTest:0.01,
+    emissiveMap:arTex,emissive:new THREE.Color(0xd2c3af),emissiveIntensity:0.6,depthWrite:false})
+);
+arMesh.rotation.x=-Math.PI/2;
+arMesh.position.set(0,-H/2+0.02,GZ+1.8); scene.add(arMesh);
+
+// Two more arrows behind
+[GZ+2.8, GZ+3.8].forEach(az=>{
+  const a2=new THREE.Mesh(
+    new THREE.PlaneGeometry(1.0,1.6),
+    new THREE.MeshStandardMaterial({map:arTex,transparent:true,alphaTest:0.01,
+      emissiveMap:arTex,emissive:new THREE.Color(0xd2c3af),emissiveIntensity:0.6,depthWrite:false})
+  );
+  a2.rotation.x=-Math.PI/2;
+  a2.position.set(0,-H/2+0.02,az); scene.add(a2);
 });
 
-// Moon
-const gMoon=new THREE.Mesh(new THREE.CircleGeometry(0.1,14),
-  new THREE.MeshStandardMaterial({color:0xf8f0d8,emissive:new THREE.Color(0xf8f0d8),emissiveIntensity:2}));
-gMoon.position.set(-0.45,gpy+0.5,GZ-0.28); scene.add(gMoon);
-
-// Fireflies
-const ffArr=[];
-for(let i=0;i<14;i++) ffArr.push((Math.random()-0.5)*GW*0.6,-H/2+0.2+Math.random()*GH*0.65,GZ-0.1-Math.random()*0.35);
-const ffGeo=new THREE.BufferGeometry();
-ffGeo.setAttribute('position',new THREE.Float32BufferAttribute(ffArr,3));
-const ff=new THREE.Points(ffGeo,new THREE.PointsMaterial({color:0xc8e040,size:0.04,transparent:true,opacity:0.8}));
-scene.add(ff);
-
-// Glass
-const gGlass=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
-  new THREE.MeshStandardMaterial({color:0x182030,transparent:true,opacity:0.15,emissive:new THREE.Color(0x040c18),emissiveIntensity:1.0,side:THREE.DoubleSide}));
-gGlass.position.set(0,gpy,GZ+0.01); scene.add(gGlass);
-
-// Glow
-const gGlow=new THREE.PointLight(0x102008,1.2,10);
-gGlow.position.set(0,0,GZ+0.5); scene.add(gGlow);
 
 // Clickable
 const gClick=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
   new THREE.MeshStandardMaterial({transparent:true,opacity:0}));
-gClick.position.set(0,gpy,GZ+0.02);
+gClick.position.set(0,gpy,GZ+0.12);
 gClick.userData={door:{name:'The Garden',action:'garden'}};
 scene.add(gClick); doorMeshes.push(gClick);
-
-// Garden sign
-const gsC=document.createElement('canvas');
-gsC.width=768; gsC.height=200;
-const gsX=gsC.getContext('2d');
-gsX.fillStyle='rgba(8,7,6,0.85)'; gsX.fillRect(0,0,768,200);
-gsX.strokeStyle='#A08060'; gsX.lineWidth=1.2; gsX.strokeRect(7,7,754,186);
-[[7,7],[761,7],[7,193],[761,193]].forEach(([cx,cy])=>{
-  gsX.strokeStyle='#A08060'; gsX.beginPath();
-  gsX.moveTo(cx+(cx<384?11:-11),cy); gsX.lineTo(cx,cy); gsX.lineTo(cx,cy+(cy<100?11:-11)); gsX.stroke();
-});
-gsX.fillStyle='#D2C3AF'; gsX.font='300 92px "Cormorant Garamond",serif';
-gsX.textAlign='center'; gsX.textBaseline='middle';
-gsX.fillText('The Garden',384,90);
-gsX.strokeStyle='#A08060'; gsX.lineWidth=0.8; gsX.globalAlpha=0.3;
-gsX.beginPath(); gsX.moveTo(150,148); gsX.lineTo(618,148); gsX.stroke(); gsX.globalAlpha=1;
-const gsTex=new THREE.CanvasTexture(gsC); gsTex.needsUpdate=true;
-const gSign=new THREE.Mesh(new THREE.PlaneGeometry(GW*0.88,0.48),
-  new THREE.MeshStandardMaterial({map:gsTex,emissiveMap:gsTex,emissive:new THREE.Color(0xffffff),emissiveIntensity:2.5}));
-gSign.position.set(0,gpy+GH/2+0.34,GZ+0.04); scene.add(gSign);
 
 // ── WALK ─────────────────────────────────────────────────────────
 const POSITIONS=[1,-6,-14,-20];
@@ -422,8 +605,6 @@ function animate(){
   camera.position.z+=(tgtZ-camera.position.z)*Math.min(t*3.5,0.1);
   camera.position.y=Math.sin(e*0.3)*0.01;
   billboardSigns.forEach(s=>s.quaternion.copy(camera.quaternion));
-  ff.material.opacity=0.35+Math.sin(e*2.3)*0.4;
-  gMoon.material.emissiveIntensity=3.5+Math.sin(e*0.7)*0.6;
   renderer.render(scene,camera);
 }
 
