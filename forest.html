@@ -45,7 +45,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 
 const cv=document.getElementById('c');
 const cx=cv.getContext('2d');
-let W,H,t=0;
+let W=window.innerWidth,H=window.innerHeight,t=0;
 let fflies=[], layers=[];
 
 function resize(){
@@ -258,7 +258,7 @@ function drawFrame(){
 }
 
 function loop(){ t++; drawFrame(); requestAnimationFrame(loop); }
-resize();
+W=cv.width=innerWidth; H=cv.height=innerHeight; buildLayers();
 window.addEventListener('resize',resize);
 loop();
 </script>
