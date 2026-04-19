@@ -9,7 +9,7 @@
 
 - [x] Domain, GitHub, Pages, HTTPS
 - [x] Entrance — gong, animasyon, ses
-- [x] about.html — Guatemala hikayesi, Casa Caravan origin
+- [x] about.html — Guatemala hikayesi, Casa Caravan origin, brand dili
 - [x] Full SEO — meta, OG, Twitter Card, JSON-LD
 - [x] OG image 1200x630px
 
@@ -18,91 +18,96 @@
 ## Phase 2 — Corridor 3D ✓
 
 - [x] corridor-3d.html — Three.js r128, gerçek 3D
-- [x] 6 kapı, doğru derinlik, renkler, tabelalar
-- [x] Pencereler — gece gökyüzü, ay, yıldızlar
-- [x] The Forest — açık kapı, ağaçlar, ateş böcekleri
-- [x] Kamera hareketi — 4 pozisyon, smooth, klavye
+- [x] 6 kapı, pencereler, tabelalar (Cormorant Garamond, billboard)
+- [x] The Garden — cam kapı, gece görünümü
+- [x] Kamera hareketi — 4 pozisyon, smooth
 - [x] index.html ↔ corridor-3d.html entegrasyonu
-- [x] Audio Sanctuary — kulaklık uyarısı, kayıt, stüdyo
+- [x] Sconce'lar pencereler arasında ortalandı
+
+---
+
+## Phase 3 — Odalar ✓ (kısmi)
+
+- [x] Audio Sanctuary — index.html içinde, kulaklık uyarısı, stüdyo
 - [x] games.html — Magic Ball
+- [x] headspace.html — Cymatics Simulator (Chladni)
+- [x] fermentation_lab.html — bağlandı
+- [x] garden.html — gece bahçesi, cırcır sesi, chat room
 
 ---
 
-## Phase 3 — İlk Gelir
+## Phase 3b — Yapısal Temizlik
 
-- [ ] Lemon Squeezy hesabı aç
-- [ ] Audio Sanctuary ürün listesi ($9–$14)
-- [ ] Product Hunt launch
-- [ ] Are.na kanal — küratörlük başlat
+- [ ] **Audio Sanctuary'yi index.html'den çıkar, ayrı dosya yap**
+  - audio_sanctuary.html olarak taşı
+  - index.html sadece giriş + yönlendirme
+  - Tek odak, tek oturum
 
 ---
 
-## Phase 4 — Odalar & Atmosfer
+## Phase 4 — Atmosfer & Ses
 
 - [ ] **40Hz ses koridora ekle** — gamma, kulak duymaz beyin hisseder
-- [ ] Fermentation Lab odası
-- [ ] Idea Basket
-- [ ] Headspace — sessizlik zamanlayıcısı
+- [ ] Fermentation Lab — Casa Caravan estetiğine uyarla
+- [ ] Idea Basket — bırak/bul, anonim
+- [ ] Herbal Atelier — başlangıç içeriği
 
 ---
 
-## Phase 5 — Bahçe
+## Phase 5 — Bahçe Aktiviteleri
 
-- [ ] **garden.html** — koridordan geçiş kapısı
-- [ ] Mevsimsel, canlı, değişen
-- [ ] Fikir bırakılabilir — Idea Basket bahçeye taşınır
-- [ ] Ukiyo köşesi — fiziksel ürün hikayesi
+- [ ] Star Lab — statik yıldız bilgisi JSON, keyword chat
+  - Claude API bağlantısı gelir gelince
+- [ ] Garden Chat — Supabase realtime (şu an localStorage)
+- [ ] Idea Basket bahçeye taşın
 
 ---
 
 ## Phase 6 — Kiracı Modeli
 
-- [ ] Başvuru formu — "Bu koridorda bir oda ister misin?"
+- [ ] Başvuru formu
 - [ ] İlk 3 pilot kiracı — el seçimi, komisyon only
-- [ ] Oda entegrasyon süreci tanımla
-- [ ] Ödeme altyapısı — Lemon Squeezy komisyon
+- [ ] Oda entegrasyon süreci
+- [ ] Ödeme — Lemon Squeezy
 
 ---
 
-## Phase 7 — Orman
+## Phase 7 — Üyelik & Beta
 
-- [ ] **forest.html** — bahçeden geçiş, bilinen biter
-- [ ] Generatif deneyim — her girişte farklı
-- [ ] Ses + görsel + belki soru
-- [ ] Çıkış var ama harita yok
-
----
-
-## Phase 8 — Üyelik & Bulut
-
-- [ ] Supabase auth
+- [ ] Beta ücretsiz — kapı açık, insan lazım
+- [ ] Supabase auth — email ile kayıt
 - [ ] Cloud save — Audio Sanctuary kayıtları
-- [ ] Üye kiracılar kendi odalarını yönetir
+- [ ] Üye ismi koridorda görünür (opsiyonel)
+
+---
+
+## Phase 8 — Orman
+
+- [ ] forest.html — bahçeden geçiş
+- [ ] Generatif, her girişte farklı
+- [ ] Çıkış var, harita yok
 
 ---
 
 ## ⚠️ Karar Verilecekler
 
-- **Kiralama süresi** — günlük / aylık / yıllık? Yıllık taahhüt fazla. Aylık veya günlük daha esnek.
-- **Kiracı kalite standardı** — kim karar verir, nasıl tanımlanır?
-- **Kiracı ayrılırsa** — kapı ne olur? Casa Caravan sahiplenir mi?
-- **Veri politikası** — kiracı kendi kullanıcı verisini toplar mı?
-- **Oda sayısı limiti** — koridor ne kadar uzar, kaç kat?
-- **Bahçe vs koridor ilişkisi** — bahçeye koridordan mı girilir, ayrı giriş mi?
-- **Orman kalıcı mı** — her zaman uzakta mı, yoksa bir gün varılabilir mi?
+- Kiralama süresi: günlük / aylık?
+- Kiracı ayrılırsa kapı ne olur?
+- Bahçede kiracı köşesi olur mu?
+- Star Lab: Claude API ne zaman açılır? (gelir şartına bağlı)
+- Ajan bağlantısı: MCP mi, REST mi?
 
 ---
 
 ## Vizyon
 
 ```
-Giriş (gong) → Koridor (ev, odalar, araçlar)
-    → Bahçe (mevsimsel, organik, topluluk)
-        → Orman (bilinmez, generatif, sonsuz)
+Giriş (gong) → Koridor (ev, araçlar)
+    → Bahçe (nefes, topluluk)
+        → Orman (bilinmez, sonsuz)
 ```
 
-Amaç ormana girmek.
-Ama çıkıldığında dönülecek bir ev olmalı.
+Amaç ormana gitmek. Ama çıkıldığında dönülecek bir ev olmalı.
 
 ---
 
