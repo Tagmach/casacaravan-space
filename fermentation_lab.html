@@ -69,9 +69,41 @@
   .tip-text { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; color:var(--cream); line-height:1.6; font-style:italic; }
 
   .product-desc { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; color:var(--muted); line-height:1.7; font-style:italic; border-top:1px solid var(--border); padding-top:24px; }
+
+/* ── SHARE BAR ── */
+.share-bar{
+  position:fixed;bottom:24px;right:24px;z-index:50;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
+}
+.share-label{font-size:7px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;writing-mode:vertical-rl;margin-bottom:4px;}
+.share-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);background:rgba(10,9,8,0.85);
+  color:var(--muted);cursor:pointer;transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;text-decoration:none;backdrop-filter:blur(4px);
+}
+.share-btn:hover{border-color:var(--gold);color:var(--gold);}
+
 </style>
 </head>
 <body>
+
+<!-- ── DOMAIN LOCK + BEACON ─────────────────────────────────── -->
+<script>
+(function(){
+  const allowed = ['casacaravan.space','localhost','127.0.0.1'];
+  const host = location.hostname;
+  if(!allowed.some(a=>host.includes(a))){
+    fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
+    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0908;font-family:serif;color:#A08060;font-size:18px;letter-spacing:2px;">casacaravan.space</div>';
+    setTimeout(()=>window.location.href='https://casacaravan.space',2000);
+  } else {
+    fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
+  }
+})();
+</script>
+
 
 <header>
   <div class="brand">Casa Caravan · The Fermentation Lab</div>
@@ -286,5 +318,16 @@ function calculate() {
 
 calculate();
 </script>
+
+<!-- ── SHARE BAR ── -->
+<div class="share-bar">
+  <span class="share-label">Share</span>
+  <a class="share-btn" id="shareTwitter" title="Share on X" target="_blank">𝕏</a>
+  <a class="share-btn" id="shareWhatsapp" title="Share on WhatsApp" target="_blank">●</a>
+  <a class="share-btn" id="shareTelegram" title="Share on Telegram" target="_blank">✈</a>
+  <a class="share-btn" id="shareCopy" title="Copy link" onclick="copyLink(event)">⧉</a>
+</div>
+<div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
+
 </body>
 </html>

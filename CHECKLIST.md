@@ -6,109 +6,86 @@
 ---
 
 ## Phase 1 — Foundation ✓
-
-- [x] Domain, GitHub, Pages, HTTPS
+- [x] Domain, GitHub Pages, HTTPS
 - [x] Entrance — gong, animasyon, ses
-- [x] about.html — Guatemala hikayesi, Casa Caravan origin, brand dili
+- [x] about.html — brand hikayesi, Guatemala, ortam felsefesi
 - [x] Full SEO — meta, OG, Twitter Card, JSON-LD
-- [x] OG image 1200x630px
 
 ---
 
 ## Phase 2 — Corridor 3D ✓
-
-- [x] corridor-3d.html — Three.js r128, gerçek 3D
-- [x] 6 kapı, pencereler, tabelalar (Cormorant Garamond, billboard)
+- [x] corridor-3d.html — Three.js, 6 kapı, pencereler, billboard tabelalar
 - [x] The Garden — cam kapı, gece görünümü
-- [x] Kamera hareketi — 4 pozisyon, smooth
 - [x] index.html ↔ corridor-3d.html entegrasyonu
 - [x] Sconce'lar pencereler arasında ortalandı
 
 ---
 
-## Phase 3 — Odalar ✓ (kısmi)
-
-- [x] Audio Sanctuary — index.html içinde, kulaklık uyarısı, stüdyo
+## Phase 3 — Odalar ✓
+- [x] Audio Sanctuary — index.html içinde, stüdyo, kayıt
 - [x] games.html — Magic Ball
 - [x] headspace.html — Cymatics Simulator (Chladni)
 - [x] fermentation_lab.html — bağlandı
-- [x] garden.html — gece bahçesi, cırcır sesi, chat room
+- [x] herbal_atelier.html — full spectrum extract calculator + rehber
+- [x] garden.html — gece bahçesi, Howler.js ses, chat room
 
 ---
 
-## Phase 3b — Yapısal Temizlik
-
-- [ ] **Audio Sanctuary'yi index.html'den çıkar, ayrı dosya yap**
-  - audio_sanctuary.html olarak taşı
-  - index.html sadece giriş + yönlendirme
-  - Tek odak, tek oturum
+## Phase 3b — Koruma & Paylaşım ✓
+- [x] Domain lock — tool'lar sadece casacaravan.space'de çalışır
+- [x] Beacon — başka domain'den açılırsa bize ping atar
+- [x] Sosyal medya paylaşım butonları — X, WhatsApp, Telegram, link kopyala
 
 ---
 
-## Phase 4 — Atmosfer & Ses
+## Phase 3c — Yapısal Temizlik
+- [ ] **Audio Sanctuary'yi index.html'den çıkar → audio_sanctuary.html**
+- [ ] Beacon loglarını yakala — Cloudflare Worker veya Supabase edge function
 
-- [ ] **40Hz ses koridora ekle** — gamma, kulak duymaz beyin hisseder
-- [ ] Fermentation Lab — Casa Caravan estetiğine uyarla
+---
+
+## Phase 4 — Atmosfer & İçerik
+- [ ] 40Hz ses koridora ekle
 - [ ] Idea Basket — bırak/bul, anonim
-- [ ] Herbal Atelier — başlangıç içeriği
+- [ ] Star Lab bahçede — statik yıldız JSON, keyword chat
+  - Claude API bağlantısı: gelir gelince
 
 ---
 
-## Phase 5 — Bahçe Aktiviteleri
+## Phase 5 — Kullanıcı Katmanları
 
-- [ ] Star Lab — statik yıldız bilgisi JSON, keyword chat
-  - Claude API bağlantısı gelir gelince
-- [ ] Garden Chat — Supabase realtime (şu an localStorage)
-- [ ] Idea Basket bahçeye taşın
+**Model (karar verildi):**
+- **Katman 1** — Koridor + temel araçlar → sonsuza açık
+- **Katman 2** — Email kaydı → ücretsiz, beta'da gönüllü sonra zorunlu
+- **Katman 3** — Ücretli üyelik → çalışılacak, önce sen ikna olacaksın
+- **Katman 4** — Kiracı modeli → trafik gelince masaya yatar
 
----
-
-## Phase 6 — Kiracı Modeli
-
-- [ ] Başvuru formu
-- [ ] İlk 3 pilot kiracı — el seçimi, komisyon only
-- [ ] Oda entegrasyon süreci
-- [ ] Ödeme — Lemon Squeezy
-
----
-
-## Phase 7 — Üyelik & Beta
-
-- [ ] Beta ücretsiz — kapı açık, insan lazım
-- [ ] Supabase auth — email ile kayıt
+- [ ] Supabase auth — email kayıt
 - [ ] Cloud save — Audio Sanctuary kayıtları
-- [ ] Üye ismi koridorda görünür (opsiyonel)
+- [ ] Beta → Katman 2 geçiş tetikleyicisi belirle (kullanıcı sayısı?)
 
 ---
 
-## Phase 8 — Orman
+## Phase 6 — SEO & Büyüme
+- [ ] sitemap.xml oluştur
+- [ ] Internal linking — tool'lar arası geçişler
+- [ ] Blog/içerik katmanı — herbal, cymatics, fermentation içerikleri
+- [ ] Sosyal medya paylaşımlarından geri dönüş izle
 
-- [ ] forest.html — bahçeden geçiş
-- [ ] Generatif, her girişte farklı
-- [ ] Çıkış var, harita yok
+---
+
+## Phase 7 — Orman
+- [ ] forest.html — bahçeden geçiş, generatif, her girişte farklı
 
 ---
 
 ## ⚠️ Karar Verilecekler
-
-- Kiralama süresi: günlük / aylık?
-- Kiracı ayrılırsa kapı ne olur?
-- Bahçede kiracı köşesi olur mu?
-- Star Lab: Claude API ne zaman açılır? (gelir şartına bağlı)
-- Ajan bağlantısı: MCP mi, REST mi?
-
----
-
-## Vizyon
-
-```
-Giriş (gong) → Koridor (ev, araçlar)
-    → Bahçe (nefes, topluluk)
-        → Orman (bilinmez, sonsuz)
-```
-
-Amaç ormana gitmek. Ama çıkıldığında dönülecek bir ev olmalı.
+- Katman 3 fiyatlandırması — ne zaman, kaç TL/USD?
+- Beacon logları nerede tutulacak?
+- Beta bitiş tetikleyicisi: kaç kullanıcı?
+- Repo ne zaman private'a alınır?
 
 ---
 
 *"Kendini gerçekleştirmene vesile olacak bir alan."*
+*Burası bir iş yeri. Emeğin karşılığını hak ediyor.*

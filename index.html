@@ -562,9 +562,30 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .studio-footer-brand { font-size:10px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
 .studio-footer-link { font-size:10px; letter-spacing:1px; color:var(--dim); text-decoration:none; cursor:pointer; transition:color 0.2s; background:none; border:none; }
 .studio-footer-link:hover { color:var(--gold); }
+
+/* ── SHARE BAR ── */
+.share-bar{position:fixed;bottom:24px;right:24px;z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.share-label{font-size:7px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;writing-mode:vertical-rl;margin-bottom:4px;}
+.share-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:rgba(10,9,8,0.85);color:var(--muted);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;backdrop-filter:blur(4px);}
+.share-btn:hover{border-color:var(--gold);color:var(--gold);}
+
 </style>
 </head>
 <body>
+
+<!-- ── DOMAIN LOCK + BEACON ── -->
+<script>
+(function(){
+  const allowed = ['casacaravan.space','localhost','127.0.0.1'];
+  const host = location.hostname;
+  fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
+  if(!allowed.some(a=>host.includes(a))){
+    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0908;font-family:serif;color:#A08060;font-size:18px;letter-spacing:2px;">casacaravan.space</div>';
+    setTimeout(()=>window.location.href='https://casacaravan.space',2000);
+  }
+})();
+</script>
+
 
 <!-- --------------------------------------------
      ENTRANCE
@@ -1352,5 +1373,33 @@ function stopAll(){if(currentAudio){currentAudio.pause();currentAudio.currentTim
 function downloadRec(i){const r=recordings[i];const a=document.createElement('a');a.href=r.url;a.download=`${r.name}.${r.ext}`;a.click();}
 function setFormat(btn,fmt){selectedFormat=fmt;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 </script>
+
+<!-- ── SHARE BAR ── -->
+<div class="share-bar">
+  <span class="share-label">Share</span>
+  <a class="share-btn" id="shareTwitter" title="Share on X" target="_blank">𝕏</a>
+  <a class="share-btn" id="shareWhatsapp" title="Share on WhatsApp" target="_blank">●</a>
+  <a class="share-btn" id="shareTelegram" title="Share on Telegram" target="_blank">✈</a>
+  <a class="share-btn" id="shareCopy" title="Copy link" onclick="copyLink(event)">⧉</a>
+</div>
+<div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
+<script>
+(function(){
+  const url=encodeURIComponent(location.href);
+  const text=encodeURIComponent('Casa Caravan Space · create with life');
+  document.getElementById('shareTwitter').href='https://twitter.com/intent/tweet?url='+url+'&text='+text;
+  document.getElementById('shareWhatsapp').href='https://wa.me/?text='+text+'%20'+url;
+  document.getElementById('shareTelegram').href='https://t.me/share/url?url='+url+'&text='+text;
+})();
+function copyLink(e){
+  e.preventDefault();
+  navigator.clipboard.writeText(location.href).then(()=>{
+    const t=document.getElementById('copyToast');
+    t.style.opacity='1';
+    setTimeout(()=>t.style.opacity='0',2000);
+  });
+}
+</script>
+
 </body>
 </html>
