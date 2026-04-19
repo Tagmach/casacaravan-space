@@ -27,9 +27,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
   <button id="hdr-back" onclick="history.back()">← Garden</button>
 </div>
 <div id="words">Turn off the light.<br>Wait.<br>Your sight will return.</div>
-<button id="btn" onclick="history.back()">Not yet. Back to the garden.</button>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<button id="btn" onclick="history.back()">Not yet. Back to the garden.</button>
+<button id="sound-btn" onclick="toggleCricket()">♪ crickets</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+<style>
+#sound-btn{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  z-index:20;font-family:'Jost',sans-serif;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:5px 14px;border-radius:100px;
+  border:1px solid rgba(74,122,26,0.3);background:none;
+  color:rgba(116,176,40,0.5);cursor:pointer;transition:all 0.3s;
+}
+#sound-btn:hover{border-color:rgba(74,122,26,0.5);color:rgba(116,176,40,0.8);}
+#sound-btn.muted{color:rgba(120,110,100,0.35);border-color:rgba(46,42,38,0.3);}
+</style>
 <script>
 // ── SCENE ────────────────────────────────────────────────────────
 const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'), antialias:true});
@@ -339,6 +353,26 @@ function animate(){
 }
 
 animate();
+
+// ── CRICKET SOUND ─────────────────────────────────────────────────
+let cricket = null;
+let cricketOn = true;
+
+window.addEventListener('load', () => {
+  cricket = new Howl({
+    src: ['cricket.mp3'],
+    loop: true,
+    volume: 0.45,
+    onload: function(){ cricket.play(); }
+  });
+});
+
+function toggleCricket(){
+  const btn = document.getElementById('sound-btn');
+  if(!cricket) return;
+  if(cricketOn){ cricket.pause(); cricketOn=false; btn.classList.add('muted'); btn.textContent='♪ crickets off'; }
+  else { cricket.play(); cricketOn=true; btn.classList.remove('muted'); btn.textContent='♪ crickets'; }
+}
 </script>
 </body>
 </html>
