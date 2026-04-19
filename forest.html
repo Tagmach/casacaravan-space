@@ -7,17 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@300&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#010402;}
-#c{display:block;position:fixed;inset:0;}
-#hdr{position:fixed;top:0;left:0;right:0;z-index:10;padding:16px 28px;display:flex;align-items:center;background:linear-gradient(to bottom,rgba(1,4,2,0.8),transparent);}
-#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(212,194,175,0.6);text-transform:uppercase;}
-#hdr-back{margin-left:auto;font-size:9px;letter-spacing:2px;color:rgba(120,110,100,0.6);text-transform:uppercase;border:1px solid rgba(46,42,38,0.4);padding:6px 16px;border-radius:100px;background:none;cursor:pointer;font-family:'Jost',sans-serif;transition:all 0.3s;}
-#hdr-back:hover{border-color:rgba(160,128,96,0.6);color:rgba(160,128,96,0.8);}
-#words{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;pointer-events:none;font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2.2vw,20px);font-weight:300;font-style:italic;color:rgba(194,179,159,0);line-height:2;animation:fw 2.5s ease forwards 3s;}
-@keyframes fw{to{color:rgba(194,179,159,0.6);}}
-#btn{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:10;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:10px 28px;background:none;border:1px solid rgba(74,122,26,0.3);color:rgba(74,122,26,0);border-radius:100px;cursor:pointer;transition:all 0.4s;animation:fb 1s ease forwards 6s;}
-@keyframes fb{to{color:rgba(116,176,40,0.55);border-color:rgba(74,122,26,0.4);}}
-#btn:hover{border-color:rgba(122,176,60,0.8)!important;color:rgba(160,220,80,0.9)!important;}
+html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:'Jost',sans-serif;}
+#c{position:fixed;inset:0;z-index:0;}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:20;padding:16px 28px;display:flex;align-items:center;background:linear-gradient(to bottom,rgba(1,4,2,0.85),transparent);}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(212,194,175,0.55);text-transform:uppercase;}
+#hdr-back{margin-left:auto;font-size:9px;letter-spacing:2px;color:rgba(120,110,100,0.5);text-transform:uppercase;border:1px solid rgba(46,42,38,0.4);padding:6px 16px;border-radius:100px;background:none;cursor:pointer;font-family:'Jost',sans-serif;transition:all 0.3s;}
+#hdr-back:hover{border-color:rgba(160,128,96,0.5);color:rgba(160,128,96,0.7);}
+#words{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);text-align:center;z-index:10;pointer-events:none;font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2vw,19px);font-weight:300;font-style:italic;color:rgba(194,179,159,0);line-height:2;animation:fw 3s ease forwards 4s;white-space:nowrap;}
+@keyframes fw{to{color:rgba(194,179,159,0.55);}}
+#btn{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:10;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:10px 28px;background:none;border:1px solid rgba(74,122,26,0);color:rgba(74,122,26,0);border-radius:100px;cursor:pointer;transition:all 0.4s;animation:fb 1.5s ease forwards 7s;}
+@keyframes fb{to{color:rgba(116,176,40,0.5);border-color:rgba(74,122,26,0.35);}}
+#btn:hover{border-color:rgba(122,176,60,0.7)!important;color:rgba(160,220,80,0.85)!important;}
 </style>
 </head>
 <body>
@@ -28,157 +28,187 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;}
 </div>
 <div id="words">Turn off the light.<br>Wait.<br>Your sight will return.</div>
 <button id="btn" onclick="history.back()">Not yet. Back to the garden.</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const cv = document.getElementById('c');
-const cx = cv.getContext('2d');
+// ── SCENE ────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'), antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x010402);
+renderer.shadowMap.enabled = false;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.6;
 
-// resize canvas
-cv.width  = window.innerWidth;
-cv.height = window.innerHeight;
-window.addEventListener('resize', () => {
-  cv.width  = window.innerWidth;
-  cv.height = window.innerHeight;
-});
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x010402, 0.038);
 
-const W = () => cv.width;
-const H = () => cv.height;
+const camera = new THREE.PerspectiveCamera(65, innerWidth/innerHeight, 0.1, 80);
+camera.position.set(0, 1.7, 0);
+camera.lookAt(0, 1.7, -10);
 
-// fireflies
-const FF = [];
-for(let i=0;i<30;i++) FF.push({
-  x: Math.random(), y: 0.15+Math.random()*0.65,
-  blink: Math.random()*Math.PI*2, bs: 0.4+Math.random()*1.2,
-  sz: 1+Math.random()*2,
-  vx:(Math.random()-0.5)*0.0003, vy:(Math.random()-0.5)*0.0002,
-  hue:75+Math.random()*35
-});
+function resize(){
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize', resize);
 
-let frame=0;
+// ── LIGHTS ────────────────────────────────────────────────────────
+// Moonlight — cold blue-white from above
+const moon = new THREE.DirectionalLight(0x8ab8d0, 0.4);
+moon.position.set(3, 8, -5);
+scene.add(moon);
 
-function draw(){
-  const w=W(), h=H(), t=frame;
+// Ambient — very dark green
+scene.add(new THREE.AmbientLight(0x030a02, 0.8));
 
-  // Sky
-  const sky=cx.createLinearGradient(0,0,0,h);
-  sky.addColorStop(0,'#010302');
-  sky.addColorStop(0.5,'#020804');
-  sky.addColorStop(1,'#010402');
-  cx.fillStyle=sky; cx.fillRect(0,0,w,h);
+// Warm glow deep in forest
+const deepGlow = new THREE.PointLight(0x1a3a0a, 2.5, 18);
+deepGlow.position.set(0, 2, -22);
+scene.add(deepGlow);
 
-  // Moon glow
-  const mg=cx.createRadialGradient(w*.68,h*.07,0,w*.68,h*.07,h*.45);
-  mg.addColorStop(0,'rgba(150,210,120,0.08)');
-  mg.addColorStop(1,'rgba(0,0,0,0)');
-  cx.fillStyle=mg; cx.fillRect(0,0,w,h);
+// ── GROUND ───────────────────────────────────────────────────────
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(60, 80),
+  new THREE.MeshStandardMaterial({color:0x030a02, roughness:1})
+);
+ground.rotation.x = -Math.PI/2;
+ground.position.set(0, 0, -20);
+scene.add(ground);
 
-  // Moon
-  cx.beginPath(); cx.arc(w*.68,h*.07,h*.022,0,Math.PI*2);
-  cx.fillStyle='rgba(225,248,205,0.72)'; cx.fill();
+// ── TREE BUILDER ─────────────────────────────────────────────────
+function makeTree(x, z, h, r, dark){
+  const group = new THREE.Group();
 
-  // Stars
-  if(!draw._s){draw._s=[];for(let i=0;i<70;i++) draw._s.push([Math.random()*w,Math.random()*h*.5,Math.random()<.8?.4:.8,Math.random()*.4+.1,Math.random()*.8+.3]);}
-  draw._s.forEach(s=>{
-    cx.beginPath();cx.arc(s[0],s[1],s[2],0,Math.PI*2);
-    cx.fillStyle=`rgba(255,255,255,${s[3]*(0.5+0.5*Math.sin(t*.001*s[4]))})`;
-    cx.fill();
-  });
+  const tColor = new THREE.Color(dark ? 0x020602 : 0x040c02);
+  const cColor = new THREE.Color(dark ? 0x010401 : 0x030802);
 
-  // ── TREES — 3 depth layers ──────────────────────────────────────
-  function tree(x, groundY, trunkH, trunkW, crownW, crownH, crowns, dark, alpha, sway){
-    const sw = Math.sin(t*.0008 + sway)*1.5;
-    cx.fillStyle=`rgba(${dark},${dark*.4},${dark*.2},${alpha})`;
-    // trunk
-    cx.fillRect(x-trunkW/2+sw, groundY-trunkH, trunkW, trunkH);
-    // crowns stacked
-    for(let c=0;c<crowns;c++){
-      const p=c/crowns;
-      const cy2=groundY-trunkH*(0.5+p*.55);
-      const rx=crownW*(1-p*.3);
-      const ry=crownH*(0.9-p*.15);
-      cx.beginPath();
-      cx.ellipse(x+sw*(0.3+p*.4),cy2,rx,ry,0,0,Math.PI*2);
-      cx.fillStyle=`rgba(${dark},${dark*.4},${dark*.2},${alpha*(0.8+p*.18)})`;
-      cx.fill();
-    }
+  // Trunk
+  const trunk = new THREE.Mesh(
+    new THREE.CylinderGeometry(r*0.08, r*0.14, h, 6),
+    new THREE.MeshStandardMaterial({color:tColor, roughness:1})
+  );
+  trunk.position.y = h/2;
+  group.add(trunk);
+
+  // Crown layers — stacked cones for depth
+  const layers = dark ? 3 : 4;
+  for(let i=0; i<layers; i++){
+    const p = i/layers;
+    const coneH = h*(0.45-p*0.08);
+    const coneR = r*(0.9-p*0.25);
+    const cone = new THREE.Mesh(
+      new THREE.ConeGeometry(coneR, coneH, 7),
+      new THREE.MeshStandardMaterial({color:cColor, roughness:1})
+    );
+    cone.position.y = h*(0.55 + p*0.38);
+    group.add(cone);
   }
 
-  // Far layer — small, pale
-  const farTrees=[.05,.13,.21,.30,.38,.5,.6,.7,.78,.86,.94];
-  farTrees.forEach((xp,i)=>{
-    tree(w*xp, h*.7, h*.16+i%3*h*.04, w*.005, w*.022, h*.07, 3, 5, .55, i*1.3);
-  });
-
-  // Mid layer
-  const midTrees=[.04,.14,.25,.36,.5,.64,.75,.86,.95];
-  midTrees.forEach((xp,i)=>{
-    tree(w*xp, h*.78, h*.26+i%3*h*.06, w*.008, w*.038, h*.11, 4, 4, .78, i*1.7+2);
-  });
-
-  // Near layer — large dark
-  [[.0,.85],[.08,.9],[.16,.82],[.18,.88],[.72,.84],[.8,.9],[.88,.82],[.96,.88]].forEach(([xp,gy],i)=>{
-    tree(w*xp, h*gy, h*(.42+i%2*.12), w*.013, w*.06, h*.18, 5, 3, .93, i*2.1+4);
-  });
-
-  // ── PATH ──
-  const path=cx.createLinearGradient(0,h*.6,0,h);
-  path.addColorStop(0,'rgba(6,18,4,0)');
-  path.addColorStop(.5,'rgba(5,14,3,.35)');
-  path.addColorStop(1,'rgba(2,8,2,.65)');
-  cx.fillStyle=path;
-  cx.beginPath();
-  cx.moveTo(w*.38,h); cx.bezierCurveTo(w*.42,h*.82,w*.47,h*.72,w*.5,h*.62);
-  cx.bezierCurveTo(w*.53,h*.72,w*.58,h*.82,w*.62,h);
-  cx.fill();
-
-  // ── FOREGROUND EDGES ──
-  cx.fillStyle='rgba(1,4,1,.96)';
-  // left
-  cx.beginPath(); cx.moveTo(0,h); cx.lineTo(0,h*.35);
-  cx.bezierCurveTo(w*.06,h*.22,w*.12,h*.3,w*.1,h*.48);
-  cx.bezierCurveTo(w*.16,h*.38,w*.22,h*.44,w*.2,h*.6);
-  cx.bezierCurveTo(w*.25,h*.52,w*.3,h*.58,w*.27,h*.75);
-  cx.lineTo(w*.3,h); cx.fill();
-  // right
-  cx.beginPath(); cx.moveTo(w,h); cx.lineTo(w,h*.32);
-  cx.bezierCurveTo(w*.94,h*.2,w*.88,h*.28,w*.9,h*.46);
-  cx.bezierCurveTo(w*.85,h*.36,w*.78,h*.42,w*.82,h*.58);
-  cx.bezierCurveTo(w*.76,h*.5,w*.7,h*.56,w*.74,h*.72);
-  cx.lineTo(w*.7,h); cx.fill();
-
-  // ground
-  const gnd=cx.createLinearGradient(0,h*.8,0,h);
-  gnd.addColorStop(0,'rgba(1,4,1,0)'); gnd.addColorStop(1,'rgba(1,3,1,1)');
-  cx.fillStyle=gnd; cx.fillRect(0,h*.8,w,h*.2);
-
-  // ── FIREFLIES ──
-  FF.forEach(ff=>{
-    ff.x+=ff.vx; ff.y+=ff.vy;
-    ff.vx+=(Math.random()-.5)*.00008; ff.vy+=(Math.random()-.5)*.00005;
-    ff.vx*=.98; ff.vy*=.98;
-    if(ff.x<.1||ff.x>.9) ff.vx*=-1;
-    if(ff.y<.12||ff.y>.78) ff.vy*=-1;
-    const blink=Math.max(0,Math.sin(t*.001*ff.bs+ff.blink));
-    if(blink<.06) return;
-    const fx=ff.x*w, fy=ff.y*h;
-    const g=cx.createRadialGradient(fx,fy,0,fx,fy,ff.sz*9);
-    g.addColorStop(0,`hsla(${ff.hue},80%,68%,${blink*.8})`);
-    g.addColorStop(.3,`hsla(${ff.hue},70%,50%,${blink*.2})`);
-    g.addColorStop(1,'hsla(0,0%,0%,0)');
-    cx.fillStyle=g; cx.beginPath(); cx.arc(fx,fy,ff.sz*9,0,Math.PI*2); cx.fill();
-    cx.beginPath(); cx.arc(fx,fy,ff.sz,0,Math.PI*2);
-    cx.fillStyle=`hsla(${ff.hue},90%,80%,${blink})`; cx.fill();
-  });
-
-  // vignette
-  const vig=cx.createRadialGradient(w/2,h/2,h*.05,w/2,h/2,h*.9);
-  vig.addColorStop(0,'rgba(0,0,0,0)'); vig.addColorStop(1,'rgba(0,0,0,.75)');
-  cx.fillStyle=vig; cx.fillRect(0,0,w,h);
-
-  frame++;
-  requestAnimationFrame(draw);
+  group.position.set(x, 0, z);
+  // Slight random lean
+  group.rotation.z = (Math.random()-0.5)*0.04;
+  group.rotation.x = (Math.random()-0.5)*0.02;
+  scene.add(group);
+  return group;
 }
 
-draw();
+// ── POPULATE FOREST ───────────────────────────────────────────────
+const trees = [];
+
+// Far background — small, many
+for(let i=0; i<22; i++){
+  const angle = (i/22)*Math.PI*2;
+  const dist  = 18 + Math.random()*12;
+  const x     = Math.cos(angle)*dist*(0.8+Math.random()*0.4);
+  const z     = -8 + Math.sin(angle)*dist*0.5 - Math.random()*8;
+  if(Math.abs(x)<2.5 && z>-14) continue; // keep path clear
+  trees.push(makeTree(x, z, 3+Math.random()*3, 0.7+Math.random()*0.5, true));
+}
+
+// Mid distance
+for(let i=0; i<16; i++){
+  const side  = i<8 ? -1 : 1;
+  const x     = side*(2.2+Math.random()*4);
+  const z     = -(4 + i%8 * 2.2 + Math.random()*1.5);
+  trees.push(makeTree(x, z, 5+Math.random()*4, 1+Math.random()*0.8, false));
+}
+
+// Near — large trees flanking path
+const nearLeft  = [-2.8, -3.5, -4.2, -3.0, -4.8];
+const nearRight = [ 2.8,  3.5,  4.2,  3.0,  4.8];
+nearLeft.forEach((x,i)=>{
+  trees.push(makeTree(x, -(1.5+i*3.2), 7+i*0.8, 1.4+i*0.15, false));
+});
+nearRight.forEach((x,i)=>{
+  trees.push(makeTree(x, -(1.5+i*3.2), 7+i*0.8, 1.4+i*0.15, false));
+});
+
+// Path floor — slightly lighter strip
+const pathMat = new THREE.MeshStandardMaterial({color:0x040d03, roughness:1});
+const path = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 60), pathMat);
+path.rotation.x = -Math.PI/2;
+path.position.set(0, 0.01, -20);
+scene.add(path);
+
+// ── FIREFLIES ─────────────────────────────────────────────────────
+const FF_COUNT = 24;
+const ffGeo = new THREE.BufferGeometry();
+const ffPos = new Float32Array(FF_COUNT*3);
+const ffData = [];
+for(let i=0; i<FF_COUNT; i++){
+  const x = (Math.random()-0.5)*6;
+  const y = 0.5 + Math.random()*3;
+  const z = -(2+Math.random()*20);
+  ffPos[i*3]=x; ffPos[i*3+1]=y; ffPos[i*3+2]=z;
+  ffData.push({x,y,z,blink:Math.random()*Math.PI*2,bs:0.4+Math.random()*1.2,vx:(Math.random()-.5)*.005,vy:(Math.random()-.5)*.003,vz:(Math.random()-.5)*.004});
+}
+ffGeo.setAttribute('position', new THREE.Float32BufferAttribute(ffPos,3));
+const ffMat = new THREE.PointsMaterial({color:0xc8e040, size:0.12, transparent:true, opacity:0.9});
+const ffPoints = new THREE.Points(ffGeo, ffMat);
+scene.add(ffPoints);
+
+// ── CAMERA SLOW DRIFT ─────────────────────────────────────────────
+let camT = 0;
+const clock = new THREE.Clock();
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  camT += dt;
+
+  // Very slow forward drift — 1 unit per ~20s, then pause
+  const drift = Math.min(camT * 0.04, 0.8);
+  camera.position.z = -drift;
+  // Subtle sway
+  camera.position.x = Math.sin(camT*0.18)*0.04;
+  camera.position.y = 1.7 + Math.sin(camT*0.12)*0.015;
+  camera.lookAt(Math.sin(camT*0.08)*0.08, 1.6, -12);
+
+  // Firefly movement
+  const pos = ffGeo.attributes.position.array;
+  ffData.forEach((ff,i)=>{
+    ff.x+=ff.vx; ff.y+=ff.vy; ff.z+=ff.vz;
+    ff.vx+=(Math.random()-.5)*.001; ff.vy+=(Math.random()-.5)*.0008;
+    ff.vx*=.97; ff.vy*=.97;
+    if(Math.abs(ff.x)>5) ff.vx*=-1;
+    if(ff.y<0.3||ff.y>4) ff.vy*=-1;
+    if(ff.z>-1||ff.z<-24) ff.vz*=-1;
+    pos[i*3]=ff.x; pos[i*3+1]=ff.y; pos[i*3+2]=ff.z;
+  });
+  ffGeo.attributes.position.needsUpdate=true;
+
+  // Firefly blink
+  ffMat.opacity = 0.3 + Math.abs(Math.sin(camT*1.8))*0.65;
+
+  // Deep glow pulse
+  deepGlow.intensity = 1.8 + Math.sin(camT*0.4)*0.7;
+
+  renderer.render(scene, camera);
+}
+
+animate();
 </script>
 </body>
 </html>
