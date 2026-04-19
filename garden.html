@@ -136,7 +136,7 @@ html, body {
   height: 52px;
   border-radius: 50%;
   background: radial-gradient(circle at 40% 40%, #f8f4e0, #e8e0c0);
-  box-shadow: 0 0 40px rgba(240,230,180,0.4), 0 0 80px rgba(240,230,180,0.15);
+  box-shadow: 0 0 60px rgba(240,230,180,0.6), 0 0 120px rgba(240,230,180,0.25);
   top: 12%;
   right: 18%;
   z-index: 2;
@@ -274,7 +274,7 @@ html, body {
 #forest-path {
   position: absolute;
   bottom: 28%;
-  left: 50%;
+  left: calc(50% + 7vw);
   transform: translateX(-50%);
   z-index: 6;
   text-align: center;
@@ -621,6 +621,28 @@ html, body {
       <!-- Center path opening -->
       <ellipse cx="580" cy="240" rx="14" ry="22" fill="#060e04" opacity="0.7"/>
       <ellipse cx="630" cy="238" rx="12" ry="20" fill="#060e04" opacity="0.65"/>
+
+      <!-- Warm mossy ground glow — defines garden space organically -->
+      <defs>
+        <radialGradient id="gg" cx="50%" cy="80%" r="60%">
+          <stop offset="0%" stop-color="#1e3010" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#060e04" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="600" cy="268" rx="380" ry="32" fill="url(#gg)"/>
+
+      <!-- Moss / low ground plants at tree bases -->
+      <ellipse cx="160" cy="258" rx="32" ry="9"  fill="#0e1c08" opacity="0.7"/>
+      <ellipse cx="280" cy="257" rx="42" ry="10" fill="#101e08" opacity="0.65"/>
+      <ellipse cx="420" cy="259" rx="24" ry="8"  fill="#0c1a06" opacity="0.6"/>
+      <ellipse cx="780" cy="259" rx="22" ry="8"  fill="#0c1a06" opacity="0.6"/>
+      <ellipse cx="920" cy="257" rx="40" ry="10" fill="#101e08" opacity="0.65"/>
+      <ellipse cx="1040" cy="258" rx="30" ry="9" fill="#0e1c08" opacity="0.7"/>
+
+      <!-- Stepping stones toward forest -->
+      <ellipse cx="598" cy="254" rx="20" ry="6" fill="#1c1408" opacity="0.55"/>
+      <ellipse cx="602" cy="247" rx="15" ry="5" fill="#181208" opacity="0.45"/>
+      <ellipse cx="600" cy="241" rx="11" ry="4" fill="#141008" opacity="0.35"/>
     </svg>
   </div>
 </div>
@@ -646,11 +668,6 @@ html, body {
 </div>
 
 <!-- Corner activities -->
-<div class="garden-spot" style="top:22%;left:4%;animation-delay:1.2s" onclick="spotClick('Idea Basket')">
-  <div class="spot-ring"><div class="spot-icon">✦</div></div>
-  <div class="spot-label">Idea Basket<span class="spot-soon">coming soon</span></div>
-</div>
-
 <div class="garden-spot" style="bottom:22%;left:6%;animation-delay:1.6s" onclick="spotClick('Sit & Breathe')">
   <div class="spot-ring"><div class="spot-icon">~</div></div>
   <div class="spot-label">Sit & Breathe<span class="spot-soon">coming soon</span></div>
@@ -714,10 +731,10 @@ function drawSky() {
   sky.width = window.innerWidth;
   sky.height = window.innerHeight;
   const grad = sctx.createLinearGradient(0, 0, 0, sky.height);
-  grad.addColorStop(0, '#020508');
-  grad.addColorStop(0.4, '#060a10');
-  grad.addColorStop(0.7, '#080e08');
-  grad.addColorStop(1, '#060a04');
+  grad.addColorStop(0, '#030608');
+  grad.addColorStop(0.4, '#070c12');
+  grad.addColorStop(0.7, '#0a1008');
+  grad.addColorStop(1, '#080c04');
   sctx.fillStyle = grad;
   sctx.fillRect(0, 0, sky.width, sky.height);
 }
