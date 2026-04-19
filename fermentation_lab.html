@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Caravan — The Fermentation Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #0f0d0a;
+    --bg2:   #1a1612;
+    --bg3:   #252018;
+    --gold:  #A08060;
+    --cream: #D2C3AF;
+    --text:  #C8C2B8;
+    --muted: #7A7068;
+    --border:#3A342E;
+    --dim:   #4A443E;
+    --green: #1D9E75;
+    --red:   #8B3A3A;
+    --amber: #C4843A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; min-height:100vh; padding:0 0 80px; }
+
+  header { padding:40px 32px 32px; border-bottom:1px solid var(--border); display:flex; flex-direction:column; gap:6px; }
+  .brand { font-family:'Cormorant Garamond',serif; font-size:13px; font-weight:300; color:var(--gold); letter-spacing:3px; text-transform:uppercase; }
+  .lab-title { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:300; color:var(--cream); line-height:1.1; }
+  .lab-sub { font-size:12px; font-weight:200; color:var(--muted); letter-spacing:1px; margin-top:4px; }
+
+  .product-selector { display:flex; gap:8px; padding:24px 32px; overflow-x:auto; border-bottom:1px solid var(--border); scrollbar-width:none; }
+  .product-selector::-webkit-scrollbar { display:none; }
+  .product-btn { flex-shrink:0; background:transparent; border:1px solid var(--border); color:var(--muted); font-family:'Jost',sans-serif; font-size:11px; font-weight:300; letter-spacing:1.5px; padding:8px 18px; border-radius:100px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .product-btn:hover { border-color:var(--gold); color:var(--gold); }
+  .product-btn.active { border-color:var(--gold); background:var(--gold); color:var(--bg); font-weight:400; }
+
+  .main { padding:32px; display:flex; flex-direction:column; gap:32px; max-width:600px; }
+
+  .sec-label { font-size:10px; font-weight:300; letter-spacing:2px; color:var(--muted); text-transform:uppercase; margin-bottom:12px; }
+
+  .litre-wrap { display:flex; align-items:center; gap:16px; }
+  .litre-input { background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--cream); font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; width:120px; padding:12px 16px; text-align:center; outline:none; transition:border-color 0.2s; -moz-appearance:textfield; }
+  .litre-input::-webkit-outer-spin-button, .litre-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+  .litre-input:focus { border-color:var(--gold); }
+  .litre-unit { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:300; color:var(--muted); }
+  .adj-btns { display:flex; gap:6px; justify-content:center; margin-top:6px; }
+  .adj-btn { background:var(--bg3); border:1px solid var(--border); color:var(--muted); font-size:13px; width:36px; height:36px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+  .adj-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  .result-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; transition:border-color 0.2s; margin-bottom:10px; }
+  .result-card.highlight { border-color:var(--gold); background:#1e1a14; }
+  .result-left { display:flex; flex-direction:column; gap:3px; }
+  .result-name { font-size:12px; font-weight:300; color:var(--muted); letter-spacing:1px; }
+  .result-note { font-size:11px; color:var(--dim); font-style:italic; font-family:'Cormorant Garamond',serif; margin-top:2px; }
+  .result-val { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:var(--cream); text-align:right; }
+  .result-val span { font-size:14px; color:var(--muted); font-family:'Jost',sans-serif; font-weight:200; margin-left:4px; }
+  .result-card.highlight .result-val { color:var(--gold); }
+
+  .timeline { display:flex; gap:0; position:relative; }
+  .timeline::before { content:''; position:absolute; top:16px; left:16px; right:16px; height:1px; background:var(--border); z-index:0; }
+  .timeline-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; z-index:1; }
+  .tl-dot { width:12px; height:12px; border-radius:50%; background:var(--bg); border:1px solid var(--border); flex-shrink:0; }
+  .tl-dot.active { background:var(--gold); border-color:var(--gold); }
+  .tl-day { font-size:10px; color:var(--gold); font-weight:300; letter-spacing:1px; }
+  .tl-desc { font-size:10px; color:var(--muted); text-align:center; font-weight:200; line-height:1.4; }
+
+  .tip-box { background:var(--bg2); border-left:2px solid var(--gold); border-radius:0 8px 8px 0; padding:16px 20px; display:flex; flex-direction:column; gap:6px; }
+  .tip-label { font-size:10px; letter-spacing:2px; color:var(--gold); font-weight:300; text-transform:uppercase; }
+  .tip-text { font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:300; color:var(--cream); line-height:1.6; font-style:italic; }
+
+  .product-desc { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:300; color:var(--muted); line-height:1.7; font-style:italic; border-top:1px solid var(--border); padding-top:24px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Casa Caravan · The Fermentation Lab</div>
+  <div class="lab-title">Recipe Calculator</div>
+  <div class="lab-sub">We do the math — you make the magic</div>
+</header>
+
+<div class="product-selector">
+  <button class="product-btn active" onclick="selectProduct('water_kefir')">Water Kefir</button>
+  <button class="product-btn" onclick="selectProduct('milk_kefir')">Milk Kefir</button>
+  <button class="product-btn" onclick="selectProduct('kombucha')">Kombucha</button>
+  <button class="product-btn" onclick="selectProduct('pickle')">Fermented Pickle</button>
+  <button class="product-btn" onclick="selectProduct('kimchi')">Kimchi</button>
+  <button class="product-btn" onclick="selectProduct('preserved_lemon')">Preserved Lemon</button>
+</div>
+
+<div class="main">
+
+  <div>
+    <div class="sec-label">How many litres?</div>
+    <div class="litre-wrap">
+      <div>
+        <input class="litre-input" type="number" id="litreInput" value="1" min="0.25" max="20" step="0.25" oninput="calculate()">
+        <div class="adj-btns">
+          <button class="adj-btn" onclick="adj(-0.25)">−</button>
+          <button class="adj-btn" onclick="adj(0.25)">+</button>
+        </div>
+      </div>
+      <div class="litre-unit">litres</div>
+    </div>
+  </div>
+
+  <div id="results"></div>
+
+  <div>
+    <div class="sec-label">Fermentation Timeline</div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+  <div class="tip-box" id="tipBox"></div>
+  <div class="product-desc" id="productDesc"></div>
+
+</div>
+
+<script>
+const products = {
+  water_kefir: {
+    name: 'Water Kefir',
+    desc: 'Water kefir is a light, refreshing probiotic drink. It supports gut flora, carries a gentle tang, and pairs beautifully with fresh fruit juice.',
+    ingredients: [
+      { name: 'Water kefir grains', per_litre: 30,   unit: 'g',    note: 'dry weight', highlight: true },
+      { name: 'Sugar',              per_litre: 60,   unit: 'g',    note: 'white or raw cane sugar' },
+      { name: 'Water',              per_litre: 1000, unit: 'ml',   note: 'chlorine-free, room temp' },
+      { name: 'Dried fig or apricot',per_litre: 1,  unit: 'piece',note: 'optional, for minerals' },
+      { name: 'Lemon juice',        per_litre: 10,   unit: 'ml',   note: 'for pH balance' },
+    ],
+    timeline: [
+      { day: 'Day 1',  desc: 'Prepare\n& assemble', active: true },
+      { day: 'Day 2',  desc: 'Watch\nfor bubbles', active: false },
+      { day: 'Day 3',  desc: 'Strain\n& bottle', active: false },
+      { day: 'Day 4–5',desc: '2F:\nadd fruit', active: false },
+      { day: 'Day 5',  desc: 'Drink\n& enjoy', active: false },
+    ],
+    tip: 'If the grains turn pale, add a pinch more sugar. Best flavour emerges at 24–48 hours — longer fermentation increases acidity.',
+  },
+  milk_kefir: {
+    name: 'Milk Kefir',
+    desc: 'Milk kefir is one of the most probiotic-rich fermented drinks on earth — more fluid than yoghurt, tangier, and far more alive.',
+    ingredients: [
+      { name: 'Milk kefir grains', per_litre: 20,   unit: 'g',  note: 'fresh grains', highlight: true },
+      { name: 'Whole milk',        per_litre: 1000, unit: 'ml', note: 'pasteurised or raw' },
+    ],
+    timeline: [
+      { day: 'Day 1',  desc: 'Add grains\nto milk', active: true },
+      { day: 'Day 2',  desc: 'Check\nconsistency', active: false },
+      { day: 'Day 2–3',desc: 'Strain\n& refrigerate', active: false },
+      { day: 'Day 3+', desc: 'Drink or\nuse in recipes', active: false },
+    ],
+    tip: 'Never heat the milk — room temperature (18–24°C) is ideal. In cold kitchens, fermentation slows naturally. That\'s fine.',
+  },
+  kombucha: {
+    name: 'Kombucha',
+    desc: 'Kombucha is living tea — SCOBY bacteria consume the sugar and leave behind a lightly acidic, naturally effervescent health tonic.',
+    ingredients: [
+      { name: 'SCOBY',          per_litre: 100, unit: 'g',  note: '+ 100ml starter liquid', highlight: true },
+      { name: 'Black/green tea', per_litre: 4,   unit: 'g',  note: '~2 teaspoons' },
+      { name: 'Sugar',           per_litre: 70,  unit: 'g',  note: 'white sugar preferred' },
+      { name: 'Water',           per_litre: 1000,unit: 'ml', note: 'chlorine-free, cooled' },
+      { name: 'Starter liquid',  per_litre: 100, unit: 'ml', note: 'from previous kombucha batch' },
+    ],
+    timeline: [
+      { day: 'Day 1',   desc: 'Brew tea\n& cool', active: true },
+      { day: 'Day 2',   desc: 'Add SCOBY\n& starter', active: false },
+      { day: 'Day 7',   desc: 'Taste\n& check', active: false },
+      { day: 'Day 10–14',desc: 'Strain\n& 2F', active: false },
+      { day: 'Day 16',  desc: 'Bottle\n& drink', active: false },
+    ],
+    tip: 'Never let metal touch the SCOBY. Cover with cloth or a coffee filter — it needs to breathe. Ideal temperature: 24–29°C.',
+  },
+  pickle: {
+    name: 'Fermented Pickle',
+    desc: 'No vinegar — just salt. Real lacto-fermented pickles are alive, probiotic-rich, and made only with time and salt brine.',
+    ingredients: [
+      { name: 'Vegetables (sliced)',per_litre: 500, unit: 'g',   note: 'cucumber, carrot, cabbage', highlight: true },
+      { name: 'Sea salt',           per_litre: 20,  unit: 'g',   note: '2% brine — non-iodised' },
+      { name: 'Water',              per_litre: 1000,unit: 'ml',  note: 'chlorine-free' },
+      { name: 'Garlic',             per_litre: 3,   unit: 'cloves',note: 'for flavour' },
+      { name: 'Dill / bay leaf',    per_litre: 2,   unit: 'sprigs',note: 'aromatic, optional' },
+    ],
+    timeline: [
+      { day: 'Day 1', desc: 'Pack jar\nwith brine', active: true },
+      { day: 'Day 3', desc: 'Watch\nfor bubbles', active: false },
+      { day: 'Day 5', desc: 'Taste\n& check', active: false },
+      { day: 'Day 7–14',desc: 'Ready\n& refrigerate', active: false },
+    ],
+    tip: 'Keep vegetables fully submerged — use a weight or small zip-lock bag filled with brine. If salt drops below 2%, spoilage risk increases.',
+  },
+  kimchi: {
+    name: 'Kimchi',
+    desc: 'Kimchi is Korea\'s miracle — fermented napa cabbage, chilli, and time. It feeds the gut, sharpens immunity, and warms the soul.',
+    ingredients: [
+      { name: 'Napa cabbage',  per_litre: 700, unit: 'g',   note: 'salted & rinsed', highlight: true },
+      { name: 'Gochugaru',     per_litre: 40,  unit: 'g',   note: 'Korean chilli flakes' },
+      { name: 'Garlic',        per_litre: 6,   unit: 'cloves',note: 'minced' },
+      { name: 'Ginger',        per_litre: 10,  unit: 'g',   note: 'grated' },
+      { name: 'Spring onion',  per_litre: 50,  unit: 'g',   note: 'thinly sliced' },
+      { name: 'Fish sauce / salt',per_litre: 15,unit: 'ml', note: 'vegan: use salt only' },
+    ],
+    timeline: [
+      { day: 'Day 1', desc: 'Salt cabbage\n& rest', active: true },
+      { day: 'Day 1', desc: 'Mix paste\n& combine', active: false },
+      { day: 'Day 2', desc: 'Pack jar\napply weight', active: false },
+      { day: 'Day 3–5',desc: 'Refrigerate\n& ripen', active: false },
+      { day: 'Week+', desc: 'Deepen\n& enjoy', active: false },
+    ],
+    tip: 'Leave at room temperature for 1–2 days to start fermentation, then refrigerate. It continues to ripen slowly in the cold for months.',
+  },
+  preserved_lemon: {
+    name: 'Preserved Lemon',
+    desc: 'Preserved lemons are North African alchemy — salted, fermented, transformed. One spoonful changes everything it touches.',
+    ingredients: [
+      { name: 'Lemons',         per_litre: 6,   unit: 'pieces',note: 'thin-skinned, organic preferred', highlight: true },
+      { name: 'Rock salt',      per_litre: 80,  unit: 'g',     note: 'coarse, non-iodised' },
+      { name: 'Lemon juice',    per_litre: 200, unit: 'ml',    note: 'to submerge the lemons' },
+      { name: 'Cinnamon stick', per_litre: 1,   unit: 'piece', note: 'optional, for aroma' },
+    ],
+    timeline: [
+      { day: 'Day 1',  desc: 'Score & salt\npack in jar', active: true },
+      { day: 'Week 1', desc: 'Shake\ndaily', active: false },
+      { day: 'Week 2', desc: 'Liquid\nrising', active: false },
+      { day: 'Month 1',desc: 'Ready\nto use', active: false },
+      { day: 'Month 3',desc: 'Peak\nflavour', active: false },
+    ],
+    tip: 'The jar must be packed tight — no air gaps. Shake daily for the first week. Stored in a cool place, they last up to a year.',
+  },
+};
+
+let currentProduct = 'water_kefir';
+
+function selectProduct(key) {
+  currentProduct = key;
+  document.querySelectorAll('.product-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', Object.keys(products)[i] === key);
+  });
+  calculate();
+}
+
+function adj(delta) {
+  const input = document.getElementById('litreInput');
+  let val = parseFloat(input.value) + delta;
+  val = Math.max(0.25, Math.min(20, Math.round(val * 4) / 4));
+  input.value = val;
+  calculate();
+}
+
+function calculate() {
+  const litre = parseFloat(document.getElementById('litreInput').value) || 1;
+  const p = products[currentProduct];
+
+  let html = '';
+  p.ingredients.forEach(ing => {
+    const val = ing.per_litre * litre;
+    const display = val % 1 === 0 ? val : val.toFixed(1);
+    html += `
+      <div class="result-card ${ing.highlight ? 'highlight' : ''}">
+        <div class="result-left">
+          <div class="result-name">${ing.name}</div>
+          ${ing.note ? `<div class="result-note">${ing.note}</div>` : ''}
+        </div>
+        <div class="result-val">${display}<span>${ing.unit}</span></div>
+      </div>`;
+  });
+  document.getElementById('results').innerHTML = html;
+
+  let tlHtml = '';
+  p.timeline.forEach(step => {
+    tlHtml += `
+      <div class="timeline-step">
+        <div class="tl-dot ${step.active ? 'active' : ''}"></div>
+        <div class="tl-day">${step.day}</div>
+        <div class="tl-desc">${step.desc}</div>
+      </div>`;
+  });
+  document.getElementById('timeline').innerHTML = tlHtml;
+
+  document.getElementById('tipBox').innerHTML = `
+    <div class="tip-label">Master's Tip</div>
+    <div class="tip-text">${p.tip}</div>`;
+
+  document.getElementById('productDesc').innerHTML = p.desc;
+}
+
+calculate();
+</script>
+</body>
+</html>

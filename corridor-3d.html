@@ -209,7 +209,7 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
   {name:'Audio Sanctuary',color:0xc89030,border:0xe8a830,z:-2, side:'L',action:'sanctuary'},
-  {name:'Fermentation Lab',color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'soon'},
+  {name:'Fermentation Lab',color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
   {name:'Games',           color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
   {name:'Headspace',       color:0x4060a0,border:0x6090c0,z:-10,side:'R',action:'headspace'},
   {name:'Idea Basket',     color:0xc06030,border:0xd07040,z:-18,side:'L',action:'soon'},
@@ -406,6 +406,7 @@ function openD(d){
   if(d.action==='garden'){window.location.href='garden.html';return;}
   if(d.action==='games'){window.location.href='games.html';return;}
   if(d.action==='headspace'){window.location.href='headspace.html';return;}
+  if(d.action==='fermentation'){window.location.href='fermentation_lab.html';return;}
   document.getElementById('room-name').textContent=d.name;
   document.getElementById('room-overlay').classList.add('open');
 }
