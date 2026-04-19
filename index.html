@@ -1081,12 +1081,7 @@ function openRoom(type, name) {
 
 function backToCorridor() {
   if (audioCtx) { audioCtx.suspend(); }
-  // Reset headphone checkbox
-  const cb = document.getElementById('headphoneConfirm');
-  const btn = document.getElementById('openStudioBtn');
-  if (cb) { cb.checked = false; }
-  if (btn) { btn.disabled = true; btn.style.opacity = '0.3'; btn.style.cursor = 'not-allowed'; }
-  show('corridor', true);
+  window.location.href = 'corridor-3d.html';
 }
 
 function toggleStudioBtn() {
