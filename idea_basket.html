@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Basket — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#060804;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;--muted:#7A7068;--dim:#4a4438;--border:#2E2A26;}
+html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Jost',sans-serif;color:var(--text);}
+#bg-canvas{position:fixed;inset:0;z-index:0;}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:20;padding:14px 28px;display:flex;align-items:center;gap:12px;background:linear-gradient(to bottom,rgba(6,8,4,0.9),transparent);}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--cream);text-transform:uppercase;}
+#hdr-sep{color:var(--dim);font-size:10px;}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;color:var(--gold);font-style:italic;}
+#hdr-back{margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border:1px solid var(--border);padding:6px 16px;border-radius:100px;transition:all 0.2s;background:none;cursor:pointer;font-family:'Jost',sans-serif;}
+#hdr-back:hover{border-color:var(--gold);color:var(--gold);}
+#counter{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:5;pointer-events:none;opacity:1;transition:opacity 1.5s;}
+#counter.hide{opacity:0;}
+#counter-num{font-family:'Cormorant Garamond',serif;font-size:clamp(80px,15vw,160px);font-weight:300;color:rgba(160,128,96,0.07);line-height:1;letter-spacing:-4px;}
+#counter-label{font-size:9px;letter-spacing:4px;color:rgba(160,128,96,0.15);text-transform:uppercase;margin-top:-8px;}
+#flies-wrap{position:fixed;inset:0;z-index:6;pointer-events:none;}
+.idea-fly{position:absolute;transform:translate(-50%,-50%);pointer-events:all;cursor:pointer;}
+.idea-dot{width:4px;height:4px;border-radius:50%;background:#c8e040;box-shadow:0 0 8px #c8e040,0 0 16px rgba(200,224,64,0.3);margin:0 auto 5px;animation:pulse 3s ease-in-out infinite;}
+.idea-fly.done .idea-dot{background:#A08060;box-shadow:0 0 8px #A08060,0 0 16px rgba(160,128,96,0.4);}
+@keyframes pulse{0%,100%{opacity:0.35;transform:scale(1);}50%{opacity:1;transform:scale(1.5);}}
+.idea-name{font-size:8px;letter-spacing:1.5px;color:rgba(200,224,64,0.4);text-align:center;white-space:nowrap;}
+.idea-fly.done .idea-name{color:rgba(160,128,96,0.5);}
+#idea-card{position:fixed;z-index:30;background:rgba(6,8,4,0.96);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:320px;width:88%;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
+#idea-card.show{opacity:1;pointer-events:all;}
+#ic-name{font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+#ic-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--cream);line-height:1.7;margin-bottom:10px;}
+#ic-why{font-size:11px;color:var(--muted);line-height:1.7;font-style:italic;margin-bottom:12px;}
+#ic-badge{display:inline-block;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border:1px solid var(--border);padding:3px 10px;border-radius:100px;}
+#ic-badge.done{color:var(--gold);border-color:var(--gold);}
+#ic-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--dim);font-size:18px;cursor:pointer;line-height:1;}
+#ic-close:hover{color:var(--cream);}
+#bottom{position:fixed;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(to top,rgba(6,8,4,1) 65%,transparent);}
+#bottom-inner{max-width:580px;margin:0 auto;padding:28px 24px 24px;}
+#s-q,#s-f,#s-done{display:none;}
+#s-q.active,#s-f.active,#s-done.active{display:block;}
+#q-text{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,2.2vw,20px);font-weight:300;font-style:italic;color:var(--cream);line-height:1.7;margin-bottom:16px;text-align:center;}
+#q-hint{font-size:8px;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase;text-align:center;margin-bottom:16px;}
+#leave-btn{display:block;margin:0 auto;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:10px 28px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:100px;cursor:pointer;transition:all 0.3s;}
+#leave-btn:hover{border-color:var(--gold);color:var(--gold);}
+.fl{margin-bottom:12px;}
+.fl-lbl{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:5px;}
+.fl textarea,.fl input{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;color:var(--cream);padding:9px 13px;font-family:'Cormorant Garamond',serif;font-size:15px;outline:none;transition:border-color 0.2s;resize:none;}
+.fl textarea:focus,.fl input:focus{border-color:var(--gold);}
+.fl input{font-family:'Jost',sans-serif;font-size:12px;}
+.cc{font-size:8px;color:var(--dim);text-align:right;margin-top:3px;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.br{display:flex;gap:10px;align-items:center;margin-top:8px;}
+#sub-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:10px 24px;background:none;border:1px solid var(--gold);color:var(--gold);border-radius:100px;cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+#sub-btn:hover{background:rgba(160,128,96,0.1);}
+#can-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);background:none;border:none;cursor:pointer;}
+#can-btn:hover{color:var(--muted);}
+#done-text{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:var(--cream);text-align:center;line-height:1.7;margin-bottom:6px;}
+#done-sub{font-size:9px;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase;text-align:center;}
+.share-bar{position:fixed;bottom:24px;right:24px;z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.share-label{font-size:7px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;writing-mode:vertical-rl;margin-bottom:4px;}
+.share-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:rgba(6,8,4,0.85);color:var(--muted);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;}
+.share-btn:hover{border-color:var(--gold);color:var(--gold);}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;}
+.hp{position:absolute;left:-9999px;opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">Idea Basket</div>
+  <button id="hdr-back" onclick="history.back()">← Corridor</button>
+</div>
+
+<div id="counter">
+  <div id="counter-num">0</div>
+  <div id="counter-label">ideas in the basket</div>
+</div>
+
+<div id="flies-wrap"></div>
+
+<div id="idea-card">
+  <button id="ic-close" onclick="closeCard()">×</button>
+  <div id="ic-name"></div>
+  <div id="ic-text"></div>
+  <div id="ic-why"></div>
+  <div id="ic-badge"></div>
+</div>
+
+<div id="bottom">
+  <div id="bottom-inner">
+    <div id="s-q" class="active">
+      <div id="q-text">"Something missing from this corridor —<br>a room, a tool, a feeling. What would you build?"</div>
+      <div id="q-hint">click any light to read · leave your own below</div>
+      <button id="leave-btn" onclick="showForm()">Leave an idea</button>
+    </div>
+    <div id="s-f">
+      <div class="fl">
+        <label class="fl-lbl">What do you imagine? <span style="color:var(--dim)">(required)</span></label>
+        <textarea id="f-idea" rows="3" maxlength="1000" placeholder="A room where..." oninput="cc(this,'cc-idea',1000)"></textarea>
+        <div class="cc"><span id="cc-idea">0</span>/1000</div>
+      </div>
+      <div class="fl">
+        <label class="fl-lbl">Why do you need it? <span style="color:var(--dim)">(optional)</span></label>
+        <textarea id="f-why" rows="2" maxlength="280" placeholder="Because..." oninput="cc(this,'cc-why',280)"></textarea>
+        <div class="cc"><span id="cc-why">0</span>/280</div>
+      </div>
+      <div class="fr">
+        <div class="fl"><label class="fl-lbl">Your name</label><input type="text" id="f-name" placeholder="or 'anonymous'" maxlength="40"></div>
+        <div class="fl"><label class="fl-lbl">Email <span style="color:var(--dim)">(private)</span></label><input type="email" id="f-email" placeholder="only we see this"></div>
+      </div>
+      <input class="hp" type="text" id="hp" tabindex="-1" autocomplete="off">
+      <div class="br">
+        <button id="sub-btn" onclick="submit()">Drop it in</button>
+        <button id="can-btn" onclick="hideForm()">cancel</button>
+      </div>
+    </div>
+    <div id="s-done">
+      <div id="done-text">"Dropped. Maybe one day<br>we'll knock on your door."</div>
+      <div id="done-sub">your idea is in the basket</div>
+    </div>
+  </div>
+</div>
+
+<div class="share-bar">
+  <span class="share-label">Share</span>
+  <a class="share-btn" id="s-tw" target="_blank">𝕏</a>
+  <a class="share-btn" id="s-wa" target="_blank">●</a>
+  <a class="share-btn" id="s-tg" target="_blank">✈</a>
+  <a class="share-btn" onclick="copyLink(event)">⧉</a>
+</div>
+<div id="toast">Link copied</div>
+
+<script>
+// ── SEEDS ────────────────────────────────────────────────────────
+const SEEDS=[
+  {id:'s1',name:'Mara',idea:'A silent room. No tools, no sound. Just a timer and a blank page.',why:'Sometimes the most useful thing is nothing.',done:false},
+  {id:'s2',name:'anonymous',idea:'A plant journal — you grow something, you track it here. Connected to the Fermentation Lab somehow.',why:'I ferment and grow. They\'re the same practice.',done:false},
+  {id:'s3',name:'Leandro',idea:'Bring the gong into the corridor. Not as a door — as a sound. Walking through should feel like walking through a frequency.',why:'',done:true},
+  {id:'s4',name:'anonymous',idea:'A reading room. One book recommendation, changed monthly. Not a library — one book.',why:'Too much choice is noise.',done:false},
+  {id:'s5',name:'Selin',idea:'Herbal Atelier needs a "what do I have at home" mode.',why:'Most people want to start with what\'s already in their kitchen.',done:false},
+];
+const KEY='cc_ideas_v1';
+function getIdeas(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return[];}}
+function init(){if(!localStorage.getItem(KEY))localStorage.setItem(KEY,JSON.stringify(SEEDS));}
+
+// ── STARS ────────────────────────────────────────────────────────
+const cv=document.getElementById('bg-canvas');
+const cx=cv.getContext('2d');
+let stars=[];
+function mkStars(){
+  cv.width=innerWidth;cv.height=innerHeight;stars=[];
+  for(let i=0;i<160;i++) stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()<0.8?.5:1,o:.1+Math.random()*.5,sp:.3+Math.random()*.8});
+}
+function drawStars(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  const t=Date.now()/1000;
+  stars.forEach(s=>{cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle=`rgba(255,255,255,${s.o*(.6+.4*Math.sin(t*s.sp))})`;cx.fill();});
+  requestAnimationFrame(drawStars);
+}
+
+// ── FLIES ────────────────────────────────────────────────────────
+function renderFlies(){
+  const ideas=getIdeas().filter(i=>!i.pending);
+  document.getElementById('counter-num').textContent=ideas.length;
+  const wrap=document.getElementById('flies-wrap');
+  wrap.innerHTML='';
+  const W=innerWidth,H=innerHeight,safe=200;
+  ideas.forEach((idea,i)=>{
+    const a=(i/Math.max(ideas.length,1))*Math.PI*2+i*.618;
+    const r=Math.min(W,H)*.28+(i%3)*55;
+    let x=W/2+Math.cos(a)*r,y=H/2+Math.sin(a)*r*.7;
+    x=Math.max(60,Math.min(W-60,x));
+    y=Math.max(70,Math.min(H-safe,y));
+    const el=document.createElement('div');
+    el.className='idea-fly'+(idea.done?' done':'');
+    el.style.left=x+'px';el.style.top=y+'px';
+    el.style.animationDelay=(Math.random()*4)+'s';
+    el.innerHTML=`<div class="idea-dot" style="animation-delay:${Math.random()*3}s"></div><div class="idea-name">${idea.name}</div>`;
+    el.onclick=()=>showCard(idea,x,y);
+    wrap.appendChild(el);
+  });
+}
+
+// ── CARD ─────────────────────────────────────────────────────────
+function showCard(idea,fx,fy){
+  document.getElementById('ic-name').textContent=idea.name;
+  document.getElementById('ic-text').textContent='"'+idea.idea+'"';
+  const wy=document.getElementById('ic-why');
+  wy.textContent=idea.why||'';wy.style.display=idea.why?'block':'none';
+  const b=document.getElementById('ic-badge');
+  b.textContent=idea.done?'✦ implemented':'in the basket';
+  b.className='ic-badge'+(idea.done?' done':'');
+  const card=document.getElementById('idea-card');
+  const W=innerWidth,H=innerHeight;
+  let l=fx+24,t=fy-20;
+  if(l+340>W)l=fx-340;if(t+220>H-210)t=H-430;if(t<60)t=60;
+  card.style.left=Math.max(8,l)+'px';card.style.top=t+'px';
+  card.classList.add('show');
+}
+function closeCard(){document.getElementById('idea-card').classList.remove('show');}
+
+// ── FORM ─────────────────────────────────────────────────────────
+function setState(s){
+  ['s-q','s-f','s-done'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById(s).classList.add('active');
+  document.getElementById('counter').classList.toggle('hide',s!=='s-q');
+}
+function showForm(){setState('s-f');setTimeout(()=>document.getElementById('f-idea').focus(),80);}
+function hideForm(){setState('s-q');}
+function cc(el,id,max){document.getElementById(id).textContent=el.value.length;}
+
+function submit(){
+  if(document.getElementById('hp').value)return;
+  const idea=document.getElementById('f-idea').value.trim();
+  if(!idea){document.getElementById('f-idea').focus();return;}
+  const entry={
+    id:'u'+Date.now(),
+    name:document.getElementById('f-name').value.trim()||'anonymous',
+    idea,
+    why:document.getElementById('f-why').value.trim(),
+    email:document.getElementById('f-email').value.trim(),
+    done:false,pending:true,ts:Date.now()
+  };
+  const ideas=getIdeas();ideas.unshift(entry);
+  localStorage.setItem(KEY,JSON.stringify(ideas));
+  setState('s-done');renderFlies();
+  setTimeout(()=>{
+    setState('s-q');
+    ['f-idea','f-why','f-name','f-email'].forEach(id=>document.getElementById(id).value='');
+    ['cc-idea','cc-why'].forEach(id=>document.getElementById(id).textContent='0');
+  },4000);
+}
+
+// ── SHARE ─────────────────────────────────────────────────────────
+function copyLink(e){
+  e.preventDefault();
+  navigator.clipboard.writeText(location.href).then(()=>{
+    const t=document.getElementById('toast');t.style.opacity='1';
+    setTimeout(()=>t.style.opacity='0',2000);
+  });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+init();mkStars();drawStars();renderFlies();
+
+const url=encodeURIComponent(location.href),txt=encodeURIComponent('Idea Basket · Casa Caravan Space');
+document.getElementById('s-tw').href='https://twitter.com/intent/tweet?url='+url+'&text='+txt;
+document.getElementById('s-wa').href='https://wa.me/?text='+txt+'%20'+url;
+document.getElementById('s-tg').href='https://t.me/share/url?url='+url+'&text='+txt;
+
+window.addEventListener('resize',()=>{mkStars();renderFlies();});
+document.addEventListener('click',e=>{
+  const card=document.getElementById('idea-card');
+  if(card.classList.contains('show')&&!card.contains(e.target)&&!e.target.closest('.idea-fly'))closeCard();
+});
+
+// ── DOMAIN LOCK ───────────────────────────────────────────────────
+(function(){
+  const ok=['casacaravan.space','localhost','127.0.0.1','claudeusercontent.com'];
+  const h=location.hostname;
+  fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(h)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
+  if(!ok.some(a=>h.includes(a))){
+    setTimeout(()=>{
+      document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#060804;font-family:serif;color:#A08060;font-size:18px;letter-spacing:2px;">casacaravan.space</div>';
+      setTimeout(()=>location.href='https://casacaravan.space',2000);
+    },100);
+  }
+})();
+</script>
+</body>
+</html>

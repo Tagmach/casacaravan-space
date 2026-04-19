@@ -40,6 +40,7 @@
 
 ## Phase 3c — Yapısal Temizlik
 - [ ] **Audio Sanctuary'yi index.html'den çıkar → audio_sanctuary.html**
+- [x] idea_basket.html — ateş böceği feed, form, moderasyon kuyruğu
 - [ ] Beacon loglarını yakala — Cloudflare Worker veya Supabase edge function
 
 ---
@@ -47,6 +48,7 @@
 ## Phase 4 — Atmosfer & İçerik
 - [ ] 40Hz ses koridora ekle
 - [ ] Idea Basket — bırak/bul, anonim
+- [ ] **Idea Basket → Supabase backend** (Phase 5'te — şu an localStorage)
 - [ ] Star Lab bahçede — statik yıldız JSON, keyword chat
   - Claude API bağlantısı: gelir gelince
 

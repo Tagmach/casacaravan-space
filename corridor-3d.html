@@ -212,7 +212,7 @@ const doors = [
   {name:'Fermentation Lab',color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
   {name:'Games',           color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
   {name:'Headspace',       color:0x4060a0,border:0x6090c0,z:-10,side:'R',action:'headspace'},
-  {name:'Idea Basket',     color:0xc06030,border:0xd07040,z:-18,side:'L',action:'soon'},
+  {name:'Idea Basket',     color:0xc06030,border:0xd07040,z:-18,side:'L',action:'ideas'},
   {name:'Herbal Atelier',  color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
 ];
 
@@ -408,6 +408,7 @@ function openD(d){
   if(d.action==='headspace'){window.location.href='headspace.html';return;}
   if(d.action==='fermentation'){window.location.href='fermentation_lab.html';return;}
   if(d.action==='herbal'){window.location.href='herbal_atelier.html';return;}
+  if(d.action==='ideas'){window.location.href='idea_basket.html';return;}
   document.getElementById('room-name').textContent=d.name;
   document.getElementById('room-overlay').classList.add('open');
 }
