@@ -362,6 +362,36 @@ html, body {
 #sound-toggle:hover { border-color: var(--gold); color: var(--gold); }
 #sound-toggle.playing { border-color: var(--green); color: var(--green); }
 
+/* ── MOBILE ────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* Hide brand separator on mobile */
+  #header-sep, #header-room { display: none; }
+  #header { padding: 14px 16px; }
+
+  /* Center text — move up so it doesn't clash with forest path */
+  #center { top: 38%; }
+  #garden-quote { font-size: 20px; max-width: 80vw; }
+  #garden-title { font-size: 10px; }
+
+  /* Sound toggle — smaller, move below header */
+  #sound-toggle { top: 58px; font-size: 7px; padding: 4px 10px; }
+
+  /* Spots — hide coming soon ones on mobile, keep forest */
+  .garden-spot { display: none; }
+
+  /* Forest path — center it properly on mobile */
+  #forest-path { left: 50% !important; bottom: 22%; }
+
+  /* Footer hint — smaller */
+  #footer-hint { font-size: 7px; letter-spacing: 1.5px; }
+
+  /* Chat — smaller button */
+  #chat-toggle { font-size: 9px; padding: 8px 14px; }
+
+  /* Breath pulse — hide */
+  #breath-pulse { display: none; }
+}
+
 /* Chat */
 #chat-wrap {
   position: fixed;

@@ -108,6 +108,8 @@ function resize() {
   if (!w || !h) return;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
+  // Wider FOV on mobile so corridor walls don't clip
+  camera.fov = w < 600 ? 85 : 65;
   camera.updateProjectionMatrix();
 }
 window.addEventListener('resize', resize);
