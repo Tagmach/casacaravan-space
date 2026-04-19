@@ -4,26 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { width:100%; height:100%; background:#0a0806; overflow:hidden; }
 
 #canvas-wrap {
   width:100%; height:100%;
-  position:relative;
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 }
 
-canvas {
-  display:block;
-  flex:1;
-  min-height:0;
-}
+canvas { display:block; flex:1; min-height:0; }
 
-canvas { display:block; }
-
-/* Header */
 #header {
   flex-shrink:0;
   padding:16px 28px;
@@ -34,50 +29,11 @@ canvas { display:block; }
   background:rgba(10,8,6,0.95);
   z-index:10;
 }
-#header-brand {
-  font-family:'Cormorant Garamond', serif;
-  font-size:11px;
-  letter-spacing:3px;
-  color:#D2C3AF;
-  text-transform:uppercase;
-}
-#header-tag {
-  font-family:'Jost', sans-serif;
-  font-size:10px;
-  color:#7A7068;
-  letter-spacing:1px;
-}
-#header-about {
-  margin-left:auto;
-  font-family:'Jost', sans-serif;
-  font-size:9px;
-  letter-spacing:2.5px;
-  color:#6B5F52;
-  text-transform:uppercase;
-  text-decoration:none;
-  transition:color 0.2s;
-}
-#header-about:hover { color:#A08060; }
+#header-brand { font-family:'Cormorant Garamond',serif; font-size:11px; letter-spacing:3px; color:#D2C3AF; text-transform:uppercase; }
+#header-tag { font-family:'Jost',sans-serif; font-size:10px; color:#7A7068; letter-spacing:1px; }
+#header-about { margin-left:auto; font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2.5px; color:#7A7068; text-transform:uppercase; text-decoration:none; transition:color 0.2s; border:1px solid #2E2A26; padding:6px 16px; border-radius:100px; }
+#header-about:hover { color:#A08060; border-color:#A08060; }
 
-/* Door label overlay */
-#door-label {
-  position:absolute;
-  bottom:90px;
-  left:50%;
-  transform:translateX(-50%);
-  font-family:'Jost', sans-serif;
-  font-size:10px;
-  letter-spacing:3px;
-  color:#A08060;
-  text-transform:uppercase;
-  opacity:0;
-  transition:opacity 0.3s;
-  pointer-events:none;
-  text-align:center;
-}
-#door-label.show { opacity:1; }
-
-/* Walk controls */
 #walk-controls {
   flex-shrink:0;
   padding:12px 0 10px;
@@ -89,138 +45,56 @@ canvas { display:block; }
   border-top:1px solid rgba(62,56,48,0.8);
   z-index:10;
 }
-.walk-btn {
-  width:44px; height:44px;
-  border-radius:50%;
-  border:1px solid #2E2A26;
-  background:none;
-  color:#7A7068;
-  font-size:17px;
-  cursor:pointer;
-  transition:all 0.2s;
-  display:flex; align-items:center; justify-content:center;
-}
+.walk-btn { width:44px; height:44px; border-radius:50%; border:1px solid #2E2A26; background:none; color:#7A7068; font-size:17px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
 .walk-btn:hover { border-color:#A08060; color:#A08060; }
 .walk-btn:disabled { opacity:0.2; cursor:default; }
 #walk-dots { display:flex; gap:8px; align-items:center; }
-.walk-dot {
-  width:7px; height:7px;
-  border-radius:50%;
-  background:#2E2A26;
-  cursor:pointer;
-  transition:background 0.3s;
-}
+.walk-dot { width:6px; height:6px; border-radius:50%; background:#2E2A26; cursor:pointer; transition:background 0.3s; }
 .walk-dot.active { background:#A08060; }
 
-/* Click hint -->
-#click-hint {
-  position:absolute;
-  bottom:90px;
-  left:50%;
-  transform:translateX(-50%);
-  font-family:'Jost', sans-serif;
-  font-size:9px;
-  letter-spacing:2px;
-  color:#4A443E;
-  text-transform:uppercase;
-  opacity:1;
-  transition:opacity 0.5s;
-  pointer-events:none;
-}
-#click-hint.hide { opacity:0; }
+#door-label { position:fixed; bottom:72px; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; letter-spacing:2px; color:#D2C3AF; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:10; white-space:nowrap; }
+#door-label.show { opacity:1; }
 
-/* Room overlay (coming soon / sanctuary landing) */
-#room-overlay {
-  position:absolute;
-  inset:0;
-  background:rgba(10,8,6,0.0);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:20;
-  transition:background 0.4s;
-}
-#room-overlay.open {
-  display:flex;
-  background:rgba(10,8,6,0.96);
-}
-#room-content {
-  text-align:center;
-  max-width:420px;
-  padding:40px;
-}
-#room-name {
-  font-family:'Cormorant Garamond', serif;
-  font-size:36px;
-  font-weight:300;
-  color:#D2C3AF;
-  letter-spacing:0.06em;
-  margin-bottom:12px;
-}
-#room-sub {
-  font-family:'Jost', sans-serif;
-  font-size:10px;
-  letter-spacing:3px;
-  color:#6B5F52;
-  text-transform:uppercase;
-  margin-bottom:32px;
-}
-#room-back {
-  font-family:'Jost', sans-serif;
-  font-size:10px;
-  letter-spacing:2px;
-  color:#6B5F52;
-  text-transform:uppercase;
-  background:none;
-  border:1px solid #2E2A26;
-  padding:10px 28px;
-  border-radius:100px;
-  cursor:pointer;
-  transition:all 0.2s;
-}
+#room-overlay { position:fixed; inset:0; background:rgba(10,8,6,0.97); display:none; align-items:center; justify-content:center; z-index:20; }
+#room-overlay.open { display:flex; }
+#room-content { text-align:center; max-width:420px; padding:40px; }
+#room-name { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; color:#D2C3AF; letter-spacing:0.06em; margin-bottom:12px; }
+#room-sub { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:3px; color:#7A7068; text-transform:uppercase; margin-bottom:32px; }
+#room-back { font-family:'Jost',sans-serif; font-size:10px; letter-spacing:2px; color:#7A7068; text-transform:uppercase; background:none; border:1px solid #2E2A26; padding:10px 28px; border-radius:100px; cursor:pointer; transition:all 0.2s; }
 #room-back:hover { border-color:#A08060; color:#A08060; }
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap');
 </style>
 </head>
 <body>
 
 <div id="canvas-wrap">
-
   <div id="header">
     <div id="header-brand">Casa Caravan Space</div>
     <div id="header-tag">· create with life</div>
     <a href="about.html" id="header-about">About</a>
   </div>
-
   <canvas id="c"></canvas>
-
-  <div id="door-label"></div>
-  <div id="click-hint">walk to explore</div>
-
   <div id="walk-controls">
     <button class="walk-btn" id="btnBack" disabled>&#8593;</button>
     <div id="walk-dots"></div>
     <button class="walk-btn" id="btnFwd">&#8595;</button>
   </div>
+</div>
 
-  <div id="room-overlay">
-    <div id="room-content">
-      <div id="room-name">—</div>
-      <div id="room-sub">coming soon</div>
-      <button id="room-back" onclick="closeRoom()">&#8592; Back to corridor</button>
-    </div>
+<div id="door-label"></div>
+
+<div id="room-overlay">
+  <div id="room-content">
+    <div id="room-name">—</div>
+    <div id="room-sub">coming soon</div>
+    <button id="room-back" onclick="closeRoom()">&#8592; Back to corridor</button>
   </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ── SCENE SETUP ──────────────────────────────────────────────────
 const canvas = document.getElementById('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0806);
@@ -228,616 +102,327 @@ scene.fog = new THREE.FogExp2(0x0a0806, 0.032);
 
 const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 60);
 camera.position.set(0, 0, 1);
-camera.lookAt(0, 0, -1);
-
-// ── SIZES ────────────────────────────────────────────────────────
-const HEADER_H = 56;
-const FOOTER_H = 68;
 
 function resize() {
-  const w = canvas.clientWidth;
-  const h = canvas.clientHeight;
-  if (w === 0 || h === 0) return;
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (!w || !h) return;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-resize();
 window.addEventListener('resize', resize);
 
-// ── MATERIALS ───────────────────────────────────────────────────
-function mat(hex, rough=0.95, metal=0) {
-  return new THREE.MeshStandardMaterial({ color:new THREE.Color(hex), roughness:rough, metalness:metal });
+// ── DIMENSIONS ──────────────────────────────────────────────────
+const W = 5, H = 4, L = 32;
+
+// ── CORRIDOR WALLS ───────────────────────────────────────────────
+function mat(hex, rough=0.95) {
+  return new THREE.MeshStandardMaterial({ color:new THREE.Color(hex), roughness:rough });
 }
 
-const wallMat    = mat(0x1a1208, 0.95);
-const floorMat   = mat(0x221608, 0.98);
-const ceilMat    = mat(0x161008, 0.97);
-const forestMat  = mat(0x0a1806, 0.95);
-
-// ── CORRIDOR GEOMETRY ───────────────────────────────────────────
-const W = 5;   // corridor width
-const H = 4;   // corridor height
-const L = 32;  // corridor length
-
-// Floor
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, L), floorMat);
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, L), mat(0x221608, 0.98));
 floor.rotation.x = -Math.PI/2;
 floor.position.set(0, -H/2, -L/2);
 scene.add(floor);
 
-// Ceiling
-const ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, L), ceilMat);
+const ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, L), mat(0x161008, 0.97));
 ceil.rotation.x = Math.PI/2;
 ceil.position.set(0, H/2, -L/2);
 scene.add(ceil);
 
-// Left wall
-const wallL = new THREE.Mesh(new THREE.PlaneGeometry(L, H), wallMat);
+const wallL = new THREE.Mesh(new THREE.PlaneGeometry(L, H), mat(0x1a1208, 0.95));
 wallL.rotation.y = Math.PI/2;
 wallL.position.set(-W/2, 0, -L/2);
 scene.add(wallL);
 
-// Right wall
-const wallR = new THREE.Mesh(new THREE.PlaneGeometry(L, H), wallMat);
+const wallR = new THREE.Mesh(new THREE.PlaneGeometry(L, H), mat(0x1a1208, 0.95));
 wallR.rotation.y = -Math.PI/2;
 wallR.position.set(W/2, 0, -L/2);
 scene.add(wallR);
 
-// Back wall — dark, forest door will be in front
-const backWall = new THREE.Mesh(new THREE.PlaneGeometry(W, H), mat(0x080c06, 0.95));
-backWall.position.set(0, 0, -L);
-scene.add(backWall);
-
-
-
-// Forest label
-// (handled via raycasting click on back wall)
+// Floor planks
+for (let i=-2; i<=2; i++) {
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(0.04, L), mat(0x2a1c0a, 1));
+  p.rotation.x = -Math.PI/2;
+  p.position.set(i*(W/4), -H/2+0.001, -L/2);
+  scene.add(p);
+}
 
 // ── LIGHTING ─────────────────────────────────────────────────────
-// Strong ambient — base visibility
-scene.add(new THREE.AmbientLight(0x5a4020, 1.4));
-
-// Main warm overhead fill
-const mainLight = new THREE.DirectionalLight(0xc8a050, 1.4);
-mainLight.position.set(0, 8, 4);
-scene.add(mainLight);
-
-// Forward fill light — illuminates what you see
+scene.add(new THREE.AmbientLight(0x6a4a28, 1.8));
+const mainLight = new THREE.DirectionalLight(0xd4a870, 1.4);
+mainLight.position.set(0, 8, 4); scene.add(mainLight);
 const fillLight = new THREE.DirectionalLight(0xd4a870, 0.9);
-fillLight.position.set(0, 2, 6);
-scene.add(fillLight);
+fillLight.position.set(0, 2, 6); scene.add(fillLight);
 
-// Sconce lights along corridor — brighter
 [-2, -8, -14, -20, -26].forEach(z => {
-  const sL = new THREE.PointLight(0xf0b840, 1.8, 7);
-  sL.position.set(-W/2+0.4, H/2-0.4, z);
-  scene.add(sL);
-  const sR = new THREE.PointLight(0xf0b840, 1.8, 7);
-  sR.position.set(W/2-0.4, H/2-0.4, z);
-  scene.add(sR);
-
-  [-W/2+0.08, W/2-0.08].forEach(sx => {
-    const bulb = new THREE.Mesh(
-      new THREE.SphereGeometry(0.1, 8, 6),
-      new THREE.MeshStandardMaterial({ color:0xf8e060, emissive:0xf8e060, emissiveIntensity:3 })
-    );
-    bulb.position.set(sx, H/2-0.35, z);
-    scene.add(bulb);
+  [-W/2+0.4, W/2-0.4].forEach(x => {
+    const l = new THREE.PointLight(0xf0b840, 1.8, 7);
+    l.position.set(x, H/2-0.4, z); scene.add(l);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.1,8,6),
+      new THREE.MeshStandardMaterial({color:0xf8e060,emissive:0xf8e060,emissiveIntensity:3}));
+    bulb.position.set(x, H/2-0.35, z); scene.add(bulb);
   });
 });
 
-// ── DOORS ────────────────────────────────────────────────────────
-const billboardSigns = [];
-
-const doors = [
-  { name:'Audio Sanctuary', color:0xc89030, border:0xe8a830, z:-2,  side:'L', action:'sanctuary' },
-  { name:'Fermentation Lab',color:0x5a9030, border:0x70b040, z:-2,  side:'R', action:'soon' },
-  { name:'Games',           color:0x8060c0, border:0x9070d0, z:-10, side:'L', action:'games' },
-  { name:'Headspace',       color:0x4060a0, border:0x6090c0, z:-10, side:'R', action:'soon' },
-  { name:'Idea Basket',     color:0xc06030, border:0xd07040, z:-18, side:'L', action:'soon' },
-  { name:'Herbal Atelier',  color:0x508028, border:0x78b038, z:-18, side:'R', action:'soon' },
-];
-
-const doorMeshes = [];
-const DW = 2.6; // door width
-const DH = 2.8; // door height
-
-doors.forEach(d => {
-  const doorGroup = new THREE.Group();
-
-  if (d.side === 'C') {
-    // Forest — back wall clickable overlay already exists
-    const clickMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(W, H),
-      new THREE.MeshStandardMaterial({ color:0x0a1806, transparent:true, opacity:0 })
-    );
-    clickMesh.position.set(0, 0, -L+0.02);
-    clickMesh.userData = { door:d };
-    scene.add(clickMesh);
-    doorMeshes.push(clickMesh);
-    return;
-  }
-
-  const x = d.side === 'L' ? -W/2+0.02 : W/2-0.02;
-  const rotY = d.side === 'L' ? Math.PI/2 : -Math.PI/2;
-
-  // Frame
-  const frameMat = new THREE.MeshStandardMaterial({
-    color:new THREE.Color(d.color), roughness:0.6, metalness:0.3
-  });
-  // Top bar
-  const frameTop = new THREE.Mesh(new THREE.BoxGeometry(DW+0.1, 0.08, 0.06), frameMat);
-  frameTop.position.set(0, DH/2+0.04, 0);
-  doorGroup.add(frameTop);
-  // Side bars
-  [-DW/2-0.04, DW/2+0.04].forEach(fx => {
-    const fb = new THREE.Mesh(new THREE.BoxGeometry(0.08, DH+0.1, 0.06), frameMat);
-    fb.position.set(fx, 0, 0);
-    doorGroup.add(fb);
-  });
-
-  // Door surface
-  const surfaceMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(d.color).multiplyScalar(0.15),
-    roughness:0.9
-  });
-  const surface = new THREE.Mesh(new THREE.PlaneGeometry(DW, DH), surfaceMat);
-  surface.userData = { door:d };
-  doorGroup.add(surface);
-  doorMeshes.push(surface);
-
-  // Light crack
-  const crackMat = new THREE.MeshStandardMaterial({
-    color:new THREE.Color(d.border), emissive:new THREE.Color(d.border),
-    emissiveIntensity:1.2
-  });
-  const crack = new THREE.Mesh(new THREE.BoxGeometry(0.025, DH*0.8, 0.01), crackMat);
-  crack.position.set(DW/2-0.01, 0, 0.01);
-  doorGroup.add(crack);
-
-  // Knob
-  const knob = new THREE.Mesh(
-    new THREE.SphereGeometry(0.06, 8, 8),
-    new THREE.MeshStandardMaterial({ color:new THREE.Color(d.border), metalness:0.8, roughness:0.2, emissive:new THREE.Color(d.border), emissiveIntensity:0.3 })
-  );
-  knob.position.set(DW/2*0.6, 0, 0.05);
-  doorGroup.add(knob);
-
-  // Glow light on door — brighter
-  const dLight = new THREE.PointLight(new THREE.Color(d.border), 1.2, 4);
-  dLight.position.set(d.side==='L' ? 0.8 : -0.8, 0, 0.5);
-  doorGroup.add(dLight);
-
-  // Wall-mounted sign — hangs on the wall beside the door, faces the walker
-  const signCanvas = document.createElement('canvas');
-  signCanvas.width = 512; signCanvas.height = 256;
-  const ctx = signCanvas.getContext('2d');
-  // Background
-  ctx.fillStyle = '#0a0806';
-  ctx.fillRect(0, 0, 512, 256);
-  const hex = '#' + new THREE.Color(d.border).getHexString();
-  // Thin elegant border — brand style
-  ctx.strokeStyle = hex;
-  ctx.lineWidth = 1.5;
-  ctx.strokeRect(8, 8, 496, 240);
-  // Small corner marks
-  [[8,8],[504,8],[8,248],[504,248]].forEach(([cx,cy]) => {
-    ctx.beginPath();
-    ctx.moveTo(cx + (cx<256?8:-8), cy);
-    ctx.lineTo(cx, cy);
-    ctx.lineTo(cx, cy + (cy<128?8:-8));
-    ctx.stroke();
-  });
-  // Text — Cormorant Garamond light, brand cream
-  ctx.fillStyle = '#D2C3AF';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const words = d.name.split(' ');
-  // Mixed case — brand voice is not all caps
-  if (words.length === 1) {
-    ctx.font = '300 72px "Cormorant Garamond", serif';
-    ctx.fillText(words[0], 256, 128);
-  } else if (words.length === 2) {
-    ctx.font = '300 58px "Cormorant Garamond", serif';
-    ctx.fillText(words[0], 256, 96);
-    ctx.fillText(words[1], 256, 164);
-  } else {
-    const mid = Math.ceil(words.length / 2);
-    ctx.font = '300 46px "Cormorant Garamond", serif';
-    ctx.fillText(words.slice(0, mid).join(' '), 256, 90);
-    ctx.fillText(words.slice(mid).join(' '), 256, 155);
-  }
-  // Thin gold line below text — brand divider
-  ctx.strokeStyle = hex;
-  ctx.lineWidth = 1;
-  ctx.globalAlpha = 0.5;
-  ctx.beginPath();
-  ctx.moveTo(80, 215);
-  ctx.lineTo(432, 215);
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-  const signTex = new THREE.CanvasTexture(signCanvas);
-  signTex.needsUpdate = true;
-  const SIGN_W = 1.8;
-  const SIGN_H = 0.9;
-  const wallSign = new THREE.Mesh(
-    new THREE.PlaneGeometry(SIGN_W, SIGN_H),
-    new THREE.MeshStandardMaterial({
-      map: signTex,
-      emissiveMap: signTex,
-      emissive: new THREE.Color(0xffffff),
-      emissiveIntensity: 3.0
-    })
-  );
-  // Place sign floating in corridor — well away from wall, at eye level
-  const signX = d.side === 'L' ? -1.0 : 1.0;
-  wallSign.position.set(signX, 0.3, d.z - 0.3);
-  scene.add(wallSign);
-  billboardSigns.push(wallSign);
-
-  doorGroup.rotation.y = rotY;
-  doorGroup.position.set(x, -H/2 + DH/2, d.z);
-  scene.add(doorGroup);
-});
-
-// ── CAMERA WALK ──────────────────────────────────────────────────
-const POSITIONS = [1, -6, -14, -20];
-let currentPos = 0;
-let targetZ = POSITIONS[0];
-let isMoving = false;
-
-function buildDots() {
-  const el = document.getElementById('walk-dots');
-  el.innerHTML = '';
-  POSITIONS.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'walk-dot' + (i===0?' active':'');
-    d.id = 'dot'+i;
-    d.onclick = () => walkTo(i);
-    el.appendChild(d);
-  });
-}
-
-function walkTo(idx) {
-  if (idx < 0 || idx >= POSITIONS.length || isMoving) return;
-  currentPos = idx;
-  targetZ = POSITIONS[idx];
-  document.getElementById('btnBack').disabled = idx <= 0;
-  document.getElementById('btnFwd').disabled  = idx >= POSITIONS.length-1;
-  POSITIONS.forEach((_, i) => {
-    const d = document.getElementById('dot'+i);
-    if (d) d.className = 'walk-dot' + (i===idx?' active':'');
-  });
-  // Hide hint after first move
-  document.getElementById('click-hint').classList.add('hide');
-}
-
-function corridorWalk(dir) { walkTo(currentPos+dir); }
-
-document.getElementById('btnFwd').onclick  = () => corridorWalk(1);
-document.getElementById('btnBack').onclick = () => corridorWalk(-1);
-
-document.addEventListener('keydown', e => {
-  if (e.key==='ArrowUp'||e.key==='ArrowRight')    corridorWalk(1);
-  if (e.key==='ArrowDown'||e.key==='ArrowLeft')   corridorWalk(-1);
-});
-
-// ── FOREST DOOR — open door at end ───────────────────────────────
-const FDW = W * 0.88;
-const FDH = 3.0;
-const FZ  = -L + 0.1;
-
-// Frame
-const fFrameMat = new THREE.MeshStandardMaterial({ color:0x3a2810, roughness:0.7 });
-const fft = new THREE.Mesh(new THREE.BoxGeometry(FDW+0.14, 0.1, 0.1), fFrameMat);
-fft.position.set(0, -H/2+FDH+0.05, FZ); scene.add(fft);
-[-FDW/2-0.07, FDW/2+0.07].forEach(fx => {
-  const s = new THREE.Mesh(new THREE.BoxGeometry(0.1, FDH, 0.1), fFrameMat);
-  s.position.set(fx, -H/2+FDH/2, FZ); scene.add(s);
-});
-
-// Double doors — both swung open outward
-const doorMat2 = new THREE.MeshStandardMaterial({ color:0x1e1608, roughness:0.85 });
-// Left panel — swung to left wall
-const doorL = new THREE.Mesh(new THREE.BoxGeometry(0.07, FDH, FDW/2), doorMat2);
-doorL.rotation.y = Math.PI/2 * 0.82;
-doorL.position.set(-FDW/2 + 0.05, -H/2+FDH/2, FZ - FDW*0.28);
-scene.add(doorL);
-// Right panel — swung to right wall
-const doorR = new THREE.Mesh(new THREE.BoxGeometry(0.07, FDH, FDW/2), doorMat2);
-doorR.rotation.y = -Math.PI/2 * 0.82;
-doorR.position.set(FDW/2 - 0.05, -H/2+FDH/2, FZ - FDW*0.28);
-scene.add(doorR);
-// Center split line
-const splitMat = new THREE.MeshStandardMaterial({ color:0x2a4010, roughness:0.7 });
-const split = new THREE.Mesh(new THREE.BoxGeometry(0.06, FDH, 0.06), splitMat);
-split.position.set(0, -H/2+FDH/2, FZ+0.01);
-scene.add(split);
-
-// Knob
-const fKnob = new THREE.Mesh(
-  new THREE.SphereGeometry(0.06, 8, 8),
-  new THREE.MeshStandardMaterial({ color:0x90c050, metalness:0.8, roughness:0.2, emissive:new THREE.Color(0x90c050), emissiveIntensity:0.5 })
-);
-fKnob.position.set(-FDW*0.25, -H/2+FDH*0.48, FZ+0.05);
-scene.add(fKnob);
-
-// Green glow through doorway
-const forestGlow = new THREE.PointLight(0x806030, 1.8, 10);
-forestGlow.position.set(0, -H/2+FDH*0.5, FZ+0.5);
-scene.add(forestGlow);
-
-// Trees through open door
-[-0.5, 0.05, 0.55, -0.22, 0.32].forEach((tx, ti) => {
-  const sc = 0.65 + ti*0.08;
-  const tr = new THREE.Mesh(new THREE.BoxGeometry(0.1*sc, 0.6*sc, 0.08), new THREE.MeshStandardMaterial({ color:0x081206 }));
-  tr.position.set(tx, -H/2+0.3*sc, FZ+0.5); scene.add(tr);
-  const cr = new THREE.Mesh(new THREE.SphereGeometry(0.35*sc, 7, 5), new THREE.MeshStandardMaterial({ color:0x0c1e08 }));
-  cr.position.set(tx, -H/2+0.9*sc, FZ+0.5); scene.add(cr);
-});
-
-// Fireflies
-const ffGeo = new THREE.BufferGeometry();
-const ffArr = [];
-for (let i=0; i<14; i++) ffArr.push((Math.random()-0.5)*FDW*0.7, -H/2+(Math.random()*FDH*0.7), FZ+Math.random()*1.2);
-ffGeo.setAttribute('position', new THREE.Float32BufferAttribute(ffArr,3));
-const ffMat = new THREE.PointsMaterial({ color:0xc8e040, size:0.05, transparent:true, opacity:0.8 });
-const fireflies = new THREE.Points(ffGeo, ffMat);
-scene.add(fireflies);
-
-// Clickable overlay
-const forestClick = new THREE.Mesh(
-  new THREE.PlaneGeometry(FDW, FDH),
-  new THREE.MeshStandardMaterial({ transparent:true, opacity:0 })
-);
-forestClick.position.set(0, -H/2+FDH/2, FZ+0.02);
-forestClick.userData = { door:{ name:'The Garden', action:'garden' } };
-scene.add(forestClick);
-doorMeshes.push(forestClick);
-
-// Sign above door
-const fsC = document.createElement('canvas');
-fsC.width=1024; fsC.height=300;
-const fsX = fsC.getContext('2d');
-fsX.fillStyle='#0a0e06'; fsX.fillRect(0,0,1024,300);
-// Thin border
-fsX.strokeStyle='#A08060'; fsX.lineWidth=1.5; fsX.strokeRect(8,8,1008,284);
-// Corner marks
-[[8,8],[1016,8],[8,292],[1016,292]].forEach(([cx,cy]) => {
-  fsX.strokeStyle='#A08060';
-  fsX.beginPath();
-  fsX.moveTo(cx+(cx<512?10:-10), cy);
-  fsX.lineTo(cx, cy);
-  fsX.lineTo(cx, cy+(cy<150?10:-10));
-  fsX.stroke();
-});
-// Cormorant Garamond light — brand voice
-fsX.fillStyle='#D2C3AF';
-fsX.font='300 110px "Cormorant Garamond", serif';
-fsX.textAlign='center'; fsX.textBaseline='middle';
-fsX.fillText('The Garden', 512, 150);
-// Thin divider
-fsX.strokeStyle='#A08060'; fsX.lineWidth=1; fsX.globalAlpha=0.5;
-fsX.beginPath(); fsX.moveTo(200,230); fsX.lineTo(824,230); fsX.stroke();
-fsX.globalAlpha=1;
-
-const fsTex = new THREE.CanvasTexture(fsC);
-const forestSign = new THREE.Mesh(
-  new THREE.PlaneGeometry(FDW*1.4, 0.7),
-  new THREE.MeshStandardMaterial({ map:fsTex, emissiveMap:fsTex, emissive:new THREE.Color(0xffffff), emissiveIntensity:2.2 })
-);
-forestSign.position.set(0, -H/2+FDH+0.45, FZ+0.03);
-scene.add(forestSign);
-
-// Floor planks — subtle lines
-for (let i = -2; i <= 2; i++) {
-  const plank = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.04, L),
-    new THREE.MeshStandardMaterial({ color:0x2a1c0a, roughness:1 })
-  );
-  plank.rotation.x = -Math.PI/2;
-  plank.position.set(i*(W/4), -H/2+0.001, -L/2);
-  scene.add(plank);
-}
-
-// ── WINDOWS — high on wall, near ceiling, spaced along corridor
-[-2, -6, -10, -14, -18, -22, -26, -30].forEach((wz, wi) => {
-  [-W/2, W/2].forEach((wx, side) => {
-    const isLeft = side === 0;
-    const WW = 0.7;  // window width
-    const WH = 0.5;  // window height
-    const WY = H/2 - 0.45; // near ceiling
-
-    // Frame
-    const fm = new THREE.MeshStandardMaterial({ color:0x2a1808, roughness:0.9 });
-    [[WW+0.06, 0.05, 0.05, 0, WH/2+0.02, 0],   // top
-     [WW+0.06, 0.05, 0.05, 0, -WH/2-0.02, 0],  // bottom
-     [0.05, WH+0.06, 0.05, -WW/2-0.02, 0, 0],  // left
-     [0.05, WH+0.06, 0.05, WW/2+0.02, 0, 0],   // right
-     [0.04, WH, 0.04, 0, 0, 0]                  // center vertical
-    ].forEach(([gw,gh,gd,ox,oy,oz]) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(gw,gh,gd), fm);
-      m.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
-      m.position.set(wx, WY + oy, wz + oz);
-      scene.add(m);
+// ── WINDOWS ──────────────────────────────────────────────────────
+[-2,-6,-10,-14,-18,-22,-26,-30].forEach((wz, wi) => {
+  [-W/2+0.02, W/2-0.02].forEach((wx, si) => {
+    const isL = si===0, WW=0.7, WH=0.5, WY=H/2-0.45;
+    const fm = mat(0x2a1808, 0.9);
+    [[WW+0.06,0.05,0.05,0,WH/2+0.02,0],[WW+0.06,0.05,0.05,0,-WH/2-0.02,0],
+     [0.05,WH+0.06,0.05,-WW/2-0.02,0,0],[0.05,WH+0.06,0.05,WW/2+0.02,0,0],
+     [0.04,WH,0.04,0,0,0]].forEach(([gw,gh,gd,ox,oy,oz]) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(gw,gh,gd),fm);
+      m.rotation.y = isL?Math.PI/2:-Math.PI/2;
+      m.position.set(wx,WY+oy,wz+oz); scene.add(m);
     });
-
-    // Night sky outside
-    const sky = new THREE.Mesh(
-      new THREE.PlaneGeometry(WW, WH),
-      new THREE.MeshStandardMaterial({
-        color:0x040810,
-        emissive: new THREE.Color(0x0a1828),
-        emissiveIntensity: 1.5,
-        side: THREE.DoubleSide
-      })
-    );
-    sky.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
-    sky.position.set(isLeft ? wx - 0.02 : wx + 0.02, WY, wz);
-    scene.add(sky);
-
-    // Glass
-    const glass = new THREE.Mesh(
-      new THREE.PlaneGeometry(WW, WH),
-      new THREE.MeshStandardMaterial({
-        color:0x6090b0, transparent:true, opacity:0.12,
-        emissive: new THREE.Color(0x304868), emissiveIntensity:0.8,
-        side: THREE.DoubleSide
-      })
-    );
-    glass.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
-    glass.position.set(wx, WY, wz);
-    scene.add(glass);
-
-    // Cool light into corridor
-    const wl = new THREE.PointLight(0x5080a0, 0.7, 6);
-    wl.position.set(isLeft ? wx + 0.8 : wx - 0.8, WY - 0.3, wz);
-    scene.add(wl);
-
-    // Stars — tiny dots outside
-    for (let s = 0; s < 4; s++) {
-      const star = new THREE.Mesh(
-        new THREE.CircleGeometry(0.012, 6),
-        new THREE.MeshStandardMaterial({ color:0xffffff, emissive:new THREE.Color(0xffffff), emissiveIntensity:4 })
-      );
-      star.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
-      star.position.set(
-        isLeft ? wx - 0.03 : wx + 0.03,
-        WY + (Math.random()-0.5)*0.3,
-        wz + (Math.random()-0.5)*0.5
-      );
+    const sky = new THREE.Mesh(new THREE.PlaneGeometry(WW,WH),
+      new THREE.MeshStandardMaterial({color:0x040810,emissive:new THREE.Color(0x0a1828),emissiveIntensity:0.8,side:THREE.DoubleSide}));
+    sky.rotation.y = isL?Math.PI/2:-Math.PI/2;
+    sky.position.set(isL?wx-0.02:wx+0.02,WY,wz); scene.add(sky);
+    const glass = new THREE.Mesh(new THREE.PlaneGeometry(WW,WH),
+      new THREE.MeshStandardMaterial({color:0x6090b0,transparent:true,opacity:0.12,emissive:new THREE.Color(0x304868),emissiveIntensity:0.3,side:THREE.DoubleSide}));
+    glass.rotation.y = isL?Math.PI/2:-Math.PI/2;
+    glass.position.set(wx,WY,wz); scene.add(glass);
+    const wl = new THREE.PointLight(0x5080a0, 0.25, 5);
+    wl.position.set(isL?wx+0.8:wx-0.8, WY-0.3, wz); scene.add(wl);
+    for (let s=0;s<4;s++){
+      const star=new THREE.Mesh(new THREE.CircleGeometry(0.012,6),
+        new THREE.MeshStandardMaterial({color:0xffffff,emissive:new THREE.Color(0xffffff),emissiveIntensity:2}));
+      star.rotation.y=isL?Math.PI/2:-Math.PI/2;
+      star.position.set(isL?wx-0.03:wx+0.03,WY+(Math.random()-0.5)*0.3,wz+(Math.random()-0.5)*0.5);
       scene.add(star);
     }
-
-    // Moon through first window
-    if (wi === 0 && isLeft) {
-      const moon = new THREE.Mesh(
-        new THREE.CircleGeometry(0.06, 16),
-        new THREE.MeshStandardMaterial({ color:0xf8f0d8, emissive:new THREE.Color(0xf8f0d8), emissiveIntensity:3.5 })
-      );
-      moon.rotation.y = Math.PI/2;
-      moon.position.set(wx - 0.03, WY + 0.1, wz + 0.15);
-      scene.add(moon);
+    if (wi===0&&isL){
+      const moon=new THREE.Mesh(new THREE.CircleGeometry(0.06,16),
+        new THREE.MeshStandardMaterial({color:0xf8f0d8,emissive:new THREE.Color(0xf8f0d8),emissiveIntensity:3.5}));
+      moon.rotation.y=Math.PI/2;
+      moon.position.set(wx-0.03,WY+0.1,wz+0.15); scene.add(moon);
     }
   });
 });
 
-// ── RAYCASTING (click/hover on doors) ───────────────────────────
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-const labelEl = document.getElementById('door-label');
-let hoveredDoor = null;
+// ── DOORS ─────────────────────────────────────────────────────────
+const doors = [
+  {name:'Audio Sanctuary',color:0xc89030,border:0xe8a830,z:-2, side:'L',action:'sanctuary'},
+  {name:'Fermentation Lab',color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'soon'},
+  {name:'Games',           color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
+  {name:'Headspace',       color:0x4060a0,border:0x6090c0,z:-10,side:'R',action:'soon'},
+  {name:'Idea Basket',     color:0xc06030,border:0xd07040,z:-18,side:'L',action:'soon'},
+  {name:'Herbal Atelier',  color:0x508028,border:0x78b038,z:-18,side:'R',action:'soon'},
+];
 
-function getMouseNDC(e) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x:  ((e.clientX - rect.left) / rect.width)  * 2 - 1,
-    y: -((e.clientY - rect.top)  / rect.height) * 2 + 1
-  };
-}
+const DW=2.2, DH=2.8;
+const doorMeshes=[], billboardSigns=[];
 
-canvas.addEventListener('mousemove', e => {
-  const m = getMouseNDC(e);
-  mouse.set(m.x, m.y);
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(doorMeshes);
-  if (hits.length > 0 && hits[0].object.userData.door) {
-    const d = hits[0].object.userData.door;
-    hoveredDoor = d;
-    labelEl.textContent = d.name;
-    labelEl.classList.add('show');
-    canvas.style.cursor = 'pointer';
-  } else {
-    hoveredDoor = null;
-    labelEl.classList.remove('show');
-    canvas.style.cursor = 'default';
-  }
+doors.forEach(d => {
+  const px = d.side==='L' ? -W/2+0.02 : W/2-0.02;
+  const rotY = d.side==='L' ? Math.PI/2 : -Math.PI/2;
+  const py = -H/2 + DH/2;
+  const bc = new THREE.Color(d.border);
+
+  // Frame — top + sides only (no bottom, z-fighting with floor)
+  const fmat = new THREE.MeshStandardMaterial({color:bc,roughness:0.7,metalness:0.1});
+  // Top bar
+  const ftop=new THREE.Mesh(new THREE.BoxGeometry(DW+0.1,0.06,0.06),fmat);
+  ftop.rotation.y=rotY; ftop.position.set(px,py+DH/2+0.035,d.z+0.03); scene.add(ftop);
+  // Side bars
+  [[-DW/2-0.035],[DW/2+0.035]].forEach(([oz])=>{
+    const b=new THREE.Mesh(new THREE.BoxGeometry(0.06,DH+0.06,0.06),fmat);
+    b.rotation.y=rotY; b.position.set(px,py,d.z+oz); scene.add(b);
+  });
+
+  // Surface
+  const surf=new THREE.Mesh(new THREE.PlaneGeometry(DW,DH),
+    new THREE.MeshStandardMaterial({color:new THREE.Color(d.color).multiplyScalar(0.1),roughness:0.92}));
+  surf.rotation.y=rotY; surf.position.set(px,py,d.z+0.08);
+  surf.userData={door:d}; scene.add(surf); doorMeshes.push(surf);
+
+  // Knob
+  const knob=new THREE.Mesh(new THREE.SphereGeometry(0.06,8,8),
+    new THREE.MeshStandardMaterial({color:bc,metalness:0.8,roughness:0.2,emissive:bc,emissiveIntensity:0.3}));
+  knob.position.set(d.side==='L'?px+0.08:px-0.08, py-0.1, d.z+0.05); scene.add(knob);
+
+  // Glow
+  const gl=new THREE.PointLight(bc,0.5,3);
+  gl.position.set(d.side==='L'?px+0.8:px-0.8,py,d.z); scene.add(gl);
+
+  // Crack
+  const crack=new THREE.Mesh(new THREE.PlaneGeometry(0.018,DH*0.72),
+    new THREE.MeshStandardMaterial({color:bc,emissive:bc,emissiveIntensity:0.6}));
+  crack.rotation.y=rotY; crack.position.set(d.side==='L'?px+0.01:px-0.01,py,d.z+0.09); scene.add(crack);
+
+  // Sign — canvas, Cormorant Garamond
+  const sc=document.createElement('canvas');
+  sc.width=1024; sc.height=512;
+  const ctx=sc.getContext('2d');
+  ctx.fillStyle='#0a0806'; ctx.fillRect(0,0,1024,512);
+  const hex='#'+bc.getHexString();
+  ctx.strokeStyle=hex; ctx.lineWidth=4; ctx.strokeRect(8,8,1008,496);
+  ctx.lineWidth=1.5; ctx.strokeStyle=hex+'55'; ctx.strokeRect(18,18,988,476);
+  ctx.fillStyle='#D2C3AF'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const words=d.name.split(' ');
+  if(words.length===1){ctx.font='300 120px "Cormorant Garamond",serif';ctx.fillText(words[0],512,256);}
+  else if(words.length===2){ctx.font='300 96px "Cormorant Garamond",serif';ctx.fillText(words[0],512,185);ctx.fillText(words[1],512,330);}
+  else{const mid=Math.ceil(words.length/2);ctx.font='300 80px "Cormorant Garamond",serif';ctx.fillText(words.slice(0,mid).join(' '),512,185);ctx.fillText(words.slice(mid).join(' '),512,310);}
+  ctx.strokeStyle=hex; ctx.lineWidth=3; ctx.globalAlpha=0.35;
+  ctx.beginPath(); ctx.moveTo(140,420); ctx.lineTo(884,420); ctx.stroke(); ctx.globalAlpha=1;
+  const tex=new THREE.CanvasTexture(sc); tex.needsUpdate=true;
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.8,0.9),
+    new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6}));
+  const sx=d.side==='L'?-1.0:1.0;
+  sign.position.set(sx,0.3,d.z-0.3); scene.add(sign); billboardSigns.push(sign);
 });
 
-canvas.addEventListener('click', e => {
-  const m = getMouseNDC(e);
-  mouse.set(m.x, m.y);
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(doorMeshes);
-  if (hits.length > 0 && hits[0].object.userData.door) {
-    const d = hits[0].object.userData.door;
-    openRoom(d.name, d.action);
-  }
+// ── GARDEN DOOR ───────────────────────────────────────────────────
+const GW=W*0.68, GH=2.8, GZ=-L+0.2, gpy=-H/2+GH/2;
+
+// Frame
+const gfm=new THREE.MeshStandardMaterial({color:0x3a2810,roughness:0.6,metalness:0.2});
+[[GW+0.1,0.07,0.07,0,GH/2+0.035,0.035],[GW+0.1,0.07,0.07,0,-GH/2-0.035,0.035],
+ [0.07,GH+0.07,0.07,-GW/2-0.035,0,0.035],[0.07,GH+0.07,0.07,GW/2+0.035,0,0.035],
+ [0.05,GH,0.05,0,0,0.035],[GW,0.05,0.05,0,0,0.035]
+].forEach(([fw,fh,fd,ox,oy,oz])=>{
+  const b=new THREE.Mesh(new THREE.BoxGeometry(fw,fh,fd),gfm);
+  b.position.set(ox,gpy+oy,GZ+oz); scene.add(b);
 });
 
-// Touch
-canvas.addEventListener('touchend', e => {
-  const t = e.changedTouches[0];
-  const m = getMouseNDC(t);
-  mouse.set(m.x, m.y);
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(doorMeshes);
-  if (hits.length > 0 && hits[0].object.userData.door) {
-    openRoom(hits[0].object.userData.door.name, hits[0].object.userData.door.action);
-  }
+// Night sky
+const ns=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
+  new THREE.MeshStandardMaterial({color:0x020408,emissive:new THREE.Color(0x040810),emissiveIntensity:2.2}));
+ns.position.set(0,gpy,GZ-0.5); scene.add(ns);
+
+// Trees
+[-0.8,-0.05,0.72,-0.42,0.38].forEach((tx,ti)=>{
+  const s=0.55+ti*0.06;
+  const tr=new THREE.Mesh(new THREE.BoxGeometry(0.07*s,0.44*s,0.05),new THREE.MeshStandardMaterial({color:0x050c03}));
+  tr.position.set(tx,-H/2+0.22*s,GZ-0.35); scene.add(tr);
+  const cr=new THREE.Mesh(new THREE.SphereGeometry(0.25*s,7,5),new THREE.MeshStandardMaterial({color:0x091504}));
+  cr.position.set(tx,-H/2+0.66*s,GZ-0.35); scene.add(cr);
 });
 
-// ── ROOM OPEN/CLOSE ──────────────────────────────────────────────
-function openRoom(name, action) {
-  if (action === 'games') { window.location.href = 'games.html'; return; }
-  const overlay = document.getElementById('room-overlay');
-  document.getElementById('room-name').textContent = name;
-  if (action === 'sanctuary') {
-    // redirect to main index with sanctuary open
-    window.location.href = 'index.html#sanctuary';
-  } else {
-    document.getElementById('room-sub').textContent = 'coming soon';
-    overlay.classList.add('open');
-  }
+// Moon
+const gMoon=new THREE.Mesh(new THREE.CircleGeometry(0.1,14),
+  new THREE.MeshStandardMaterial({color:0xf8f0d8,emissive:new THREE.Color(0xf8f0d8),emissiveIntensity:2}));
+gMoon.position.set(-0.45,gpy+0.5,GZ-0.28); scene.add(gMoon);
+
+// Fireflies
+const ffArr=[];
+for(let i=0;i<14;i++) ffArr.push((Math.random()-0.5)*GW*0.6,-H/2+0.2+Math.random()*GH*0.65,GZ-0.1-Math.random()*0.35);
+const ffGeo=new THREE.BufferGeometry();
+ffGeo.setAttribute('position',new THREE.Float32BufferAttribute(ffArr,3));
+const ff=new THREE.Points(ffGeo,new THREE.PointsMaterial({color:0xc8e040,size:0.04,transparent:true,opacity:0.8}));
+scene.add(ff);
+
+// Glass
+const gGlass=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
+  new THREE.MeshStandardMaterial({color:0x182030,transparent:true,opacity:0.15,emissive:new THREE.Color(0x040c18),emissiveIntensity:1.0,side:THREE.DoubleSide}));
+gGlass.position.set(0,gpy,GZ+0.01); scene.add(gGlass);
+
+// Glow
+const gGlow=new THREE.PointLight(0x102008,1.2,10);
+gGlow.position.set(0,0,GZ+0.5); scene.add(gGlow);
+
+// Clickable
+const gClick=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
+  new THREE.MeshStandardMaterial({transparent:true,opacity:0}));
+gClick.position.set(0,gpy,GZ+0.02);
+gClick.userData={door:{name:'The Garden',action:'garden'}};
+scene.add(gClick); doorMeshes.push(gClick);
+
+// Garden sign
+const gsC=document.createElement('canvas');
+gsC.width=768; gsC.height=200;
+const gsX=gsC.getContext('2d');
+gsX.fillStyle='rgba(8,7,6,0.85)'; gsX.fillRect(0,0,768,200);
+gsX.strokeStyle='#A08060'; gsX.lineWidth=1.2; gsX.strokeRect(7,7,754,186);
+[[7,7],[761,7],[7,193],[761,193]].forEach(([cx,cy])=>{
+  gsX.strokeStyle='#A08060'; gsX.beginPath();
+  gsX.moveTo(cx+(cx<384?11:-11),cy); gsX.lineTo(cx,cy); gsX.lineTo(cx,cy+(cy<100?11:-11)); gsX.stroke();
+});
+gsX.fillStyle='#D2C3AF'; gsX.font='300 92px "Cormorant Garamond",serif';
+gsX.textAlign='center'; gsX.textBaseline='middle';
+gsX.fillText('The Garden',384,90);
+gsX.strokeStyle='#A08060'; gsX.lineWidth=0.8; gsX.globalAlpha=0.3;
+gsX.beginPath(); gsX.moveTo(150,148); gsX.lineTo(618,148); gsX.stroke(); gsX.globalAlpha=1;
+const gsTex=new THREE.CanvasTexture(gsC); gsTex.needsUpdate=true;
+const gSign=new THREE.Mesh(new THREE.PlaneGeometry(GW*0.88,0.48),
+  new THREE.MeshStandardMaterial({map:gsTex,emissiveMap:gsTex,emissive:new THREE.Color(0xffffff),emissiveIntensity:2.5}));
+gSign.position.set(0,gpy+GH/2+0.34,GZ+0.04); scene.add(gSign);
+
+// ── WALK ─────────────────────────────────────────────────────────
+const POSITIONS=[1,-6,-14,-20];
+let cur=0, tgtZ=POSITIONS[0];
+
+function buildDots(){
+  const el=document.getElementById('walk-dots'); el.innerHTML='';
+  POSITIONS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='walk-dot'+(i===0?' active':''); d.id='wd'+i;
+    d.onclick=()=>walkTo(i); el.appendChild(d);
+  });
 }
-
-function closeRoom() {
-  document.getElementById('room-overlay').classList.remove('open');
+function walkTo(i){
+  if(i<0||i>=POSITIONS.length)return;
+  cur=i; tgtZ=POSITIONS[i];
+  document.getElementById('btnBack').disabled=i<=0;
+  document.getElementById('btnFwd').disabled=i>=POSITIONS.length-1;
+  POSITIONS.forEach((_,j)=>{const d=document.getElementById('wd'+j);if(d)d.className='walk-dot'+(j===i?' active':'');});
 }
+document.getElementById('btnFwd').onclick=()=>walkTo(cur+1);
+document.getElementById('btnBack').onclick=()=>walkTo(cur-1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowUp'||e.key==='ArrowRight')walkTo(cur+1);
+  if(e.key==='ArrowDown'||e.key==='ArrowLeft')walkTo(cur-1);
+});
 
-// ── ANIMATION LOOP ───────────────────────────────────────────────
-const clock = new THREE.Clock();
+// ── RAYCASTING ───────────────────────────────────────────────────
+const ray=new THREE.Raycaster(), mv=new THREE.Vector2();
+const lbl=document.getElementById('door-label');
+function ndc(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width)*2-1,y:-((e.clientY-r.top)/r.height)*2+1};}
+canvas.addEventListener('mousemove',e=>{
+  const m=ndc(e); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
+  const h=ray.intersectObjects(doorMeshes);
+  if(h.length&&h[0].object.userData.door){lbl.textContent=h[0].object.userData.door.name;lbl.classList.add('show');canvas.style.cursor='pointer';}
+  else{lbl.classList.remove('show');canvas.style.cursor='default';}
+});
+canvas.addEventListener('click',e=>{
+  const m=ndc(e); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
+  const h=ray.intersectObjects(doorMeshes);
+  if(h.length&&h[0].object.userData.door)openD(h[0].object.userData.door);
+});
+canvas.addEventListener('touchend',e=>{
+  const m=ndc(e.changedTouches[0]); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
+  const h=ray.intersectObjects(doorMeshes);
+  if(h.length&&h[0].object.userData.door)openD(h[0].object.userData.door);
+},{passive:true});
 
-function animate() {
+function openD(d){
+  if(d.action==='sanctuary'){window.location.href='index.html#sanctuary';return;}
+  if(d.action==='garden'){window.location.href='garden.html';return;}
+  if(d.action==='games'){window.location.href='games.html';return;}
+  document.getElementById('room-name').textContent=d.name;
+  document.getElementById('room-overlay').classList.add('open');
+}
+function closeRoom(){document.getElementById('room-overlay').classList.remove('open');}
+
+// ── ANIMATE ──────────────────────────────────────────────────────
+const clk=new THREE.Clock();
+function animate(){
   requestAnimationFrame(animate);
-  const t = clock.getDelta();
-
-  // Smooth camera movement
-  const dz = targetZ - camera.position.z;
-  if (Math.abs(dz) > 0.001) {
-    camera.position.z += dz * Math.min(t * 4, 0.12);
-    isMoving = true;
-  } else {
-    camera.position.z = targetZ;
-    isMoving = false;
-  }
-
-  // Billboard signs always face camera
-  billboardSigns.forEach(s => s.quaternion.copy(camera.quaternion));
-
-  // Billboard signs always face camera
-  billboardSigns.forEach(s => s.quaternion.copy(camera.quaternion));
-
-  // Slight camera bob
-  camera.position.y = Math.sin(clock.elapsedTime * 0.4) * 0.015;
-
-  // Firefly flicker
-  fireflies.material.opacity = 0.4 + Math.sin(clock.elapsedTime * 2.1) * 0.3;
-
-  renderer.render(scene, camera);
+  const t=clk.getDelta(), e=clk.elapsedTime;
+  camera.position.z+=(tgtZ-camera.position.z)*Math.min(t*3.5,0.1);
+  camera.position.y=Math.sin(e*0.3)*0.01;
+  billboardSigns.forEach(s=>s.quaternion.copy(camera.quaternion));
+  ff.material.opacity=0.35+Math.sin(e*2.3)*0.4;
+  gMoon.material.emissiveIntensity=3.5+Math.sin(e*0.7)*0.6;
+  renderer.render(scene,camera);
 }
 
-// Force load Cormorant before canvas signs are drawn
-document.fonts.load('300 72px "Cormorant Garamond"').then(() => {
-  return document.fonts.load('300 110px "Cormorant Garamond"');
-}).then(() => {
-  buildDots();
-  animate();
-}).catch(() => {
-  buildDots();
-  animate();
-});
+document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
+  buildDots(); resize(); animate();
+}).catch(()=>{buildDots();resize();animate();});
 </script>
 </body>
 </html>
