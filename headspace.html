@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Headspace — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0A0908;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;
+  --muted:#7A7068;--dim:#6B5F52;--border:#2E2A26;
+  --blue:#5070b0;--blue-dim:#182040;
+}
+html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Jost',sans-serif;color:var(--text);}
+
+/* Header */
+#hdr{
+  position:absolute;top:0;left:0;right:0;
+  padding:16px 28px;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(to bottom,rgba(10,9,8,0.95),transparent);
+  z-index:10;
+}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--cream);text-transform:uppercase;}
+#hdr-sep{font-size:10px;color:var(--dim);}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;color:var(--muted);font-style:italic;}
+#hdr-back{
+  margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted);
+  text-transform:uppercase;text-decoration:none;border:1px solid var(--border);
+  padding:6px 16px;border-radius:100px;transition:all 0.2s;background:none;cursor:pointer;
+  font-family:'Jost',sans-serif;
+}
+#hdr-back:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Canvas — full screen */
+#plate{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  cursor:crosshair;
+}
+
+/* Controls — bottom panel */
+#controls{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:16px 28px 14px;
+  background:linear-gradient(to top,rgba(10,9,8,0.96) 70%,transparent);
+  display:flex;align-items:center;gap:32px;flex-wrap:wrap;
+  z-index:10;
+}
+
+.ctrl{display:flex;flex-direction:column;gap:5px;min-width:120px;}
+.ctrl-label{
+  font-size:8px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ctrl-val{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;}
+
+input[type=range]{
+  width:100%;height:2px;
+  -webkit-appearance:none;appearance:none;
+  background:var(--border);border-radius:1px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--thumb-color, var(--gold));cursor:pointer;
+  box-shadow:0 0 8px var(--thumb-color, var(--gold));
+}
+input[type=range]::-moz-range-thumb{
+  width:12px;height:12px;border-radius:50%;
+  background:var(--thumb-color, var(--gold));cursor:pointer;border:none;
+}
+
+/* Per-control accent colors */
+#mSlider   { --thumb-color: #c8a050; } /* amber — harmonic M */
+#nSlider   { --thumb-color: #6090c0; } /* blue — harmonic N */
+#ampSlider { --thumb-color: #c06848; } /* terracotta — vibration */
+#countSlider{ --thumb-color: #608040; } /* green — density */
+
+.ctrl:nth-child(1) .ctrl-val { color: #c8a050; }
+.ctrl:nth-child(2) .ctrl-val { color: #6090c0; }
+.ctrl:nth-child(3) .ctrl-val { color: #c06848; }
+.ctrl:nth-child(4) .ctrl-val { color: #608040; }
+
+.ctrl:nth-child(1) .ctrl-label { border-bottom: 1px solid rgba(200,160,80,0.15); padding-bottom:4px; }
+.ctrl:nth-child(2) .ctrl-label { border-bottom: 1px solid rgba(96,144,192,0.15); padding-bottom:4px; }
+.ctrl:nth-child(3) .ctrl-label { border-bottom: 1px solid rgba(192,104,72,0.15); padding-bottom:4px; }
+.ctrl:nth-child(4) .ctrl-label { border-bottom: 1px solid rgba(96,128,64,0.15); padding-bottom:4px; }
+
+/* Info text */
+#info{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1s;
+  z-index:5;
+}
+#info.show{opacity:1;}
+#info-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,3vw,28px);
+  font-weight:300;font-style:italic;
+  color:var(--cream);letter-spacing:0.05em;
+  margin-bottom:8px;
+}
+#info-sub{
+  font-size:9px;letter-spacing:2.5px;
+  color:var(--muted);text-transform:uppercase;
+}
+
+/* Reset btn */
+#resetBtn{
+  font-family:'Jost',sans-serif;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 20px;border-radius:100px;
+  border:1px solid var(--border);background:none;
+  color:var(--muted);cursor:pointer;transition:all 0.2s;
+  white-space:nowrap;flex-shrink:0;
+}
+#resetBtn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Frequency label */
+#freq-label{
+  position:absolute;top:68px;left:50%;transform:translateX(-50%);
+  font-family:'Cormorant Garamond',serif;
+  font-size:11px;font-style:italic;letter-spacing:1px;
+  color:var(--dim);z-index:10;pointer-events:none;
+  transition:opacity 0.5s;
+}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">Headspace · Cymatics Simulator</div>
+  <button id="hdr-back" onclick="history.back()">← Corridor</button>
+</div>
+
+<canvas id="plate"></canvas>
+
+<div id="info">
+  <div id="info-title">frequency becomes form</div>
+  <div id="info-sub">Chladni resonance · touch to disturb</div>
+</div>
+
+<div id="freq-label" id="freq-label">cymatics · chladni resonance</div>
+
+<div id="controls">
+  <div class="ctrl">
+    <div class="ctrl-label">Harmonic M <span class="ctrl-val" id="mVal">3</span></div>
+    <input type="range" id="mSlider" min="1" max="12" step="1" value="3">
+  </div>
+  <div class="ctrl">
+    <div class="ctrl-label">Harmonic N <span class="ctrl-val" id="nVal">2</span></div>
+    <input type="range" id="nSlider" min="1" max="12" step="1" value="2">
+  </div>
+  <div class="ctrl">
+    <div class="ctrl-label">Vibration <span class="ctrl-val" id="ampVal">0.8</span></div>
+    <input type="range" id="ampSlider" min="0.1" max="3.0" step="0.1" value="0.8">
+  </div>
+  <div class="ctrl">
+    <div class="ctrl-label">Density <span class="ctrl-val" id="countVal">12000</span></div>
+    <input type="range" id="countSlider" min="3000" max="20000" step="1000" value="12000">
+  </div>
+  <button id="resetBtn">Scramble</button>
+</div>
+
+<script>
+const canvas = document.getElementById('plate');
+const ctx = canvas.getContext('2d');
+
+let M=3, N=2, amplitude=0.8, count=12000;
+let particles = new Float32Array(count*2);
+let W, H;
+
+// Color theme — warm dark palette
+const BG = '#0a0908';
+const PARTICLE_COLOR = 'rgba(194,179,159,0.55)'; // cream, semi-transparent
+
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  initParticles();
+}
+window.addEventListener('resize', resize);
+
+function initParticles(){
+  particles = new Float32Array(count*2);
+  for(let i=0; i<count*2; i+=2){
+    particles[i]   = Math.random()*W;
+    particles[i+1] = Math.random()*H;
+  }
+}
+
+function update(){
+  const scaleX = Math.PI/W;
+  const scaleY = Math.PI/H;
+  for(let i=0; i<count; i++){
+    const xi = i*2, yi = i*2+1;
+    const nx = particles[xi]*scaleX;
+    const ny = particles[yi]*scaleY;
+    const val = Math.cos(N*nx)*Math.cos(M*ny) - Math.cos(M*nx)*Math.cos(N*ny);
+    const force = Math.abs(val)*amplitude;
+    particles[xi] += (Math.random()-0.5)*force*8;
+    particles[yi] += (Math.random()-0.5)*force*8;
+    if(particles[xi]<0)   particles[xi]=0;
+    if(particles[xi]>W)   particles[xi]=W;
+    if(particles[yi]<0)   particles[yi]=0;
+    if(particles[yi]>H)   particles[yi]=H;
+  }
+}
+
+function draw(){
+  ctx.fillStyle = BG;
+  ctx.fillRect(0,0,W,H);
+
+  // Subtle vignette
+  const grad = ctx.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*0.75);
+  grad.addColorStop(0,'rgba(0,0,0,0)');
+  grad.addColorStop(1,'rgba(0,0,0,0.55)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+
+  // Particles
+  ctx.fillStyle = PARTICLE_COLOR;
+  for(let i=0; i<count; i++){
+    ctx.fillRect(particles[i*2], particles[i*2+1], 1.2, 1.2);
+  }
+}
+
+function loop(){
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+// Controls
+document.getElementById('mSlider').oninput = function(){
+  M=+this.value; document.getElementById('mVal').textContent=M;
+  document.getElementById('freq-label').textContent = `M:${M}  N:${N}  ·  cymatics`;
+};
+document.getElementById('nSlider').oninput = function(){
+  N=+this.value; document.getElementById('nVal').textContent=N;
+  document.getElementById('freq-label').textContent = `M:${M}  N:${N}  ·  cymatics`;
+};
+document.getElementById('ampSlider').oninput = function(){
+  amplitude=+this.value; document.getElementById('ampVal').textContent=amplitude.toFixed(1);
+};
+document.getElementById('countSlider').onchange = function(){
+  count=+this.value; document.getElementById('countVal').textContent=count; initParticles();
+};
+document.getElementById('resetBtn').onclick = initParticles;
+
+// Touch — disturb particles at touch point
+canvas.addEventListener('click', e=>{
+  const rx=e.clientX, ry=e.clientY, radius=80;
+  for(let i=0;i<count;i++){
+    const dx=particles[i*2]-rx, dy=particles[i*2+1]-ry;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<radius){
+      const angle=Math.random()*Math.PI*2;
+      particles[i*2]   += Math.cos(angle)*30*(1-dist/radius);
+      particles[i*2+1] += Math.sin(angle)*30*(1-dist/radius);
+    }
+  }
+});
+
+// Show intro text briefly
+setTimeout(()=>{
+  const info=document.getElementById('info');
+  info.classList.add('show');
+  setTimeout(()=>info.classList.remove('show'), 3000);
+},400);
+
+resize();
+loop();
+</script>
+</body>
+</html>
