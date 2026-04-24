@@ -100,16 +100,15 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0806);
 scene.fog = new THREE.FogExp2(0x0a0806, 0.032);
 
-const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 60);
-camera.position.set(0, 0, 1);
+const camera = new THREE.PerspectiveCamera(68, 1, 0.1, 60);
+camera.position.set(0, 0, 2);
 
 function resize() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  // Wider FOV on mobile so corridor walls don't clip
-  camera.fov = w < 600 ? 85 : 65;
+  camera.fov = w < 600 ? 82 : 68;
   camera.updateProjectionMatrix();
 }
 window.addEventListener('resize', resize);
@@ -314,6 +313,7 @@ doors.forEach(d => {
     new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6}));
   const sx=d.side==='L'?-1.0:1.0;
   sign.position.set(sx,0.3,d.z-0.3); scene.add(sign); billboardSigns.push(sign);
+  sign.userData={door:d};
 
   // Arrow chevron — points toward door wall
   const ac2=document.createElement('canvas'); ac2.width=128; ac2.height=128;
@@ -540,14 +540,17 @@ gClick.userData={door:{name:'The Garden',action:'garden'}};
 scene.add(gClick); doorMeshes.push(gClick);
 
 // ── WALK ─────────────────────────────────────────────────────────
-const POSITIONS=[1,-6,-14,-20];
+const POSITIONS=[2,-6,-14,-20];
 let cur=0, tgtZ=POSITIONS[0];
+
+// On mobile start at position 1 (first doors visible)
+if(window.innerWidth < 600){ cur=1; tgtZ=POSITIONS[1]; }
 
 function buildDots(){
   const el=document.getElementById('walk-dots'); el.innerHTML='';
   POSITIONS.forEach((_,i)=>{
     const d=document.createElement('div');
-    d.className='walk-dot'+(i===0?' active':''); d.id='wd'+i;
+    d.className='walk-dot'+(i===cur?' active':''); d.id='wd'+i;
     d.onclick=()=>walkTo(i); el.appendChild(d);
   });
 }
@@ -565,6 +568,13 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'||e.key==='ArrowLeft')walkTo(cur-1);
 });
 
+// Swipe to walk on mobile
+let touchStartX=0, touchStartY=0;
+canvas.addEventListener('touchstart',e=>{
+  touchStartX=e.changedTouches[0].clientX;
+  touchStartY=e.changedTouches[0].clientY;
+},{passive:true});
+
 // ── RAYCASTING ───────────────────────────────────────────────────
 const ray=new THREE.Raycaster(), mv=new THREE.Vector2();
 const lbl=document.getElementById('door-label');
@@ -580,10 +590,30 @@ canvas.addEventListener('click',e=>{
   const h=ray.intersectObjects(doorMeshes);
   if(h.length&&h[0].object.userData.door)openD(h[0].object.userData.door);
 });
+
+// Also make billboard signs clickable
 canvas.addEventListener('touchend',e=>{
-  const m=ndc(e.changedTouches[0]); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
-  const h=ray.intersectObjects(doorMeshes);
-  if(h.length&&h[0].object.userData.door)openD(h[0].object.userData.door);
+  const t=e.changedTouches[0];
+  const dx=t.clientX-touchStartX, dy=t.clientY-touchStartY;
+  const dist=Math.sqrt(dx*dx+dy*dy);
+
+  // Swipe
+  if(dist>40){
+    if(Math.abs(dx)<Math.abs(dy)){
+      // vertical swipe — walk
+      if(dy<0) walkTo(cur+1); else walkTo(cur-1);
+    }
+    return;
+  }
+
+  // Tap — check doors first
+  const m=ndc(t); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
+  const allMeshes=[...doorMeshes,...billboardSigns];
+  const h=ray.intersectObjects(allMeshes);
+  if(h.length){
+    const obj=h[0].object;
+    if(obj.userData.door) openD(obj.userData.door);
+  }
 },{passive:true});
 
 function openD(d){
