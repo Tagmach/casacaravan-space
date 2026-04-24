@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Basket — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0A0908;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;--muted:#7A7068;--border:#2E2A26;--green:#4a8a2a;}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;min-height:100vh;padding:40px 32px;}
+
+h1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);margin-bottom:6px;}
+.sub{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:40px;}
+
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:32px;}
+.tab{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;cursor:pointer;
+  color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;transition:all 0.2s;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+#count{font-size:10px;color:var(--muted);margin-bottom:20px;}
+
+.idea-card{
+  background:#0f0d0b;border:1px solid var(--border);border-radius:8px;
+  padding:20px;margin-bottom:12px;display:grid;
+  grid-template-columns:1fr auto;gap:16px;align-items:start;
+  transition:border-color 0.2s;
+}
+.idea-card.approved{border-color:var(--green);}
+.idea-card.implemented{border-color:var(--gold);}
+
+.idea-meta{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:flex;gap:12px;}
+.idea-name{color:var(--gold);}
+.idea-time{color:var(--border);}
+.idea-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--cream);line-height:1.7;margin-bottom:8px;}
+.idea-why{font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;}
+.idea-email{font-size:9px;color:var(--border);letter-spacing:1px;}
+
+.actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.btn{
+  font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 14px;border-radius:100px;cursor:pointer;
+  font-family:'Jost',sans-serif;border:1px solid;transition:all 0.2s;
+  white-space:nowrap;
+}
+.btn-approve{border-color:var(--green);color:var(--green);background:none;}
+.btn-approve:hover{background:var(--green);color:#fff;}
+.btn-approve.active{background:var(--green);color:#fff;}
+
+.btn-implement{border-color:var(--gold);color:var(--gold);background:none;}
+.btn-implement:hover{background:var(--gold);color:#0A0908;}
+.btn-implement.active{background:var(--gold);color:#0A0908;}
+
+.btn-delete{border-color:#5a2020;color:#8a4040;background:none;}
+.btn-delete:hover{border-color:#8a3030;color:#c05050;}
+
+.empty{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;
+  color:var(--muted);text-align:center;padding:60px 0;}
+
+#loading{text-align:center;padding:60px;font-size:10px;letter-spacing:2px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<h1>Idea Basket</h1>
+<div class="sub">Admin · Moderation Panel</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('pending')">Pending</button>
+  <button class="tab" onclick="showTab('approved')">Approved</button>
+  <button class="tab" onclick="showTab('implemented')">Implemented</button>
+  <button class="tab" onclick="showTab('all')">All</button>
+</div>
+
+<div id="count"></div>
+<div id="list"><div id="loading">Loading...</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let currentTab = 'pending';
+let ideas = [];
+
+async function load(){
+  document.getElementById('loading').style.display='block';
+  const {data} = await supa.from('idea_basket').select('*').order('created_at',{ascending:false});
+  ideas = data || [];
+  render();
+}
+
+function showTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['pending','approved','implemented','all'][i]===tab);
+  });
+  render();
+}
+
+function filter(){
+  if(currentTab==='pending')     return ideas.filter(i=>!i.approved&&!i.implemented);
+  if(currentTab==='approved')    return ideas.filter(i=>i.approved&&!i.implemented);
+  if(currentTab==='implemented') return ideas.filter(i=>i.implemented);
+  return ideas;
+}
+
+function render(){
+  document.getElementById('loading').style.display='none';
+  const list = filter();
+  document.getElementById('count').textContent = list.length + ' idea' + (list.length!==1?'s':'');
+  const el = document.getElementById('list');
+  if(!list.length){ el.innerHTML='<div class="empty">Nothing here yet.</div>'; return; }
+  el.innerHTML = list.map(idea=>`
+    <div class="idea-card ${idea.implemented?'implemented':idea.approved?'approved':''}" id="card-${idea.id}">
+      <div>
+        <div class="idea-meta">
+          <span class="idea-name">${esc(idea.name)}</span>
+          <span class="idea-time">${new Date(idea.created_at).toLocaleDateString('en',{day:'numeric',month:'short',year:'numeric'})}</span>
+          ${idea.approved?'<span style="color:var(--green)">✓ approved</span>':''}
+          ${idea.implemented?'<span style="color:var(--gold)">✦ implemented</span>':''}
+        </div>
+        <div class="idea-text">"${esc(idea.idea)}"</div>
+        ${idea.why?`<div class="idea-why">${esc(idea.why)}</div>`:''}
+        ${idea.email?`<div class="idea-email">✉ ${esc(idea.email)}</div>`:''}
+      </div>
+      <div class="actions">
+        <button class="btn btn-approve ${idea.approved?'active':''}" onclick="toggle('${idea.id}','approved',${idea.approved})">
+          ${idea.approved?'✓ Approved':'Approve'}
+        </button>
+        <button class="btn btn-implement ${idea.implemented?'active':''}" onclick="toggle('${idea.id}','implemented',${idea.implemented})">
+          ${idea.implemented?'✦ Implemented':'Implement'}
+        </button>
+        <button class="btn btn-delete" onclick="del('${idea.id}')">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function toggle(id, field, current){
+  const newVal = !current;
+  const update = {[field]: newVal};
+  // If implementing, also approve
+  if(field==='implemented' && newVal) update.approved = true;
+  await supa.from('idea_basket').update(update).eq('id',id);
+  const idea = ideas.find(i=>i.id===id);
+  if(idea){ Object.assign(idea, update); }
+  render();
+}
+
+async function del(id){
+  if(!confirm('Delete this idea?')) return;
+  await supa.from('idea_basket').delete().eq('id',id);
+  ideas = ideas.filter(i=>i.id!==id);
+  render();
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+load();
+</script>
+</body>
+</html>
