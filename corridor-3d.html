@@ -72,11 +72,11 @@ canvas { display:block; flex:1; min-height:0; }
 #radio-dot{width:7px;height:7px;border-radius:50%;background:#2E2A26;transition:all 0.3s;flex-shrink:0;}
 #radio-dot.playing{background:#c8a84a;box-shadow:0 0 8px rgba(200,168,74,0.5);animation:rdP 1.5s ease-in-out infinite;}
 @keyframes rdP{0%,100%{opacity:1;}50%{opacity:0.4;}}
-#radio-name{font-size:8px;letter-spacing:2px;color:#7A7068;text-transform:uppercase;font-family:'Jost',sans-serif;white-space:nowrap;}
+#radio-name{font-size:8px;letter-spacing:2px;color:#A08060;text-transform:uppercase;font-family:'Jost',sans-serif;white-space:nowrap;}
 #radio:hover #radio-name{color:#C8C2B8;}
 #radio-select{position:absolute;bottom:44px;left:0;background:rgba(10,9,8,0.96);border:1px solid #2E2A26;border-radius:8px;padding:8px 0;display:none;min-width:170px;}
 #radio-select.show{display:block;}
-.rs-opt{font-size:9px;letter-spacing:1.5px;color:#7A7068;text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:all 0.15s;white-space:nowrap;font-family:'Jost',sans-serif;}
+.rs-opt{font-size:9px;letter-spacing:1.5px;color:#9A8878;text-transform:uppercase;padding:9px 16px;cursor:pointer;transition:all 0.15s;white-space:nowrap;font-family:'Jost',sans-serif;}
 .rs-opt:hover{color:#D2C3AF;background:rgba(255,255,255,0.03);}
 .rs-opt.active{color:#c8a84a;}
 .rs-sep{border-top:1px solid #2E2A26;margin:4px 0;}
@@ -679,9 +679,9 @@ document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
   <div id="radio-dot"></div>
   <div id="radio-name">Radio</div>
   <div id="radio-select">
-    <div class="rs-opt" onclick="setStation(0,event)">Groove Salad</div>
-    <div class="rs-opt" onclick="setStation(1,event)">Drone Zone</div>
-    <div class="rs-opt" onclick="setStation(2,event)">Space Station</div>
+    <div class="rs-opt" onclick="setStation(0,event)">Drone Zone</div>
+    <div class="rs-opt" onclick="setStation(1,event)">Bossa Beyond</div>
+    <div class="rs-opt" onclick="setStation(2,event)">The Trip</div>
     <div class="rs-sep"></div>
     <div class="rs-opt" onclick="stopRadio(event)">Stop</div>
   </div>
@@ -689,7 +689,7 @@ document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
 <audio id="radio-audio" crossorigin="anonymous"></audio>
 
 <script>
-const STATIONS=[{name:'Groove Salad',url:'https://ice.somafm.com/groovesalad-128-mp3'},{name:'Drone Zone',url:'https://ice.somafm.com/dronezone-128-mp3'},{name:'Space Station',url:'https://ice.somafm.com/spacestation-128-mp3'}];
+const STATIONS=[{name:'Drone Zone',url:'https://ice.somafm.com/dronezone-128-mp3'},{name:'Bossa Beyond',url:'https://ice.somafm.com/bossa-128-mp3'},{name:'The Trip',url:'https://ice.somafm.com/thetrip-128-mp3'}];
 let radioPlaying=false,currentStation=-1;
 function toggleRadioMenu(){document.getElementById('radio-select').classList.toggle('show');}
 function setStation(idx,e){if(e)e.stopPropagation();document.getElementById('radio-select').classList.remove('show');const a=document.getElementById('radio-audio');a.src=STATIONS[idx].url;a.volume=0.35;a.play().catch(()=>{});radioPlaying=true;currentStation=idx;document.getElementById('radio-dot').classList.add('playing');document.getElementById('radio-name').textContent=STATIONS[idx].name;document.querySelectorAll('.rs-opt').forEach((o,i)=>o.classList.toggle('active',i===idx));}
