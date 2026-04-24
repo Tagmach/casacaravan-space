@@ -140,14 +140,16 @@ html, body {
   #ground { height: 28%; }
   #moon { width: 36px; height: 36px; top: 8%; right: 12%; }
   .garden-spot { display: none; }
-  #forest-path { left: 50% !important; bottom: 20%; }
+  #forest-path { left: 50% !important; bottom: 20%; z-index: 8; }
   #center { top: 35%; }
   #garden-quote { font-size: 18px; max-width: 85vw; line-height: 1.6; }
   #garden-title { font-size: 9px; }
-  #sound-toggle { top: 56px; }
+  #sound-toggle { top: auto; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 7px; padding: 5px 12px; }
   #footer-hint { display: none; }
   #breath-pulse { display: none; }
-  #chat-wrap { bottom: 16px; right: 12px; }
+  #chat-wrap { bottom: 40px; right: 12px; }
+  #header { padding: 10px 14px; gap: 8px; }
+  #header-back { padding: 5px 12px; font-size: 8px; }
 }
 
 /* Moon */
@@ -297,7 +299,7 @@ html, body {
   bottom: 28%;
   left: calc(50% + 7vw);
   transform: translateX(-50%);
-  z-index: 6;
+  z-index: 8;
   text-align: center;
   pointer-events: all;
   cursor: pointer;
