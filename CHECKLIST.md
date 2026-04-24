@@ -14,10 +14,13 @@
 ---
 
 ## Phase 2 — Corridor 3D ✓
-- [x] corridor-3d.html — Three.js, 6 kapı, pencereler, billboard tabelalar
-- [x] The Garden — cam kapı, gece görünümü
-- [x] index.html ↔ corridor-3d.html entegrasyonu
+- [x] corridor-3d.html — Three.js, arch kapılar, pencereler, billboard tabelalar
+- [x] Kamera hareketi — 4 pozisyon, swipe desteği
+- [x] Mobil FOV ayarı (85°), başlangıç pozisyonu
+- [x] Tabelalar ve oklar clickable (desktop + mobile)
+- [x] The Garden — taş kemer, çift cam kapı, "Garden" yazısı, zemin okları
 - [x] Sconce'lar pencereler arasında ortalandı
+- [x] index.html ↔ corridor-3d.html entegrasyonu
 
 ---
 
@@ -27,65 +30,80 @@
 - [x] headspace.html — Cymatics Simulator (Chladni)
 - [x] fermentation_lab.html — bağlandı
 - [x] herbal_atelier.html — full spectrum extract calculator + rehber
-- [x] garden.html — gece bahçesi, Howler.js ses, chat room
+- [x] idea_basket.html — Supabase bağlı, moderasyon sistemi
+- [x] garden.html — gece bahçesi, ses, chat
+- [x] forest.html — Three.js jungle, ateş böcekleri, cricket sesi
 
 ---
 
 ## Phase 3b — Koruma & Paylaşım ✓
 - [x] Domain lock — tool'lar sadece casacaravan.space'de çalışır
-- [x] Beacon — başka domain'den açılırsa bize ping atar
+- [x] Beacon — başka domain'den açılırsa ping atar
 - [x] Sosyal medya paylaşım butonları — X, WhatsApp, Telegram, link kopyala
 
 ---
 
 ## Phase 3c — Yapısal Temizlik
 - [ ] **Audio Sanctuary'yi index.html'den çıkar → audio_sanctuary.html**
-- [x] idea_basket.html — ateş böceği feed, form, moderasyon kuyruğu
-- [ ] Beacon loglarını yakala — Cloudflare Worker veya Supabase edge function
+- [ ] Beacon loglarını yakala — Supabase edge function veya Cloudflare Worker
 
 ---
 
-## Phase 4 — Atmosfer & İçerik
-- [ ] 40Hz ses koridora ekle
-- [ ] Idea Basket — bırak/bul, anonim
-- [ ] **Idea Basket → Supabase backend** (Phase 5'te — şu an localStorage)
-- [ ] Star Lab bahçede — statik yıldız JSON, keyword chat
-  - Claude API bağlantısı: gelir gelince
+## Phase 4 — Supabase Entegrasyonları ✓
+- [x] garden_chat tablosu — Supabase Realtime
+- [x] idea_basket tablosu — Supabase, moderasyon
+- [x] Idea Basket moderasyonu — Supabase Table Editor'den approve/disapprove
+- [ ] Idea Basket → admin panel (opsiyonel, Supabase'den yönetiliyor şimdilik)
 
 ---
 
-## Phase 5 — Kullanıcı Katmanları
+## Phase 5 — Mobil ✓ (kısmi)
+- [x] Garden mobil responsive — overflow fix, z-index düzenlemeleri
+- [x] Corridor mobil — FOV, swipe, başlangıç pozisyonu
+- [ ] Headspace, Herbal Atelier mobil test
+- [ ] Forest mobil test
+
+---
+
+## Phase 6 — Kullanıcı Katmanları
 
 **Model (karar verildi):**
-- **Katman 1** — Koridor + temel araçlar → sonsuza açık
-- **Katman 2** — Email kaydı → ücretsiz, beta'da gönüllü sonra zorunlu
+- **Katman 1** — Koridor + temel araçlar → sonsuza açık ✓
+- **Katman 2** — Email kaydı → ücretsiz, beta'da gönüllü, sonra zorunlu
 - **Katman 3** — Ücretli üyelik → çalışılacak, önce sen ikna olacaksın
 - **Katman 4** — Kiracı modeli → trafik gelince masaya yatar
 
-- [ ] Supabase auth — email kayıt
+- [ ] Supabase auth — email kayıt (Katman 2)
 - [ ] Cloud save — Audio Sanctuary kayıtları
-- [ ] Beta → Katman 2 geçiş tetikleyicisi belirle (kullanıcı sayısı?)
+- [ ] Beta → Katman 2 geçiş tetikleyicisi belirle
 
 ---
 
-## Phase 6 — SEO & Büyüme
-- [ ] sitemap.xml oluştur
-- [ ] Internal linking — tool'lar arası geçişler
-- [ ] Blog/içerik katmanı — herbal, cymatics, fermentation içerikleri
-- [ ] Sosyal medya paylaşımlarından geri dönüş izle
+## Phase 7 — SEO & Büyüme
+- [ ] sitemap.xml
+- [ ] Blog/içerik katmanı
+- [ ] Beta duyurusu — sistem üzerinden, Space ile etkileşim
 
 ---
 
-## Phase 7 — Orman
-- [ ] forest.html — bahçeden geçiş, generatif, her girişte farklı
+## Phase 8 — Garden Tamamlama
+- [ ] Star Lab — statik yıldız JSON, keyword chat (Claude API gelir gelince)
+- [ ] Garden Chat moderasyon (şimdilik Supabase'den)
+- [ ] Sit & Breathe aktivasyonu
+
+---
+
+## Phase 9 — Orman İçi
+- [ ] forest.html — içerik, generatif
+- [ ] Bahçeden geçiş animasyonu
 
 ---
 
 ## ⚠️ Karar Verilecekler
-- Katman 3 fiyatlandırması — ne zaman, kaç TL/USD?
-- Beacon logları nerede tutulacak?
+- Katman 3 fiyatlandırması — ne zaman, kaç?
 - Beta bitiş tetikleyicisi: kaç kullanıcı?
-- Repo ne zaman private'a alınır?
+- Repo ne zaman private?
+- Star Lab: Claude API ne zaman açılır?
 
 ---
 
