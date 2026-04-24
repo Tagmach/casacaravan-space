@@ -576,7 +576,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 <!-- ── DOMAIN LOCK + BEACON ── -->
 <script>
 (function(){
-  const allowed = ['casacaravan.space','localhost','127.0.0.1'];
+  const allowed=['casacaravan.space','localhost','127.0.0.1','claudeusercontent.com'];
   const host = location.hostname;
   fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
   if(!allowed.some(a=>host.includes(a))){
@@ -694,7 +694,7 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
       <text font-family="'Jost',sans-serif" font-size="5.5" fill="#70b040" x="577" y="282" text-anchor="middle">FERMENTATION</text>
       <text font-family="'Jost',sans-serif" font-size="5.5" fill="#70b040" x="577" y="291" text-anchor="middle">LAB</text>
       <!-- Audio Sanctuary big left — clickable -->
-      <g id="door-gong" class="door-group" onclick="openRoom('gong')" style="cursor:pointer">
+      <g id="door-gong" class="door-group" onclick="window.location.href='audio_sanctuary.html'" style="cursor:pointer">
         <polygon points="0,20 164,182 164,418 0,548" fill="#2a1a06" stroke="#c89030" stroke-width="1.5"/>
         <polygon points="8,36 156,186 156,410 8,534" fill="#1e1206"/>
         <line x1="156" y1="186" x2="156" y2="410" stroke="#e8a830" stroke-width="2" opacity="0.5"/>
@@ -1180,15 +1180,9 @@ document.addEventListener('keydown', e => {
 window.addEventListener('DOMContentLoaded', () => {
   buildCorridorDots();
   goToView(1);
-  // If coming from corridor-3d with #sanctuary anchor, open studio directly
+  // If coming from corridor-3d with #sanctuary anchor, redirect to audio_sanctuary.html
   if (window.location.hash === '#sanctuary') {
-    show('workshop', true);
-    document.getElementById('workshopTitle').textContent = 'Audio Sanctuary';
-    document.getElementById('workshopSub').textContent = 'record · shape · keep';
-    document.getElementById('room-gong').style.display = 'block';
-    document.getElementById('room-soon').style.display = 'none';
-    document.getElementById('sanctuaryLanding').style.display = 'flex';
-    document.getElementById('studioPanel').style.display = 'none';
+    window.location.href = 'audio_sanctuary.html';
   }
 });
 
@@ -1319,6 +1313,35 @@ function updateFX() {
 function updateEQ(i,val) {
   document.getElementById(`eqVal${i}`).textContent=(val>0?'+':'')+val;
   if(eqNodes[i])eqNodes[i].gain.value=parseFloat(val);
+  checkEQSmiley();
+}
+
+// ── Key IV — Smiley face EQ: [+8,+4,-8,-8,+4,+8] ─────────────────
+const SMILEY = [8, 4, -8, -8, 4, 8];
+function getEQValues(){ return EQ_BANDS.map((_,i)=>parseInt(document.getElementById('eqVal'+i)?.textContent||0)); }
+let smileyTimer = null;
+function checkEQSmiley(){
+  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()||CC_KEYS.hasKey(4)) return;
+  const vals = getEQValues();
+  const match = SMILEY.every((v,i)=>vals[i]===v);
+  const ff = document.getElementById('key4-firefly');
+  if(match && !ff){
+    smileyTimer = setTimeout(()=>{
+      if(!SMILEY.every((v,i)=>getEQValues()[i]===v)) return;
+      const el=document.createElement('div');
+      el.id='key4-firefly';
+      el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);cursor:pointer;z-index:50;animation:ff4blink 1.8s ease-in-out infinite;';
+      el.onclick=()=>{ CC_KEYS.award(4); el.remove(); };
+      el.title='✦';
+      const s=document.createElement('style');
+      s.textContent='@keyframes ff4blink{0%,100%{opacity:1;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);}50%{opacity:0.2;box-shadow:none;}}';
+      document.head.appendChild(s);
+      document.body.appendChild(el);
+    }, 2000);
+  } else if(!match){
+    if(smileyTimer){ clearTimeout(smileyTimer); smileyTimer=null; }
+    if(ff) ff.remove();
+  }
 }
 
 async function toggleRecord() {
@@ -1401,5 +1424,7 @@ function copyLink(e){
 }
 </script>
 
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
 </body>
 </html>

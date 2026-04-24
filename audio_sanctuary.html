@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Sanctuary — Casa Caravan Space</title>
+<meta name="description" content="A browser-based recording studio. Live waveform, 6-band EQ, reverb, echo. No install, no account.">
+<meta property="og:title" content="Audio Sanctuary — Casa Caravan Space">
+<meta property="og:description" content="Headphones on. Every room becomes a studio.">
+<meta property="og:url" content="https://casacaravan.space/audio_sanctuary.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0908;--bg2:#0f0d0b;--bg3:#141210;
+  --gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;
+  --muted:#7A7068;--dim:#4a4438;--border:#2E2A26;
+  --green:#3a7a2a;--red:#8a3030;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;}
+
+/* Header */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:20;padding:14px 28px;display:flex;align-items:center;gap:12px;background:linear-gradient(to bottom,rgba(10,9,8,0.97),transparent);}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--cream);text-transform:uppercase;}
+#hdr-sep{color:var(--dim);font-size:10px;}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;color:var(--gold);font-style:italic;}
+#hdr-back{margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border:1px solid var(--border);padding:6px 16px;border-radius:100px;transition:all 0.2s;background:none;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:none;}
+#hdr-back:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Landing */
+#landing{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 32px 60px;text-align:center;}
+.lp-eyebrow{font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;}
+.lp-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,8vw,72px);font-weight:300;color:var(--cream);line-height:1.05;margin-bottom:20px;}
+.lp-tagline{font-size:11px;font-weight:200;color:var(--muted);letter-spacing:2px;line-height:1.9;margin-bottom:48px;}
+.lp-feats{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;}
+.lp-feat{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.lp-feat-icon{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold);}
+.lp-feat-lbl{font-size:8px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;text-align:center;}
+#hp-check{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:32px;padding:20px 32px;border:1px solid var(--border);border-radius:12px;max-width:340px;}
+#hp-check-title{font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+#hp-check-body{font-size:12px;color:var(--muted);line-height:1.9;}
+#hp-check-body strong{color:var(--cream);font-weight:300;}
+#hp-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+#enter-btn{background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'Jost',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:13px 44px;border-radius:100px;cursor:pointer;transition:all 0.3s;margin-bottom:32px;}
+#enter-btn:hover:not(:disabled){background:var(--gold);color:var(--bg);}
+#enter-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.lp-notice{font-size:10px;color:var(--dim);letter-spacing:1px;line-height:1.8;max-width:340px;}
+.lp-notice strong{color:var(--muted);font-weight:300;}
+
+/* Studio */
+#studio{display:none;padding:90px 0 60px;}
+.studio-main{padding:32px;display:flex;flex-direction:column;gap:28px;max-width:680px;margin:0 auto;}
+.sec-label{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+.waveform-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;}
+canvas#waveform{width:100%;height:120px;display:block;}
+.wave-label{position:absolute;top:8px;left:12px;font-size:9px;color:var(--dim);letter-spacing:1.5px;}
+.rec-indicator{position:absolute;top:10px;right:12px;display:flex;align-items:center;gap:6px;font-size:9px;color:var(--red);letter-spacing:2px;opacity:0;transition:opacity 0.3s;}
+.rec-indicator.active{opacity:1;}
+.rec-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.transport{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.t-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;padding:9px 20px;border-radius:100px;cursor:pointer;transition:all 0.2s;}
+.t-btn:hover{border-color:var(--gold);color:var(--gold);}
+.t-btn.rec-btn{border-color:var(--red);color:var(--red);}
+.t-btn.rec-btn.active{background:var(--red);color:#fff;}
+.t-btn.play-btn.active{border-color:var(--green);color:var(--green);}
+.timer{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--dim);min-width:70px;letter-spacing:2px;}
+.timer.recording{color:var(--red);}
+.fx-rows{display:flex;flex-direction:column;gap:12px;}
+.fx-row{display:flex;align-items:center;gap:14px;}
+.fx-name{font-size:11px;font-weight:300;color:var(--muted);width:90px;flex-shrink:0;}
+input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--border);border-radius:1px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer;}
+.fx-val{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--dim);width:40px;text-align:right;}
+.eq-row{display:flex;gap:10px;align-items:center;justify-content:space-between;}
+.eq-band{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.eq-slider-wrap{position:relative;width:80px;height:80px;display:flex;align-items:center;justify-content:center;}
+.eq-slider{-webkit-appearance:none;appearance:none;position:absolute;width:80px;height:2px;background:var(--border);border-radius:1px;outline:none;cursor:pointer;transform:rotate(-90deg);transform-origin:center center;left:0;top:50%;margin-top:-1px;}
+.eq-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gold);cursor:pointer;}
+.eq-freq{font-size:9px;color:var(--dim);letter-spacing:0.5px;}
+.eq-gain{font-size:10px;color:var(--muted);font-family:'Cormorant Garamond',serif;}
+.format-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.fmt-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:9px;letter-spacing:1px;padding:5px 14px;border-radius:100px;cursor:pointer;transition:all 0.15s;font-family:'Jost',sans-serif;}
+.fmt-btn.active,.fmt-btn:hover{border-color:var(--gold);color:var(--gold);}
+.rec-list{display:flex;flex-direction:column;gap:10px;}
+.rec-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rec-item:hover{border-color:var(--dim);}
+.rec-name{font-size:12px;color:var(--text);}
+.rec-meta{font-size:10px;color:var(--dim);margin-top:2px;font-family:'Cormorant Garamond',serif;}
+.rec-actions{display:flex;gap:8px;}
+.action-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:1px;padding:5px 12px;border-radius:100px;cursor:pointer;transition:all 0.15s;}
+.action-btn:hover{border-color:var(--gold);color:var(--gold);}
+.action-btn.dl:hover{border-color:var(--green);color:var(--green);}
+.no-recs{font-size:13px;color:var(--dim);font-style:italic;font-family:'Cormorant Garamond',serif;}
+.studio-footer{border-top:1px solid var(--border);padding:20px 32px;display:flex;align-items:center;justify-content:space-between;max-width:680px;margin:0 auto;}
+.studio-footer-brand{font-size:9px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;}
+.studio-footer-link{font-size:9px;letter-spacing:1px;color:var(--dim);cursor:pointer;transition:color 0.2s;background:none;border:none;font-family:'Jost',sans-serif;}
+.studio-footer-link:hover{color:var(--gold);}
+
+/* EQ hint */
+#eq-hint{font-size:9px;letter-spacing:1.5px;color:var(--dim);text-align:center;margin-top:6px;font-style:italic;}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">Audio Sanctuary</div>
+  <a href="corridor-3d.html" id="hdr-back">← Corridor</a>
+</div>
+
+<!-- Landing -->
+<div id="landing">
+  <div class="lp-eyebrow">Browser Studio</div>
+  <h1 class="lp-title">Audio<br>Sanctuary</h1>
+  <p class="lp-tagline">Headphones on.<br>Every room becomes a studio.</p>
+  <div class="lp-feats">
+    <div class="lp-feat"><div class="lp-feat-icon">~</div><div class="lp-feat-lbl">Live<br>Waveform</div></div>
+    <div class="lp-feat"><div class="lp-feat-icon">⌇</div><div class="lp-feat-lbl">6-Band<br>EQ</div></div>
+    <div class="lp-feat"><div class="lp-feat-icon">◌</div><div class="lp-feat-lbl">Reverb<br>& Echo</div></div>
+    <div class="lp-feat"><div class="lp-feat-icon">●</div><div class="lp-feat-lbl">Record<br>& Download</div></div>
+    <div class="lp-feat"><div class="lp-feat-icon">∅</div><div class="lp-feat-lbl">No Install<br>No Account</div></div>
+  </div>
+  <div id="hp-check">
+    <div id="hp-check-title">Before you enter</div>
+    <div id="hp-check-body">This studio uses your microphone.<br><strong>Headphones are required.</strong><br>Without them, feedback will occur.</div>
+    <label id="hp-label">
+      <input type="checkbox" id="hp-confirm" onchange="toggleBtn()" style="width:16px;height:16px;accent-color:var(--gold);cursor:pointer;">
+      My headphones are on
+    </label>
+  </div>
+  <button id="enter-btn" onclick="openStudio()" disabled>Open Studio</button>
+  <p class="lp-notice"><strong>Microphone access required.</strong><br>Nothing is uploaded or stored.<br>All processing happens locally.</p>
+</div>
+
+<!-- Studio -->
+<div id="studio">
+  <div class="studio-main">
+
+    <div class="waveform-wrap">
+      <canvas id="waveform" width="640" height="120"></canvas>
+      <div class="wave-label">INPUT LEVEL</div>
+      <div class="rec-indicator" id="recIndicator"><div class="rec-dot"></div>REC</div>
+    </div>
+
+    <div class="transport">
+      <button class="t-btn rec-btn" id="recBtn" onclick="toggleRecord()">* RECORD</button>
+      <button class="t-btn play-btn" id="playBtn" onclick="togglePlay()">- PLAY</button>
+      <button class="t-btn" onclick="stopAll()">- STOP</button>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+
+    <div>
+      <div class="sec-label">Recording Format</div>
+      <div class="format-row">
+        <button class="fmt-btn active" onclick="setFormat(this,'audio/webm')">WEBM</button>
+        <button class="fmt-btn" onclick="setFormat(this,'audio/ogg')">OGG</button>
+        <button class="fmt-btn" onclick="setFormat(this,'audio/mp4')">MP4</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-label">Effects</div>
+      <div class="fx-rows">
+        <div class="fx-row"><span class="fx-name">Reverb</span><input type="range" id="reverbMix" min="0" max="100" value="20" oninput="updateFX()"><span class="fx-val" id="reverbVal">20</span></div>
+        <div class="fx-row"><span class="fx-name">Room Size</span><input type="range" id="reverbSize" min="0" max="100" value="40" oninput="updateFX()"><span class="fx-val" id="reverbSizeVal">40</span></div>
+        <div class="fx-row"><span class="fx-name">Echo</span><input type="range" id="delayMix" min="0" max="100" value="0" oninput="updateFX()"><span class="fx-val" id="delayVal">0</span></div>
+        <div class="fx-row"><span class="fx-name">Echo Time</span><input type="range" id="delayTime" min="50" max="800" value="300" oninput="updateFX()"><span class="fx-val" id="delayTimeVal">300ms</span></div>
+        <div class="fx-row"><span class="fx-name">Feedback</span><input type="range" id="delayFeedback" min="0" max="80" value="30" oninput="updateFX()"><span class="fx-val" id="feedbackVal">30</span></div>
+        <div class="fx-row"><span class="fx-name">Low Cut</span><input type="range" id="highpass" min="20" max="500" value="80" oninput="updateFX()"><span class="fx-val" id="highpassVal">80Hz</span></div>
+        <div class="fx-row"><span class="fx-name">Gain</span><input type="range" id="inputGain" min="0" max="200" value="100" oninput="updateFX()"><span class="fx-val" id="gainVal">100</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec-label">Equalizer</div>
+      <div class="eq-row" id="eqRow"></div>
+      <div id="eq-hint">every sound has a face</div>
+    </div>
+
+    <div>
+      <div class="sec-label">Recordings</div>
+      <div class="rec-list" id="recList"><div class="no-recs">No recordings yet — press record to begin.</div></div>
+    </div>
+
+  </div>
+
+  <div class="studio-footer">
+    <div class="studio-footer-brand">Casa Caravan · Audio Sanctuary</div>
+    <button class="studio-footer-link" onclick="closeStudio()">← Back to entrance</button>
+  </div>
+</div>
+
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
+<script>
+// ── STUDIO ───────────────────────────────────────────────────────
+let audioCtx, mediaStream, mediaRecorder;
+let analyser, dataArray;
+let inputGainNode, highpassNode, delayNode, delayGainNode, feedbackNode, reverbNode, reverbGainNode, dryGainNode;
+let eqNodes=[], recordings=[], isRecording=false, currentAudio=null;
+let timerInterval, recordStart, selectedFormat='audio/webm', animFrame;
+
+function toggleBtn(){
+  const btn=document.getElementById('enter-btn');
+  const checked=document.getElementById('hp-confirm').checked;
+  btn.disabled=!checked;
+  btn.style.opacity=checked?'1':'0.3';
+}
+
+function openStudio(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('studio').style.display='block';
+  buildEQ();
+}
+
+function closeStudio(){
+  if(audioCtx) audioCtx.suspend();
+  document.getElementById('studio').style.display='none';
+  document.getElementById('landing').style.display='flex';
+}
+
+const EQ_BANDS=[
+  {freq:80,label:'80Hz'},{freq:250,label:'250Hz'},{freq:800,label:'800Hz'},
+  {freq:2500,label:'2.5K'},{freq:6000,label:'6K'},{freq:14000,label:'14K'},
+];
+
+function buildEQ(){
+  const row=document.getElementById('eqRow');
+  if(row.children.length) return;
+  EQ_BANDS.forEach((band,i)=>{
+    const div=document.createElement('div');
+    div.className='eq-band';
+    div.innerHTML=`<span class="eq-gain" id="eqVal${i}">0</span><div class="eq-slider-wrap"><input class="eq-slider" type="range" min="-12" max="12" value="0" oninput="updateEQ(${i},this.value)"></div><span class="eq-freq">${band.label}</span>`;
+    row.appendChild(div);
+  });
+}
+
+async function initAudio(){
+  if(audioCtx){audioCtx.resume();return;}
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)({sampleRate:48000});
+  mediaStream=await navigator.mediaDevices.getUserMedia({audio:{sampleRate:48000,channelCount:2,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  const source=audioCtx.createMediaStreamSource(mediaStream);
+  inputGainNode=audioCtx.createGain();inputGainNode.gain.value=1.0;
+  highpassNode=audioCtx.createBiquadFilter();highpassNode.type='highpass';highpassNode.frequency.value=80;
+  eqNodes=EQ_BANDS.map(band=>{const f=audioCtx.createBiquadFilter();f.type='peaking';f.frequency.value=band.freq;f.Q.value=1.4;f.gain.value=0;return f;});
+  delayNode=audioCtx.createDelay(2.0);delayNode.delayTime.value=0.3;
+  feedbackNode=audioCtx.createGain();feedbackNode.gain.value=0.3;
+  delayGainNode=audioCtx.createGain();delayGainNode.gain.value=0;
+  delayNode.connect(feedbackNode);feedbackNode.connect(delayNode);delayNode.connect(delayGainNode);
+  reverbNode=audioCtx.createConvolver();reverbNode.buffer=buildIR(audioCtx,2.5);
+  reverbGainNode=audioCtx.createGain();reverbGainNode.gain.value=0.2;
+  dryGainNode=audioCtx.createGain();dryGainNode.gain.value=1.0;
+  analyser=audioCtx.createAnalyser();analyser.fftSize=2048;
+  dataArray=new Uint8Array(analyser.frequencyBinCount);
+  let chain=source;
+  chain.connect(inputGainNode);chain=inputGainNode;
+  chain.connect(highpassNode);chain=highpassNode;
+  eqNodes.forEach(eq=>{chain.connect(eq);chain=eq;});
+  chain.connect(reverbNode);reverbNode.connect(reverbGainNode);
+  chain.connect(delayNode);chain.connect(dryGainNode);
+  dryGainNode.connect(analyser);reverbGainNode.connect(analyser);delayGainNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  drawWaveform();
+}
+
+function buildIR(ctx,duration){
+  const rate=ctx.sampleRate,length=rate*duration,ir=ctx.createBuffer(2,length,rate);
+  for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/length,2.5);}
+  return ir;
+}
+
+function drawWaveform(){
+  const canvas=document.getElementById('waveform');
+  const ctx2=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  function draw(){
+    animFrame=requestAnimationFrame(draw);
+    analyser.getByteTimeDomainData(dataArray);
+    ctx2.fillStyle='#131110';ctx2.fillRect(0,0,W,H);
+    ctx2.lineWidth=1.5;ctx2.strokeStyle='#A08060';ctx2.beginPath();
+    const slice=W/dataArray.length;let x=0;
+    for(let i=0;i<dataArray.length;i++){const v=dataArray[i]/128.0,y=v*H/2;i===0?ctx2.moveTo(x,y):ctx2.lineTo(x,y);x+=slice;}
+    ctx2.stroke();
+    ctx2.strokeStyle='#2E2A26';ctx2.lineWidth=0.5;ctx2.beginPath();ctx2.moveTo(0,H/2);ctx2.lineTo(W,H/2);ctx2.stroke();
+  }
+  draw();
+}
+
+function updateFX(){
+  const rv=parseInt(document.getElementById('reverbMix').value);
+  const rs=parseInt(document.getElementById('reverbSize').value);
+  const dl=parseInt(document.getElementById('delayMix').value);
+  const dt=parseInt(document.getElementById('delayTime').value);
+  const df=parseInt(document.getElementById('delayFeedback').value);
+  const hp=parseInt(document.getElementById('highpass').value);
+  const ig=parseInt(document.getElementById('inputGain').value);
+  document.getElementById('reverbVal').textContent=rv;
+  document.getElementById('reverbSizeVal').textContent=rs;
+  document.getElementById('delayVal').textContent=dl;
+  document.getElementById('delayTimeVal').textContent=dt+'ms';
+  document.getElementById('feedbackVal').textContent=df;
+  document.getElementById('highpassVal').textContent=hp+'Hz';
+  document.getElementById('gainVal').textContent=ig;
+  if(!audioCtx)return;
+  reverbGainNode.gain.value=rv/100;dryGainNode.gain.value=1-(rv/200);
+  reverbNode.buffer=buildIR(audioCtx,0.5+(rs/100)*4);
+  delayGainNode.gain.value=dl/100;delayNode.delayTime.value=dt/1000;
+  feedbackNode.gain.value=df/100;highpassNode.frequency.value=hp;
+  inputGainNode.gain.value=ig/100;
+}
+
+function updateEQ(i,val){
+  document.getElementById(`eqVal${i}`).textContent=(val>0?'+':'')+val;
+  if(eqNodes[i])eqNodes[i].gain.value=parseFloat(val);
+  checkSmiley();
+}
+
+// ── Key IV — EQ Smiley face: [+8,+4,-8,-8,+4,+8] ─────────────────
+const SMILEY=[8,4,-8,-8,4,8];
+let smileyTimer=null;
+function getEQVals(){return EQ_BANDS.map((_,i)=>parseInt(document.getElementById('eqVal'+i)?.textContent||0));}
+function checkSmiley(){
+  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()||CC_KEYS.hasKey(4))return;
+  const match=SMILEY.every((v,i)=>getEQVals()[i]===v);
+  const ff=document.getElementById('key4-ff');
+  if(match&&!ff){
+    smileyTimer=setTimeout(()=>{
+      if(!SMILEY.every((v,i)=>getEQVals()[i]===v))return;
+      const el=document.createElement('div');
+      el.id='key4-ff';
+      el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);cursor:pointer;z-index:100;animation:ff4b 1.8s ease-in-out infinite;';
+      el.onclick=()=>{CC_KEYS.award(4);el.remove();};
+      el.title='✦';
+      const s=document.createElement('style');
+      s.textContent='@keyframes ff4b{0%,100%{opacity:1;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);}50%{opacity:0.2;box-shadow:none;}}';
+      document.head.appendChild(s);
+      document.body.appendChild(el);
+    },2000);
+  }else if(!match){
+    if(smileyTimer){clearTimeout(smileyTimer);smileyTimer=null;}
+    if(ff)ff.remove();
+  }
+}
+
+async function toggleRecord(){
+  if(!audioCtx)await initAudio();
+  if(!isRecording){
+    const dest=audioCtx.createMediaStreamDestination();
+    analyser.connect(dest);
+    const mime=[selectedFormat,'audio/webm;codecs=opus','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+    const opts=mime?{mimeType:mime,audioBitsPerSecond:320000}:{audioBitsPerSecond:320000};
+    mediaRecorder=new MediaRecorder(dest.stream,opts);
+    const chunks=[];
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+    mediaRecorder.onstop=()=>{const blob=new Blob(chunks,{type:mime||'audio/webm'});saveRec(blob,mime);analyser.disconnect(dest);};
+    mediaRecorder.start(100);isRecording=true;recordStart=Date.now();
+    document.getElementById('recBtn').classList.add('active');
+    document.getElementById('recBtn').textContent='- STOP REC';
+    document.getElementById('recIndicator').classList.add('active');
+    timerInterval=setInterval(()=>{
+      const s=Math.floor((Date.now()-recordStart)/1000);
+      const m=String(Math.floor(s/60)).padStart(2,'0'),sc=String(s%60).padStart(2,'0');
+      const t=document.getElementById('timer');t.textContent=`${m}:${sc}`;t.classList.add('recording');
+    },500);
+  }else{
+    mediaRecorder.stop();isRecording=false;clearInterval(timerInterval);
+    document.getElementById('recBtn').classList.remove('active');
+    document.getElementById('recBtn').textContent='* RECORD';
+    document.getElementById('recIndicator').classList.remove('active');
+    document.getElementById('timer').classList.remove('recording');
+    document.getElementById('timer').textContent='00:00';
+  }
+}
+
+function saveRec(blob,mime){
+  const ext=mime.includes('ogg')?'ogg':mime.includes('mp4')?'mp4':'webm';
+  const dur=((Date.now()-recordStart)/1000).toFixed(1);
+  const now=new Date();
+  const name=`sanctuary_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
+  const url=URL.createObjectURL(blob);
+  recordings.unshift({blob,name,dur,ext,url});
+  renderRecs();
+}
+
+function renderRecs(){
+  const list=document.getElementById('recList');
+  if(!recordings.length){list.innerHTML='<div class="no-recs">No recordings yet — press record to begin.</div>';return;}
+  list.innerHTML=recordings.map((r,i)=>`<div class="rec-item"><div><div class="rec-name">${r.name}.${r.ext}</div><div class="rec-meta">${r.dur}s · ${(r.blob.size/1024).toFixed(0)} KB</div></div><div class="rec-actions"><button class="action-btn" onclick="playRec(${i})">- play</button><button class="action-btn dl" onclick="dlRec(${i})">↓ save</button></div></div>`).join('');
+}
+
+function playRec(i){if(currentAudio){currentAudio.pause();currentAudio=null;}currentAudio=new Audio(recordings[i].url);currentAudio.play();}
+function togglePlay(){if(currentAudio&&!currentAudio.paused){currentAudio.pause();document.getElementById('playBtn').classList.remove('active');}else if(currentAudio){currentAudio.play();document.getElementById('playBtn').classList.add('active');}}
+function stopAll(){if(currentAudio){currentAudio.pause();currentAudio.currentTime=0;}if(isRecording)toggleRecord();document.getElementById('playBtn').classList.remove('active');}
+function dlRec(i){const r=recordings[i];const a=document.createElement('a');a.href=r.url;a.download=`${r.name}.${r.ext}`;a.click();}
+function setFormat(btn,fmt){selectedFormat=fmt;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+</script>
+</body>
+</html>
