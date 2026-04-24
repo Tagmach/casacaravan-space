@@ -681,7 +681,7 @@ document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
   <div id="radio-select">
     <div class="rs-opt" onclick="setStation(0,event)">Drone Zone</div>
     <div class="rs-opt" onclick="setStation(1,event)">Bossa Beyond</div>
-    <div class="rs-opt" onclick="setStation(2,event)">Suburbs of Goa</div>
+    <div class="rs-opt" onclick="setStation(2,event)">Lush</div>
     <div class="rs-sep"></div>
     <div class="rs-opt" onclick="stopRadio(event)">Stop</div>
   </div>
@@ -689,7 +689,7 @@ document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
 <audio id="radio-audio" crossorigin="anonymous"></audio>
 
 <script>
-const STATIONS=[{name:'Drone Zone',url:'https://ice.somafm.com/dronezone-128-mp3'},{name:'Bossa Beyond',url:'https://ice.somafm.com/bossa-128-mp3'},{name:'Suburbs of Goa',url:'https://ice.somafm.com/suburbsofgoa-128-mp3'}];
+const STATIONS=[{name:'Drone Zone',url:'https://ice.somafm.com/dronezone-128-mp3'},{name:'Bossa Beyond',url:'https://ice.somafm.com/bossa-128-mp3'},{name:'Suburbs of Goa',url:'https://ice.somafm.com/lush-128-mp3'}];
 let radioPlaying=false,currentStation=-1;
 function toggleRadioMenu(){document.getElementById('radio-select').classList.toggle('show');}
 function setStation(idx,e){if(e)e.stopPropagation();document.getElementById('radio-select').classList.remove('show');const a=document.getElementById('radio-audio');a.src=STATIONS[idx].url;a.volume=0.35;a.play().catch(()=>{});radioPlaying=true;currentStation=idx;document.getElementById('radio-dot').classList.add('playing');document.getElementById('radio-name').textContent=STATIONS[idx].name;document.querySelectorAll('.rs-opt').forEach((o,i)=>o.classList.toggle('active',i===idx));}

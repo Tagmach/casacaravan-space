@@ -1071,7 +1071,7 @@ function showHint(msg) {
 
 
 <script>
-const RST=[{n:'Drone Zone',u:'https://ice.somafm.com/dronezone-128-mp3'},{n:'Bossa Beyond',u:'https://ice.somafm.com/bossa-128-mp3'},{n:'Suburbs of Goa',u:'https://ice.somafm.com/suburbsofgoa-128-mp3'}];
+const RST=[{n:'Drone Zone',u:'https://ice.somafm.com/dronezone-128-mp3'},{n:'Bossa Beyond',u:'https://ice.somafm.com/bossa-128-mp3'},{n:'Lush',u:'https://ice.somafm.com/lush-128-mp3'}];
 let rOpen=false;
 function rT(){rOpen=!rOpen;document.getElementById('radio-b').classList.toggle('show',rOpen);document.getElementById('radio-a').classList.toggle('up',rOpen);}
 function rP(i){const a=document.getElementById('r-aud');a.src=RST[i].u;a.volume=parseFloat(document.querySelector('.rs-vs').value)||0.35;a.play().catch(()=>{});document.getElementById('radio-i').classList.add('on');document.getElementById('radio-n').textContent=RST[i].n;document.querySelectorAll('.rs').forEach((o,j)=>o.classList.toggle('on',j===i));}
@@ -1088,7 +1088,7 @@ function rV(v){const a=document.getElementById('r-aud');if(a)a.volume=parseFloat
   <div id="radio-b">
     <div class="rs" onclick="rP(0)"><div class="rs-d"></div>Drone Zone</div>
     <div class="rs" onclick="rP(1)"><div class="rs-d"></div>Bossa Beyond</div>
-    <div class="rs" onclick="rP(2)"><div class="rs-d"></div>Suburbs of Goa</div>
+    <div class="rs" onclick="rP(2)"><div class="rs-d"></div>Lush</div>
     <div class="rs-sep"></div>
     <div class="rs" onclick="rS()"><div class="rs-d"></div>Stop</div>
     <div class="rs-vol"><span class="rs-vl">Vol</span><input class="rs-vs" type="range" min="0" max="1" step="0.05" value="0.35" oninput="rV(this.value)"></div>
