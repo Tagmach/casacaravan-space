@@ -287,11 +287,38 @@ function loop(){
 document.getElementById('mSlider').oninput = function(){
   M=+this.value; document.getElementById('mVal').textContent=M;
   document.getElementById('freq-label').textContent = `M:${M}  N:${N}  ·  cymatics`;
+  checkKeyPattern();
 };
 document.getElementById('nSlider').oninput = function(){
   N=+this.value; document.getElementById('nVal').textContent=N;
   document.getElementById('freq-label').textContent = `M:${M}  N:${N}  ·  cymatics`;
+  checkKeyPattern();
 };
+
+// ── Key I — M:7 N:3, hold 10 seconds ─────────────────────────────
+let keyTimer = null;
+const KEY_M = 7, KEY_N = 3;
+
+function checkKeyPattern(){
+  if(typeof CC_KEYS === 'undefined' || !CC_KEYS.isPlaying() || CC_KEYS.hasKey(1)) return;
+  const existing = document.getElementById('key1-firefly');
+  if(existing) existing.remove();
+  if(keyTimer) clearTimeout(keyTimer);
+  if(M === KEY_M && N === KEY_N){
+    keyTimer = setTimeout(()=>{
+      if(M !== KEY_M || N !== KEY_N) return;
+      const ff = document.createElement('div');
+      ff.id = 'key1-firefly';
+      ff.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);cursor:pointer;z-index:50;animation:ff1blink 1.8s ease-in-out infinite;';
+      ff.onclick = ()=> CC_KEYS.award(1);
+      ff.title = '✦';
+      const s = document.createElement('style');
+      s.textContent = '@keyframes ff1blink{0%,100%{opacity:1;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);}50%{opacity:0.2;box-shadow:none;}}';
+      document.head.appendChild(s);
+      document.body.appendChild(ff);
+    }, 10000);
+  }
+}
 document.getElementById('ampSlider').oninput = function(){
   amplitude=+this.value; document.getElementById('ampVal').textContent=amplitude.toFixed(1);
 };
@@ -335,5 +362,7 @@ loop();
 </div>
 <div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
 
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
 </body>
 </html>
