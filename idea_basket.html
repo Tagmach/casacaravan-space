@@ -138,18 +138,24 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 </div>
 <div id="toast">Link copied</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── SEEDS ────────────────────────────────────────────────────────
-const SEEDS=[
-  {id:'s1',name:'Mara',idea:'A silent room. No tools, no sound. Just a timer and a blank page.',why:'Sometimes the most useful thing is nothing.',done:false},
-  {id:'s2',name:'anonymous',idea:'A plant journal — you grow something, you track it here. Connected to the Fermentation Lab somehow.',why:'I ferment and grow. They\'re the same practice.',done:false},
-  {id:'s3',name:'Leandro',idea:'Bring the gong into the corridor. Not as a door — as a sound. Walking through should feel like walking through a frequency.',why:'',done:true},
-  {id:'s4',name:'anonymous',idea:'A reading room. One book recommendation, changed monthly. Not a library — one book.',why:'Too much choice is noise.',done:false},
-  {id:'s5',name:'Selin',idea:'Herbal Atelier needs a "what do I have at home" mode.',why:'Most people want to start with what\'s already in their kitchen.',done:false},
-];
-const KEY='cc_ideas_v1';
-function getIdeas(){try{return JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){return[];}}
-function init(){if(!localStorage.getItem(KEY))localStorage.setItem(KEY,JSON.stringify(SEEDS));}
+// ── SUPABASE ─────────────────────────────────────────────────────
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa=window.supabase?.createClient(SUPA_URL,SUPA_KEY);
+
+async function loadIdeas(){
+  if(!supa) return [];
+  const {data}=await supa.from('idea_basket').select('*').eq('approved',true).order('created_at',{ascending:false}).limit(80);
+  return data||[];
+}
+async function saveIdea(entry){
+  if(!supa) return;
+  await supa.from('idea_basket').insert({name:entry.name,idea:entry.idea,why:entry.why||null,email:entry.email||null});
+}
+function init(){}
+
 
 // ── STARS ────────────────────────────────────────────────────────
 const cv=document.getElementById('bg-canvas');
@@ -167,8 +173,8 @@ function drawStars(){
 }
 
 // ── FLIES ────────────────────────────────────────────────────────
-function renderFlies(){
-  const ideas=getIdeas().filter(i=>!i.pending);
+async function renderFlies(){
+  const ideas=await loadIdeas();
   document.getElementById('counter-num').textContent=ideas.length;
   const wrap=document.getElementById('flies-wrap');
   wrap.innerHTML='';
@@ -180,7 +186,7 @@ function renderFlies(){
     x=Math.max(60,Math.min(W-60,x));
     y=Math.max(70,Math.min(H-safe,y));
     const el=document.createElement('div');
-    el.className='idea-fly'+(idea.done?' done':'');
+    el.className='idea-fly'+(idea.implemented?' done':'');
     el.style.left=x+'px';el.style.top=y+'px';
     el.style.animationDelay=(Math.random()*4)+'s';
     el.innerHTML=`<div class="idea-dot" style="animation-delay:${Math.random()*3}s"></div><div class="idea-name">${idea.name}</div>`;
@@ -197,7 +203,7 @@ function showCard(idea,fx,fy){
   wy.textContent=idea.why||'';wy.style.display=idea.why?'block':'none';
   const b=document.getElementById('ic-badge');
   b.textContent=idea.done?'✦ implemented':'in the basket';
-  b.className='ic-badge'+(idea.done?' done':'');
+  b.className='ic-badge'+(idea.implemented?' done':'');
   const card=document.getElementById('idea-card');
   const W=innerWidth,H=innerHeight;
   let l=fx+24,t=fy-20;
@@ -217,20 +223,17 @@ function showForm(){setState('s-f');setTimeout(()=>document.getElementById('f-id
 function hideForm(){setState('s-q');}
 function cc(el,id,max){document.getElementById(id).textContent=el.value.length;}
 
-function submit(){
+async function submit(){
   if(document.getElementById('hp').value)return;
   const idea=document.getElementById('f-idea').value.trim();
   if(!idea){document.getElementById('f-idea').focus();return;}
   const entry={
-    id:'u'+Date.now(),
     name:document.getElementById('f-name').value.trim()||'anonymous',
     idea,
     why:document.getElementById('f-why').value.trim(),
-    email:document.getElementById('f-email').value.trim(),
-    done:false,pending:true,ts:Date.now()
+    email:document.getElementById('f-email').value.trim()
   };
-  const ideas=getIdeas();ideas.unshift(entry);
-  localStorage.setItem(KEY,JSON.stringify(ideas));
+  await saveIdea(entry);
   setState('s-done');renderFlies();
   setTimeout(()=>{
     setState('s-q');
