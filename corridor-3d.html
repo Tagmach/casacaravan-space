@@ -327,6 +327,7 @@ doors.forEach(d => {
     new THREE.MeshStandardMaterial({map:atex,emissiveMap:atex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6,transparent:true,depthWrite:false}));
   const arx=d.side==='L'?-1.6:1.6;
   arrow.position.set(arx,0.3,d.z-0.3); scene.add(arrow); billboardSigns.push(arrow);
+  arrow.userData={door:d};
 });
 
 // ── GARDEN DOOR ─────────────────────────────────────────────────
@@ -583,13 +584,15 @@ const lbl=document.getElementById('door-label');
 function ndc(e){const r=canvas.getBoundingClientRect();return{x:((e.clientX-r.left)/r.width)*2-1,y:-((e.clientY-r.top)/r.height)*2+1};}
 canvas.addEventListener('mousemove',e=>{
   const m=ndc(e); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
-  const h=ray.intersectObjects(doorMeshes);
+  const allM=[...doorMeshes,...billboardSigns];
+  const h=ray.intersectObjects(allM);
   if(h.length&&h[0].object.userData.door){lbl.textContent=h[0].object.userData.door.name;lbl.classList.add('show');canvas.style.cursor='pointer';}
   else{lbl.classList.remove('show');canvas.style.cursor='default';}
 });
 canvas.addEventListener('click',e=>{
   const m=ndc(e); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
-  const h=ray.intersectObjects(doorMeshes);
+  const allM=[...doorMeshes,...billboardSigns];
+  const h=ray.intersectObjects(allM);
   if(h.length&&h[0].object.userData.door)openD(h[0].object.userData.door);
 });
 
