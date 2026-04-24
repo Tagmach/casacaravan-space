@@ -133,6 +133,8 @@ html, body {
   height: auto;
   max-height: 260px;
   pointer-events: none;
+  z-index: 2;
+}
 }
 
 @media (max-width: 600px) {
@@ -144,10 +146,10 @@ html, body {
   #center { top: 35%; }
   #garden-quote { font-size: 18px; max-width: 85vw; line-height: 1.6; }
   #garden-title { font-size: 9px; }
-  #sound-toggle { top: auto; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 7px; padding: 5px 12px; }
+  #sound-toggle { top: 56px; font-size: 7px; padding: 4px 10px; }
   #footer-hint { display: none; }
   #breath-pulse { display: none; }
-  #chat-wrap { bottom: 40px; right: 12px; }
+  #chat-wrap { bottom: 16px; right: 12px; }
   #header { padding: 10px 14px; gap: 8px; }
   #header-back { padding: 5px 12px; font-size: 8px; }
 }
@@ -299,7 +301,7 @@ html, body {
   bottom: 28%;
   left: calc(50% + 7vw);
   transform: translateX(-50%);
-  z-index: 8;
+  z-index: 9;
   text-align: center;
   pointer-events: all;
   cursor: pointer;
