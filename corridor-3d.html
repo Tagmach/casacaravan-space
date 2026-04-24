@@ -540,11 +540,11 @@ gClick.userData={door:{name:'The Garden',action:'garden'}};
 scene.add(gClick); doorMeshes.push(gClick);
 
 // ── WALK ─────────────────────────────────────────────────────────
-const POSITIONS=[2,-6,-14,-20];
+const POSITIONS=[2.5,-6,-14,-20];
 let cur=0, tgtZ=POSITIONS[0];
 
 // On mobile start at position 1 (first doors visible)
-if(window.innerWidth < 600){ cur=1; tgtZ=POSITIONS[1]; }
+// mobile starts at 0 like desktop
 
 function buildDots(){
   const el=document.getElementById('walk-dots'); el.innerHTML='';
@@ -553,6 +553,8 @@ function buildDots(){
     d.className='walk-dot'+(i===cur?' active':''); d.id='wd'+i;
     d.onclick=()=>walkTo(i); el.appendChild(d);
   });
+  document.getElementById('btnBack').disabled=cur<=0;
+  document.getElementById('btnFwd').disabled=cur>=POSITIONS.length-1;
 }
 function walkTo(i){
   if(i<0||i>=POSITIONS.length)return;
