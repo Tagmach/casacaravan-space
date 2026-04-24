@@ -906,7 +906,7 @@ setTimeout(()=>{
   const dy = () => (Math.random()-0.5)*40+'px';
   gf.style.cssText = `left:52%;top:48%;--dur:8s;--blink:2s;--dx1:${dx()};--dy1:${dy()};--dx2:${dx()};--dy2:${dy()};--dx3:${dx()};--dy3:${dy()};animation-delay:2s;background:#c8a84a;box-shadow:0 0 6px #c8a84a,0 0 14px rgba(200,168,74,0.6);width:5px;height:5px;border-radius:50%;cursor:pointer;pointer-events:all;z-index:10;`;
   gf.title = '✦';
-  gf.onclick = () => CC_KEYS.award(5);
+  gf.onclick = () => CC_KEYS.award(4);
   document.body.appendChild(gf);
 }, 1500);
 
@@ -995,20 +995,61 @@ async function loadMessages() {
   if (data) renderMessages(data);
 }
 
+// ── Key V trigger phrases ────────────────────────────────────────
+const KEY5_WISH = 'i wish i had a key';
+const KEY5_GRANT = 'your wish came true';
+
 async function sendMessage() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if (!text || !supa) return;
   input.value = '';
   await supa.from('garden_chat').insert({ name: userName || 'wanderer', message: text });
+
+  // Check if this message triggers Key V (grant side)
+  if (text.toLowerCase() === KEY5_GRANT && typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying()) {
+    // Check if someone recently said the wish
+    const { data } = await supa.from('garden_chat')
+      .select('*').eq('message', KEY5_WISH)
+      .order('created_at', { ascending: false }).limit(1);
+    if (data && data.length > 0) {
+      const wishAge = (Date.now() - new Date(data[0].created_at)) / 1000;
+      if (wishAge < 300) { // within 5 minutes
+        CC_KEYS.award(5);
+      }
+    }
+  }
 }
 
 function subscribeRealtime() {
   if (!supa || chatChannel) return;
   chatChannel = supa
     .channel('garden-chat-room')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'garden_chat' }, payload => {
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'garden_chat' }, async payload => {
       appendMessage(payload.new);
+      // Check if incoming message triggers Key V (wish side)
+      if (payload.new.message?.toLowerCase() === KEY5_GRANT &&
+          typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying()) {
+        // Someone else said "your wish came true" — check if we said the wish
+        const { data } = await supa.from('garden_chat')
+          .select('*').eq('message', KEY5_WISH).eq('name', userName)
+          .order('created_at', { ascending: false }).limit(1);
+        if (data && data.length > 0) {
+          const wishAge = (Date.now() - new Date(data[0].created_at)) / 1000;
+          if (wishAge < 300) CC_KEYS.award(5);
+        }
+      }
+      // If incoming is the wish, check if we already said the grant
+      if (payload.new.message?.toLowerCase() === KEY5_WISH &&
+          typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying()) {
+        const { data } = await supa.from('garden_chat')
+          .select('*').eq('message', KEY5_GRANT).eq('name', userName)
+          .order('created_at', { ascending: false }).limit(1);
+        if (data && data.length > 0) {
+          const grantAge = (Date.now() - new Date(data[0].created_at)) / 1000;
+          if (grantAge < 300) CC_KEYS.award(5);
+        }
+      }
     })
     .subscribe();
 }
