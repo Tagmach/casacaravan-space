@@ -734,6 +734,30 @@ html, body {
 #g-radio-vol-input{flex:1;height:2px;-webkit-appearance:none;appearance:none;background:#2E2A26;border-radius:1px;outline:none;cursor:pointer;}
 #g-radio-vol-input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:#1D9E75;cursor:pointer;}
 
+
+/* Radio */
+#radio-w{position:fixed;bottom:16px;right:24px;z-index:20;width:148px;background:rgba(4,8,6,0.97);border:1px solid #3a3228;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.6);}
+#radio-h{display:flex;align-items:center;gap:7px;padding:9px 12px;cursor:pointer;user-select:none;}
+#radio-i{width:6px;height:6px;border-radius:50%;background:#2E2A26;flex-shrink:0;transition:all 0.3s;}
+#radio-i.on{background:#1D9E75;box-shadow:0 0 6px rgba(29,158,117,0.5);animation:ri 1.5s ease-in-out infinite;}
+@keyframes ri{0%,100%{opacity:1;}50%{opacity:0.3;}}
+#radio-n{font-size:8px;letter-spacing:2px;color:#A08060;text-transform:uppercase;font-family:'Jost',sans-serif;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#radio-a{font-size:7px;color:#6B5F52;transition:transform 0.25s;flex-shrink:0;}
+#radio-a.up{transform:rotate(180deg);}
+#radio-b{display:none;border-top:1px solid #2a2520;padding:5px 0 7px;}
+#radio-b.show{display:block;}
+.rs{display:flex;align-items:center;gap:6px;font-size:8px;letter-spacing:1.5px;color:#8a7a6a;text-transform:uppercase;font-family:'Jost',sans-serif;padding:5px 12px;cursor:pointer;transition:color 0.15s;white-space:nowrap;}
+.rs:hover{color:#C8C2B8;}
+.rs.on{color:#1D9E75;}
+.rs-d{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.6;}
+.rs.on .rs-d{opacity:1;}
+.rs-sep{border-top:1px solid #1e1b17;margin:3px 0;}
+.rs-vol{display:flex;align-items:center;gap:6px;padding:5px 12px 0;}
+.rs-vl{font-size:7px;letter-spacing:1px;color:#4a4438;font-family:'Jost',sans-serif;flex-shrink:0;}
+.rs-vs{flex:1;height:2px;-webkit-appearance:none;appearance:none;background:#2E2A26;border-radius:1px;outline:none;cursor:pointer;}
+.rs-vs::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:#1D9E75;cursor:pointer;}
+@media(max-width:600px){#radio-w{width:136px;right:12px;bottom:14px;font-size:7px;}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
@@ -1177,6 +1201,32 @@ function gRadioStation(idx){
 </div>
 <audio id="g-radio-audio" crossorigin="anonymous"></audio>
 
+
+
+<div id="radio-w">
+  <div id="radio-h" onclick="rT()">
+    <div id="radio-i"></div>
+    <div id="radio-n">Radio</div>
+    <div id="radio-a">▾</div>
+  </div>
+  <div id="radio-b">
+    <div class="rs" onclick="rP(0)"><div class="rs-d"></div>Drone Zone</div>
+    <div class="rs" onclick="rP(1)"><div class="rs-d"></div>Bossa Beyond</div>
+    <div class="rs" onclick="rP(2)"><div class="rs-d"></div>Suburbs of Goa</div>
+    <div class="rs-sep"></div>
+    <div class="rs" onclick="rS()"><div class="rs-d"></div>Stop</div>
+    <div class="rs-vol"><span class="rs-vl">Vol</span><input class="rs-vs" type="range" min="0" max="1" step="0.05" value="0.35" oninput="rV(this.value)"></div>
+  </div>
+</div>
+<audio id="r-aud" crossorigin="anonymous"></audio>
+<script>
+const RST=[{n:'Drone Zone',u:'https://ice.somafm.com/dronezone-128-mp3'},{n:'Bossa Beyond',u:'https://ice.somafm.com/bossa-128-mp3'},{n:'Suburbs of Goa',u:'https://ice.somafm.com/suburbsofgoa-128-mp3'}];
+let rOpen=false;
+function rT(){rOpen=!rOpen;document.getElementById('radio-b').classList.toggle('show',rOpen);document.getElementById('radio-a').classList.toggle('up',rOpen);}
+function rP(i){const a=document.getElementById('r-aud');a.src=RST[i].u;a.volume=parseFloat(document.querySelector('.rs-vs').value)||0.35;a.play().catch(()=>{});document.getElementById('radio-i').classList.add('on');document.getElementById('radio-n').textContent=RST[i].n;document.querySelectorAll('.rs').forEach((o,j)=>o.classList.toggle('on',j===i));}
+function rS(){const a=document.getElementById('r-aud');a.pause();a.src='';document.getElementById('radio-i').classList.remove('on');document.getElementById('radio-n').textContent='Radio';document.querySelectorAll('.rs').forEach(o=>o.classList.remove('on'));}
+function rV(v){const a=document.getElementById('r-aud');if(a)a.volume=parseFloat(v);}
+</script>
 
 </body>
 </html>
