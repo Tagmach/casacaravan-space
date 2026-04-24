@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Caravan Space — Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0A0908;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;--muted:#7A7068;--border:#2E2A26;--green:#4a8a2a;--card:#0f0d0b;}
+body{background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;min-height:100vh;padding:40px 32px;}
+
+h1{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--cream);margin-bottom:4px;}
+.sub{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:32px;display:flex;align-items:center;gap:16px;}
+.refresh-btn{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border:1px solid var(--border);border-radius:100px;background:none;color:var(--muted);cursor:pointer;font-family:'Jost',sans-serif;transition:all 0.2s;}
+.refresh-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* Period tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:32px;}
+.tab{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;cursor:pointer;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;transition:all 0.2s;font-family:'Jost',sans-serif;}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* Stats grid */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:40px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--cream);line-height:1;}
+.stat-label{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:6px;}
+
+/* Section titles */
+.section-title{font-size:9px;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;}
+
+/* Page bars */
+.pages{margin-bottom:40px;}
+.page-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.page-name{font-size:11px;color:var(--cream);width:160px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.page-bar-wrap{flex:1;background:var(--border);border-radius:2px;height:4px;}
+.page-bar{height:4px;border-radius:2px;background:var(--gold);transition:width 0.4s;}
+.page-count{font-size:10px;color:var(--muted);width:60px;text-align:right;flex-shrink:0;}
+.page-dur{font-size:9px;color:var(--dim, #4a4438);width:50px;text-align:right;flex-shrink:0;}
+
+/* Recent visits */
+.visits-table{width:100%;border-collapse:collapse;}
+.visits-table th{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.visits-table td{font-size:11px;color:var(--text);padding:10px 12px;border-bottom:1px solid rgba(46,42,38,0.4);}
+.visits-table tr:hover td{background:#0f0d0b;}
+.tag{display:inline-block;font-size:7px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:100px;border:1px solid var(--border);color:var(--muted);}
+
+#loading{text-align:center;padding:60px;font-size:10px;letter-spacing:2px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<h1>Analytics</h1>
+<div class="sub">
+  Casa Caravan Space
+  <button class="refresh-btn" onclick="load()">↺ Refresh</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="setPeriod(1)">Today</button>
+  <button class="tab" onclick="setPeriod(7)">7 days</button>
+  <button class="tab" onclick="setPeriod(30)">30 days</button>
+  <button class="tab" onclick="setPeriod(365)">All time</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val" id="s-visits">—</div><div class="stat-label">Total visits</div></div>
+  <div class="stat"><div class="stat-val" id="s-pages">—</div><div class="stat-label">Unique pages</div></div>
+  <div class="stat"><div class="stat-val" id="s-avg">—</div><div class="stat-label">Avg. time (sec)</div></div>
+  <div class="stat"><div class="stat-val" id="s-top">—</div><div class="stat-label">Most visited</div></div>
+</div>
+
+<div class="section-title">Visits by page</div>
+<div class="pages" id="page-bars"><div id="loading">Loading...</div></div>
+
+<div class="section-title">Referrers</div>
+<div class="pages" id="referrer-bars" style="margin-bottom:40px;"></div>
+
+<div class="section-title">Recent visits</div>
+<table class="visits-table">
+  <thead><tr><th>Page</th><th>Referrer</th><th>Duration</th><th>Time</th></tr></thead>
+  <tbody id="recent-body"></tbody>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let days = 1;
+
+function setPeriod(d){
+  days = d;
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active',[1,7,30,365][i]===d);
+  });
+  load();
+}
+
+function sinceDate(){
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString();
+}
+
+function pageName(p){
+  const map = {
+    'index.html':'Entrance','corridor-3d.html':'Corridor',
+    'garden.html':'Garden','forest.html':'Forest',
+    'headspace.html':'Headspace','herbal_atelier.html':'Herbal Atelier',
+    'fermentation_lab.html':'Fermentation Lab','idea_basket.html':'Idea Basket',
+    'games.html':'Games','about.html':'About',
+    'index':'Entrance','/':'Entrance',''  :'Entrance'
+  };
+  return map[p] || p;
+}
+
+function fmtDur(s){
+  if(!s||s===0) return '—';
+  if(s<60) return s+'s';
+  return Math.floor(s/60)+'m '+( s%60)+'s';
+}
+
+function fmtTime(ts){
+  const d=new Date(ts);
+  return d.toLocaleDateString('en',{day:'numeric',month:'short'})+' '+
+         d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+
+async function load(){
+  document.getElementById('loading').style.display='block';
+
+  const since = sinceDate();
+  const {data} = await supa.from('page_visits').select('*')
+    .gte('created_at', since).order('created_at',{ascending:false});
+
+  if(!data){ document.getElementById('loading').textContent='No data.'; return; }
+  document.getElementById('loading').style.display='none';
+
+  // Stats
+  const total = data.length;
+  const uniquePages = new Set(data.map(r=>r.page)).size;
+  const avgDur = total ? Math.round(data.reduce((a,r)=>a+(r.duration_seconds||0),0)/total) : 0;
+
+  // Page counts
+  const pageCounts = {};
+  const pageDurs = {};
+  data.forEach(r=>{
+    pageCounts[r.page] = (pageCounts[r.page]||0)+1;
+    pageDurs[r.page]   = (pageDurs[r.page]||0)+(r.duration_seconds||0);
+  });
+  const topPage = Object.entries(pageCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('s-visits').textContent = total;
+  document.getElementById('s-pages').textContent  = uniquePages;
+  document.getElementById('s-avg').textContent    = fmtDur(avgDur);
+  document.getElementById('s-top').textContent    = topPage ? pageName(topPage[0]) : '—';
+
+  // Page bars
+  const maxCount = topPage ? topPage[1] : 1;
+  const pageEntries = Object.entries(pageCounts).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('page-bars').innerHTML = pageEntries.map(([p,c])=>`
+    <div class="page-row">
+      <div class="page-name">${pageName(p)}</div>
+      <div class="page-bar-wrap"><div class="page-bar" style="width:${(c/maxCount*100).toFixed(1)}%"></div></div>
+      <div class="page-count">${c} visit${c!==1?'s':''}</div>
+      <div class="page-dur">${fmtDur(Math.round((pageDurs[p]||0)/c))}</div>
+    </div>
+  `).join('');
+
+  // Referrer bars
+  const refCounts = {};
+  data.forEach(r=>{ refCounts[r.referrer||'direct']=(refCounts[r.referrer||'direct']||0)+1; });
+  const maxRef = Math.max(...Object.values(refCounts));
+  document.getElementById('referrer-bars').innerHTML = Object.entries(refCounts)
+    .sort((a,b)=>b[1]-a[1]).map(([ref,c])=>`
+    <div class="page-row">
+      <div class="page-name">${ref}</div>
+      <div class="page-bar-wrap"><div class="page-bar" style="width:${(c/maxRef*100).toFixed(1)}%;background:var(--green)"></div></div>
+      <div class="page-count">${c}</div>
+      <div class="page-dur"></div>
+    </div>
+  `).join('');
+
+  // Recent visits
+  document.getElementById('recent-body').innerHTML = data.slice(0,50).map(r=>`
+    <tr>
+      <td>${pageName(r.page)}</td>
+      <td><span class="tag">${r.referrer||'direct'}</span></td>
+      <td>${fmtDur(r.duration_seconds)}</td>
+      <td style="color:var(--muted);font-size:10px">${fmtTime(r.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+load();
+</script>
+</body>
+</html>
