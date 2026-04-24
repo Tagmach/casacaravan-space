@@ -603,6 +603,7 @@ html, body {
 }
 #signin-btn:hover { background: rgba(160,128,96,0.12); }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -820,21 +821,23 @@ function toggleSound() {
   }
 }
 
-// ── Chat Room ────────────────────────────────────────────────────
+// ── SUPABASE CHAT ────────────────────────────────────────────────
+const SUPA_URL = 'https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+
+const supa = window.supabase?.createClient(SUPA_URL, SUPA_KEY);
+
 let chatOpen = false;
 let userName = localStorage.getItem('garden_name') || '';
 let signedIn = !!userName;
+let chatChannel = null;
 
 function toggleChat() {
   chatOpen = !chatOpen;
   const panel = document.getElementById('chat-panel');
   panel.classList.toggle('open', chatOpen);
   if (chatOpen) {
-    if (signedIn) {
-      showChatRoom();
-    } else {
-      showSignIn();
-    }
+    signedIn ? showChatRoom() : showSignIn();
   }
 }
 
@@ -849,7 +852,8 @@ function showChatRoom() {
   document.getElementById('chat-signin').style.display = 'none';
   document.getElementById('chat-messages').style.display = 'flex';
   document.getElementById('chat-input-wrap').style.display = 'flex';
-  renderMessages();
+  loadMessages();
+  subscribeRealtime();
   setTimeout(() => document.getElementById('chat-input').focus(), 100);
 }
 
@@ -862,36 +866,58 @@ function signIn() {
   showChatRoom();
 }
 
-function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text) return;
-  const name = userName || 'wanderer';
-  const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  const stored = JSON.parse(localStorage.getItem('garden_chat') || '[]');
-  stored.push({ name, text, time });
-  if (stored.length > 60) stored.shift();
-  localStorage.setItem('garden_chat', JSON.stringify(stored));
-  input.value = '';
-  renderMessages();
+async function loadMessages() {
+  if (!supa) return;
+  const { data } = await supa
+    .from('garden_chat')
+    .select('*')
+    .order('created_at', { ascending: true })
+    .limit(60);
+  if (data) renderMessages(data);
 }
 
-function renderMessages() {
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text || !supa) return;
+  input.value = '';
+  await supa.from('garden_chat').insert({ name: userName || 'wanderer', message: text });
+}
+
+function subscribeRealtime() {
+  if (!supa || chatChannel) return;
+  chatChannel = supa
+    .channel('garden-chat-room')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'garden_chat' }, payload => {
+      appendMessage(payload.new);
+    })
+    .subscribe();
+}
+
+function renderMessages(msgs) {
   const el = document.getElementById('chat-messages');
-  const stored = JSON.parse(localStorage.getItem('garden_chat') || '[]');
-  if (stored.length === 0) { el.innerHTML = ''; return; }
-  el.innerHTML = stored.map(m => `
-    <div class="chat-msg${m.name === userName ? ' self' : ''}">
-      <div class="chat-msg-name">${escHtml(m.name)}</div>
-      <div class="chat-msg-text">${escHtml(m.text)}</div>
-      <div class="chat-msg-time">${m.time}</div>
-    </div>
-  `).join('');
+  el.innerHTML = msgs.map(m => msgHTML(m)).join('');
   el.scrollTop = el.scrollHeight;
 }
 
+function appendMessage(m) {
+  const el = document.getElementById('chat-messages');
+  el.insertAdjacentHTML('beforeend', msgHTML(m));
+  el.scrollTop = el.scrollHeight;
+}
+
+function msgHTML(m) {
+  const time = new Date(m.created_at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const isSelf = m.name === userName;
+  return `<div class="chat-msg${isSelf?' self':''}">
+    <div class="chat-msg-name">${escHtml(m.name)}</div>
+    <div class="chat-msg-text">${escHtml(m.message)}</div>
+    <div class="chat-msg-time">${time}</div>
+  </div>`;
+}
+
 function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 document.addEventListener('keydown', e => {
