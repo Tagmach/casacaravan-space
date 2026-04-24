@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://casacaravan.space/sitemap.xml
