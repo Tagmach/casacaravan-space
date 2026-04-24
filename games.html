@@ -2,434 +2,215 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Games — Casa Caravan Space</title>
-  <meta name="description" content="A digital space for play and wonder. Ask the magic ball anything.">
-  <meta name="keywords" content="magic ball, games, play, interactive">
-  <meta property="og:title" content="Games · Magic Ball — Casa Caravan Space">
-  <meta property="og:description" content="A digital space for play and wonder. Ask the magic ball anything.">
-  <meta property="og:url" content="https://casacaravan.space/games.html">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://casacaravan.space/og-image.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Games · Magic Ball — Casa Caravan Space">
-  <meta name="twitter:description" content="A digital space for play and wonder. Ask the magic ball anything.">
-  <link rel="canonical" href="https://casacaravan.space/games.html">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Games · The Keys — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
-:root {
-  --bg: #0a0806;
-  --gold: #A08060;
-  --cream: #D2C3AF;
-  --muted: #7A7068;
-  --border: #2E2A26;
-  --purple: #8060c0;
-  --purple-dim: #2a1850;
-}
-html, body {
-  width:100%; min-height:100vh;
-  background: var(--bg);
-  color: var(--cream);
-  font-family: 'Jost', sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06050a;--gold:#A08060;--cream:#D2C3AF;--text:#C8C2B8;--muted:#7A7068;--dim:#4a4438;--border:#2E2A26;--key:#c8a84a;--key-glow:rgba(200,168,74,0.25);}
+html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:'Jost',sans-serif;overflow-x:hidden;}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#hdr{position:fixed;top:0;left:0;right:0;z-index:20;padding:14px 28px;display:flex;align-items:center;gap:12px;background:linear-gradient(to bottom,rgba(6,5,10,0.95),transparent);}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:var(--cream);text-transform:uppercase;}
+#hdr-sep{color:var(--dim);font-size:10px;}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:2px;color:var(--key);font-style:italic;}
+#hdr-back{margin-left:auto;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;border:1px solid var(--border);padding:6px 16px;border-radius:100px;transition:all 0.2s;background:none;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:none;}
+#hdr-back:hover{border-color:var(--gold);color:var(--gold);}
+.page{max-width:860px;margin:0 auto;padding:100px 32px 80px;position:relative;z-index:1;}
 
-/* Header */
-#header {
-  padding: 16px 28px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(10,8,6,0.95);
-}
-#header-brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--cream);
-  text-transform: uppercase;
-}
-#header-room {
-  font-size: 10px;
-  color: var(--purple);
-  letter-spacing: 2px;
-}
-#header-back {
-  margin-left: auto;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  text-decoration: none;
-  border: 1px solid var(--border);
-  padding: 6px 16px;
-  border-radius: 100px;
-  transition: all 0.2s;
-  cursor: pointer;
-  background: none;
-}
-#header-back:hover { border-color: var(--gold); color: var(--gold); }
+/* Hero */
+.hero{text-align:center;margin-bottom:72px;}
+.hero-eye{font-size:8px;letter-spacing:4px;color:var(--key);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fu 1s ease forwards 0.3s;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,9vw,88px);font-weight:300;color:var(--cream);line-height:1;margin-bottom:28px;opacity:0;animation:fu 1s ease forwards 0.6s;}
+.hero-title em{font-style:italic;color:var(--key);}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.2vw,20px);font-weight:300;font-style:italic;color:var(--muted);line-height:1.9;max-width:520px;margin:0 auto;opacity:0;animation:fu 1s ease forwards 0.9s;}
+@keyframes fu{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 
-/* Game selector */
-#game-selector {
-  padding: 32px 28px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-#game-selector-label {
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-.game-tab {
-  font-family: 'Jost', sans-serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 6px 18px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.game-tab:hover { border-color: var(--purple); color: var(--purple); }
-.game-tab.active { border-color: var(--purple); color: var(--cream); background: var(--purple-dim); }
+.div-line{width:1px;height:56px;background:linear-gradient(to bottom,transparent,var(--border),transparent);margin:0 auto 56px;}
 
-/* Game area */
-#game-area {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px 20px 40px;
-}
+/* Intro */
+.intro{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2vw,20px);font-weight:300;color:var(--cream);line-height:1.95;text-align:center;max-width:580px;margin:0 auto 72px;opacity:0;animation:fu 1s ease forwards 1.2s;}
+.intro em{font-style:italic;color:var(--key);}
 
-/* ── MAGIC BALL ── */
-#magic-ball-game {
-  width: 100%;
-  max-width: 480px;
-}
+/* Keys */
+.sec-label{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:28px;text-align:center;}
+.keys-grid{display:flex;flex-direction:column;margin-bottom:72px;}
+.key-row{display:flex;align-items:flex-start;gap:16px;padding:18px 0;border-bottom:1px solid rgba(46,42,38,0.35);opacity:0;animation:fu 0.7s ease forwards;}
+.key-row:last-child{border-bottom:none;}
+.key-num{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;width:52px;flex-shrink:0;padding-top:4px;}
+.key-loc{font-size:8px;letter-spacing:2px;color:var(--key);text-transform:uppercase;width:130px;flex-shrink:0;padding-top:5px;}
+.key-hint{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:300;font-style:italic;color:var(--text);line-height:1.65;flex:1;}
+.key-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;margin-top:6px;transition:all 0.4s;}
+.key-dot.found{background:var(--key);border-color:var(--key);box-shadow:0 0 10px var(--key-glow);}
+.key-row:nth-child(1){animation-delay:1.8s;}.key-row:nth-child(2){animation-delay:2.0s;}.key-row:nth-child(3){animation-delay:2.2s;}.key-row:nth-child(4){animation-delay:2.4s;}.key-row:nth-child(5){animation-delay:2.6s;}.key-row:nth-child(6){animation-delay:2.8s;}.key-row:nth-child(7){animation-delay:3.0s;}
 
-.ball-wrap {
-  text-align: center;
-  padding: 20px 0 10px;
-}
+/* Player section */
+.player-box{border:1px solid var(--border);border-radius:10px;padding:36px;margin-bottom:56px;background:rgba(255,255,255,0.015);}
+#s-reg{display:block;}#s-play{display:none;}
+.pb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--cream);margin-bottom:6px;}
+.pb-sub{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:24px;}
+.name-inp{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;color:var(--cream);padding:11px 15px;font-family:'Cormorant Garamond',serif;font-size:17px;outline:none;transition:border-color 0.2s;margin-bottom:14px;}
+.name-inp:focus{border-color:var(--key);}
+.name-inp::placeholder{color:var(--dim);}
+.reg-btn{font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:11px 30px;background:none;border:1px solid var(--key);color:var(--key);border-radius:100px;cursor:pointer;transition:all 0.2s;}
+.reg-btn:hover{background:rgba(200,168,74,0.08);}
+.greet{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--cream);margin-bottom:18px;}
+.greet em{font-style:italic;color:var(--key);}
+.keys-found-label{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+.keys-found-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.kf{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;letter-spacing:1px;color:var(--dim);transition:all 0.4s;font-family:'Jost',sans-serif;}
+.kf.found{border-color:var(--key);color:var(--key);box-shadow:0 0 10px var(--key-glow);}
+.logout{font-size:8px;letter-spacing:2px;color:var(--dim);background:none;border:none;cursor:pointer;font-family:'Jost',sans-serif;text-transform:uppercase;transition:color 0.2s;}
+.logout:hover{color:var(--muted);}
 
-.ball {
-  position: relative;
-  width: 260px;
-  height: 260px;
-  margin: 0 auto 24px;
-  background: radial-gradient(circle at 35% 30%, #1e1e2f, #03030c);
-  border-radius: 50%;
-  box-shadow:
-    0 20px 40px rgba(128,96,192,0.25),
-    inset 0 -8px 0 rgba(0,0,0,0.4),
-    inset 0 4px 12px rgba(255,255,255,0.08),
-    0 0 60px rgba(128,96,192,0.1);
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ball:hover { transform: scale(1.02); }
-.ball.shake {
-  animation: shakeBall 0.5s cubic-bezier(0.36,0.07,0.19,0.97) both;
-}
-@keyframes shakeBall {
-  0%   { transform: translate(0,0) rotate(0deg); }
-  20%  { transform: translate(-6px,4px) rotate(-4deg); }
-  40%  { transform: translate(6px,-3px) rotate(3deg); }
-  60%  { transform: translate(-4px,2px) rotate(-2deg); }
-  80%  { transform: translate(4px,-1px) rotate(1deg); }
-  100% { transform: translate(0,0) rotate(0); }
-}
+/* Players list */
+.pl-section{margin-bottom:56px;}
+.pl-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(46,42,38,0.3);}
+.pl-row:last-child{border-bottom:none;}
+.pl-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--cream);flex:1;}
+.pl-dots{display:flex;gap:4px;}
+.pld{width:9px;height:9px;border-radius:50%;border:1px solid var(--border);}
+.pld.f{background:var(--key);border-color:var(--key);}
+.pl-empty{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--dim);padding:16px 0;}
 
-.answer-window {
-  width: 130px;
-  height: 130px;
-  background: radial-gradient(circle at 40% 40%, #141c28, #020408);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    inset 0 0 0 3px #2e3b4e,
-    inset 0 0 0 6px #1a2030,
-    0 4px 12px rgba(0,0,0,0.6);
-}
-.answer-text {
-  font-family: 'Jost', sans-serif;
-  font-weight: 400;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  color: #c8d8f0;
-  text-shadow: 0 0 8px #3b82f6, 0 0 16px #1e3a8a;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 8px;
-  line-height: 1.4;
-}
-
-.ball-hint {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 24px;
-}
-
-/* Question input */
-.question-wrap {
-  margin-bottom: 16px;
-}
-.question-label {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 10px;
-  text-align: center;
-}
-.question-input {
-  width: 100%;
-  background: #131008;
-  border: 1px solid var(--border);
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-family: 'Jost', sans-serif;
-  font-weight: 300;
-  border-radius: 100px;
-  color: var(--cream);
-  text-align: center;
-  outline: none;
-  transition: border-color 0.2s;
-  letter-spacing: 0.5px;
-}
-.question-input:focus { border-color: var(--purple); }
-.question-input::placeholder { color: var(--border); }
-
-.btn-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-.mb-btn {
-  font-family: 'Jost', sans-serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 9px 22px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.mb-btn:hover { border-color: var(--purple); color: var(--cream); }
-.mb-btn.primary { border-color: var(--purple); color: var(--purple); }
-.mb-btn.primary:hover { background: var(--purple-dim); color: var(--cream); }
-
-.warning-msg {
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: #c07060;
-  text-align: center;
-  min-height: 20px;
-  margin-top: 8px;
-}
-
-/* ── SHARE BAR ── */
-.share-bar{
-  position:fixed;bottom:24px;right:24px;z-index:50;
-  display:flex;flex-direction:column;gap:8px;align-items:center;
-}
-.share-label{font-size:7px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;writing-mode:vertical-rl;margin-bottom:4px;}
-.share-btn{
-  width:36px;height:36px;border-radius:50%;
-  border:1px solid var(--border);background:rgba(10,9,8,0.85);
-  color:var(--muted);cursor:pointer;transition:all 0.2s;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;text-decoration:none;backdrop-filter:blur(4px);
-}
-.share-btn:hover{border-color:var(--gold);color:var(--gold);}
-
+/* Rules */
+.rules{font-size:11px;color:var(--dim);line-height:2.1;text-align:center;}
+.rules b{color:var(--muted);}
 </style>
 </head>
 <body>
-
-<!-- ── DOMAIN LOCK + BEACON ─────────────────────────────────── -->
-<script>
-(function(){
-  const allowed=['casacaravan.space','localhost','127.0.0.1','claudeusercontent.com'];
-  const host = location.hostname;
-  if(!allowed.some(a=>host.includes(a))){
-    fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
-    document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a0908;font-family:serif;color:#A08060;font-size:18px;letter-spacing:2px;">casacaravan.space</div>';
-    setTimeout(()=>window.location.href='https://casacaravan.space',2000);
-  } else {
-    fetch('https://casacaravan.space/beacon?ref='+encodeURIComponent(host)+'&page='+encodeURIComponent(location.pathname),{mode:'no-cors'}).catch(()=>{});
-  }
-})();
-</script>
-
-
-<div id="header">
-  <div id="header-brand">Casa Caravan Space</div>
-  <div id="header-room">· Games</div>
-  <button id="header-back" onclick="history.back()">← Corridor</button>
+<canvas id="stars"></canvas>
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">The Keys</div>
+  <a href="corridor-3d.html" id="hdr-back">← Corridor</a>
 </div>
 
-<div id="game-selector">
-  <span id="game-selector-label">Play</span>
-  <button class="game-tab active" onclick="showGame('magic-ball')">Magic Ball</button>
-  <button class="game-tab" style="opacity:0.4;cursor:default">More coming</button>
-</div>
+<div class="page">
+  <div class="hero">
+    <div class="hero-eye">Casa Caravan · A Hidden Game</div>
+    <h1 class="hero-title">The <em>Keys</em></h1>
+    <p class="hero-sub">The corridor has more than six rooms.<br>Find what's hidden, and a seventh will appear.</p>
+  </div>
+  <div class="div-line"></div>
+  <p class="intro">
+    Seven keys are hidden across this space —<br>
+    in the rooms, the garden, the forest.<br><br>
+    Some you find alone. Some require another.<br>
+    <em>The seventh door cannot be opened alone.<br>It never could.</em>
+  </p>
 
-<div id="game-area">
+  <div class="sec-label">The Seven Keys</div>
+  <div class="keys-grid">
+    <div class="key-row"><div class="key-num">Key I</div><div class="key-loc">Headspace</div><div class="key-hint">"Frequency becomes form. Find the pattern that is both question and answer."</div><div class="key-dot" id="kd-1"></div></div>
+    <div class="key-row"><div class="key-num">Key II</div><div class="key-loc">Herbal Atelier</div><div class="key-hint">"There is a tree called immortal. It has been healing quietly for centuries."</div><div class="key-dot" id="kd-2"></div></div>
+    <div class="key-row"><div class="key-num">Key III</div><div class="key-loc">Fermentation Lab</div><div class="key-hint">"Follow the firefly."</div><div class="key-dot" id="kd-3"></div></div>
+    <div class="key-row"><div class="key-num">Key IV</div><div class="key-loc">Audio Sanctuary</div><div class="key-hint">"Every sound has a face. Some engineers leave smiles in the frequencies."</div><div class="key-dot" id="kd-4"></div></div>
+    <div class="key-row"><div class="key-num">Key V</div><div class="key-loc">The Garden</div><div class="key-hint">"Sometimes the deepest secrets are solved while talking to someone in the garden."</div><div class="key-dot" id="kd-5"></div></div>
+    <div class="key-row"><div class="key-num">Key VI</div><div class="key-loc">The Forest</div><div class="key-hint">"The forest hides, and then reveals. Trees turn red sometimes. If you carry five keys, one tree has something for you."</div><div class="key-dot" id="kd-6"></div></div>
+    <div class="key-row"><div class="key-num">Key VII</div><div class="key-loc">The Corridor</div><div class="key-hint">"You cannot open this alone. You never could."</div><div class="key-dot" id="kd-7"></div></div>
+  </div>
 
-  <!-- MAGIC BALL -->
-  <div id="magic-ball-game">
-    <div class="ball-wrap">
-      <div class="ball" id="magicBall">
-        <div class="answer-window">
-          <div class="answer-text" id="answerDisplay">✦</div>
-        </div>
-      </div>
-      <div class="ball-hint">tap the ball · ask wisely</div>
+  <div class="player-box">
+    <div id="s-reg">
+      <div class="pb-title">Enter the game</div>
+      <div class="pb-sub">Choose a name. It will appear in the corridor.</div>
+      <input class="name-inp" id="pni" type="text" placeholder="your name..." maxlength="30" autocomplete="off">
+      <button class="reg-btn" onclick="register()">Begin</button>
     </div>
-
-    <div class="question-wrap">
-      <label class="question-label">Your yes / no question</label>
-      <input class="question-input" type="text" id="questionInput" placeholder="Will this work out?" autocomplete="off">
-      <div class="warning-msg" id="warningMsg"></div>
-    </div>
-
-    <div class="btn-row">
-      <button class="mb-btn primary" onclick="askAndShake()">Ask the ball</button>
-      <button class="mb-btn" onclick="justShake()">Shake</button>
-      <button class="mb-btn" onclick="resetBall()">Clear</button>
+    <div id="s-play">
+      <div class="greet">Welcome back, <em id="pnd">—</em></div>
+      <div class="keys-found-label">Keys found</div>
+      <div class="keys-found-row" id="kfr"></div>
+      <button class="logout" onclick="logout()">not you? change name</button>
     </div>
   </div>
 
+  <div class="pl-section">
+    <div class="sec-label" style="text-align:left;margin-bottom:20px;">Currently playing</div>
+    <div id="pll"><div class="pl-empty">No explorers yet. Be the first.</div></div>
+  </div>
+
+  <div class="rules">
+    <b>Keys can be found in any order</b> — except the sixth, which requires five.<br>
+    <b>The seventh door</b> needs two players in the corridor at the same time.<br>
+    <b>Same connection</b> counts as one. You need a real second person.<br>
+    Keys stay with you. The game does not reset.
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="tracking.js"></script>
 <script>
-const YES = [
-  "YES","YES","ABSOLUTELY","IT IS CERTAIN","WITHOUT DOUBT",
-  "SIGNS POINT TO YES","MOST LIKELY","OUTLOOK GOOD","DEFINITELY",
-  "YOU MAY RELY ON IT","IT WILL HAPPEN","YES — TRUST IT"
-];
-const NO = [
-  "NO","NO","MY REPLY IS NO","VERY DOUBTFUL","OUTLOOK NOT SO GOOD",
-  "DON'T COUNT ON IT","NEGATIVE","NO — NOT THIS TIME",
-  "FUTURE SAYS NO","CERTAINLY NOT","NO CHANCE","TRUST THE NO"
-];
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 
-let isShaking = false;
-let lastQ = "";
+// Stars
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');
+let stars=[];
+function mkS(){cv.width=innerWidth;cv.height=innerHeight;stars=[];for(let i=0;i<120;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()<.8?.4:.8,o:.1+Math.random()*.4,sp:.2+Math.random()*.6});}
+let t=0;function drawS(){cx.clearRect(0,0,cv.width,cv.height);stars.forEach(s=>{cx.beginPath();cx.arc(s.x,s.y,s.r,0,Math.PI*2);cx.fillStyle=`rgba(255,255,255,${s.o*(.5+.5*Math.sin(t*.001*s.sp))})`;cx.fill();});t++;requestAnimationFrame(drawS);}
+window.addEventListener('resize',mkS);mkS();drawS();
 
-function rnd(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+// Player
+let player=JSON.parse(localStorage.getItem('cc_player')||'null');
 
-function getAnswer() { return Math.random()<0.5 ? rnd(YES) : rnd(NO); }
-
-function warn(msg) {
-  const el = document.getElementById('warningMsg');
-  el.textContent = msg;
-  setTimeout(() => { if(el.textContent===msg) el.textContent=''; }, 2800);
-}
-
-function shake(answer) {
-  if (isShaking) return;
-  isShaking = true;
-  const ball = document.getElementById('magicBall');
-  const disp = document.getElementById('answerDisplay');
-  ball.classList.add('shake');
-  disp.textContent = '·';
-  if (navigator.vibrate) navigator.vibrate(60);
-  setTimeout(() => {
-    ball.classList.remove('shake');
-    disp.textContent = answer;
-    disp.style.textShadow = '0 0 16px #9070d0, 0 0 32px #6040a0';
-    setTimeout(() => { disp.style.textShadow = ''; }, 500);
-    isShaking = false;
-  }, 500);
-}
-
-function askAndShake() {
-  const q = document.getElementById('questionInput').value.trim();
-  if (!q) { warn('Ask something first.'); document.getElementById('questionInput').focus(); return; }
-  if (q.length < 3) { warn('Ask a little more.'); return; }
-  lastQ = q;
-  shake(getAnswer());
-}
-
-function justShake() {
-  if (!lastQ && !document.getElementById('questionInput').value.trim()) {
-    warn('Type your question first.');
-    return;
+async function register(){
+  const name=document.getElementById('pni').value.trim();
+  if(!name) return;
+  const {data,error}=await supa.from('players').insert({name,keys_found:[]}).select().single();
+  if(error){
+    // Name exists — load existing
+    const {data:ex}=await supa.from('players').select('*').eq('name',name).single();
+    if(ex){player={name:ex.name,keys:ex.keys_found||[]};localStorage.setItem('cc_player',JSON.stringify(player));showPlay();loadPlayers();return;}
+    alert('That name is taken. Try another.');return;
   }
-  const q = document.getElementById('questionInput').value.trim() || lastQ;
-  lastQ = q;
-  shake(getAnswer());
+  player={name:data.name,keys:[]};
+  localStorage.setItem('cc_player',JSON.stringify(player));
+  showPlay();loadPlayers();
 }
 
-function resetBall() {
-  document.getElementById('questionInput').value = '';
-  document.getElementById('answerDisplay').textContent = '✦';
-  document.getElementById('warningMsg').textContent = '';
-  lastQ = '';
+function logout(){localStorage.removeItem('cc_player');player=null;document.getElementById('s-reg').style.display='block';document.getElementById('s-play').style.display='none';}
+
+function showPlay(){
+  document.getElementById('s-reg').style.display='none';
+  document.getElementById('s-play').style.display='block';
+  document.getElementById('pnd').textContent=player.name;
+  renderKF();updateDots();
 }
 
-function showGame(id) {
-  document.querySelectorAll('.game-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-document.getElementById('magicBall').addEventListener('click', justShake);
-document.getElementById('questionInput').addEventListener('keypress', e => {
-  if (e.key==='Enter') { e.preventDefault(); askAndShake(); }
-});
-
-// Device shake
-let lx=0,ly=0,lz=0,lt=0;
-function onMotion(e) {
-  if (isShaking) return;
-  const a = e.accelerationIncludingGravity;
-  if (!a) return;
-  const d = Math.abs(a.x-lx)+Math.abs(a.y-ly)+Math.abs(a.z-lz);
-  if (d>22 && Date.now()-lt>900) { lt=Date.now(); justShake(); }
-  lx=a.x; ly=a.y; lz=a.z;
-}
-document.body.addEventListener('click', function initMotion() {
-  if (typeof DeviceMotionEvent!=='undefined' && typeof DeviceMotionEvent.requestPermission==='function') {
-    DeviceMotionEvent.requestPermission().then(p => { if(p==='granted') window.addEventListener('devicemotion',onMotion); });
-  } else {
-    window.addEventListener('devicemotion', onMotion);
+const ROMAN=['I','II','III','IV','V','VI','VII'];
+function renderKF(){
+  const el=document.getElementById('kfr');el.innerHTML='';
+  for(let i=1;i<=7;i++){
+    const f=(player.keys||[]).includes(i);
+    const d=document.createElement('div');d.className='kf'+(f?' found':'');d.textContent=ROMAN[i-1];el.appendChild(d);
   }
-  document.body.removeEventListener('click', initMotion);
-}, {once:true});
+}
+function updateDots(){for(let i=1;i<=7;i++){const d=document.getElementById('kd-'+i);if(d)d.classList.toggle('found',(player?.keys||[]).includes(i));}}
+
+async function loadPlayers(){
+  const {data}=await supa.from('players').select('name,keys_found').order('created_at',{ascending:true}).limit(30);
+  const el=document.getElementById('pll');
+  if(!data||!data.length){el.innerHTML='<div class="pl-empty">No explorers yet. Be the first.</div>';return;}
+  el.innerHTML=data.map(p=>{
+    const keys=p.keys_found||[];
+    const dots=[1,2,3,4,5,6,7].map(i=>`<div class="pld${keys.includes(i)?' f':''}"></div>`).join('');
+    return`<div class="pl-row"><div class="pl-name">${esc(p.name)}</div><div class="pl-dots">${dots}</div></div>`;
+  }).join('');
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+if(player)showPlay();
+loadPlayers();
+document.getElementById('pni').addEventListener('keydown',e=>{if(e.key==='Enter')register();});
+
+(function(){const ok=['casacaravan.space','localhost','127.0.0.1','claudeusercontent.com'];const h=location.hostname;if(!ok.some(a=>h.includes(a))){setTimeout(()=>{document.body.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#06050a;color:#A08060;font-size:18px;letter-spacing:2px;">casacaravan.space</div>';setTimeout(()=>location.href='https://casacaravan.space',2000);},100);}})();
 </script>
-
-<!-- ── SHARE BAR ── -->
-<div class="share-bar">
-  <span class="share-label">Share</span>
-  <a class="share-btn" id="shareTwitter" title="Share on X" target="_blank">𝕏</a>
-  <a class="share-btn" id="shareWhatsapp" title="Share on WhatsApp" target="_blank">●</a>
-  <a class="share-btn" id="shareTelegram" title="Share on Telegram" target="_blank">✈</a>
-  <a class="share-btn" id="shareCopy" title="Copy link" onclick="copyLink(event)">⧉</a>
-</div>
-<div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
-
 </body>
 </html>
