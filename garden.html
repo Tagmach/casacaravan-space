@@ -129,6 +129,21 @@ html, body {
   pointer-events: none;
 }
 
+@media (max-width: 600px) {
+  #trees { height: 160px; }
+  #ground { height: 28%; }
+  #moon { width: 36px; height: 36px; top: 8%; right: 12%; }
+  .garden-spot { display: none; }
+  #forest-path { left: 50% !important; bottom: 20%; }
+  #center { top: 35%; }
+  #garden-quote { font-size: 18px; max-width: 85vw; line-height: 1.6; }
+  #garden-title { font-size: 9px; }
+  #sound-toggle { top: 56px; }
+  #footer-hint { display: none; }
+  #breath-pulse { display: none; }
+  #chat-wrap { bottom: 16px; right: 12px; }
+}
+
 /* Moon */
 #moon {
   position: absolute;
@@ -363,33 +378,13 @@ html, body {
 #sound-toggle.playing { border-color: var(--green); color: var(--green); }
 
 /* ── MOBILE ────────────────────────────────────────────────────── */
+/* header mobile */
 @media (max-width: 600px) {
-  /* Hide brand separator on mobile */
   #header-sep, #header-room { display: none; }
   #header { padding: 14px 16px; }
-
-  /* Center text — move up so it doesn't clash with forest path */
-  #center { top: 38%; }
-  #garden-quote { font-size: 20px; max-width: 80vw; }
-  #garden-title { font-size: 10px; }
-
-  /* Sound toggle — smaller, move below header */
-  #sound-toggle { top: 58px; font-size: 7px; padding: 4px 10px; }
-
-  /* Spots — hide coming soon ones on mobile, keep forest */
-  .garden-spot { display: none; }
-
-  /* Forest path — center it properly on mobile */
-  #forest-path { left: 50% !important; bottom: 22%; }
-
-  /* Footer hint — smaller */
+  #sound-toggle { font-size: 7px; padding: 4px 10px; }
   #footer-hint { font-size: 7px; letter-spacing: 1.5px; }
-
-  /* Chat — smaller button */
   #chat-toggle { font-size: 9px; padding: 8px 14px; }
-
-  /* Breath pulse — hide */
-  #breath-pulse { display: none; }
 }
 
 /* Chat */
