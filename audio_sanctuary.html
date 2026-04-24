@@ -319,8 +319,8 @@ function updateEQ(i,val){
 }
 
 // ── Key IV — EQ Smiley face: [+8,+4,-8,-8,+4,+8] ─────────────────
-const SMILEY=[8,4,-8,-8,4,8];
-const TOLERANCE=2;
+const SMILEY=[8,3,-5,-5,3,8];
+const TOLERANCE=5;
 let smileyTimer=null;
 function getEQVals(){return EQ_BANDS.map((_,i)=>parseInt(document.getElementById('eqVal'+i)?.textContent||0));}
 function checkSmiley(){
