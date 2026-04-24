@@ -122,13 +122,14 @@
     <div class="lab-title">Recipe Calculator</div>
     <div class="lab-sub">We do the math — you make the magic</div>
   </div>
-  <button onclick="history.back()" style="flex-shrink:0;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:100px;cursor:pointer;transition:all 0.2s;margin-top:4px;" onmouseover="this.style.borderColor='#A08060';this.style.color='#A08060'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← Corridor</button>
+  <a href="corridor-3d.html" style="flex-shrink:0;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:100px;cursor:pointer;transition:all 0.2s;margin-top:4px;text-decoration:none;align-self:flex-start;margin-left:auto;" onmouseover="this.style.borderColor='#A08060';this.style.color='#A08060'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">← Corridor</a>
 </header>
 
 <div class="product-selector">
   <button class="product-btn active" onclick="selectProduct('water_kefir')">Water Kefir</button>
   <button class="product-btn" onclick="selectProduct('milk_kefir')">Milk Kefir</button>
   <button class="product-btn" onclick="selectProduct('kombucha')">Kombucha</button>
+  <button class="product-btn" onclick="selectProduct('sourdough')">Sourdough Bread</button>
   <button class="product-btn" onclick="selectProduct('pickle')">Fermented Pickle</button>
   <button class="product-btn" onclick="selectProduct('kimchi')">Kimchi</button>
   <button class="product-btn" onclick="selectProduct('preserved_lemon')">Preserved Lemon</button>
@@ -273,6 +274,26 @@ const products = {
     ],
     tip: 'The jar must be packed tight — no air gaps. Shake daily for the first week. Stored in a cool place, they last up to a year.',
   },
+  sourdough: {
+    name: 'Sourdough Bread',
+    desc: 'Sourdough is the oldest bread on earth — nothing but flour, water, salt, and a living culture that has been passed between hands for centuries. The starter is the soul. Feed it well.',
+    ingredients: [
+      { name: 'Active sourdough starter', per_litre: 200, unit: 'g',  note: 'fed 4–8 hours before use', highlight: true },
+      { name: 'Bread flour',              per_litre: 800, unit: 'g',  note: 'high protein, 12–14%' },
+      { name: 'Whole wheat flour',        per_litre: 200, unit: 'g',  note: 'for depth and flavour' },
+      { name: 'Water',                    per_litre: 750, unit: 'ml', note: 'filtered, room temperature' },
+      { name: 'Sea salt',                 per_litre: 20,  unit: 'g',  note: 'non-iodised' },
+    ],
+    timeline: [
+      { day: 'Night before', desc: 'Feed\nstarter', active: true },
+      { day: 'Morning',      desc: 'Mix &\nautolyse', active: false },
+      { day: '+4–5 hrs',     desc: 'Stretch &\nfold x4', active: false },
+      { day: 'Evening',      desc: 'Shape &\ncold proof', active: false },
+      { day: 'Next day',     desc: 'Score &\nbake 250°C', active: false },
+    ],
+    tip: 'The secret is the cold proof — overnight in the fridge develops flavour and makes scoring easier. Bake in a Dutch oven with the lid on for the first 20 minutes. Steam is everything.',
+    hasKey: true,
+  },
 };
 
 let currentProduct = 'water_kefir';
@@ -328,6 +349,37 @@ function calculate() {
     <div class="tip-text">${p.tip}</div>`;
 
   document.getElementById('productDesc').innerHTML = p.desc;
+
+  // Key III firefly — only on sourdough, only for registered players
+  const existing = document.getElementById('key3-firefly');
+  if (existing) existing.remove();
+
+  if (p.hasKey && typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying() && !CC_KEYS.hasKey(3)) {
+    setTimeout(() => {
+      const ff = document.createElement('div');
+      ff.id = 'key3-firefly';
+      ff.style.cssText = `
+        display:inline-block;width:10px;height:10px;border-radius:50%;
+        background:#c8a84a;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);
+        cursor:pointer;margin:32px auto 0;
+        animation:ff3blink 1.8s ease-in-out infinite;
+        position:relative;
+      `;
+      ff.title = '✦';
+      ff.onclick = () => CC_KEYS.award(3);
+
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'text-align:center;padding:24px 0 8px;';
+      wrap.appendChild(ff);
+
+      const style = document.getElementById('ff3-style') || document.createElement('style');
+      style.id = 'ff3-style';
+      style.textContent = '@keyframes ff3blink{0%,100%{opacity:1;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);}50%{opacity:0.3;box-shadow:none;}}';
+      document.head.appendChild(style);
+
+      document.querySelector('.product-desc').after(wrap);
+    }, 800);
+  }
 }
 
 calculate();
@@ -343,5 +395,7 @@ calculate();
 </div>
 <div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
 
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
 </body>
 </html>
