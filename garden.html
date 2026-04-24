@@ -1094,7 +1094,6 @@ function showHint(msg) {
 }
 </script>
 
-<script src="keys.js"></script>
 <script src="tracking.js"></script>
 
 <!-- ── GARDEN RADIO ── -->
@@ -1178,46 +1177,6 @@ function gRadioStation(idx){
 </div>
 <audio id="g-radio-audio" crossorigin="anonymous"></audio>
 
-<script>
-// ── GARDEN RADIO ─────────────────────────────────────────────────
-const G_STATIONS=[
-  {name:'Groove Salad', url:'https://ice.somafm.com/groovesalad-128-mp3'},
-  {name:'Drone Zone',   url:'https://ice.somafm.com/dronezone-128-mp3'},
-  {name:'Space Station',url:'https://ice.somafm.com/spacestation-128-mp3'}
-];
-let gRadioOpen=false, gCurrentStation=-1;
 
-function toggleGRadio(){
-  gRadioOpen=!gRadioOpen;
-  document.getElementById('g-radio-stations').classList.toggle('show',gRadioOpen);
-  document.getElementById('g-radio-header').classList.toggle('open',gRadioOpen);
-  document.getElementById('g-radio-toggle').textContent=gRadioOpen?'▴':'▾';
-}
-
-function setGStation(idx){
-  const a=document.getElementById('g-radio-audio');
-  a.src=G_STATIONS[idx].url;
-  a.volume=parseFloat(document.getElementById('g-radio-vol-input').value)||0.35;
-  a.play().catch(()=>{});
-  gCurrentStation=idx;
-  document.getElementById('g-radio-dot').classList.add('playing');
-  document.getElementById('g-radio-label').textContent=G_STATIONS[idx].name;
-  document.querySelectorAll('.gr-st').forEach((o,i)=>o.classList.toggle('active',i===idx));
-}
-
-function stopGRadio(){
-  const a=document.getElementById('g-radio-audio');
-  a.pause();a.src='';
-  gCurrentStation=-1;
-  document.getElementById('g-radio-dot').classList.remove('playing');
-  document.getElementById('g-radio-label').textContent='Radio';
-  document.querySelectorAll('.gr-st').forEach(o=>o.classList.remove('active'));
-}
-
-function setGVol(v){
-  const a=document.getElementById('g-radio-audio');
-  if(a) a.volume=parseFloat(v);
-}
-</script>
 </body>
 </html>
