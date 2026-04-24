@@ -687,6 +687,20 @@ function showHerbDetail(id){
     </div>
   `;
   detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Key II — olive leaf only, registered players only
+  if(id === 'olive-leaf' && typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying() && !CC_KEYS.hasKey(2)){
+    setTimeout(()=>{
+      const ff = document.createElement('div');
+      ff.id = 'key2-firefly';
+      ff.style.cssText = 'text-align:center;padding:28px 0 4px;';
+      ff.innerHTML = `<div style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c8a84a;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);cursor:pointer;animation:ff2blink 2s ease-in-out infinite;" onclick="CC_KEYS.award(2)" title="✦"></div>`;
+      const s = document.createElement('style');
+      s.textContent = '@keyframes ff2blink{0%,100%{opacity:1;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);}50%{opacity:0.2;box-shadow:none;}}';
+      document.head.appendChild(s);
+      detail.appendChild(ff);
+    }, 1200);
+  }
 }
 
 // ── CALCULATOR ───────────────────────────────────────────────────
@@ -776,5 +790,8 @@ renderHerbs();
 </div>
 <div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
 
+<script src="tracking.js"></script>
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
 </body>
 </html>
