@@ -947,7 +947,7 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const supa = window.supabase?.createClient(SUPA_URL, SUPA_KEY);
 
 let chatOpen = false;
-let userName = localStorage.getItem('garden_name') || '';
+let userName = localStorage.getItem('garden_name_v2') || '';
 let signedIn = !!userName;
 let chatChannel = null;
 
@@ -981,7 +981,7 @@ function signIn() {
   const name = input.value.trim() || 'wanderer';
   userName = name;
   signedIn = true;
-  localStorage.setItem('garden_name', name);
+  localStorage.setItem('garden_name_v2', name);
   showChatRoom();
 }
 
