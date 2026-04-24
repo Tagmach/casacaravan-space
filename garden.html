@@ -613,6 +613,126 @@ html, body {
   transition: all 0.2s;
 }
 #signin-btn:hover { background: rgba(160,128,96,0.12); }
+
+/* ── GARDEN RADIO ── */
+#g-radio{
+  position:fixed;
+  bottom:72px;left:50%;
+  transform:translateX(-50%);
+  z-index:25;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  font-family:'Jost',sans-serif;
+}
+
+#g-radio-player{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(6,10,8,0.82);
+  border:1px solid rgba(46,42,38,0.7);
+  border-radius:100px;
+  padding:9px 18px 9px 14px;
+  backdrop-filter:blur(10px);
+  transition:all 0.3s;
+  cursor:pointer;
+}
+#g-radio-player:hover{border-color:rgba(160,128,96,0.5);}
+
+#g-radio-wave{
+  display:flex;align-items:center;gap:2px;height:14px;
+}
+.g-rw-bar{
+  width:2.5px;border-radius:2px;
+  background:var(--dim);
+  transition:background 0.3s;
+}
+#g-radio-player.playing .g-rw-bar{background:var(--green);}
+#g-radio-player.playing .g-rw-bar:nth-child(1){animation:rwave 0.9s ease-in-out infinite;}
+#g-radio-player.playing .g-rw-bar:nth-child(2){animation:rwave 0.9s ease-in-out 0.15s infinite;}
+#g-radio-player.playing .g-rw-bar:nth-child(3){animation:rwave 0.9s ease-in-out 0.3s infinite;}
+#g-radio-player.playing .g-rw-bar:nth-child(4){animation:rwave 0.9s ease-in-out 0.1s infinite;}
+#g-radio-player.playing .g-rw-bar:nth-child(5){animation:rwave 0.9s ease-in-out 0.25s infinite;}
+@keyframes rwave{
+  0%,100%{height:3px;opacity:0.5;}
+  50%{height:12px;opacity:1;}
+}
+.g-rw-bar{height:4px;}
+
+#g-radio-label{
+  font-size:8px;letter-spacing:2px;
+  color:var(--muted);text-transform:uppercase;
+  transition:color 0.3s;white-space:nowrap;
+}
+#g-radio-player.playing #g-radio-label{color:var(--cream);}
+
+#g-radio-toggle{
+  font-size:8px;letter-spacing:1.5px;
+  color:var(--dim);background:none;border:none;
+  cursor:pointer;text-transform:uppercase;
+  padding:0;transition:color 0.2s;
+}
+#g-radio-toggle:hover{color:var(--muted);}
+
+#g-radio-stations{
+  display:none;
+  flex-direction:row;gap:6px;
+  margin-top:8px;
+  flex-wrap:wrap;justify-content:center;
+}
+#g-radio-stations.show{display:flex;}
+.g-rs{
+  font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 12px;border-radius:100px;
+  border:1px solid var(--border);
+  color:var(--dim);cursor:pointer;
+  transition:all 0.2s;white-space:nowrap;
+  font-family:'Jost',sans-serif;background:rgba(6,10,8,0.7);
+}
+.g-rs:hover{border-color:var(--green);color:var(--green);}
+.g-rs.active{border-color:var(--green);color:var(--green);background:rgba(29,158,117,0.08);}
+
+@media(max-width:600px){
+  #g-radio{bottom:60px;}
+  #g-radio-player{padding:8px 14px 8px 12px;}
+  #g-radio-label{font-size:7px;}
+  .g-rs{font-size:7px;padding:5px 10px;}
+}
+
+
+/* ── GARDEN RADIO ── */
+#g-radio{
+  position:fixed;bottom:72px;left:20px;z-index:30;
+  background:rgba(6,10,8,0.92);border:1px solid #2E2A26;
+  border-radius:12px;padding:12px 16px;
+  backdrop-filter:blur(10px);
+  min-width:160px;max-width:200px;
+}
+@media(max-width:600px){#g-radio{bottom:60px;left:12px;right:12px;max-width:none;min-width:0;}}
+#g-radio-header{display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:0;transition:margin 0.3s;}
+#g-radio-header.open{margin-bottom:10px;}
+#g-radio-dot{width:7px;height:7px;border-radius:50%;background:#2E2A26;flex-shrink:0;transition:all 0.3s;}
+#g-radio-dot.playing{background:#1D9E75;box-shadow:0 0 8px rgba(29,158,117,0.6);animation:grPulse 1.5s ease-in-out infinite;}
+@keyframes grPulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+#g-radio-label{font-size:8px;letter-spacing:2px;color:#7A7068;text-transform:uppercase;font-family:'Jost',sans-serif;flex:1;}
+#g-radio-toggle{font-size:9px;color:#4a4438;font-family:'Jost',sans-serif;transition:color 0.2s;line-height:1;}
+#g-radio-header:hover #g-radio-label{color:#C8C2B8;}
+#g-radio-header:hover #g-radio-toggle{color:#7A7068;}
+#g-radio-stations{display:none;flex-direction:column;gap:2px;}
+#g-radio-stations.show{display:flex;}
+.gr-st{
+  font-size:8px;letter-spacing:1.5px;color:#6B5F52;
+  text-transform:uppercase;padding:7px 8px;
+  cursor:pointer;border-radius:6px;
+  font-family:'Jost',sans-serif;
+  transition:all 0.15s;display:flex;align-items:center;gap:7px;
+}
+.gr-st:hover{background:rgba(255,255,255,0.04);color:#C8C2B8;}
+.gr-st.active{color:#1D9E75;}
+.gr-st-dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:0.5;flex-shrink:0;}
+.gr-st.active .gr-st-dot{opacity:1;}
+#g-radio-vol{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #1a1a16;}
+#g-radio-vol-label{font-size:7px;letter-spacing:1.5px;color:#4a4438;text-transform:uppercase;font-family:'Jost',sans-serif;}
+#g-radio-vol-input{flex:1;height:2px;-webkit-appearance:none;appearance:none;background:#2E2A26;border-radius:1px;outline:none;cursor:pointer;}
+#g-radio-vol-input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:#1D9E75;cursor:pointer;}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
@@ -802,6 +922,20 @@ for (let i = 0; i < 18; i++) {
   document.body.appendChild(f);
 }
 
+// ── Key V — Golden firefly (only visible to registered players) ──
+setTimeout(()=>{
+  if(typeof CC_KEYS === 'undefined' || !CC_KEYS.isPlaying() || CC_KEYS.hasKey(5)) return;
+  const gf = document.createElement('div');
+  gf.className = 'firefly';
+  gf.id = 'key-firefly';
+  const dx = () => (Math.random()-0.5)*60+'px';
+  const dy = () => (Math.random()-0.5)*40+'px';
+  gf.style.cssText = `left:52%;top:48%;--dur:8s;--blink:2s;--dx1:${dx()};--dy1:${dy()};--dx2:${dx()};--dy2:${dy()};--dx3:${dx()};--dy3:${dy()};animation-delay:2s;background:#c8a84a;box-shadow:0 0 6px #c8a84a,0 0 14px rgba(200,168,74,0.6);width:5px;height:5px;border-radius:50%;cursor:pointer;pointer-events:all;z-index:10;`;
+  gf.title = '✦';
+  gf.onclick = () => CC_KEYS.award(5);
+  document.body.appendChild(gf);
+}, 1500);
+
 // ── Forest Audio (Web Audio API) ─────────────────────────────────
 let audioPlaying = false;
 let cricketSound = null;
@@ -959,5 +1093,130 @@ function showHint(msg) {
 }
 </script>
 
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
+
+<!-- ── GARDEN RADIO ── -->
+<div id="g-radio">
+  <div id="g-radio-player" onclick="toggleGRadio()">
+    <div id="g-radio-wave">
+      <div class="g-rw-bar"></div>
+      <div class="g-rw-bar"></div>
+      <div class="g-rw-bar"></div>
+      <div class="g-rw-bar"></div>
+      <div class="g-rw-bar"></div>
+    </div>
+    <div id="g-radio-label">Garden Radio</div>
+    <button id="g-radio-toggle">▾</button>
+  </div>
+  <div id="g-radio-stations">
+    <div class="g-rs" onclick="gRadioStation(0)">Groove Salad</div>
+    <div class="g-rs" onclick="gRadioStation(1)">Drone Zone</div>
+    <div class="g-rs" onclick="gRadioStation(2)">Space Station</div>
+  </div>
+</div>
+<audio id="g-radio-audio" crossorigin="anonymous"></audio>
+
+<script>
+// ── GARDEN RADIO ─────────────────────────────────────────────────
+const G_STATIONS=[
+  {name:'Groove Salad', url:'https://ice.somafm.com/groovesalad-128-mp3'},
+  {name:'Drone Zone',   url:'https://ice.somafm.com/dronezone-128-mp3'},
+  {name:'Space Station',url:'https://ice.somafm.com/spacestation-128-mp3'}
+];
+let gRadioPlaying=false, gCurrentStation=-1;
+
+function toggleGRadio(){
+  const stations=document.getElementById('g-radio-stations');
+  stations.classList.toggle('show');
+  document.getElementById('g-radio-toggle').textContent=stations.classList.contains('show')?'▴':'▾';
+}
+
+function gRadioStation(idx){
+  const audio=document.getElementById('g-radio-audio');
+  if(gCurrentStation===idx && gRadioPlaying){
+    audio.pause();audio.src='';
+    gRadioPlaying=false;gCurrentStation=-1;
+    document.getElementById('g-radio-player').classList.remove('playing');
+    document.getElementById('g-radio-label').textContent='Garden Radio';
+    document.querySelectorAll('.g-rs').forEach(o=>o.classList.remove('active'));
+    return;
+  }
+  audio.src=G_STATIONS[idx].url;
+  audio.volume=0.4;
+  audio.play().catch(()=>{});
+  gRadioPlaying=true;gCurrentStation=idx;
+  document.getElementById('g-radio-player').classList.add('playing');
+  document.getElementById('g-radio-label').textContent=G_STATIONS[idx].name;
+  document.querySelectorAll('.g-rs').forEach((o,i)=>o.classList.toggle('active',i===idx));
+  // close station list after selection on mobile
+  if(window.innerWidth<600){
+    document.getElementById('g-radio-stations').classList.remove('show');
+    document.getElementById('g-radio-toggle').textContent='▾';
+  }
+}
+</script>
+
+<!-- ── GARDEN RADIO ── -->
+<div id="g-radio">
+  <div id="g-radio-header" onclick="toggleGRadio()">
+    <div id="g-radio-dot"></div>
+    <div id="g-radio-label">Radio</div>
+    <div id="g-radio-toggle">▾</div>
+  </div>
+  <div id="g-radio-stations">
+    <div class="gr-st" onclick="setGStation(0)"><div class="gr-st-dot"></div>Groove Salad</div>
+    <div class="gr-st" onclick="setGStation(1)"><div class="gr-st-dot"></div>Drone Zone</div>
+    <div class="gr-st" onclick="setGStation(2)"><div class="gr-st-dot"></div>Space Station</div>
+    <div class="gr-st" onclick="stopGRadio()" style="margin-top:4px;border-top:1px solid #1a1a16;padding-top:9px;"><div class="gr-st-dot"></div>Stop</div>
+    <div id="g-radio-vol">
+      <span id="g-radio-vol-label">Vol</span>
+      <input id="g-radio-vol-input" type="range" min="0" max="1" step="0.05" value="0.35" oninput="setGVol(this.value)">
+    </div>
+  </div>
+</div>
+<audio id="g-radio-audio" crossorigin="anonymous"></audio>
+
+<script>
+// ── GARDEN RADIO ─────────────────────────────────────────────────
+const G_STATIONS=[
+  {name:'Groove Salad', url:'https://ice.somafm.com/groovesalad-128-mp3'},
+  {name:'Drone Zone',   url:'https://ice.somafm.com/dronezone-128-mp3'},
+  {name:'Space Station',url:'https://ice.somafm.com/spacestation-128-mp3'}
+];
+let gRadioOpen=false, gCurrentStation=-1;
+
+function toggleGRadio(){
+  gRadioOpen=!gRadioOpen;
+  document.getElementById('g-radio-stations').classList.toggle('show',gRadioOpen);
+  document.getElementById('g-radio-header').classList.toggle('open',gRadioOpen);
+  document.getElementById('g-radio-toggle').textContent=gRadioOpen?'▴':'▾';
+}
+
+function setGStation(idx){
+  const a=document.getElementById('g-radio-audio');
+  a.src=G_STATIONS[idx].url;
+  a.volume=parseFloat(document.getElementById('g-radio-vol-input').value)||0.35;
+  a.play().catch(()=>{});
+  gCurrentStation=idx;
+  document.getElementById('g-radio-dot').classList.add('playing');
+  document.getElementById('g-radio-label').textContent=G_STATIONS[idx].name;
+  document.querySelectorAll('.gr-st').forEach((o,i)=>o.classList.toggle('active',i===idx));
+}
+
+function stopGRadio(){
+  const a=document.getElementById('g-radio-audio');
+  a.pause();a.src='';
+  gCurrentStation=-1;
+  document.getElementById('g-radio-dot').classList.remove('playing');
+  document.getElementById('g-radio-label').textContent='Radio';
+  document.querySelectorAll('.gr-st').forEach(o=>o.classList.remove('active'));
+}
+
+function setGVol(v){
+  const a=document.getElementById('g-radio-audio');
+  if(a) a.volume=parseFloat(v);
+}
+</script>
 </body>
 </html>
