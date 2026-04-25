@@ -584,7 +584,6 @@ function walkTo(i){
   POSITIONS.forEach((_,j)=>{const d=document.getElementById('wd'+j);if(d)d.className='walk-dot'+(j===i?' active':'');});
   const radio=document.getElementById('radio');
   if(radio) radio.classList.toggle('hidden', i!==0);
-  if(i===3) startKey7Watch(); else stopKey7Watch();
 }
 
 document.getElementById('btnBack').onclick=()=>walkTo(cur-1);
@@ -700,7 +699,7 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
 
 </script>
 
-<div id="key7-hint" style="position:fixed;bottom:220px;left:50%;transform:translateX(-50%);z-index:30;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.7);letter-spacing:2px;opacity:0;transition:opacity 0.5s;pointer-events:none;"></div>
+
 <!-- Key VII — 7th door, invisible until two players present -->
 <!-- Key VII — 7th door + welcome screen -->
 <div id="door7" onclick="openWelcome()" style="
@@ -870,46 +869,5 @@ async function submitReward(){
 </script>
 
 <!-- Key VII Door -->
-<div id="door7" onclick="openWelcome()" style="position:fixed;bottom:0;right:40px;z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;text-align:center;cursor:pointer;width:100px;">
-  <div id="d7txt" style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;">a seventh door</div>
-  <div id="d7shape" style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));">
-    <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.8);box-shadow:0 0 8px rgba(200,168,74,0.6);"></div>
-    <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:4px;color:rgba(200,168,74,0.6);">VII</div>
-  </div>
-</div>
-
-<!-- Welcome Screen -->
-<div id="welcome7" style="position:fixed;inset:0;z-index:100;background:rgba(6,5,10,0.97);display:none;align-items:flex-start;justify-content:center;opacity:0;transition:opacity 0.8s;overflow-y:auto;">
-  <div style="max-width:560px;padding:80px 40px 60px;text-align:center;width:100%;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:4px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:28px;">The Seventh Door</div>
-    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);font-weight:300;color:#D2C3AF;line-height:1.2;margin-bottom:24px;">Welcome.</h1>
-    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:#7A7068;line-height:1.9;margin-bottom:48px;">You explored this corridor like an explorer.<br>You collected the keys. You found the door.<br>You were not alone when it opened.<br><br>Now tell us what you want.</p>
-    <div id="reward-options" style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
-      <button onclick="selectReward('room')" class="r-opt"><div class="r-title">A room of your own</div>One month, free. Your own space in this corridor — a tool, a project, whatever fits. We'll help you build it.</button>
-      <button onclick="selectReward('tool')" class="r-opt"><div class="r-title">A tool, somewhere else</div>We help you build something for your own world — a calculator, a space, a system. Yours to keep.</button>
-      <button onclick="selectReward('next')" class="r-opt"><div class="r-title">Join us to build the next game</div>Your name will appear as one of the makers.</button>
-    </div>
-    <div id="reward-form" style="display:none;text-align:left;border:1px solid rgba(46,42,38,0.6);border-radius:10px;padding:28px;margin-bottom:32px;">
-      <div id="form-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.9);margin-bottom:20px;"></div>
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <input id="f-name" type="text" placeholder="Your name" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
-        <input id="f-email" type="email" placeholder="Your email" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
-        <textarea id="f-msg" placeholder="Anything you want to say..." rows="3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;resize:none;"></textarea>
-        <button onclick="submitReward()" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:12px 28px;border:1px solid rgba(200,168,74,0.5);color:#c8a84a;background:none;border-radius:100px;cursor:pointer;align-self:flex-start;">Send →</button>
-      </div>
-      <div id="form-sent" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-top:16px;">Received. We'll be in touch.</div>
-    </div>
-    <a href="corridor-3d.html" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(120,110,100,0.5);text-decoration:none;border:1px solid rgba(46,42,38,0.5);padding:8px 20px;border-radius:100px;display:inline-block;">← Back to the corridor</a>
-  </div>
-</div>
-
-<style>
-.r-opt{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;padding:18px 24px;border:1px solid rgba(160,128,96,0.25);color:#A08060;background:rgba(160,128,96,0.04);border-radius:8px;cursor:pointer;transition:all 0.25s;text-align:left;line-height:1.8;width:100%;}
-.r-opt:hover{border-color:rgba(200,168,74,0.5);background:rgba(200,168,74,0.06);}
-.r-opt.selected{border-color:rgba(200,168,74,0.7);background:rgba(200,168,74,0.08);}
-.r-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#D2C3AF;margin-bottom:4px;}
-@keyframes d7glow{0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.15);}50%{box-shadow:0 0 40px rgba(200,168,74,0.4);}}
-@keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
-</style>
 </body>
 </html>
