@@ -738,12 +738,22 @@ async function checkPresence(){
 function showDoor7(){
   door7shown = true;
   const el = document.getElementById('door7');
-  if(el){el.style.opacity='1';el.style.pointerEvents='all';}
+  if(el){
+    el.style.opacity='1';
+    el.style.pointerEvents='all';
+    document.getElementById('d7txt').style.animation='d7txt 3s ease-in-out infinite';
+    document.getElementById('d7shape').style.animation='d7glow 2.5s ease-in-out infinite';
+  }
 }
 function hideDoor7(){
   door7shown = false;
   const el = document.getElementById('door7');
-  if(el){el.style.opacity='0';el.style.pointerEvents='none';}
+  if(el){
+    el.style.opacity='0';
+    el.style.pointerEvents='none';
+    document.getElementById('d7txt').style.animation='none';
+    document.getElementById('d7shape').style.animation='none';
+  }
 }
 
 async function initPresence(){
@@ -774,9 +784,9 @@ setTimeout(initPresence, 1500);
   z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;
   text-align:center;cursor:pointer;width:180px;
 ">
-  <div style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;animation:d7txt 3s ease-in-out infinite;">a seventh door</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;" id="d7txt">a seventh door</div>
   <!-- Door shape -->
-  <div style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));box-shadow:0 0 30px rgba(200,168,74,0.2),inset 0 0 20px rgba(200,168,74,0.05);animation:d7glow 2.5s ease-in-out infinite;">
+  <div id="d7shape" style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));box-shadow:0 0 30px rgba(200,168,74,0.2),inset 0 0 20px rgba(200,168,74,0.05);">
     <!-- Door knob -->
     <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.8);box-shadow:0 0 8px rgba(200,168,74,0.6);"></div>
     <!-- VII -->
@@ -788,64 +798,107 @@ setTimeout(initPresence, 1500);
 <div id="welcome7" style="
   position:fixed;inset:0;z-index:100;
   background:rgba(6,5,10,0.97);
-  display:none;align-items:center;justify-content:center;
+  display:none;align-items:flex-start;justify-content:center;
   opacity:0;transition:opacity 0.8s;
+  overflow-y:auto;
 ">
-  <div style="max-width:560px;padding:48px 40px;text-align:center;">
+  <div style="max-width:560px;padding:80px 40px 60px;text-align:center;width:100%;">
     <div style="font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:4px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:28px;">The Seventh Door</div>
     <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);font-weight:300;color:#D2C3AF;line-height:1.2;margin-bottom:24px;">Welcome.</h1>
     <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:#7A7068;line-height:1.9;margin-bottom:48px;">
-      You explored this corridor as an explorer.<br>
+      You explored this corridor like an explorer.<br>
       You collected the keys. You found the door.<br>
       You were not alone when it opened.<br><br>
       Now tell us what you want.
     </p>
-    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:48px;">
-      <button onclick="selectReward('room')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
-        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">A room of your own</div>
+
+    <div id="reward-options" style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
+      <button onclick="selectReward('room')" class="r-opt">
+        <div class="r-title">A room of your own</div>
         One month, free. Your own space in this corridor — a tool, a project, whatever fits. We'll help you build it.
       </button>
-      <button onclick="selectReward('tool')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
-        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">A tool, somewhere else</div>
+      <button onclick="selectReward('tool')" class="r-opt">
+        <div class="r-title">A tool, somewhere else</div>
         We help you build something for your own world — a calculator, a space, a system. Yours to keep.
       </button>
-      <button onclick="selectReward('next')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
-        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">Design the next game</div>
-        Sit with us and shape what comes next. Your name on it.
+      <button onclick="selectReward('next')" class="r-opt">
+        <div class="r-title">Join us to build the next game</div>
+        Your name will appear as one of the makers.
       </button>
     </div>
-    <div id="reward-confirm" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-bottom:24px;line-height:1.8;"></div>
-    <button onclick="closeWelcome()" style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(100,90,80,0.4);background:none;border:none;cursor:pointer;padding:8px;">← back to the corridor</button>
+
+    <!-- Contact form — hidden until reward selected -->
+    <div id="reward-form" style="display:none;text-align:left;border:1px solid rgba(46,42,38,0.6);border-radius:10px;padding:28px;margin-bottom:32px;">
+      <div id="form-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.9);margin-bottom:20px;"></div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <input id="f-name" type="text" placeholder="Your name" maxlength="60" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
+        <input id="f-email" type="email" placeholder="Your email" maxlength="80" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
+        <textarea id="f-msg" placeholder="Anything you want to say..." maxlength="500" rows="3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;resize:none;"></textarea>
+        <button onclick="submitReward()" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:12px 28px;border:1px solid rgba(200,168,74,0.5);color:#c8a84a;background:none;border-radius:100px;cursor:pointer;align-self:flex-start;transition:all 0.2s;">Send →</button>
+      </div>
+      <div id="form-sent" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-top:16px;line-height:1.8;">Received. We'll be in touch.</div>
+    </div>
+
+    <a href="corridor-3d.html" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(120,110,100,0.5);text-decoration:none;border:1px solid rgba(46,42,38,0.5);padding:8px 20px;border-radius:100px;display:inline-block;transition:all 0.2s;">← Back to the corridor</a>
   </div>
 </div>
 
 <style>
+.r-opt{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;padding:18px 24px;border:1px solid rgba(160,128,96,0.25);color:#A08060;background:rgba(160,128,96,0.04);border-radius:8px;cursor:pointer;transition:all 0.25s;text-align:left;line-height:1.8;width:100%;}
+.r-opt:hover{border-color:rgba(200,168,74,0.5);background:rgba(200,168,74,0.06);}
+.r-opt.selected{border-color:rgba(200,168,74,0.7);background:rgba(200,168,74,0.08);}
+.r-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#D2C3AF;margin-bottom:4px;}
 @keyframes d7glow{0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.15),inset 0 0 20px rgba(200,168,74,0.05);}50%{box-shadow:0 0 40px rgba(200,168,74,0.35),inset 0 0 30px rgba(200,168,74,0.1);}}
 @keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
 </style>
 
 <script>
+let selectedReward = null;
+const SUPA_URL_W='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY_W='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+
 function openWelcome(){
   if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
   const w=document.getElementById('welcome7');
   w.style.display='flex';
   setTimeout(()=>w.style.opacity='1',50);
 }
-function closeWelcome(){
-  const w=document.getElementById('welcome7');
-  w.style.opacity='0';
-  setTimeout(()=>w.style.display='none',800);
-}
+
 function selectReward(type){
-  const msgs={
-    room:"A room of your own — one month, free. We'll reach out to build it together.",
-    tool:"A tool for your world. Tell us what you need — we'll build it with you.",
-    next:"You'll help design the next game. Welcome to the inside."
+  selectedReward = type;
+  const titles={
+    room:'A room of your own — tell us a bit about yourself.',
+    tool:'A tool for your world — tell us what you need.',
+    next:'Join us to build the next game — introduce yourself.'
   };
-  const el=document.getElementById('reward-confirm');
-  el.textContent=msgs[type];
-  el.style.display='block';
-  document.querySelectorAll('#welcome7 button:not([onclick="closeWelcome()"])').forEach(b=>b.style.opacity='0.3');
+  document.querySelectorAll('.r-opt').forEach(b=>b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('form-title').textContent = titles[type];
+  document.getElementById('reward-form').style.display='block';
+  document.getElementById('reward-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function submitReward(){
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const msg   = document.getElementById('f-msg').value.trim();
+  if(!name||!email) return;
+
+  await fetch(SUPA_URL_W+'/rest/v1/idea_basket',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPA_KEY_W,'Authorization':'Bearer '+SUPA_KEY_W,'Prefer':'return=minimal'},
+    body:JSON.stringify({
+      name, email,
+      idea: '[KEY VII WINNER — '+selectedReward+'] '+msg,
+      why: 'Seventh door reward selection',
+      approved: false
+    })
+  }).catch(()=>{});
+
+  document.getElementById('form-sent').style.display='block';
+  document.getElementById('f-name').disabled=true;
+  document.getElementById('f-email').disabled=true;
+  document.getElementById('f-msg').disabled=true;
 }
 </script>
 </body>
