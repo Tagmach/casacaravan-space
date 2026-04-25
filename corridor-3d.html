@@ -715,7 +715,7 @@ async function pingPresence(){
       'Content-Type':'application/json',
       'apikey':SUPA_KEY7,
       'Authorization':'Bearer '+SUPA_KEY7,
-      'Prefer':'return=minimal'
+      'Prefer':'resolution=merge-duplicates,return=minimal'
     },
     body:JSON.stringify({session_id:SESSION_ID, last_seen: new Date().toISOString()})
   }).catch(()=>{});
