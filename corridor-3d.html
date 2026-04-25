@@ -745,9 +745,6 @@ function hideDoor7(){
   const el = document.getElementById('door7');
   if(el){el.style.opacity='0';el.style.pointerEvents='none';}
 }
-function takeKey7(){
-  if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
-}
 
 async function initPresence(){
   await pingPresence();
@@ -771,23 +768,85 @@ setTimeout(initPresence, 1500);
 </script>
 
 <!-- Key VII — 7th door, invisible until two players present -->
-<div id="door7" onclick="takeKey7()" style="
-  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+<!-- Key VII — 7th door + welcome screen -->
+<div id="door7" onclick="openWelcome()" style="
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
   z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;
-  text-align:center;cursor:pointer;
+  text-align:center;cursor:pointer;width:180px;
 ">
-  <div style="font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(200,168,74,0.9);text-transform:uppercase;margin-bottom:8px;">A door appears</div>
-  <div style="width:48px;height:48px;border:1px solid rgba(200,168,74,0.6);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;background:rgba(200,168,74,0.08);animation:d7pulse 2s ease-in-out infinite;">
-    <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="35" cy="40" r="18" stroke="#c8a84a" stroke-width="3"/>
-      <line x1="53" y1="40" x2="80" y2="40" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
-      <line x1="74" y1="40" x2="74" y2="52" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
-      <line x1="80" y1="40" x2="80" y2="48" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
-    </svg>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;animation:d7txt 3s ease-in-out infinite;">a seventh door</div>
+  <!-- Door shape -->
+  <div style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));box-shadow:0 0 30px rgba(200,168,74,0.2),inset 0 0 20px rgba(200,168,74,0.05);animation:d7glow 2.5s ease-in-out infinite;">
+    <!-- Door knob -->
+    <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.8);box-shadow:0 0 8px rgba(200,168,74,0.6);"></div>
+    <!-- VII -->
+    <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:4px;color:rgba(200,168,74,0.6);">VII</div>
   </div>
 </div>
+
+<!-- Welcome screen -->
+<div id="welcome7" style="
+  position:fixed;inset:0;z-index:100;
+  background:rgba(6,5,10,0.97);
+  display:none;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.8s;
+">
+  <div style="max-width:560px;padding:48px 40px;text-align:center;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:4px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:28px;">The Seventh Door</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);font-weight:300;color:#D2C3AF;line-height:1.2;margin-bottom:24px;">Welcome.</h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:#7A7068;line-height:1.9;margin-bottom:48px;">
+      You explored this corridor as an explorer.<br>
+      You collected the keys. You found the door.<br>
+      You were not alone when it opened.<br><br>
+      Now tell us what you want.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:48px;">
+      <button onclick="selectReward('room')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
+        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">A room of your own</div>
+        One month, free. Your own space in this corridor — a tool, a project, whatever fits. We'll help you build it.
+      </button>
+      <button onclick="selectReward('tool')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
+        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">A tool, somewhere else</div>
+        We help you build something for your own world — a calculator, a space, a system. Yours to keep.
+      </button>
+      <button onclick="selectReward('next')" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:16px 32px;border:1px solid rgba(160,128,96,0.4);color:#A08060;background:rgba(160,128,96,0.05);border-radius:8px;cursor:pointer;transition:all 0.3s;text-align:left;line-height:1.8;">
+        <div style="font-size:11px;color:#D2C3AF;margin-bottom:4px;font-family:'Cormorant Garamond',serif;font-style:italic;">Design the next game</div>
+        Sit with us and shape what comes next. Your name on it.
+      </button>
+    </div>
+    <div id="reward-confirm" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-bottom:24px;line-height:1.8;"></div>
+    <button onclick="closeWelcome()" style="font-family:'Jost',sans-serif;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(100,90,80,0.4);background:none;border:none;cursor:pointer;padding:8px;">← back to the corridor</button>
+  </div>
+</div>
+
 <style>
-@keyframes d7pulse{0%,100%{box-shadow:0 0 0 rgba(200,168,74,0);}50%{box-shadow:0 0 20px rgba(200,168,74,0.3);}}
+@keyframes d7glow{0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.15),inset 0 0 20px rgba(200,168,74,0.05);}50%{box-shadow:0 0 40px rgba(200,168,74,0.35),inset 0 0 30px rgba(200,168,74,0.1);}}
+@keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
 </style>
+
+<script>
+function openWelcome(){
+  if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
+  const w=document.getElementById('welcome7');
+  w.style.display='flex';
+  setTimeout(()=>w.style.opacity='1',50);
+}
+function closeWelcome(){
+  const w=document.getElementById('welcome7');
+  w.style.opacity='0';
+  setTimeout(()=>w.style.display='none',800);
+}
+function selectReward(type){
+  const msgs={
+    room:"A room of your own — one month, free. We'll reach out to build it together.",
+    tool:"A tool for your world. Tell us what you need — we'll build it with you.",
+    next:"You'll help design the next game. Welcome to the inside."
+  };
+  const el=document.getElementById('reward-confirm');
+  el.textContent=msgs[type];
+  el.style.display='block';
+  document.querySelectorAll('#welcome7 button:not([onclick="closeWelcome()"])').forEach(b=>b.style.opacity='0.3');
+}
+</script>
 </body>
 </html>
