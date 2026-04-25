@@ -819,7 +819,8 @@ const presenceMap = new Map();
 
 const ch = supa7.channel('corridor-v2')
   .on('broadcast',{event:'here'},(msg)=>{
-    presenceMap.set(msg.payload.sid, Date.now());
+    if(msg.payload.sid !== SESSION_ID)
+      presenceMap.set(msg.payload.sid, Date.now());
     checkCount();
   })
   .on('broadcast',{event:'gone'},(msg)=>{
@@ -830,12 +831,13 @@ const ch = supa7.channel('corridor-v2')
     if(status==='SUBSCRIBED'){
       ch.send({type:'broadcast',event:'here',payload:{sid:SESSION_ID}});
       setInterval(()=>{
-        // Cleanup stale (>20s)
+        // Expire stale entries (>12s = missed one ping)
         const now=Date.now();
-        presenceMap.forEach((t,k)=>{ if(now-t>20000) presenceMap.delete(k); });
+        presenceMap.forEach((t,k)=>{ if(now-t>12000) presenceMap.delete(k); });
+        // Ping
         ch.send({type:'broadcast',event:'here',payload:{sid:SESSION_ID}});
         checkCount();
-      },8000);
+      },5000);
     }
   });
 
