@@ -268,39 +268,45 @@ const raycaster = new THREE.Raycaster();
 raycaster.params.Points.threshold = 8;
 let labelTimeout;
 
+let currentStar = null;
+
 function checkStarHover(){
   const nameEl = document.getElementById('info-name');
   const detEl  = document.getElementById('info-details');
 
-  // Camera look direction
   const dir = new THREE.Vector3();
   camera.getWorldDirection(dir);
+  dir.normalize();
 
-  // Find closest named star to look direction
   let closest = null;
   let minAngle = Infinity;
   namedGeos.forEach(p => {
     const starDir = p.userData.pos.clone().normalize();
-    const angle = dir.angleTo(starDir) * 180 / Math.PI;
+    const dot = dir.dot(starDir);
+    const angle = Math.acos(Math.min(1, Math.max(-1, dot))) * 180 / Math.PI;
     if(angle < minAngle){ minAngle = angle; closest = p; }
   });
 
-  if(closest && minAngle < 8){
-    const star = closest.userData;
-    nameEl.textContent = star.name;
-    nameEl.style.opacity = '1';
-    if(star.isZodiac){
-      detEl.textContent = 'Zodiac constellation';
-    } else {
-      const dist = star.dist < 100 ? star.dist.toFixed(1) + ' ly' : Math.round(star.dist) + ' ly';
-      detEl.textContent = star.constellation + '  ·  mag ' + star.mag.toFixed(2) + '  ·  ' + dist;
+  if(closest && minAngle < 12){
+    if(currentStar !== closest){
+      currentStar = closest;
+      const star = closest.userData;
+      nameEl.textContent = star.name;
+      nameEl.style.opacity = '1';
+      if(star.isZodiac){
+        detEl.textContent = 'Zodiac constellation';
+      } else {
+        const dist = star.dist < 100 ? star.dist.toFixed(1) + ' ly' : Math.round(star.dist) + ' ly';
+        detEl.textContent = star.constellation + '  ·  mag ' + star.mag.toFixed(2) + '  ·  ' + dist;
+      }
+      detEl.style.opacity = '1';
     }
-    detEl.style.opacity = '1';
-  } else {
-    nameEl.style.opacity = '0';
-    nameEl.textContent = '';
-    detEl.style.opacity = '0';
-    detEl.textContent = '';
+  } else if(minAngle > 15){
+    if(currentStar){
+      currentStar = null;
+      nameEl.style.opacity = '0';
+      detEl.style.opacity = '0';
+    }
   }
 }
 
