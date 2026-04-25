@@ -179,7 +179,46 @@ NAMED_STARS.forEach(([ra,dec,mag,name,constellation,dist]) => {
   namedGeos.push(p);
 });
 
-// Milky Way — diffuse band
+// ── ZODIAC — 12 burç takımyıldızları ─────────────────────────────
+// [name, symbol, center_ra_deg, center_dec_deg, stars: [[ra,dec],...]]
+const ZODIAC = [
+  {name:'Aries',    sym:'♈', ra:28,  dec:20,  stars:[[28,23],[31,20],[35,19]]},
+  {name:'Taurus',   sym:'♉', ra:65,  dec:16,  stars:[[69,16],[64,15],[67,16],[62,22],[68,21]]},
+  {name:'Gemini',   sym:'♊', ra:112, dec:28,  stars:[[116,28],[113,32],[110,26],[108,24],[117,25]]},
+  {name:'Cancer',   sym:'♋', ra:130, dec:20,  stars:[[130,21],[134,19],[129,18],[132,22]]},
+  {name:'Leo',      sym:'♌', ra:152, dec:12,  stars:[[152,12],[148,14],[154,20],[158,15],[160,10],[157,8]]},
+  {name:'Virgo',    sym:'♍', ra:190, dec:-1,  stars:[[190,2],[186,6],[198,-11],[201,-11],[195,-6],[184,1]]},
+  {name:'Libra',    sym:'♎', ra:229, dec:-16, stars:[[229,-16],[224,-16],[231,-9],[233,-14]]},
+  {name:'Scorpius', sym:'♏', ra:247, dec:-26, stars:[[247,-26],[245,-20],[250,-34],[253,-37],[255,-37]]},
+  {name:'Sagittarius',sym:'♐',ra:280,dec:-25, stars:[[280,-25],[276,-20],[283,-30],[285,-27],[278,-22]]},
+  {name:'Capricorn',sym:'♑', ra:308, dec:-18, stars:[[308,-18],[306,-14],[312,-17],[316,-21]]},
+  {name:'Aquarius', sym:'♒', ra:334, dec:-10, stars:[[334,-10],[330,-6],[338,-13],[336,-8]]},
+  {name:'Pisces',   sym:'♓', ra:10,  dec:8,   stars:[[10,8],[4,5],[16,12],[20,6],[2,2]]},
+];
+
+const zodiacMat = new THREE.LineBasicMaterial({color:0x4a3a6a, transparent:true, opacity:0.35});
+
+ZODIAC.forEach(z => {
+  // Draw constellation lines
+  if(z.stars.length > 1){
+    const points = z.stars.map(([ra,dec]) => raDecToXYZ(ra, dec, 485));
+    // Connect stars in sequence
+    for(let i=0;i<points.length-1;i++){
+      const lg = new THREE.BufferGeometry().setFromPoints([points[i], points[i+1]]);
+      scene.add(new THREE.Line(lg, zodiacMat));
+    }
+  }
+
+  // Zodiac center label star (larger, purple-ish)
+  const cp = raDecToXYZ(z.ra, z.dec, 488);
+  const sg = new THREE.BufferGeometry();
+  sg.setAttribute('position', new THREE.BufferAttribute(new Float32Array([cp.x,cp.y,cp.z]),3));
+  const sm = new THREE.PointsMaterial({color:0x9977cc, size:4, sizeAttenuation:false, transparent:true, opacity:0.6});
+  const sp = new THREE.Points(sg, sm);
+  sp.userData = {name: z.name + ' ' + z.sym, pos: cp, mag: 2, constellation: 'Zodiac', dist: 0, isZodiac:true};
+  scene.add(sp);
+  namedGeos.push(sp);
+});
 const mwCount = 2000;
 const mwGeo = new THREE.BufferGeometry();
 const mwPos = new Float32Array(mwCount*3);
@@ -250,8 +289,12 @@ function checkStarHover(){
     const star = closest.userData;
     nameEl.textContent = star.name;
     nameEl.style.opacity = '1';
-    const dist = star.dist < 100 ? star.dist.toFixed(1) + ' ly' : Math.round(star.dist) + ' ly';
-    detEl.textContent = star.constellation + '  ·  mag ' + star.mag.toFixed(2) + '  ·  ' + dist;
+    if(star.isZodiac){
+      detEl.textContent = 'Zodiac constellation';
+    } else {
+      const dist = star.dist < 100 ? star.dist.toFixed(1) + ' ly' : Math.round(star.dist) + ' ly';
+      detEl.textContent = star.constellation + '  ·  mag ' + star.mag.toFixed(2) + '  ·  ' + dist;
+    }
     detEl.style.opacity = '1';
   } else {
     nameEl.style.opacity = '0';
