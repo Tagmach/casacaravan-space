@@ -316,37 +316,57 @@ path.position.set(0, 0.02, -3);
 path.renderOrder = 2;
 scene.add(path);
 
-// Fork junction — wide triangle fill to hide the gap
-const junctionGeo = new THREE.BufferGeometry();
-const jv = new Float32Array([
-  -1.6, 0, -7,   // left
-   1.6, 0, -7,   // right
-  -5.5, 0, -16,  // far left
-   5.5, 0, -16,  // far right
+// ── SMOOTH V JUNCTION — custom geometry ───────────────────────────
+// Center strip → two arms, smooth continuous surface
+const vGeo = new THREE.BufferGeometry();
+const verts = new Float32Array([
+  // Center strip top edge (near camera)
+  -1.6, 0,  1,   //  0
+   1.6, 0,  1,   //  1
+  // Fork point
+  -1.6, 0, -7,   //  2
+   1.6, 0, -7,   //  3
+  // Left arm end
+  -14,  0, -32,  //  4
+  -8,   0, -32,  //  5
+  // Right arm end
+   8,   0, -32,  //  6
+   14,  0, -32,  //  7
 ]);
-const ji = new Uint16Array([0,2,1, 1,2,3]);
-junctionGeo.setAttribute('position', new THREE.BufferAttribute(jv,3));
-junctionGeo.setIndex(new THREE.BufferAttribute(ji,1));
-junctionGeo.computeVertexNormals();
-const junction = new THREE.Mesh(junctionGeo, centerDirtMat);
-junction.renderOrder = 2;
-scene.add(junction);
+const idx = new Uint16Array([
+  // Center strip
+  0,2,1,  1,2,3,
+  // Left arm — connects smoothly from 2,3 to 4,5
+  2,4,3,  3,4,5,
+  // Right arm — connects smoothly from 2,3 to 6,7
+  3,5,6,  // junction fill center
+  3,6,7,  // right outer
+]);
+vGeo.setAttribute('position', new THREE.BufferAttribute(verts,3));
+vGeo.setIndex(new THREE.BufferAttribute(idx,1));
+vGeo.computeVertexNormals();
+const vMesh = new THREE.Mesh(vGeo, centerDirtMat);
+vMesh.renderOrder = 2;
+scene.add(vMesh);
 
-// Left arm → red tree
-const leftFork = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 28), centerDirtMat);
-leftFork.rotation.x = -Math.PI/2;
-leftFork.rotation.z = Math.PI/6;
-leftFork.position.set(-9, 0.02, -21);
-leftFork.renderOrder = 2;
-scene.add(leftFork);
+// ── TREES ALONG FORK PATHS ────────────────────────────────────────
+// Left fork edge trees (inside of left path)
+const leftForkTrees = [
+  [-4, -10], [-5.5, -14], [-7, -18], [-8.5, -22], [-10, -26],
+  [-2.5, -10], [-3.5, -14], [-4.5, -18], [-6, -22], [-7.5, -26],
+];
+leftForkTrees.forEach(([x,z], i)=>{
+  trees.push(makeTree(x, z, 5+Math.random()*4, 0.9+Math.random()*0.6, i%2===0));
+});
 
-// Right arm → phone light
-const rightFork = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 28), centerDirtMat);
-rightFork.rotation.x = -Math.PI/2;
-rightFork.rotation.z = -Math.PI/6;
-rightFork.position.set(9, 0.02, -21);
-rightFork.renderOrder = 2;
-scene.add(rightFork);
+// Right fork edge trees
+const rightForkTrees = [
+  [4, -10], [5.5, -14], [7, -18], [8.5, -22], [10, -26],
+  [2.5, -10], [3.5, -14], [4.5, -18], [6, -22], [7.5, -26],
+];
+rightForkTrees.forEach(([x,z], i)=>{
+  trees.push(makeTree(x, z, 5+Math.random()*4, 0.9+Math.random()*0.6, i%2===0));
+});
 
 // Path edges — darker soil
 const edgeMat = new THREE.MeshStandardMaterial({color:0x120a04, roughness:1});
