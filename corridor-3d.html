@@ -582,11 +582,39 @@ function walkTo(i){
   document.getElementById('btnBack').disabled=i<=0;
   document.getElementById('btnFwd').disabled=i>=POSITIONS.length-1;
   POSITIONS.forEach((_,j)=>{const d=document.getElementById('wd'+j);if(d)d.className='walk-dot'+(j===i?' active':'');});
-  // Radio visible only at position 0
   const radio=document.getElementById('radio');
   if(radio) radio.classList.toggle('hidden', i!==0);
+  if(i===3) startKey7Watch(); else stopKey7Watch();
 }
-document.getElementById('btnFwd').onclick=()=>walkTo(cur+1);
+
+let key7Countdown=null;
+function startKey7Watch(){
+  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()||CC_KEYS.hasKey(7)) return;
+  if(CC_KEYS.keyCount()<6) return;
+  let secs=20;
+  const hint=document.getElementById('key7-hint');
+  if(hint){hint.style.opacity='1';hint.textContent='...';}
+  key7Countdown=setInterval(()=>{
+    secs--;
+    if(hint) hint.textContent=secs>0?secs+'s':'';
+    if(secs<=0){clearInterval(key7Countdown);key7Countdown=null;showDoor7();}
+  },1000);
+}
+function stopKey7Watch(){
+  if(key7Countdown){clearInterval(key7Countdown);key7Countdown=null;}
+  const hint=document.getElementById('key7-hint');
+  if(hint){hint.style.opacity='0';hint.textContent='';}
+}
+function showDoor7(){
+  const el=document.getElementById('door7');
+  if(el){el.style.opacity='1';el.style.pointerEvents='all';
+    document.getElementById('d7txt').style.animation='d7txt 3s ease-in-out infinite';
+    document.getElementById('d7shape').style.animation='d7glow 2.5s ease-in-out infinite';}
+}
+function hideDoor7(){
+  const el=document.getElementById('door7');
+  if(el){el.style.opacity='0';el.style.pointerEvents='none';}
+}
 document.getElementById('btnBack').onclick=()=>walkTo(cur-1);
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowUp'||e.key==='ArrowRight')walkTo(cur+1);
@@ -699,87 +727,10 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
 <script src="keys.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── KEY VII — Presence System (polling) ──────────────────────────
-const SUPA_URL7='https://iwfvlatywksvnnxymweb.supabase.co';
-const SUPA_KEY7='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 
-const SESSION_ID = Math.random().toString(36).substr(2,9)+Date.now().toString(36);
-let door7shown = false;
-let presenceInterval = null;
-
-// Ping — register presence
-async function pingPresence(){
-  await fetch(SUPA_URL7+'/rest/v1/corridor_presence', {
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'apikey':SUPA_KEY7,
-      'Authorization':'Bearer '+SUPA_KEY7,
-      'Prefer':'resolution=merge-duplicates,return=minimal'
-    },
-    body:JSON.stringify({session_id:SESSION_ID, last_seen: new Date().toISOString()})
-  }).catch(()=>{});
-}
-
-// Check — how many active sessions in last 15 seconds
-async function checkPresence(){
-  const since = new Date(Date.now()-15000).toISOString();
-  const res = await fetch(
-    SUPA_URL7+'/rest/v1/corridor_presence?last_seen=gte.'+since+'&select=session_id,last_seen',
-    {headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7}}
-  ).catch(()=>null);
-  if(!res) return;
-  const data = await res.json().catch(()=>[]);
-  if(!Array.isArray(data)) return;
-  const unique = new Set(data.map(r=>r.session_id));
-  unique.delete(SESSION_ID);
-  if(unique.size >= 1 && !door7shown) showDoor7();
-  else if(unique.size < 1 && door7shown) hideDoor7();
-}
-
-function showDoor7(){
-  door7shown = true;
-  const el = document.getElementById('door7');
-  if(el){
-    el.style.opacity='1';
-    el.style.pointerEvents='all';
-    document.getElementById('d7txt').style.animation='d7txt 3s ease-in-out infinite';
-    document.getElementById('d7shape').style.animation='d7glow 2.5s ease-in-out infinite';
-  }
-}
-function hideDoor7(){
-  door7shown = false;
-  const el = document.getElementById('door7');
-  if(el){
-    el.style.opacity='0';
-    el.style.pointerEvents='none';
-    document.getElementById('d7txt').style.animation='none';
-    document.getElementById('d7shape').style.animation='none';
-  }
-}
-
-async function initPresence(){
-  await pingPresence();
-  await checkPresence();
-  // Ping every 10s, check every 5s
-  setInterval(pingPresence, 10000);
-  presenceInterval = setInterval(checkPresence, 5000);
-}
-
-// Cleanup on leave
-async function cleanupPresence(){
-  await fetch(SUPA_URL7+'/rest/v1/corridor_presence?session_id=eq.'+SESSION_ID,{
-    method:'DELETE',
-    headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7},
-    keepalive:true
-  }).catch(()=>{});
-}
-window.addEventListener('pagehide', cleanupPresence);
-window.addEventListener('beforeunload', cleanupPresence);
-
-setTimeout(initPresence, 1500);
 </script>
 
+<div id="key7-hint" style="position:fixed;bottom:220px;left:50%;transform:translateX(-50%);z-index:30;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.7);letter-spacing:2px;opacity:0;transition:opacity 0.5s;pointer-events:none;"></div>
 <!-- Key VII — 7th door, invisible until two players present -->
 <!-- Key VII — 7th door + welcome screen -->
 <div id="door7" onclick="openWelcome()" style="
@@ -855,54 +806,138 @@ setTimeout(initPresence, 1500);
 @keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
 </style>
 
+<script src="keys.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-let selectedReward = null;
+// ── KEY VII — Realtime Broadcast Presence ────────────────────────
+const SUPA_URL7='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY7='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa7 = window.supabase.createClient(SUPA_URL7, SUPA_KEY7);
+const SESSION_ID = Math.random().toString(36).substr(2,9)+Date.now().toString(36);
+let door7shown = false;
+const presenceMap = new Map();
+
+const ch = supa7.channel('corridor-v2')
+  .on('broadcast',{event:'here'},(msg)=>{
+    presenceMap.set(msg.payload.sid, Date.now());
+    checkCount();
+  })
+  .on('broadcast',{event:'gone'},(msg)=>{
+    presenceMap.delete(msg.payload.sid);
+    checkCount();
+  })
+  .subscribe((status)=>{
+    if(status==='SUBSCRIBED'){
+      ch.send({type:'broadcast',event:'here',payload:{sid:SESSION_ID}});
+      setInterval(()=>{
+        // Cleanup stale (>20s)
+        const now=Date.now();
+        presenceMap.forEach((t,k)=>{ if(now-t>20000) presenceMap.delete(k); });
+        ch.send({type:'broadcast',event:'here',payload:{sid:SESSION_ID}});
+        checkCount();
+      },8000);
+    }
+  });
+
+function checkCount(){
+  const others = [...presenceMap.keys()].filter(k=>k!==SESSION_ID);
+  if(others.length>=1 && !door7shown) showDoor7();
+  else if(others.length<1 && door7shown) hideDoor7();
+}
+
+function showDoor7(){
+  door7shown=true;
+  const el=document.getElementById('door7');
+  if(el){el.style.opacity='1';el.style.pointerEvents='all';
+    document.getElementById('d7txt').style.animation='d7txt 3s ease-in-out infinite';
+    document.getElementById('d7shape').style.animation='d7glow 2.5s ease-in-out infinite';}
+}
+function hideDoor7(){
+  door7shown=false;
+  const el=document.getElementById('door7');
+  if(el){el.style.opacity='0';el.style.pointerEvents='none';
+    document.getElementById('d7txt').style.animation='none';
+    document.getElementById('d7shape').style.animation='none';}
+}
+
+window.addEventListener('pagehide',()=>ch.send({type:'broadcast',event:'gone',payload:{sid:SESSION_ID}}));
+window.addEventListener('beforeunload',()=>ch.send({type:'broadcast',event:'gone',payload:{sid:SESSION_ID}}));
+
+// Welcome screen functions
+let selectedReward=null;
 const SUPA_URL_W='https://iwfvlatywksvnnxymweb.supabase.co';
 const SUPA_KEY_W='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 
 function openWelcome(){
   if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
   const w=document.getElementById('welcome7');
-  w.style.display='flex';
-  setTimeout(()=>w.style.opacity='1',50);
+  w.style.display='flex';setTimeout(()=>w.style.opacity='1',50);
 }
-
 function selectReward(type){
-  selectedReward = type;
-  const titles={
-    room:'A room of your own — tell us a bit about yourself.',
-    tool:'A tool for your world — tell us what you need.',
-    next:'Join us to build the next game — introduce yourself.'
-  };
+  selectedReward=type;
+  const titles={room:'A room of your own — tell us about yourself.',tool:'A tool for your world — tell us what you need.',next:'Join us to build the next game — introduce yourself.'};
   document.querySelectorAll('.r-opt').forEach(b=>b.classList.remove('selected'));
   event.currentTarget.classList.add('selected');
-  document.getElementById('form-title').textContent = titles[type];
+  document.getElementById('form-title').textContent=titles[type];
   document.getElementById('reward-form').style.display='block';
   document.getElementById('reward-form').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
 async function submitReward(){
-  const name  = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const msg   = document.getElementById('f-msg').value.trim();
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const msg=document.getElementById('f-msg').value.trim();
   if(!name||!email) return;
-
   await fetch(SUPA_URL_W+'/rest/v1/idea_basket',{
     method:'POST',
     headers:{'Content-Type':'application/json','apikey':SUPA_KEY_W,'Authorization':'Bearer '+SUPA_KEY_W,'Prefer':'return=minimal'},
-    body:JSON.stringify({
-      name, email,
-      idea: '[KEY VII WINNER — '+selectedReward+'] '+msg,
-      why: 'Seventh door reward selection',
-      approved: false
-    })
+    body:JSON.stringify({name,email,idea:'[KEY VII — '+selectedReward+'] '+msg,why:'Seventh door reward',approved:false})
   }).catch(()=>{});
-
   document.getElementById('form-sent').style.display='block';
-  document.getElementById('f-name').disabled=true;
-  document.getElementById('f-email').disabled=true;
-  document.getElementById('f-msg').disabled=true;
+  ['f-name','f-email','f-msg'].forEach(id=>document.getElementById(id).disabled=true);
 }
 </script>
+
+<!-- Key VII Door -->
+<div id="door7" onclick="openWelcome()" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;text-align:center;cursor:pointer;width:180px;">
+  <div id="d7txt" style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;">a seventh door</div>
+  <div id="d7shape" style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));">
+    <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.8);box-shadow:0 0 8px rgba(200,168,74,0.6);"></div>
+    <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:4px;color:rgba(200,168,74,0.6);">VII</div>
+  </div>
+</div>
+
+<!-- Welcome Screen -->
+<div id="welcome7" style="position:fixed;inset:0;z-index:100;background:rgba(6,5,10,0.97);display:none;align-items:flex-start;justify-content:center;opacity:0;transition:opacity 0.8s;overflow-y:auto;">
+  <div style="max-width:560px;padding:80px 40px 60px;text-align:center;width:100%;">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:4px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:28px;">The Seventh Door</div>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);font-weight:300;color:#D2C3AF;line-height:1.2;margin-bottom:24px;">Welcome.</h1>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:#7A7068;line-height:1.9;margin-bottom:48px;">You explored this corridor like an explorer.<br>You collected the keys. You found the door.<br>You were not alone when it opened.<br><br>Now tell us what you want.</p>
+    <div id="reward-options" style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
+      <button onclick="selectReward('room')" class="r-opt"><div class="r-title">A room of your own</div>One month, free. Your own space in this corridor — a tool, a project, whatever fits. We'll help you build it.</button>
+      <button onclick="selectReward('tool')" class="r-opt"><div class="r-title">A tool, somewhere else</div>We help you build something for your own world — a calculator, a space, a system. Yours to keep.</button>
+      <button onclick="selectReward('next')" class="r-opt"><div class="r-title">Join us to build the next game</div>Your name will appear as one of the makers.</button>
+    </div>
+    <div id="reward-form" style="display:none;text-align:left;border:1px solid rgba(46,42,38,0.6);border-radius:10px;padding:28px;margin-bottom:32px;">
+      <div id="form-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.9);margin-bottom:20px;"></div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <input id="f-name" type="text" placeholder="Your name" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
+        <input id="f-email" type="email" placeholder="Your email" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
+        <textarea id="f-msg" placeholder="Anything you want to say..." rows="3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;resize:none;"></textarea>
+        <button onclick="submitReward()" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:12px 28px;border:1px solid rgba(200,168,74,0.5);color:#c8a84a;background:none;border-radius:100px;cursor:pointer;align-self:flex-start;">Send →</button>
+      </div>
+      <div id="form-sent" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-top:16px;">Received. We'll be in touch.</div>
+    </div>
+    <a href="corridor-3d.html" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(120,110,100,0.5);text-decoration:none;border:1px solid rgba(46,42,38,0.5);padding:8px 20px;border-radius:100px;display:inline-block;">← Back to the corridor</a>
+  </div>
+</div>
+
+<style>
+.r-opt{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;padding:18px 24px;border:1px solid rgba(160,128,96,0.25);color:#A08060;background:rgba(160,128,96,0.04);border-radius:8px;cursor:pointer;transition:all 0.25s;text-align:left;line-height:1.8;width:100%;}
+.r-opt:hover{border-color:rgba(200,168,74,0.5);background:rgba(200,168,74,0.06);}
+.r-opt.selected{border-color:rgba(200,168,74,0.7);background:rgba(200,168,74,0.08);}
+.r-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#D2C3AF;margin-bottom:4px;}
+@keyframes d7glow{0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.15);}50%{box-shadow:0 0 40px rgba(200,168,74,0.4);}}
+@keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
+</style>
 </body>
 </html>
