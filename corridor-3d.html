@@ -724,8 +724,6 @@ function setStation(idx,e){if(e)e.stopPropagation();document.getElementById('rad
 function stopRadio(e){if(e)e.stopPropagation();document.getElementById('radio-select').classList.remove('show');const a=document.getElementById('radio-audio');a.pause();a.src='';radioPlaying=false;currentStation=-1;document.getElementById('radio-dot').classList.remove('playing');document.getElementById('radio-name').textContent='Radio';document.querySelectorAll('.rs-opt').forEach(o=>o.classList.remove('active'));}
 document.addEventListener('click',e=>{if(document.getElementById('radio')&&!document.getElementById('radio').contains(e.target))document.getElementById('radio-select').classList.remove('show');});
 </script>
-<script src="keys.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 
 </script>
@@ -900,7 +898,7 @@ async function submitReward(){
 </script>
 
 <!-- Key VII Door -->
-<div id="door7" onclick="openWelcome()" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;text-align:center;cursor:pointer;width:180px;">
+<div id="door7" onclick="openWelcome()" style="position:fixed;bottom:0;right:40px;z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;text-align:center;cursor:pointer;width:100px;">
   <div id="d7txt" style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.5);text-transform:uppercase;margin-bottom:10px;">a seventh door</div>
   <div id="d7shape" style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.7);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.12),rgba(200,168,74,0.04));">
     <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.8);box-shadow:0 0 8px rgba(200,168,74,0.6);"></div>
