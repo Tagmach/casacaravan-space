@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Yıldız Gözlemevi — Casa Caravan Space</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@200;300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Jost',sans-serif;}
+#cv{display:block;width:100%;height:100%;cursor:grab;}
+#cv:active{cursor:grabbing;}
+
+#hdr{position:fixed;top:0;left:0;right:0;z-index:20;padding:14px 24px;display:flex;align-items:center;gap:10px;background:linear-gradient(to bottom,rgba(0,0,4,0.9),transparent);}
+#hdr-brand{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:3px;color:rgba(210,195,175,0.6);text-transform:uppercase;}
+#hdr-sep{color:rgba(74,68,56,0.5);font-size:10px;}
+#hdr-room{font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:2px;color:rgba(200,168,74,0.7);font-style:italic;}
+#hdr-back{margin-left:auto;font-size:8px;letter-spacing:2px;color:rgba(120,110,100,0.5);text-transform:uppercase;border:1px solid rgba(46,42,38,0.4);padding:5px 14px;border-radius:100px;background:none;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:none;transition:all 0.3s;}
+#hdr-back:hover{border-color:rgba(160,128,96,0.6);color:rgba(160,128,96,0.8);}
+
+#info{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;pointer-events:none;}
+#info-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;font-style:italic;color:rgba(210,195,175,0.95);letter-spacing:1px;min-height:26px;transition:opacity 0.4s;}
+#info-details{font-size:9px;letter-spacing:2px;color:rgba(160,140,100,0.6);text-transform:uppercase;margin-top:4px;min-height:16px;line-height:1.8;transition:opacity 0.4s;}
+#info-hint{font-size:8px;letter-spacing:2px;color:rgba(80,72,60,0.4);text-transform:uppercase;margin-top:10px;}
+
+#compass{position:fixed;top:60px;right:20px;z-index:20;font-size:8px;letter-spacing:2px;color:rgba(100,90,80,0.4);text-transform:uppercase;text-align:right;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div id="hdr">
+  <div id="hdr-brand">Casa Caravan Space</div>
+  <div id="hdr-sep">·</div>
+  <div id="hdr-room">Star Observatory</div>
+  <a href="garden.html" id="hdr-back">← Garden</a>
+</div>
+
+<canvas id="cv"></canvas>
+
+<div id="info">
+  <div id="info-name"></div>
+  <div id="info-details"></div>
+  <div id="info-hint">drag to explore · look up to see all</div>
+</div>
+
+<div id="compass">
+  <div id="cmp-az">N</div>
+  <div id="cmp-alt">90°</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="tracking.js"></script>
+<script>
+// ── SCENE ─────────────────────────────────────────────────────────
+const canvas = document.getElementById('cv');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setClearColor(0x000005);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0,0,0);
+
+function resize(){
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── STARS ─────────────────────────────────────────────────────────
+// Real bright stars: [ra_deg, dec_deg, magnitude, name, constellation, distance_ly]
+const NAMED_STARS = [
+  [101.29, 16.72, -1.46, 'Sirius',     'Canis Major',   8.6],
+  [213.92, 19.18, -0.05, 'Arcturus',   'Boötes',        36.7],
+  [279.23, 38.78,  0.03, 'Vega',       'Lyra',          25.0],
+  [88.79,   7.41,  0.18, 'Rigel',      'Orion',         860],
+  [297.70,  8.87,  0.77, 'Altair',     'Aquila',        16.7],
+  [68.98,  16.51,  0.87, 'Aldebaran',  'Taurus',        65.3],
+  [116.33, 28.03,  1.16, 'Pollux',     'Gemini',        33.9],
+  [344.41,-29.62,  1.17, 'Fomalhaut',  'Piscis Austrinus', 25.1],
+  [95.99, -52.70,  1.50, 'Canopus',    'Carina',        310],
+  [83.82,  -5.91,  1.70, 'Bellatrix',  'Orion',         250],
+  [85.19,  -1.20,  1.75, 'Alnilam',    'Orion',         1350],
+  [81.57,  -2.60,  1.68, 'Alnitak',    'Orion',         800],
+  [0,      89.26,  1.97, 'Polaris',    'Ursa Minor',    447],
+  [152.09, 11.97,  1.35, 'Regulus',    'Leo',           79.3],
+  [186.65,-63.10,  1.59, 'Mimosa',     'Crux',          280],
+  [114.83,  5.22,  0.40, 'Procyon',    'Canis Minor',   11.5],
+  [191.90,-59.69,  1.33, 'Acrux',      'Crux',          320],
+  [10.90,  56.54,  2.10, 'Mirfak',     'Perseus',       590],
+  [346.19, 15.21,  2.17, 'Markab',     'Pegasus',       140],
+  [24.43,  60.72,  2.27, 'Caph',       'Cassiopeia',    54.7],
+];
+
+function raDecToXYZ(ra_deg, dec_deg, r){
+  const ra  = ra_deg  * Math.PI / 180;
+  const dec = dec_deg * Math.PI / 180;
+  return new THREE.Vector3(
+    r * Math.cos(dec) * Math.cos(ra),
+    r * Math.sin(dec),
+    r * Math.cos(dec) * Math.sin(ra)
+  );
+}
+
+// Background stars — thousands
+const bgCount = 3500;
+const bgGeo = new THREE.BufferGeometry();
+const bgPos = new Float32Array(bgCount * 3);
+const bgCol = new Float32Array(bgCount * 3);
+const bgSiz = new Float32Array(bgCount);
+
+for(let i=0; i<bgCount; i++){
+  // Random sphere
+  const theta = Math.random() * Math.PI * 2;
+  const phi   = Math.acos(2*Math.random()-1);
+  const r = 500;
+  bgPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  bgPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+  bgPos[i*3+2] = r * Math.cos(phi);
+
+  // Color variation — white, blue-white, yellow-white
+  const t = Math.random();
+  if(t < 0.6){ bgCol[i*3]=1; bgCol[i*3+1]=1; bgCol[i*3+2]=1; }
+  else if(t < 0.8){ bgCol[i*3]=0.8; bgCol[i*3+1]=0.9; bgCol[i*3+2]=1; }
+  else{ bgCol[i*3]=1; bgCol[i*3+1]=0.95; bgCol[i*3+2]=0.7; }
+
+  bgSiz[i] = Math.random() < 0.05 ? 2.5 : Math.random() < 0.2 ? 1.8 : 1.0;
+}
+bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos,3));
+bgGeo.setAttribute('starColor', new THREE.BufferAttribute(bgCol,3));
+bgGeo.setAttribute('size',      new THREE.BufferAttribute(bgSiz,1));
+
+const bgMat = new THREE.ShaderMaterial({
+  uniforms:{ time:{value:0} },
+  vertexShader:`
+    attribute float size;
+    attribute vec3 starColor;
+    varying vec3 vColor;
+    uniform float time;
+    void main(){
+      vColor = starColor;
+      vec4 mv = modelViewMatrix * vec4(position,1.0);
+      gl_PointSize = size * (400.0 / -mv.z);
+      gl_Position = projectionMatrix * mv;
+    }
+  `,
+  fragmentShader:`
+    varying vec3 vColor;
+    varying float vSize;
+    void main(){
+      float d = length(gl_PointCoord - 0.5) * 2.0;
+      if(d > 1.0) discard;
+      float a = 1.0 - smoothstep(0.4, 1.0, d);
+      gl_FragColor = vec4(vColor, a * 0.85);
+    }
+  `,
+  transparent:true, depthWrite:false,
+});
+const bgStars = new THREE.Points(bgGeo, bgMat);
+scene.add(bgStars);
+
+// Named / bright stars
+const namedGeos = [];
+NAMED_STARS.forEach(([ra,dec,mag,name,constellation,dist]) => {
+  const pos = raDecToXYZ(ra, dec, 490);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([pos.x,pos.y,pos.z]),3));
+  const brightness = Math.max(0.4, 1.2 - mag*0.3);
+  const size = Math.max(3, 6 - mag*1.5);
+  const m = new THREE.PointsMaterial({
+    color: mag < 0.5 ? 0xaaddff : 0xfff5e0,
+    size, sizeAttenuation:false, transparent:true, opacity: brightness
+  });
+  const p = new THREE.Points(g, m);
+  p.userData = {name, pos, mag, constellation, dist};
+  scene.add(p);
+  namedGeos.push(p);
+});
+
+// Milky Way — diffuse band
+const mwCount = 2000;
+const mwGeo = new THREE.BufferGeometry();
+const mwPos = new Float32Array(mwCount*3);
+for(let i=0;i<mwCount;i++){
+  const l = Math.random()*360 * Math.PI/180;
+  const b = (Math.random()-0.5)*20 * Math.PI/180;
+  const r = 495;
+  mwPos[i*3]   = r*Math.cos(b)*Math.cos(l);
+  mwPos[i*3+1] = r*Math.sin(b);
+  mwPos[i*3+2] = r*Math.cos(b)*Math.sin(l);
+}
+mwGeo.setAttribute('position', new THREE.BufferAttribute(mwPos,3));
+const mwMat = new THREE.PointsMaterial({color:0x8899bb, size:1.2, sizeAttenuation:false, transparent:true, opacity:0.18});
+scene.add(new THREE.Points(mwGeo, mwMat));
+
+// ── LOOK CONTROL ──────────────────────────────────────────────────
+let lon = 0, lat = 30; // starting direction
+let targetLon = 0, targetLat = 30;
+let isDragging = false;
+let lastX = 0, lastY = 0;
+let lastTouch = null;
+
+canvas.addEventListener('mousedown', e=>{isDragging=true;lastX=e.clientX;lastY=e.clientY;});
+window.addEventListener('mouseup',   ()=>{isDragging=false;});
+window.addEventListener('mousemove', e=>{
+  if(!isDragging) return;
+  targetLon -= (e.clientX-lastX)*0.15;
+  targetLat += (e.clientY-lastY)*0.15;
+  targetLat = Math.max(-89, Math.min(89, targetLat));
+  lastX=e.clientX; lastY=e.clientY;
+});
+
+canvas.addEventListener('touchstart', e=>{e.preventDefault();lastTouch=e.touches[0];},{passive:false});
+canvas.addEventListener('touchmove',  e=>{
+  e.preventDefault();
+  if(!lastTouch) return;
+  const t=e.touches[0];
+  targetLon -= (t.clientX-lastTouch.clientX)*0.18;
+  targetLat += (t.clientY-lastTouch.clientY)*0.18;
+  targetLat = Math.max(-89, Math.min(89, targetLat));
+  lastTouch=t;
+},{passive:false});
+canvas.addEventListener('touchend', ()=>{lastTouch=null;});
+
+// ── STAR HOVER / LABEL ────────────────────────────────────────────
+const raycaster = new THREE.Raycaster();
+raycaster.params.Points.threshold = 8;
+let labelTimeout;
+
+function checkStarHover(){
+  const center = new THREE.Vector2(0,0);
+  raycaster.setFromCamera(center, camera);
+  const hits = raycaster.intersectObjects(namedGeos);
+  const nameEl = document.getElementById('info-name');
+  const detEl  = document.getElementById('info-details');
+  if(hits.length){
+    const star = hits[0].object.userData;
+    nameEl.textContent = star.name;
+    nameEl.style.opacity = '1';
+    const dist = star.dist < 100 ? star.dist.toFixed(1) + ' ly' : Math.round(star.dist) + ' ly';
+    detEl.textContent = star.constellation + '  ·  mag ' + star.mag.toFixed(2) + '  ·  ' + dist;
+    detEl.style.opacity = '1';
+  } else {
+    nameEl.style.opacity = '0';
+    nameEl.textContent = '';
+    detEl.style.opacity = '0';
+    detEl.textContent = '';
+  }
+}
+
+// ── COMPASS ───────────────────────────────────────────────────────
+const DIRS = ['N','NE','E','SE','S','SW','W','NW','N'];
+function updateCompass(){
+  const az = ((lon % 360) + 360) % 360;
+  const dir = DIRS[Math.round(az/45) % 8];
+  document.getElementById('cmp-az').textContent = dir;
+  document.getElementById('cmp-alt').textContent = Math.round(lat)+'°';
+}
+
+// ── ANIMATE ───────────────────────────────────────────────────────
+let t = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  t += 0.01;
+
+  // Smooth follow
+  lon += (targetLon - lon) * 0.08;
+  lat += (targetLat - lat) * 0.08;
+
+  // Camera look direction
+  const phi   = (90 - lat) * Math.PI/180;
+  const theta = lon * Math.PI/180;
+  camera.lookAt(
+    Math.sin(phi)*Math.cos(theta),
+    Math.cos(phi),
+    Math.sin(phi)*Math.sin(theta)
+  );
+
+  // Star twinkle
+  bgMat.uniforms.time.value = t;
+
+  checkStarHover();
+  updateCompass();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>

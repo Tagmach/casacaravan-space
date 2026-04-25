@@ -809,9 +809,9 @@ html, body {
 </div>
 
 <!-- Corner activities -->
-<div class="garden-spot" style="bottom:22%;left:6%;animation-delay:1.6s" onclick="spotClick('Sit & Breathe')">
-  <div class="spot-ring"><div class="spot-icon">~</div></div>
-  <div class="spot-label">Sit & Breathe<span class="spot-soon">coming soon</span></div>
+<div class="garden-spot" style="bottom:22%;left:6%;animation-delay:1.6s" onclick="spotClick('Observatory')">
+  <div class="spot-ring"><div class="spot-icon">✦</div></div>
+  <div class="spot-label">Star Observatory</div>
 </div>
 
 <!-- Forest path -->
@@ -1091,6 +1091,10 @@ document.addEventListener('keydown', e => {
 function spotClick(name) {
   if (name === 'The Forest') {
     window.location.href = 'forest.html';
+    return;
+  }
+  if (name === 'Observatory') {
+    window.location.href = 'observatory.html';
     return;
   }
   showHint(name + ' — coming soon.');
