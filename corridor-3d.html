@@ -721,18 +721,20 @@ async function pingPresence(){
   }).catch(()=>{});
 }
 
-// Check — how many active sessions in last 30 seconds
+// Check — how many active sessions in last 15 seconds
 async function checkPresence(){
-  const since = new Date(Date.now()-30000).toISOString();
+  const since = new Date(Date.now()-15000).toISOString();
   const res = await fetch(
-    SUPA_URL7+'/rest/v1/corridor_presence?last_seen=gte.'+since+'&select=session_id',
+    SUPA_URL7+'/rest/v1/corridor_presence?last_seen=gte.'+encodeURIComponent(since)+'&select=session_id',
     {headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7}}
   ).catch(()=>null);
   if(!res) return;
   const data = await res.json().catch(()=>[]);
-  const unique = new Set(data.map(r=>r.session_id));
-  if(unique.size >= 2 && !door7shown) showDoor7();
-  else if(unique.size < 2 && door7shown) hideDoor7();
+  const unique = new Set((Array.isArray(data)?data:[]).map(r=>r.session_id));
+  // Remove own session from count to check if others are present
+  unique.delete(SESSION_ID);
+  if(unique.size >= 1 && !door7shown) showDoor7();
+  else if(unique.size < 1 && door7shown) hideDoor7();
 }
 
 function showDoor7(){
@@ -765,14 +767,15 @@ async function initPresence(){
 }
 
 // Cleanup on leave
-window.addEventListener('pagehide', async ()=>{
-  if(presenceInterval) clearInterval(presenceInterval);
-  // Delete own session
+async function cleanupPresence(){
   await fetch(SUPA_URL7+'/rest/v1/corridor_presence?session_id=eq.'+SESSION_ID,{
     method:'DELETE',
-    headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7}
+    headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7},
+    keepalive:true
   }).catch(()=>{});
-});
+}
+window.addEventListener('pagehide', cleanupPresence);
+window.addEventListener('beforeunload', cleanupPresence);
 
 setTimeout(initPresence, 1500);
 </script>
