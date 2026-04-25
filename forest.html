@@ -29,6 +29,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 #btn{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:10;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:10px 28px;background:none;border:1px solid rgba(74,122,26,0);color:rgba(74,122,26,0);border-radius:100px;cursor:pointer;transition:all 0.4s;animation:fb 1.5s ease forwards 7s;}
 @keyframes fb{to{color:rgba(116,176,40,0.5);border-color:rgba(74,122,26,0.35);}}
 #btn:hover{border-color:rgba(122,176,60,0.7)!important;color:rgba(160,220,80,0.85)!important;}
+
+/* Path choice */
+#path-choice{position:fixed;bottom:80px;left:0;right:0;z-index:10;display:flex;justify-content:space-between;padding:0 12%;opacity:0;animation:fp 1.5s ease forwards 8s;}
+@keyframes fp{to{opacity:1;}}
+.path-btn{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;font-style:italic;color:rgba(160,140,100,0.6);background:none;border:none;cursor:pointer;transition:all 0.4s;padding:8px 16px;letter-spacing:1px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.path-btn:hover{color:rgba(210,195,175,0.95);}
+.path-btn.dim{color:rgba(80,70,60,0)!important;pointer-events:none;}
+.path-arr{font-size:22px;opacity:0.5;transition:opacity 0.3s;}
+.path-btn:hover .path-arr{opacity:1;}
+
+/* Phone light overlay */
+#phone-light{position:fixed;inset:0;z-index:5;pointer-events:none;
+  background:radial-gradient(ellipse 18% 35% at 50% 60%, rgba(255,255,240,0.12) 0%, rgba(0,0,0,0) 100%);
+  opacity:0;transition:opacity 1.5s;}
+#phone-light.on{opacity:1;}
+
+/* Red tree indicator */
+#red-path-hint{position:fixed;right:20%;bottom:120px;z-index:10;font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:rgba(180,60,40,0.4);opacity:0;transition:opacity 1s;letter-spacing:1px;pointer-events:none;}
+
+/* Key VI overlay firefly */
+#key6-ff{position:fixed;z-index:50;width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 24px rgba(200,168,74,0.6);cursor:pointer;animation:k6b 2s ease-in-out infinite;top:52%;left:48%;display:none;transform:translate(-50%,-50%);}
+@keyframes k6b{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
 </style>
 </head>
 <body>
@@ -39,6 +62,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 </div>
 <div id="words">Turn off the light.<br>Wait.<br>Your sight will return.</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<div id="path-choice">
+  <button class="path-btn" onclick="choosePath('red')"><span class="path-arr">↙</span>deeper in</button>
+  <button class="path-btn" onclick="choosePath('phone')"><span class="path-arr">↘</span>turn on your flashlight</button>
+</div>
+<div id="phone-light"></div>
+<div id="red-path-hint">something red, far right</div>
+<div id="key6-ff" onclick="takeKey6()" title="✦"></div>
+
 <button id="btn" onclick="history.back()">Not yet. Back to the garden.</button>
 <button id="sound-btn" onclick="toggleCricket()">♪ crickets</button>
 
@@ -101,6 +133,8 @@ const ground = new THREE.Mesh(
 ground.rotation.x = -Math.PI/2;
 ground.position.set(0, 0, -20);
 scene.add(ground);
+
+// ── FORK PATHS ───────────────────────────────────────────────────
 
 // ── TREE BUILDER ─────────────────────────────────────────────────
 function makeTree(x, z, h, r, dark){
@@ -212,61 +246,107 @@ function makeBush(x, z, scale){
 // ── POPULATE FOREST ───────────────────────────────────────────────
 const trees = [];
 
-// Far background — small, many
+// Far background — small, many (outside fork zones)
 for(let i=0; i<22; i++){
   const angle = (i/22)*Math.PI*2;
   const dist  = 18 + Math.random()*12;
   const x     = Math.cos(angle)*dist*(0.8+Math.random()*0.4);
   const z     = -8 + Math.sin(angle)*dist*0.5 - Math.random()*8;
-  if(Math.abs(x)<2.5 && z>-14) continue; // keep path clear
+  if(Math.abs(x)<2.5 && z>-10) continue; // center path clear
+  if(x<-3 && x>-14 && z<-8 && z>-34) continue; // left fork CLEAR
+  if(x>3 && x<14 && z<-8 && z>-34) continue;   // right fork CLEAR
   trees.push(makeTree(x, z, 3+Math.random()*3, 0.7+Math.random()*0.5, true));
 }
 
-// Mid distance
-for(let i=0; i<16; i++){
-  const side  = i<8 ? -1 : 1;
-  const x     = side*(2.2+Math.random()*4);
-  const z     = -(4 + i%8 * 2.2 + Math.random()*1.5);
-  trees.push(makeTree(x, z, 5+Math.random()*4, 1+Math.random()*0.8, false));
+// Mid distance — only between fork paths (center divider x:-3 to +3, z<-10)
+for(let i=0; i<12; i++){
+  const x = (Math.random()-0.5)*4;   // x: -2 to +2, center divider
+  const z = -(10 + Math.random()*18);
+  trees.push(makeTree(x, z, 4+Math.random()*3, 0.8+Math.random()*0.6, false));
 }
 
-// Near — large trees flanking path
-const nearLeft  = [-2.8, -3.5, -4.2, -3.0, -4.8];
-const nearRight = [ 2.8,  3.5,  4.2,  3.0,  4.8];
+// Near — large trees flanking center path only (before fork)
+const nearLeft  = [-2.8, -3.5, -4.2];
+const nearRight = [ 2.8,  3.5,  4.2];
 nearLeft.forEach((x,i)=>{
-  trees.push(makeTree(x, -(1.5+i*3.2), 7+i*0.8, 1.4+i*0.15, false));
+  trees.push(makeTree(x, -(1.5+i*2.5), 7+i*0.8, 1.4+i*0.15, false));
 });
 nearRight.forEach((x,i)=>{
-  trees.push(makeTree(x, -(1.5+i*3.2), 7+i*0.8, 1.4+i*0.15, false));
+  trees.push(makeTree(x, -(1.5+i*2.5), 7+i*0.8, 1.4+i*0.15, false));
 });
 
-// ── UNDERGROWTH — bushes at tree bases and between ──────────────
-// At base of near trees
+// Dense center divider trees between the two fork arms
+for(let i=0; i<10; i++){
+  const x = (Math.random()-0.5)*3.5;
+  const z = -(9 + i*2.2 + Math.random()*1.5);
+  trees.push(makeTree(x, z, 5+Math.random()*4, 1+Math.random()*0.7, false));
+}
+
+// ── UNDERGROWTH ──────────────────────────────────────────────────
 nearLeft.forEach((x,i)=>{
-  for(let b=0;b<3;b++) makeBush(x+(Math.random()-0.5)*1.5, -(0.5+i*3.2+Math.random()*2), 0.4+Math.random()*0.5);
+  for(let b=0;b<3;b++) makeBush(x+(Math.random()-0.5)*1.2, -(0.5+i*2.5+Math.random()*1.5), 0.4+Math.random()*0.5);
 });
 nearRight.forEach((x,i)=>{
-  for(let b=0;b<3;b++) makeBush(x+(Math.random()-0.5)*1.5, -(0.5+i*3.2+Math.random()*2), 0.4+Math.random()*0.5);
+  for(let b=0;b<3;b++) makeBush(x+(Math.random()-0.5)*1.2, -(0.5+i*2.5+Math.random()*1.5), 0.4+Math.random()*0.5);
 });
-// Mid forest floor bushes
-for(let i=0;i<28;i++){
-  const side=(Math.random()>.5?1:-1);
-  const bx=side*(1.8+Math.random()*5);
-  const bz=-(1+Math.random()*26);
-  makeBush(bx, bz, 0.3+Math.random()*0.7);
+// Center divider bushes
+for(let i=0;i<16;i++){
+  const bx=(Math.random()-0.5)*3;
+  const bz=-(9+Math.random()*20);
+  makeBush(bx, bz, 0.3+Math.random()*0.6);
 }
-// Deep background scattered
+// Deep background
 for(let i=0;i<14;i++){
-  makeBush((Math.random()-0.5)*16, -(12+Math.random()*18), 0.25+Math.random()*0.4);
+  const bx=(Math.random()-0.5)*30;
+  const bz=-(20+Math.random()*14);
+  // Skip fork paths
+  if(bx<-3&&bx>-14&&bz>-34) continue;
+  if(bx>3&&bx<14&&bz>-34) continue;
+  makeBush(bx, bz, 0.25+Math.random()*0.4);
 }
 
 // Path floor — slightly lighter strip
 // Path — layered earth tones
-const pathMat = new THREE.MeshStandardMaterial({color:0x1a0e06, roughness:0.95});
-const path = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 60), pathMat);
+const centerDirtMat = new THREE.MeshStandardMaterial({color:0x1a0e06, roughness:0.95, depthWrite:true});
+
+// Center path — stops at fork
+const path = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 14), centerDirtMat);
 path.rotation.x = -Math.PI/2;
-path.position.set(0, 0.01, -20);
+path.position.set(0, 0.02, -3);
+path.renderOrder = 2;
 scene.add(path);
+
+// Fork junction — wide triangle fill to hide the gap
+const junctionGeo = new THREE.BufferGeometry();
+const jv = new Float32Array([
+  -1.6, 0, -7,   // left
+   1.6, 0, -7,   // right
+  -5.5, 0, -16,  // far left
+   5.5, 0, -16,  // far right
+]);
+const ji = new Uint16Array([0,2,1, 1,2,3]);
+junctionGeo.setAttribute('position', new THREE.BufferAttribute(jv,3));
+junctionGeo.setIndex(new THREE.BufferAttribute(ji,1));
+junctionGeo.computeVertexNormals();
+const junction = new THREE.Mesh(junctionGeo, centerDirtMat);
+junction.renderOrder = 2;
+scene.add(junction);
+
+// Left arm → red tree
+const leftFork = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 28), centerDirtMat);
+leftFork.rotation.x = -Math.PI/2;
+leftFork.rotation.z = Math.PI/6;
+leftFork.position.set(-9, 0.02, -21);
+leftFork.renderOrder = 2;
+scene.add(leftFork);
+
+// Right arm → phone light
+const rightFork = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 28), centerDirtMat);
+rightFork.rotation.x = -Math.PI/2;
+rightFork.rotation.z = -Math.PI/6;
+rightFork.position.set(9, 0.02, -21);
+rightFork.renderOrder = 2;
+scene.add(rightFork);
 
 // Path edges — darker soil
 const edgeMat = new THREE.MeshStandardMaterial({color:0x120a04, roughness:1});
@@ -333,13 +413,27 @@ function animate(){
   const dt = clock.getDelta();
   camT += dt;
 
-  // Very slow forward drift — 1 unit per ~20s, then pause
-  const drift = Math.min(camT * 0.04, 0.8);
-  camera.position.z = -drift;
-  // Subtle sway
-  camera.position.x = Math.sin(camT*0.18)*0.04;
-  camera.position.y = 1.7 + Math.sin(camT*0.12)*0.015;
-  camera.lookAt(Math.sin(camT*0.08)*0.08, 1.6, -12);
+  // Walk forward
+  const targetZ = currentPath === 'center' ? Math.min(camT * 0.6, 5) : 
+                  currentPath === 'phone' ? Math.min(5 + (camT - pathStartT) * 1.0, 20) :
+                  Math.min(5 + (camT - pathStartT) * 1.2, 21); // z=-21, ağacın önünde dur
+  camera.position.z = -targetZ;
+
+  if(currentPath === 'center'){
+    camera.position.x = Math.sin(camT*0.18)*0.06;
+    camera.position.y = 1.7 + Math.sin(camT*0.12)*0.02;
+    camera.lookAt(0, 1.6, -12);
+  } else if(currentPath === 'red'){
+    // Kırmızı ağaç x:-10, z:-24 — direkt bak, X'e de doğru ilerle
+    camera.position.x += (camTargetX - camera.position.x)*0.02;
+    camera.position.y = 1.7 + Math.sin(camT*0.08)*0.01;
+    camera.lookAt(-10, 2.5, -24); // ağacın gövdesine bak
+  } else {
+    // Phone path — sağa git
+    camera.position.x += (camTargetX - camera.position.x)*0.025;
+    camera.position.y = 1.7 + Math.sin(camT*0.12)*0.015;
+    camera.lookAt(camera.position.x + 2, 1.6, camera.position.z - 8);
+  }
 
   // Firefly movement
   const pos = ffGeo.attributes.position.array;
@@ -359,9 +453,93 @@ function animate(){
 
   // Deep glow pulse
   deepGlow.intensity = 1.8 + Math.sin(camT*0.4)*0.7;
+  // Red tree glow pulse
+  if(redPathActive) redGlow.intensity = 1.5 + Math.sin(camT*0.6)*0.8;
+  // Old camera path targeting removed — handled above
 
   renderer.render(scene, camera);
 }
+
+
+// ── RED TREE (right path) ─────────────────────────────────────────
+const redTrunkMat = new THREE.MeshStandardMaterial({color:0x3a1a08, roughness:0.95}); // koyu kahve
+const redCanopyMat = new THREE.MeshStandardMaterial({color:0xb02010, roughness:0.8, emissive:0x3a0808, emissiveIntensity:0.3});
+const redTree = new THREE.Group();
+// Kalın gövde — top:0.35, base:0.55
+const redTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.55, 10, 8), redTrunkMat);
+redTrunk.position.y = 5;
+redTree.add(redTrunk);
+// Dallar — y:4'ten başlıyor (aşağıya indirildi)
+for(let i=0;i<9;i++){
+  const blob = new THREE.Mesh(new THREE.SphereGeometry(1.1+Math.random()*0.7,5,4), redCanopyMat);
+  blob.scale.set(1.4+Math.random()*0.8, 0.55+Math.random()*0.4, 1.4+Math.random()*0.8);
+  blob.position.set((Math.random()-0.5)*3, 4+Math.random()*4, (Math.random()-0.5)*2.5);
+  redTree.add(blob);
+}
+redTree.position.set(-10, 0, -24);
+scene.add(redTree);
+
+// Red tree glow
+const redGlow = new THREE.PointLight(0x8a1a0a, 0, 8);
+redGlow.position.set(-10, 5, -24);
+scene.add(redGlow);
+
+// ── MAYA RUINS — sadece taş bloklar, duvar yok ───────────────────
+const stoneMat = new THREE.MeshStandardMaterial({color:0x2a2218, roughness:1});
+// Fallen column
+const col = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.2,2.2,6), stoneMat);
+col.rotation.z = Math.PI/2.2;
+col.position.set(-9.5, 0.18, -27);
+scene.add(col);
+// Stone blocks scattered
+[[-9.5,0.2,-28],[-12,0.15,-25.5],[-9,0.2,-26],[-11.5,0.2,-27.5]].forEach(([x,y,z])=>{
+  const b = new THREE.Mesh(new THREE.BoxGeometry(0.5+Math.random()*0.4,0.25+Math.random()*0.2,0.4+Math.random()*0.3), stoneMat);
+  b.position.set(x,y,z);
+  b.rotation.y = Math.random()*Math.PI;
+  scene.add(b);
+});
+
+// ── PATH SYSTEM ───────────────────────────────────────────────────
+let currentPath = 'center';
+let camTargetX = 0;
+let phoneLightOn = false;
+let redPathActive = false;
+let pathStartT = 0;
+
+function choosePath(path){
+  currentPath = path;
+  pathStartT = camT;
+  if(path === 'phone'){
+    phoneLightOn = true;
+    document.getElementById('phone-light').classList.add('on');
+    document.getElementById('path-choice').style.opacity='0';
+    document.getElementById('path-choice').style.pointerEvents='none';
+    camTargetX = 7;  // phone = sağ
+  } else if(path === 'red'){
+    redPathActive = true;
+    document.getElementById('path-choice').style.opacity='0';
+    document.getElementById('path-choice').style.pointerEvents='none';
+    document.getElementById('red-path-hint').style.opacity='1';
+    camTargetX = -9;  // red tree = sol x:-10
+    setTimeout(checkKey6, 3000);
+  }
+}
+
+function checkKey6(){
+  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()) return;
+  if(CC_KEYS.hasKey(6)) return;
+  if(CC_KEYS.keyCount()>=5){
+    document.getElementById('key6-ff').style.display='block';
+  }
+}
+
+function takeKey6(){
+  CC_KEYS.award(6);
+  document.getElementById('key6-ff').style.display='none';
+}
+
+// Override animate to include path camera
+const _origAnimate = animate;
 
 animate();
 
@@ -385,5 +563,7 @@ function toggleCricket(){
   else { cricket.play(); cricketOn=true; btn.classList.remove('muted'); btn.textContent='♪ crickets'; }
 }
 </script>
+<script src="keys.js"></script>
+<script src="tracking.js"></script>
 </body>
 </html>
