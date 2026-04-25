@@ -587,34 +587,6 @@ function walkTo(i){
   if(i===3) startKey7Watch(); else stopKey7Watch();
 }
 
-let key7Countdown=null;
-function startKey7Watch(){
-  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()||CC_KEYS.hasKey(7)) return;
-  if(CC_KEYS.keyCount()<6) return;
-  let secs=20;
-  const hint=document.getElementById('key7-hint');
-  if(hint){hint.style.opacity='1';hint.textContent='...';}
-  key7Countdown=setInterval(()=>{
-    secs--;
-    if(hint) hint.textContent=secs>0?secs+'s':'';
-    if(secs<=0){clearInterval(key7Countdown);key7Countdown=null;showDoor7();}
-  },1000);
-}
-function stopKey7Watch(){
-  if(key7Countdown){clearInterval(key7Countdown);key7Countdown=null;}
-  const hint=document.getElementById('key7-hint');
-  if(hint){hint.style.opacity='0';hint.textContent='';}
-}
-function showDoor7(){
-  const el=document.getElementById('door7');
-  if(el){el.style.opacity='1';el.style.pointerEvents='all';
-    document.getElementById('d7txt').style.animation='d7txt 3s ease-in-out infinite';
-    document.getElementById('d7shape').style.animation='d7glow 2.5s ease-in-out infinite';}
-}
-function hideDoor7(){
-  const el=document.getElementById('door7');
-  if(el){el.style.opacity='0';el.style.pointerEvents='none';}
-}
 document.getElementById('btnBack').onclick=()=>walkTo(cur-1);
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowUp'||e.key==='ArrowRight')walkTo(cur+1);
