@@ -253,8 +253,8 @@ for(let i=0; i<22; i++){
   const x     = Math.cos(angle)*dist*(0.8+Math.random()*0.4);
   const z     = -8 + Math.sin(angle)*dist*0.5 - Math.random()*8;
   if(Math.abs(x)<2.5 && z>-10) continue; // center path clear
-  if(x<-3 && x>-14 && z<-8 && z>-34) continue; // left fork CLEAR
-  if(x>3 && x<14 && z<-8 && z>-34) continue;   // right fork CLEAR
+  if(x<-1 && x>-16 && z<-7 && z>-34) continue; // left fork CLEAR
+  if(x>1 && x<16 && z<-7 && z>-34) continue;   // right fork CLEAR
   trees.push(makeTree(x, z, 3+Math.random()*3, 0.7+Math.random()*0.5, true));
 }
 
@@ -300,116 +300,98 @@ for(let i=0;i<14;i++){
   const bx=(Math.random()-0.5)*30;
   const bz=-(20+Math.random()*14);
   // Skip fork paths
-  if(bx<-3&&bx>-14&&bz>-34) continue;
-  if(bx>3&&bx<14&&bz>-34) continue;
+  if(bx<-1&&bx>-16&&bz>-34) continue;
+  if(bx>1&&bx<16&&bz>-34) continue;
   makeBush(bx, bz, 0.25+Math.random()*0.4);
 }
 
 // Path floor — slightly lighter strip
 // Path — layered earth tones
-const centerDirtMat = new THREE.MeshStandardMaterial({color:0x1a0e06, roughness:0.95, depthWrite:true});
 
-// ── PATH SYSTEM ───────────────────────────────────────────────────
-const dirtMat = new THREE.MeshStandardMaterial({color:0x1a0e06, roughness:0.95, depthWrite:true});
+// ── S-CURVE FORK PATHS ───────────────────────────────────────────
+const dirtMat = new THREE.MeshStandardMaterial({color:0x1a0e06, roughness:0.95, depthWrite:true, side:THREE.DoubleSide});
 
-// Center path
-const centerPath = new THREE.Mesh(new THREE.PlaneGeometry(3.0, 14), dirtMat);
+// Center path — approaches fork
+const centerPath = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 12), dirtMat);
 centerPath.rotation.x = -Math.PI/2;
-centerPath.position.set(0, 0.02, -3);
+centerPath.position.set(0, 0.02, -2);
 centerPath.renderOrder = 2;
 scene.add(centerPath);
 
-// Smooth V junction — single continuous geometry
-// Path widens from center (w=1.5) at z=-7 and curves into two arms
-const segments = 12;
-const positions = [];
-const indices = [];
-
-function pathPoint(t) {
-  // t: 0=near(z=-7), 1=far(z=-30)
-  const z = -7 - t * 23;
-  const spread = t * t * 11; // quadratic spread for smooth curve
-  const hw = 1.5 + t * 0.3; // path half-width stays consistent
-  return {
-    lOuter: [-spread - hw, 0, z],
-    lInner: [-spread + hw, 0, z],
-    rInner: [ spread - hw, 0, z],
-    rOuter: [ spread + hw, 0, z],
-  };
-}
-
-// Build left fork geometry
-const leftVerts = [];
-const leftIdx = [];
-for(let i = 0; i <= segments; i++){
-  const t = i / segments;
-  const p = pathPoint(t);
-  leftVerts.push(...p.lOuter, ...p.lInner);
-  if(i < segments){
-    const base = i * 2;
-    leftIdx.push(base, base+2, base+1, base+1, base+2, base+3);
+// Helper: build a tube-like flat path from a CatmullRom curve
+function makeCurvedPath(points, width, mat){
+  const curve = new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+  const N = 30;
+  const verts = [];
+  const idx = [];
+  for(let i=0;i<=N;i++){
+    const t = i/N;
+    const pt = curve.getPoint(t);
+    const tang = curve.getTangent(t);
+    // Perpendicular in XZ plane
+    const perp = new THREE.Vector3(-tang.z, 0, tang.x).normalize();
+    const l = pt.clone().addScaledVector(perp,  width/2);
+    const r = pt.clone().addScaledVector(perp, -width/2);
+    verts.push(l.x, 0.02, l.z, r.x, 0.02, r.z);
+    if(i<N){
+      const b=i*2;
+      idx.push(b,b+2,b+1, b+1,b+2,b+3);
+    }
   }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(verts),3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.renderOrder = 2;
+  return mesh;
 }
-const leftGeo = new THREE.BufferGeometry();
-leftGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(leftVerts), 3));
-leftGeo.setIndex(leftIdx);
-leftGeo.computeVertexNormals();
-const leftArm = new THREE.Mesh(leftGeo, dirtMat);
-leftArm.renderOrder = 2;
-scene.add(leftArm);
 
-// Build right fork geometry
-const rightVerts = [];
-const rightIdx = [];
-for(let i = 0; i <= segments; i++){
-  const t = i / segments;
-  const p = pathPoint(t);
-  rightVerts.push(...p.rInner, ...p.rOuter);
-  if(i < segments){
-    const base = i * 2;
-    rightIdx.push(base, base+2, base+1, base+1, base+2, base+3);
-  }
-}
-const rightGeo = new THREE.BufferGeometry();
-rightGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(rightVerts), 3));
-rightGeo.setIndex(rightIdx);
-rightGeo.computeVertexNormals();
-const rightArm = new THREE.Mesh(rightGeo, dirtMat);
-rightArm.renderOrder = 2;
-scene.add(rightArm);
+// Left fork — S curve: starts center, curves left smoothly
+const leftPath = makeCurvedPath([
+  [0,    0, -7],   // fork start
+  [-1.5, 0, -11],  // begin curving left
+  [-4,   0, -16],  // mid curve
+  [-7,   0, -21],  // straightening
+  [-10,  0, -26],  // end
+  [-10,  0, -32],
+], 2.6, dirtMat);
+scene.add(leftPath);
+
+// Right fork — S curve: starts center, curves right smoothly  
+const rightPath = makeCurvedPath([
+  [0,   0, -7],    // fork start
+  [1.5, 0, -11],   // begin curving right
+  [4,   0, -16],   // mid curve
+  [7,   0, -21],   // straightening
+  [10,  0, -26],   // end
+  [10,  0, -32],
+], 2.6, dirtMat);
+scene.add(rightPath);
 
 // ── TREES ALONG FORK SIDES ────────────────────────────────────────
-// Left fork — trees on LEFT side of left path
-for(let i = 0; i < 8; i++){
-  const t = 0.1 + i * 0.12;
-  const p = pathPoint(t);
-  const x = p.lOuter[0] - 1.5 - Math.random();
-  const z = p.lOuter[2] + (Math.random()-0.5)*2;
-  trees.push(makeTree(x, z, 5+Math.random()*4, 1+Math.random()*0.6, i%2===0));
-}
-// Left fork — trees on RIGHT side of left path (inner edge, toward divider)
-for(let i = 0; i < 6; i++){
-  const t = 0.15 + i * 0.14;
-  const p = pathPoint(t);
-  const x = p.lInner[0] + 0.5 + Math.random()*0.8;
-  const z = p.lInner[2] + (Math.random()-0.5)*2;
-  trees.push(makeTree(x, z, 4+Math.random()*3, 0.8+Math.random()*0.5, i%2===0));
-}
-// Right fork — trees on RIGHT side
-for(let i = 0; i < 8; i++){
-  const t = 0.1 + i * 0.12;
-  const p = pathPoint(t);
-  const x = p.rOuter[0] + 1.5 + Math.random();
-  const z = p.rOuter[2] + (Math.random()-0.5)*2;
-  trees.push(makeTree(x, z, 5+Math.random()*4, 1+Math.random()*0.6, i%2===0));
-}
-// Right fork — trees on LEFT side (inner edge)
-for(let i = 0; i < 6; i++){
-  const t = 0.15 + i * 0.14;
-  const p = pathPoint(t);
-  const x = p.rInner[0] - 0.5 - Math.random()*0.8;
-  const z = p.rInner[2] + (Math.random()-0.5)*2;
-  trees.push(makeTree(x, z, 4+Math.random()*3, 0.8+Math.random()*0.5, i%2===0));
+const leftCurve = new THREE.CatmullRomCurve3([[0,0,-7],[-1.5,0,-11],[-4,0,-16],[-7,0,-21],[-10,0,-26],[-10,0,-32]].map(p=>new THREE.Vector3(...p)));
+const rightCurve = new THREE.CatmullRomCurve3([[0,0,-7],[1.5,0,-11],[4,0,-16],[7,0,-21],[10,0,-26],[10,0,-32]].map(p=>new THREE.Vector3(...p)));
+
+for(let i=0;i<9;i++){
+  const t=(i+0.5)/9;
+  const lp=leftCurve.getPoint(t), lt=leftCurve.getTangent(t);
+  const lperp=new THREE.Vector3(-lt.z,0,lt.x).normalize();
+  // Outer left — further out
+  const loOff=lp.clone().addScaledVector(lperp, 3.0+Math.random()*1.2);
+  trees.push(makeTree(loOff.x,loOff.z,5+Math.random()*4,1+Math.random()*0.5,i%2===0));
+  // Inner left — further in
+  const liOff=lp.clone().addScaledVector(lperp,-3.0-Math.random()*1.2);
+  trees.push(makeTree(liOff.x,liOff.z,4+Math.random()*3,0.8+Math.random()*0.4,i%3===0));
+
+  const rp=rightCurve.getPoint(t), rt=rightCurve.getTangent(t);
+  const rperp=new THREE.Vector3(-rt.z,0,rt.x).normalize();
+  // Outer right
+  const roOff=rp.clone().addScaledVector(rperp,-3.0-Math.random()*1.2);
+  trees.push(makeTree(roOff.x,roOff.z,5+Math.random()*4,1+Math.random()*0.5,i%2===0));
+  // Inner right
+  const riOff=rp.clone().addScaledVector(rperp, 3.0+Math.random()*1.2);
+  trees.push(makeTree(riOff.x,riOff.z,4+Math.random()*3,0.8+Math.random()*0.4,i%3===0));
 }
 
 // Path edges — darker soil
