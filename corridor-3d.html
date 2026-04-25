@@ -696,5 +696,90 @@ function setStation(idx,e){if(e)e.stopPropagation();document.getElementById('rad
 function stopRadio(e){if(e)e.stopPropagation();document.getElementById('radio-select').classList.remove('show');const a=document.getElementById('radio-audio');a.pause();a.src='';radioPlaying=false;currentStation=-1;document.getElementById('radio-dot').classList.remove('playing');document.getElementById('radio-name').textContent='Radio';document.querySelectorAll('.rs-opt').forEach(o=>o.classList.remove('active'));}
 document.addEventListener('click',e=>{if(document.getElementById('radio')&&!document.getElementById('radio').contains(e.target))document.getElementById('radio-select').classList.remove('show');});
 </script>
+<script src="keys.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── KEY VII — Presence System ─────────────────────────────────────
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa7 = window.supabase?.createClient(SUPA_URL, SUPA_KEY);
+
+// Session ID — unique per browser session
+const SESSION_ID = Math.random().toString(36).substr(2,9) + Date.now().toString(36);
+let key7Channel = null;
+let presenceCheckInterval = null;
+let door7shown = false;
+
+async function initPresence(){
+  if(!supa7 || !typeof CC_KEYS !== 'undefined') return;
+
+  // Register presence
+  key7Channel = supa7.channel('corridor-presence', {
+    config:{ presence:{ key: SESSION_ID } }
+  });
+
+  key7Channel
+    .on('presence', {event:'sync'}, ()=>{
+      const state = key7Channel.presenceState();
+      const sessions = Object.keys(state);
+      // 2+ different sessions in corridor
+      if(sessions.length >= 2 && !door7shown){
+        showDoor7();
+      } else if(sessions.length < 2 && door7shown){
+        hideDoor7();
+      }
+    })
+    .subscribe(async (status)=>{
+      if(status === 'SUBSCRIBED'){
+        await key7Channel.track({session: SESSION_ID, at: Date.now()});
+      }
+    });
+}
+
+function showDoor7(){
+  door7shown = true;
+  const el = document.getElementById('door7');
+  if(el){ el.style.opacity='1'; el.style.pointerEvents='all'; }
+}
+
+function hideDoor7(){
+  door7shown = false;
+  const el = document.getElementById('door7');
+  if(el){ el.style.opacity='0'; el.style.pointerEvents='none'; }
+}
+
+function takeKey7(){
+  if(typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying()){
+    CC_KEYS.award(7);
+  }
+}
+
+// Untrack on leave
+window.addEventListener('pagehide', ()=>{ if(key7Channel) key7Channel.untrack(); });
+window.addEventListener('beforeunload', ()=>{ if(key7Channel) key7Channel.untrack(); });
+
+// Init after page load
+setTimeout(initPresence, 1500);
+</script>
+
+<!-- Key VII — 7th door, invisible until two players present -->
+<div id="door7" onclick="takeKey7()" style="
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;
+  text-align:center;cursor:pointer;
+">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:3px;color:rgba(200,168,74,0.9);text-transform:uppercase;margin-bottom:8px;">A door appears</div>
+  <div style="width:48px;height:48px;border:1px solid rgba(200,168,74,0.6);border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;background:rgba(200,168,74,0.08);animation:d7pulse 2s ease-in-out infinite;">
+    <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="35" cy="40" r="18" stroke="#c8a84a" stroke-width="3"/>
+      <line x1="53" y1="40" x2="80" y2="40" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="74" y1="40" x2="74" y2="52" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
+      <line x1="80" y1="40" x2="80" y2="48" stroke="#c8a84a" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+</div>
+<style>
+@keyframes d7pulse{0%,100%{box-shadow:0 0 0 rgba(200,168,74,0);}50%{box-shadow:0 0 20px rgba(200,168,74,0.3);}}
+</style>
 </body>
 </html>
