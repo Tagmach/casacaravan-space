@@ -699,66 +699,74 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
 <script src="keys.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── KEY VII — Presence System ─────────────────────────────────────
-const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
-const supa7 = window.supabase?.createClient(SUPA_URL, SUPA_KEY);
+// ── KEY VII — Presence System (polling) ──────────────────────────
+const SUPA_URL7='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY7='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 
-// Session ID — unique per browser session
-const SESSION_ID = Math.random().toString(36).substr(2,9) + Date.now().toString(36);
-let key7Channel = null;
-let presenceCheckInterval = null;
+const SESSION_ID = Math.random().toString(36).substr(2,9)+Date.now().toString(36);
 let door7shown = false;
+let presenceInterval = null;
 
-async function initPresence(){
-  if(!supa7 || !typeof CC_KEYS !== 'undefined') return;
+// Ping — register presence
+async function pingPresence(){
+  await fetch(SUPA_URL7+'/rest/v1/corridor_presence', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'apikey':SUPA_KEY7,
+      'Authorization':'Bearer '+SUPA_KEY7,
+      'Prefer':'return=minimal'
+    },
+    body:JSON.stringify({session_id:SESSION_ID, last_seen: new Date().toISOString()})
+  }).catch(()=>{});
+}
 
-  // Register presence
-  key7Channel = supa7.channel('corridor-presence', {
-    config:{ presence:{ key: SESSION_ID } }
-  });
-
-  key7Channel
-    .on('presence', {event:'sync'}, ()=>{
-      const state = key7Channel.presenceState();
-      const sessions = Object.keys(state);
-      // 2+ different sessions in corridor
-      if(sessions.length >= 2 && !door7shown){
-        showDoor7();
-      } else if(sessions.length < 2 && door7shown){
-        hideDoor7();
-      }
-    })
-    .subscribe(async (status)=>{
-      if(status === 'SUBSCRIBED'){
-        await key7Channel.track({session: SESSION_ID, at: Date.now()});
-      }
-    });
+// Check — how many active sessions in last 30 seconds
+async function checkPresence(){
+  const since = new Date(Date.now()-30000).toISOString();
+  const res = await fetch(
+    SUPA_URL7+'/rest/v1/corridor_presence?last_seen=gte.'+since+'&select=session_id',
+    {headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7}}
+  ).catch(()=>null);
+  if(!res) return;
+  const data = await res.json().catch(()=>[]);
+  const unique = new Set(data.map(r=>r.session_id));
+  if(unique.size >= 2 && !door7shown) showDoor7();
+  else if(unique.size < 2 && door7shown) hideDoor7();
 }
 
 function showDoor7(){
   door7shown = true;
   const el = document.getElementById('door7');
-  if(el){ el.style.opacity='1'; el.style.pointerEvents='all'; }
+  if(el){el.style.opacity='1';el.style.pointerEvents='all';}
 }
-
 function hideDoor7(){
   door7shown = false;
   const el = document.getElementById('door7');
-  if(el){ el.style.opacity='0'; el.style.pointerEvents='none'; }
+  if(el){el.style.opacity='0';el.style.pointerEvents='none';}
 }
-
 function takeKey7(){
-  if(typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying()){
-    CC_KEYS.award(7);
-  }
+  if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
 }
 
-// Untrack on leave
-window.addEventListener('pagehide', ()=>{ if(key7Channel) key7Channel.untrack(); });
-window.addEventListener('beforeunload', ()=>{ if(key7Channel) key7Channel.untrack(); });
+async function initPresence(){
+  await pingPresence();
+  await checkPresence();
+  // Ping every 10s, check every 5s
+  setInterval(pingPresence, 10000);
+  presenceInterval = setInterval(checkPresence, 5000);
+}
 
-// Init after page load
+// Cleanup on leave
+window.addEventListener('pagehide', async ()=>{
+  if(presenceInterval) clearInterval(presenceInterval);
+  // Delete own session
+  await fetch(SUPA_URL7+'/rest/v1/corridor_presence?session_id=eq.'+SESSION_ID,{
+    method:'DELETE',
+    headers:{'apikey':SUPA_KEY7,'Authorization':'Bearer '+SUPA_KEY7}
+  }).catch(()=>{});
+});
+
 setTimeout(initPresence, 1500);
 </script>
 
