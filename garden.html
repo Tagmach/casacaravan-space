@@ -684,7 +684,11 @@ html, body {
 
 
 
-/* Radio */
+/* Landscape lock */
+#rotate-msg{display:none;position:fixed;inset:0;z-index:9999;background:#06050a;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+@media(max-width:600px) and (orientation:portrait){#rotate-msg{display:flex;}}
+#rotate-msg svg{animation:rot 2s ease-in-out infinite;}
+@keyframes rot{0%,100%{transform:rotate(0deg);}50%{transform:rotate(90deg);}}
 #radio-w{position:fixed;bottom:16px;right:24px;z-index:20;width:148px;background:rgba(4,8,6,0.97);border:1px solid #3a3228;border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.6);}
 #radio-h{display:flex;align-items:center;gap:7px;padding:9px 12px;cursor:pointer;user-select:none;}
 #radio-i{width:6px;height:6px;border-radius:50%;background:#2E2A26;flex-shrink:0;transition:all 0.3s;}
@@ -1125,6 +1129,13 @@ function rS(){const a=document.getElementById('r-aud');a.pause();a.src='';docume
 function rV(v){const a=document.getElementById('r-aud');if(a)a.volume=parseFloat(v);}
 </script>
 
+<div id="rotate-msg">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <rect x="8" y="4" width="24" height="32" rx="3" stroke="#A08060" stroke-width="1.5"/>
+    <path d="M20 30h0" stroke="#A08060" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:#7A7068;letter-spacing:1px;">Turn your device to landscape</div>
+</div>
 <div id="radio-w">
   <div id="radio-h" onclick="rT()">
     <div id="radio-i"></div>
