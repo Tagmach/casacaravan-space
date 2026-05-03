@@ -1411,7 +1411,6 @@ function renderResult(r, originalInput) {
       ${p.backlink_placement ? `<div style="font-size:11px;color:rgba(79,195,161,0.55);letter-spacing:0.06em;font-family:'Jost',sans-serif;margin-top:6px;">↳ ${escHtml(p.backlink_placement)}</div>` : ''}
       <div class="platform-actions">
         ${p.copy ? `<button class="btn-copy" data-copy="${escHtml(p.copy)}">copy text</button>` : ''}
-        ${p.backlink_text ? `<button class="btn-copy btn-copy-link" data-copy="${escHtml(p.backlink_text)}" style="border-color:rgba(79,195,161,0.25);color:rgba(79,195,161,0.7);">copy link</button>` : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -1421,35 +1420,21 @@ function renderResult(r, originalInput) {
   grid.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', () => {
       let text = btn.dataset.copy;
-      // Support Jakelu — append link if checked
       const supportChecked = document.getElementById('support-jakelu')?.checked;
-      if (supportChecked && !btn.classList.contains('btn-copy-link')) {
-        text += '\n\ndistributed via jakelu.casacaravan.space';
-      }
+      if (supportChecked) text += '\n\ndistributed via jakelu.casacaravan.space';
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'copied ✓';
         btn.classList.add('copied');
         btn.closest('.platform-card').classList.add('approved');
-        setTimeout(() => {
-          btn.textContent = btn.classList.contains('btn-copy-link') ? 'copy link' : 'copy text';
-          btn.classList.remove('copied');
-        }, 2000);
+        setTimeout(() => { btn.textContent = 'copy text'; btn.classList.remove('copied'); }, 2000);
       }).catch(() => {
         const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
         document.body.removeChild(ta);
-        btn.textContent = 'copied ✓';
-        btn.classList.add('copied');
+        btn.textContent = 'copied ✓'; btn.classList.add('copied');
         btn.closest('.platform-card').classList.add('approved');
-        setTimeout(() => {
-          btn.textContent = btn.classList.contains('btn-copy-link') ? 'copy link' : 'copy text';
-          btn.classList.remove('copied');
-        }, 2000);
+        setTimeout(() => { btn.textContent = 'copy text'; btn.classList.remove('copied'); }, 2000);
       });
     });
   });
@@ -1783,32 +1768,34 @@ async function analyzeAudio(file) {
         const sampleRate = buffer.sampleRate;
         const channels = buffer.numberOfChannels;
 
-        // Frequency analysis — dominant range
-        const offlineCtx = new OfflineAudioContext(1, buffer.length, sampleRate);
-        const source = offlineCtx.createBufferSource();
-        source.buffer = buffer;
-        const analyser = offlineCtx.createAnalyser();
-        analyser.fftSize = 2048;
-        source.connect(analyser);
-        analyser.connect(offlineCtx.destination);
-        source.start();
-
         // RMS energy — estimate quietness/density
         const data = buffer.getChannelData(0);
         let rms = 0;
-        const step = Math.floor(data.length / 1000);
+        const step = Math.max(1, Math.floor(data.length / 2000));
         for (let i = 0; i < data.length; i += step) rms += data[i] * data[i];
-        rms = Math.sqrt(rms / 1000);
+        rms = Math.sqrt(rms / (data.length / step));
+
+        // Energy profile — low/mid/high texture estimate
+        const segCount = 10;
+        const segLen = Math.floor(data.length / segCount);
+        const segEnergies = [];
+        for (let s = 0; s < segCount; s++) {
+          let e = 0;
+          for (let i = s * segLen; i < (s + 1) * segLen; i++) e += data[i] * data[i];
+          segEnergies.push(Math.sqrt(e / segLen));
+        }
+        const maxSeg = Math.max(...segEnergies);
+        const minSeg = Math.min(...segEnergies);
+        const dynamicRange = maxSeg > 0 ? ((maxSeg - minSeg) / maxSeg).toFixed(2) : '0';
 
         // Rough BPM via onset detection
         let bpm = null;
         try {
-          const pcm = buffer.getChannelData(0);
           const windowSize = Math.floor(sampleRate * 0.01);
           const energies = [];
-          for (let i = 0; i < pcm.length - windowSize; i += windowSize) {
+          for (let i = 0; i < data.length - windowSize; i += windowSize) {
             let e = 0;
-            for (let j = 0; j < windowSize; j++) e += pcm[i+j] * pcm[i+j];
+            for (let j = 0; j < windowSize; j++) e += data[i+j] * data[i+j];
             energies.push(e);
           }
           const avg = energies.reduce((a,b) => a+b, 0) / energies.length;
@@ -1827,12 +1814,23 @@ async function analyzeAudio(file) {
           sampleRate,
           channels,
           rms: rms.toFixed(3),
+          dynamicRange,
           bpm,
           size: Math.round(file.size / 1024) + 'KB',
           format: file.type
         });
       } catch(err) {
-        resolve({ duration: '?', format: file.type, size: Math.round(file.size/1024) + 'KB' });
+        // fallback — still return basic info so Claude doesn't ask
+        resolve({
+          duration: '?',
+          format: file.type,
+          size: Math.round(file.size/1024) + 'KB',
+          channels: '?',
+          sampleRate: '?',
+          rms: '?',
+          dynamicRange: '?',
+          bpm: null
+        });
       }
     };
     reader.readAsArrayBuffer(file);
@@ -1857,14 +1855,16 @@ async function analyzeImage(file) {
 }
 
 function buildFileContext() {
-  if (!attachedFile || !attachedMeta) return '';
+  if (!attachedFile) return '';
   const isAudio = attachedFile.type.startsWith('audio/');
   const isImage = attachedFile.type.startsWith('image/');
   if (isAudio) {
-    return `\n\n[AUDIO FILE: "${attachedFile.name}" · Duration: ${attachedMeta.duration}s · Format: ${attachedMeta.format} · Size: ${attachedMeta.size} · Channels: ${attachedMeta.channels} · Sample rate: ${attachedMeta.sampleRate}Hz${attachedMeta.bpm ? ' · Estimated BPM: ' + attachedMeta.bpm : ''} · Energy level: ${attachedMeta.rms}]`;
+    const m = attachedMeta || {};
+    return `\n\n[AUDIO FILE: "${attachedFile.name}" · Duration: ${m.duration || '?'}s · Format: ${attachedFile.type} · Size: ${m.size || '?'} · Channels: ${m.channels || '?'} · Sample rate: ${m.sampleRate || '?'}Hz${m.bpm ? ' · Estimated BPM: ' + m.bpm : ''} · Energy (RMS): ${m.rms || '?'} · Dynamic range: ${m.dynamicRange || '?'}]`;
   }
   if (isImage) {
-    return `\n\n[IMAGE FILE: "${attachedFile.name}" · Dimensions: ${attachedMeta.width}×${attachedMeta.height}px · Format: ${attachedMeta.format} · Size: ${attachedMeta.size}]`;
+    const m = attachedMeta || {};
+    return `\n\n[IMAGE FILE: "${attachedFile.name}" · Dimensions: ${m.width || '?'}×${m.height || '?'}px · Format: ${attachedFile.type} · Size: ${m.size || '?'}]`;
   }
   return '';
 }
