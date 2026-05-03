@@ -1486,7 +1486,7 @@ function renderResult(r, originalInput) {
       </div>
       ${p.why ? `<div class="platform-tactic" style="color:rgba(255,255,255,0.5);font-style:italic;">${escHtml(p.why)}</div>` : ''}
       ${p.how ? `<div class="platform-tactic" style="margin-top:4px;">${escHtml(p.how)}</div>` : ''}
-      ${p.copy ? `<div class="platform-copy">${escHtml(p.copy)}</div>` : ''}
+      ${p.copy ? `<div class="platform-copy">${linkify(p.copy)}</div>` : ''}
       ${p.backlink_placement ? `<div style="font-size:11px;color:rgba(79,195,161,0.55);letter-spacing:0.06em;font-family:'Jost',sans-serif;margin-top:6px;">↳ ${escHtml(p.backlink_placement)}</div>` : ''}
       <div class="platform-actions">
         ${p.copy ? `<button class="btn-copy" data-copy="${escHtml(p.copy)}">copy text</button>` : ''}
@@ -2058,6 +2058,13 @@ function escHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function linkify(text) {
+  const escaped = escHtml(text);
+  return escaped.replace(/(https?:\/\/[^\s&]+)/g,
+    '<a href="$1" target="_blank" rel="noopener" style="color:rgba(79,195,161,0.8);text-decoration:underline;text-decoration-color:rgba(79,195,161,0.3);">$1</a>'
+  );
 }
 </script>
 </body>
