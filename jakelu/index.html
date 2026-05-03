@@ -1955,8 +1955,10 @@ function submitAnswer() {
   if (!answer) return;
   const originalInput = document.getElementById('main-input').value.trim();
   document.getElementById('question-box').style.display = 'none';
-  // Re-analyze with original input + answer
-  const combined = (originalInput ? originalInput + '\n\n' : '') + 'Context: ' + answer;
+  // Combine original input + clarification answer cleanly
+  const combined = originalInput
+    ? `${originalInput}\n\nAdditional context: ${answer}`
+    : answer;
   analyze(combined);
 }
 
