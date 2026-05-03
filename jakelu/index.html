@@ -1584,30 +1584,26 @@ function renderResult(r, originalInput) {
   });
 
   // Backlink web card
-  // Mastodon post handlers
-  grid.querySelectorAll('.btn-mastodon').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const text = btn.dataset.copy;
-      const support = document.getElementById('support-jakelu')?.checked;
-      const finalText = support ? text + '\n\ndistributed via jakelu.casacaravan.space' : text;
-      btn.textContent = 'posting...';
-      btn.disabled = true;
-      const result = await postToMastodon(finalText);
-      if (result) {
-        btn.textContent = 'posted ✓';
-        btn.style.borderColor = 'rgba(79,195,161,0.5)';
-        btn.style.color = 'rgba(79,195,161,0.9)';
-        btn.closest('.platform-card').classList.add('approved');
-        if (typeof result === 'string') {
-          showToast('Posted — ' + result, 5000);
-        } else {
-          showToast('Posted to Mastodon ✓');
-        }
-      } else {
-        btn.textContent = 'post ↑';
-        btn.disabled = false;
-      }
-    });
+  // Mastodon post — event delegation
+  grid.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-mastodon');
+    if (!btn) return;
+    const text = btn.dataset.copy;
+    const support = document.getElementById('support-jakelu')?.checked;
+    const finalText = support ? text + '\n\ndistributed via jakelu.casacaravan.space' : text;
+    btn.textContent = 'posting...';
+    btn.disabled = true;
+    const result = await postToMastodon(finalText);
+    if (result) {
+      btn.textContent = 'posted ✓';
+      btn.style.borderColor = 'rgba(79,195,161,0.5)';
+      btn.style.color = 'rgba(79,195,161,0.9)';
+      btn.closest('.platform-card').classList.add('approved');
+      showToast(typeof result === 'string' ? 'Posted — ' + result : 'Posted to Mastodon ✓', 5000);
+    } else {
+      btn.textContent = 'post ↑';
+      btn.disabled = false;
+    }
   });
 
   // Show result section
