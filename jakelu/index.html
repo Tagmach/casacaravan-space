@@ -928,9 +928,19 @@ html, body {
     </div>
 
     <!-- Question box (shown when Jakelu needs clarification) -->
-    <div id="question-box" style="display:none;align-items:flex-start;gap:10px;padding:10px 18px;background:rgba(79,195,161,0.06);border:0.5px solid rgba(79,195,161,0.2);border-radius:12px 12px 0 0;width:min(500px,90vw);margin-bottom:-1px;">
-      <span style="color:rgba(79,195,161,0.7);font-size:13px;flex-shrink:0;padding-top:1px;">?</span>
-      <span id="question-text" style="font-size:12px;color:rgba(79,195,161,0.8);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;flex:1;letter-spacing:0.02em;"></span>
+    <div id="question-box" style="display:none;flex-direction:column;width:min(500px,90vw);border:0.5px solid rgba(79,195,161,0.25);border-radius:16px;overflow:hidden;background:rgba(79,195,161,0.05);">
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:12px 18px 10px;">
+        <span style="color:rgba(79,195,161,0.7);font-size:13px;flex-shrink:0;padding-top:1px;">?</span>
+        <span id="question-text" style="font-size:12px;color:rgba(79,195,161,0.85);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;flex:1;letter-spacing:0.02em;"></span>
+      </div>
+      <div style="display:flex;align-items:center;border-top:0.5px solid rgba(79,195,161,0.15);padding:8px 12px 8px 18px;gap:8px;background:rgba(0,0,0,0.2);">
+        <input id="question-answer" type="text" placeholder="type your answer..." autocomplete="off" style="flex:1;background:transparent;border:none;outline:none;color:rgba(255,255,255,0.8);font-family:'Jost',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.02em;"/>
+        <div id="question-send" style="width:28px;height:28px;border-radius:50%;background:#0a0908;border:0.5px solid rgba(79,195,161,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="#4FC3A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3,8 13,8"/><polyline points="9,4 13,8 9,12"/>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <!-- Input -->
@@ -1287,7 +1297,7 @@ FUNDAMENTAL: Never distribute what you haven't understood. If content is unclear
 
 DIMENSION DETECTION: Read the content and identify which dimension of this creator is speaking. Each dimension reaches different communities with different voices. The active dimension shapes everything.
 
-PLATFORM CONSTRAINTS:
+LINK RULE: If the input contains a URL, that URL must appear in every platform's copy text — naturally embedded, not appended awkwardly. The link is the destination. Never omit it.
 - Facebook suppresses external links — visual post + link in first comment
 - Reddit requires genuine participation before sharing
 - ${profile.site || 'casacaravan.space'} is always the destination
@@ -1335,16 +1345,10 @@ Respond ONLY with valid JSON (no preamble, no backticks):
     if (result.error) {
       setAnalyzing(false);
       const msg = result.message || 'Tell me more about this content.';
-      const qBox = document.getElementById('question-box');
       document.getElementById('question-text').textContent = msg;
-      qBox.style.display = 'flex';
-      document.getElementById('input-wrap').style.display = 'flex';
-      document.getElementById('input-wrap').style.borderRadius = '0 0 50px 50px';
-      document.getElementById('input-wrap').style.borderTop = '0.5px solid rgba(79,195,161,0.2)';
-      const inp = document.getElementById('main-input');
-      inp.value = '';
-      inp.placeholder = 'type your answer...';
-      inp.focus();
+      document.getElementById('question-box').style.display = 'flex';
+      document.getElementById('question-answer').value = '';
+      document.getElementById('question-answer').focus();
       return;
     }
 
@@ -1710,10 +1714,8 @@ function reset() {
   resultSection.classList.remove('visible');
   document.getElementById('portal-section').classList.remove('has-result');
   document.getElementById('main-input').value = '';
-  document.getElementById('main-input').placeholder = 'drop it here, I\'ll distribute it...';
   document.getElementById('question-box').style.display = 'none';
-  document.getElementById('input-wrap').style.borderRadius = '';
-  document.getElementById('input-wrap').style.borderTop = '';
+  document.getElementById('question-answer').value = '';
   const btn = document.getElementById('btn-approve');
   btn.textContent = 'approve strategy';
   btn.style.borderColor = '';
@@ -1878,7 +1880,21 @@ function buildFileContext() {
   return '';
 }
 
-/* ─── TRIGGER ─── */
+/* ─── QUESTION ANSWER ─── */
+function submitAnswer() {
+  const answer = document.getElementById('question-answer').value.trim();
+  if (!answer) return;
+  const originalInput = document.getElementById('main-input').value.trim();
+  document.getElementById('question-box').style.display = 'none';
+  // Re-analyze with original input + answer
+  const combined = (originalInput ? originalInput + '\n\n' : '') + 'Context: ' + answer;
+  analyze(combined);
+}
+
+document.getElementById('question-send').addEventListener('click', submitAnswer);
+document.getElementById('question-answer').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submitAnswer();
+});
 document.getElementById('send-btn').addEventListener('click', trigger);
 document.getElementById('main-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') trigger();
