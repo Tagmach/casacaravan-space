@@ -1310,11 +1310,10 @@ CREATOR: ${profile.bio?.substring(0, 120) || ''}
 DIMENSIONS: ${(profile.dimensions || []).join(' | ')}
 VOICE: ${profile.voice?.substring(0, 100) || ''}
 
-FUNDAMENTAL: Never distribute what you haven't understood.
-- URL from instagram.com, facebook.com, tiktok.com → {"error":"cannot_access","message":"I can't see this. One line: what is it?"}
-- Under 80% confident about the actual content → {"error":"need_clarification","message":"your question"}
-- Audio metadata present → proceed, no clarification needed
-- Text description provided → proceed with strategy
+FUNDAMENTAL: Build strategy from what you're given. If description is clear, proceed. If genuinely ambiguous (under 60% confident), ask one focused question: {"error":"need_clarification","message":"your question"}
+- Audio metadata present → always proceed
+- Text description present → always proceed
+- Any URL present → use it as the destination link, do not try to access it
 
 DIMENSION DETECTION: Identify which dimension is speaking. It shapes platform choice, tone, community.
 
@@ -1795,7 +1794,7 @@ function renderHistory() {
       <div class="history-meta">
         <div class="history-type">${escHtml(s.content_type || '—')}</div>
         <div class="history-platforms">
-          ${(s.platforms_approved || []).map(p => `<span class="history-platform-chip">${escHtml(PLATFORM_DB[p]?.name || p)}</span>`).join('')}
+          ${(s.platforms_approved || []).map(p => `<span class="history-platform-chip">${escHtml(PLATFORM_NAMES[p] || p)}</span>`).join('')}
         </div>
         <div class="history-backlinks">${s.backlinks} backlink${s.backlinks !== 1 ? 's' : ''}</div>
       </div>
