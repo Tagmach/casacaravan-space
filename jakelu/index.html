@@ -1296,27 +1296,28 @@ async function analyze(inputText) {
   const profile = loadProfile();
   const profileContext = buildProfileContext(profile);
 
-  const systemPrompt = `You are Jakelu — distribution intelligence for a specific creator. You know them. Every strategy is shaped by who they are.
+  const site = profile.site || 'casacaravan.space';
 
-${profileContext}
+  const systemPrompt = `You are Jakelu — distribution intelligence for ${profile.name}. Home base: ${site}.
 
-FUNDAMENTAL: Never distribute what you haven't understood. If content is unclear or a URL is inaccessible, ask — don't guess.
-- Inaccessible URL (Instagram, Facebook, private) → {"error": "cannot_access", "message": "I can't see this. One line: what is it?"}
-- Less than 80% confident AND no audio/image metadata present → {"error": "need_clarification", "message": "your specific question"}
-- If AUDIO FILE metadata is present (duration, sample rate, BPM etc): proceed with strategy. Use the technical data plus the creator profile to build the distribution. Do NOT ask for clarification on audio files — the metadata is enough to work with.
+CREATOR: ${profile.bio?.substring(0, 120) || ''}
+DIMENSIONS: ${(profile.dimensions || []).join(' | ')}
+VOICE: ${profile.voice?.substring(0, 100) || ''}
 
-DIMENSION DETECTION: Read the content and identify which dimension of this creator is speaking. Each dimension reaches different communities with different voices. The active dimension shapes everything.
+FUNDAMENTAL: Never distribute what you haven't understood.
+- Inaccessible URL → {"error":"cannot_access","message":"I can't see this. One line: what is it?"}
+- Under 80% confident → {"error":"need_clarification","message":"your question"}
+- Audio metadata present → proceed, no clarification needed
 
-LINK RULE: If the input contains a URL, that URL must appear in every platform's copy text — naturally embedded, not appended awkwardly. The link is the destination. Never omit it.
-- Facebook suppresses external links — visual post + link in first comment
-- Reddit requires genuine participation before sharing
-- ${profile.site || 'casacaravan.space'} is always the destination
+DIMENSION DETECTION: Identify which dimension is speaking. It shapes platform choice, tone, community.
 
-You are not limited to known platforms. Niche forums, Discord servers, newsletters — if it fits better, propose it.
+LINK RULE: If input has a URL, embed it naturally in every copy text. Never omit it.
+- Facebook: visual post + link in first comment
+- Reddit: genuine participation first
+- ${site} is always the destination
 
-Respond ONLY with valid JSON (no preamble, no backticks):
-
-{"content_type":"precise description","content_summary":"1-2 sentences","active_dimension":"which dimension and why","audience":"specific, not generic","tone":"feeling/energy/texture","platforms":[{"id":"platform_id","name":"Platform Name","why":"why this dimension belongs here","how":"the exact move — not the principle","copy":"ready-to-use post text native to this platform","backlink_placement":"where ${profile.site || 'casacaravan.space'} goes","backlink_text":"exact text to copy"}],"seo_keywords":["k1","k2","k3","k4","k5"],"backlink_web":"how these placements build cumulative reach back to ${profile.site || 'casacaravan.space'}"}
+Respond ONLY with valid JSON, no preamble, no backticks, no markdown:
+{"content_type":"...","content_summary":"...","active_dimension":"...","audience":"...","tone":"...","platforms":[{"id":"...","name":"...","why":"...","how":"...","copy":"...","backlink_placement":"..."}],"seo_keywords":["..."],"backlink_web":"..."}
 
 3-5 platforms. Each choice must be earned.`;
 
@@ -1327,20 +1328,18 @@ Respond ONLY with valid JSON (no preamble, no backticks):
     // ── CALL 1: Community Intelligence ──────────────────────────────
     setAnalyzingText('researching communities');
 
-    const communityPrompt = `You are a community intelligence researcher. Your job is to find real, specific, active online communities where a piece of content would genuinely fit.
+    const communityPrompt = `You are a community researcher. Find real, active online communities for this content.
 
-CREATOR: ${profile.name} — ${profile.bio?.substring(0, 150)}
-HOME BASE: ${profile.site || 'casacaravan.space'}
+Creator: ${profile.name} — ${(profile.dimensions || []).slice(0,3).join(', ')}
 
 Rules:
-- Only list communities you are genuinely confident exist and are active
-- Go beyond obvious big communities — find niches with real engagement
-- For each: exact name, platform, confidence level (high/medium), why it fits
-- If unsure a community exists, say so — never invent names
-- Include: subreddits, Discord servers, Facebook groups, forums, newsletters
+- Only communities you are confident exist and are active
+- Find niches, not just big platforms
+- State confidence: high or medium
+- If unsure, say so — never invent
 
-Respond ONLY with valid JSON (no preamble, no backticks):
-{"communities":[{"name":"exact community name","platform":"reddit/discord/facebook/forum/newsletter","url":"if known","confidence":"high/medium","why":"why this content fits here","members":"approximate if known"}]}`;
+Respond ONLY with valid JSON, no preamble, no backticks:
+{"communities":[{"name":"community name","platform":"reddit/discord/facebook/forum","url":"if known","confidence":"high/medium","why":"why this fits"}]}`;
 
     const commResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
