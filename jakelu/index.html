@@ -1338,6 +1338,8 @@ Respond ONLY with valid JSON (no preamble, no backticks):
       const qBox = document.getElementById('question-box');
       document.getElementById('question-text').textContent = msg;
       qBox.style.display = 'flex';
+      document.getElementById('input-wrap').style.display = 'flex';
+      document.getElementById('main-input').value = '';
       document.getElementById('main-input').focus();
       return;
     }
