@@ -1311,9 +1311,10 @@ DIMENSIONS: ${(profile.dimensions || []).join(' | ')}
 VOICE: ${profile.voice?.substring(0, 100) || ''}
 
 FUNDAMENTAL: Never distribute what you haven't understood.
-- Inaccessible URL → {"error":"cannot_access","message":"I can't see this. One line: what is it?"}
-- Under 80% confident → {"error":"need_clarification","message":"your question"}
+- URL from instagram.com, facebook.com, tiktok.com → {"error":"cannot_access","message":"I can't see this. One line: what is it?"}
+- Under 80% confident about the actual content → {"error":"need_clarification","message":"your question"}
 - Audio metadata present → proceed, no clarification needed
+- Text description provided → proceed with strategy
 
 DIMENSION DETECTION: Identify which dimension is speaking. It shapes platform choice, tone, community.
 
@@ -1386,7 +1387,7 @@ Respond ONLY with valid JSON, no preamble, no backticks:
     setAnalyzingText('building strategy');
 
     const communityContext = communities.length > 0
-      ? `\n\nRESEARCHED COMMUNITIES (verified from training knowledge):\n${communities.map(c => `- ${c.name} (${c.platform}, confidence: ${c.confidence}): ${c.why}${c.url ? ' — ' + c.url : ''}`).join('\n')}\n\nBuild your platform strategy around these real communities where possible.`
+      ? `\n\nVERIFIED COMMUNITIES FOR THIS CONTENT:\n${communities.map(c => `- ${c.name} (${c.platform}, ${c.confidence} confidence): ${c.why}`).join('\n')}\n\nUse these communities in your platform strategy.`
       : '';
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
