@@ -1025,6 +1025,13 @@ html, body {
     <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-..." />
     <button class="api-save" id="api-save">save</button>
     <div class="api-status" id="api-status"></div>
+    <div style="margin-top:10px;border-top:0.5px solid rgba(255,255,255,0.08);padding-top:10px;">
+      <div class="api-label">Mastodon Access Token</div>
+      <input type="password" class="api-input" id="mastodon-token-input" placeholder="your access token..." style="margin-top:5px;"/>
+      <input type="text" class="api-input" id="mastodon-instance-input" placeholder="mastodon.social" style="margin-top:5px;"/>
+      <button class="api-save" id="mastodon-save" style="margin-top:5px;">save</button>
+      <div class="api-status" id="mastodon-status"></div>
+    </div>
   </div>
 </div>
 
@@ -1542,6 +1549,9 @@ function renderResult(r, originalInput) {
       ${p.backlink_placement ? `<div style="font-size:11px;color:rgba(79,195,161,0.55);letter-spacing:0.06em;font-family:'Jost',sans-serif;margin-top:6px;">↳ ${escHtml(p.backlink_placement)}</div>` : ''}
       <div class="platform-actions">
         ${p.copy ? `<button class="btn-copy" data-copy="${escHtml(p.copy)}">copy text</button>` : ''}
+        ${(p.id || '').toLowerCase().includes('mastodon') || (p.name || '').toLowerCase().includes('mastodon')
+          ? `<button class="btn-mastodon" data-copy="${escHtml(p.copy || '')}" style="padding:4px 12px;border-radius:6px;background:rgba(99,100,255,0.12);border:0.5px solid rgba(99,100,255,0.3);color:rgba(140,141,255,0.9);font-family:'Jost',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;cursor:pointer;">post ↑</button>`
+          : ''}
       </div>
     `;
     grid.appendChild(card);
@@ -1571,7 +1581,31 @@ function renderResult(r, originalInput) {
   });
 
   // Backlink web card
-  // backlink_web kept in data only — not shown in UI
+  // Mastodon post handlers
+  grid.querySelectorAll('.btn-mastodon').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy;
+      const support = document.getElementById('support-jakelu')?.checked;
+      const finalText = support ? text + '\n\ndistributed via jakelu.casacaravan.space' : text;
+      btn.textContent = 'posting...';
+      btn.disabled = true;
+      const result = await postToMastodon(finalText);
+      if (result) {
+        btn.textContent = 'posted ✓';
+        btn.style.borderColor = 'rgba(79,195,161,0.5)';
+        btn.style.color = 'rgba(79,195,161,0.9)';
+        btn.closest('.platform-card').classList.add('approved');
+        if (typeof result === 'string') {
+          showToast('Posted — ' + result, 5000);
+        } else {
+          showToast('Posted to Mastodon ✓');
+        }
+      } else {
+        btn.textContent = 'post ↑';
+        btn.disabled = false;
+      }
+    });
+  });
 
   // Show result section
   const resultSection = document.getElementById('result-section');
@@ -1714,6 +1748,60 @@ pBtn.addEventListener('mouseleave', () => pBtn.style.background = 'rgba(255,255,
 
 /* initialize profile on first load */
 if (!localStorage.getItem('jakelu_profile')) saveProfile(DEFAULT_PROFILE);
+/* ─── MASTODON ─── */
+let mastodonToken = localStorage.getItem('jakelu_mastodon_token') || '';
+let mastodonInstance = localStorage.getItem('jakelu_mastodon_instance') || 'mastodon.social';
+
+if (mastodonToken) {
+  document.getElementById('mastodon-token-input').value = mastodonToken;
+  document.getElementById('mastodon-instance-input').value = mastodonInstance;
+  document.getElementById('mastodon-status').textContent = 'connected ✓';
+  document.getElementById('mastodon-status').className = 'api-status ok';
+}
+
+document.getElementById('mastodon-save').addEventListener('click', () => {
+  const token = document.getElementById('mastodon-token-input').value.trim();
+  const instance = document.getElementById('mastodon-instance-input').value.trim() || 'mastodon.social';
+  if (!token) {
+    document.getElementById('mastodon-status').textContent = 'token required';
+    document.getElementById('mastodon-status').className = 'api-status err';
+    return;
+  }
+  mastodonToken = token;
+  mastodonInstance = instance;
+  localStorage.setItem('jakelu_mastodon_token', token);
+  localStorage.setItem('jakelu_mastodon_instance', instance);
+  document.getElementById('mastodon-status').textContent = 'saved ✓';
+  document.getElementById('mastodon-status').className = 'api-status ok';
+  setTimeout(() => document.getElementById('api-panel').classList.remove('open'), 800);
+});
+
+async function postToMastodon(text) {
+  if (!mastodonToken) {
+    showToast('Mastodon token not set — add via ⚙');
+    return false;
+  }
+  try {
+    const res = await fetch(`https://${mastodonInstance}/api/v1/statuses`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${mastodonToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: text, visibility: 'public' })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    return data.url || true;
+  } catch(e) {
+    showToast('Mastodon error: ' + e.message);
+    return false;
+  }
+}
+
 function dbSave(session) {
   const history = JSON.parse(localStorage.getItem('jakelu_history') || '[]');
   history.unshift(session);
