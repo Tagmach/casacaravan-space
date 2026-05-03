@@ -1370,6 +1370,7 @@ Respond ONLY with valid JSON, no preamble, no backticks:
 
     const commData = await commResponse.json();
     const commText = commData.content?.[0]?.text || '';
+    console.log('Community full text:', commText);
     const commClean = commText.replace(/```json|```/g, '').trim();
     let communities = [];
     try {
@@ -1494,12 +1495,43 @@ function renderResult(r, originalInput) {
   selectedPlatforms.forEach((p) => {
     const displayName = p.name || PLATFORM_NAMES[p.id] || p.id;
 
+    // Auto-generate platform URL from id
+    const platformUrls = {
+      reddit: p.id.startsWith('r/') ? `https://reddit.com/${p.id}` : `https://reddit.com/r/${p.id.replace('reddit','').trim()}`,
+      bandcamp: 'https://bandcamp.com',
+      soundcloud: 'https://soundcloud.com',
+      youtube: 'https://youtube.com',
+      instagram: 'https://instagram.com',
+      facebook: 'https://facebook.com/groups',
+      pinterest: 'https://pinterest.com',
+      audius: 'https://audius.co',
+      tiktok: 'https://tiktok.com',
+      twitter: 'https://twitter.com',
+      discord: 'https://discord.com',
+      substack: 'https://substack.com',
+      mixcloud: 'https://mixcloud.com',
+      linkedin: 'https://linkedin.com'
+    };
+
+    const idLower = (p.id || '').toLowerCase();
+    let platformUrl = null;
+    if (p.name && p.name.startsWith('r/')) {
+      platformUrl = `https://reddit.com/${p.name}`;
+    } else {
+      for (const [key, url] of Object.entries(platformUrls)) {
+        if (idLower.includes(key)) { platformUrl = url; break; }
+      }
+    }
+
     const card = document.createElement('div');
     card.className = 'platform-card';
     card.dataset.platform = p.id || p.name;
     card.innerHTML = `
       <div class="platform-header">
-        <span class="platform-name">${escHtml(displayName)}</span>
+        ${platformUrl
+          ? `<a href="${platformUrl}" target="_blank" rel="noopener" class="platform-name" style="text-decoration:none;">${escHtml(displayName)} ↗</a>`
+          : `<span class="platform-name">${escHtml(displayName)}</span>`
+        }
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="approved-mark">sent ✓</span>
         </div>
