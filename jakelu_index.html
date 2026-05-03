@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jakelu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #000;
+  --gold: #c8881e;
+  --gold-dim: rgba(200, 136, 30, 0.35);
+  --gold-glow: rgba(200, 136, 30, 0.12);
+  --white: rgba(255,255,255,0.85);
+  --white-dim: rgba(255,255,255,0.35);
+  --white-faint: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.1);
+}
+
+html, body {
+  height: 100%;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ─── STARS ─── */
+#stars-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── MAIN LAYOUT ─── */
+.app {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 0;
+}
+
+/* ─── WORDMARK ─── */
+.wordmark {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.35em;
+  color: var(--white-dim);
+  text-transform: uppercase;
+  position: fixed;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+/* ─── PORTAL ─── */
+.portal-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+.portal-section.has-result {
+  transform: translateY(-20px);
+}
+
+.hole-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+/* Accretion disk layers */
+.disk {
+  position: absolute;
+  border-radius: 50%;
+  animation: spin linear infinite;
+}
+
+.disk-1 {
+  width: 180px; height: 180px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(160,90,20,0.18) 12%,
+    rgba(210,140,40,0.38) 22%,
+    rgba(160,90,20,0.18) 32%,
+    transparent 42%,
+    rgba(90,50,10,0.08) 62%,
+    rgba(170,110,30,0.22) 78%,
+    transparent 100%
+  );
+  animation-duration: 9s;
+}
+
+.disk-2 {
+  width: 210px; height: 210px;
+  background: conic-gradient(
+    from 200deg,
+    transparent 0%,
+    rgba(130,70,10,0.1) 18%,
+    rgba(190,120,30,0.2) 32%,
+    transparent 48%,
+    rgba(110,55,8,0.06) 72%,
+    transparent 100%
+  );
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+
+.disk-3 {
+  width: 155px; height: 155px;
+  background: conic-gradient(
+    from 100deg,
+    transparent 0%,
+    rgba(200,130,30,0.12) 20%,
+    transparent 35%,
+    rgba(150,80,15,0.16) 65%,
+    rgba(200,130,30,0.1) 80%,
+    transparent 100%
+  );
+  animation-duration: 6s;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.lens {
+  position: absolute;
+  width: 118px; height: 118px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5px rgba(180,110,25,0.18),
+    0 0 0 3px rgba(140,80,15,0.1),
+    0 0 28px 8px rgba(110,60,10,0.2);
+  z-index: 1;
+}
+
+.void {
+  position: absolute;
+  width: 102px; height: 102px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%,
+    #060402 0%, #020100 45%, #000 100%
+  );
+  box-shadow:
+    0 0 40px 20px rgba(0,0,0,0.98),
+    0 0 80px 40px rgba(0,0,0,0.75);
+  z-index: 2;
+}
+
+.void-label {
+  position: absolute;
+  z-index: 3;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 0.32em;
+  color: rgba(255,255,255,0.22);
+  user-select: none;
+  pointer-events: none;
+}
+
+.attach-btn {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.attach-btn:hover { opacity: 0.7; }
+.attach-btn svg { stroke: rgba(0,0,0,0.55); }
+.attach-btn.has-file svg { stroke: #4FC3A1; }
+
+/* ─── INPUT BAR ─── */
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.92);
+  border: 0.5px solid rgba(255,255,255,0.6);
+  border-radius: 50px;
+  padding: 10px 12px 10px 22px;
+  width: min(500px, 90vw);
+  gap: 10px;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.input-wrap:focus-within {
+  border-color: rgba(200,136,30,0.5);
+  background: rgba(255,255,255,0.96);
+}
+
+.input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #000;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.input-wrap input::placeholder {
+  color: rgba(0,0,0,0.55);
+}
+
+.send-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #0a0908;
+  border: 0.5px solid rgba(10,9,8,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.send-btn:hover { background: #1a1714; }
+.send-btn:active { transform: scale(0.92); }
+.send-btn svg { width: 13px; height: 13px; stroke: #4FC3A1; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ─── ANALYZING STATE ─── */
+.analyzing-bar {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  width: min(500px, 90vw);
+}
+
+.analyzing-bar.active { display: flex; }
+
+.pulse-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.pulse-dots span {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+.pulse-dots span:nth-child(2) { animation-delay: 0.2s; }
+.pulse-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse-dot {
+  0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.analyzing-text {
+  font-size: 12px;
+  color: var(--white-dim);
+  letter-spacing: 0.06em;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+/* ─── RESULT SECTION ─── */
+.result-section {
+  width: min(640px, 92vw);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  margin-top: 40px;
+  display: none;
+}
+
+.result-section.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Flow line */
+.flow-connector {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.flow-connector svg { opacity: 0.3; }
+
+/* Analysis card */
+.analysis-card {
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  background: rgba(255,255,255,0.02);
+}
+
+.card-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--white-dim);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+}
+
+.card-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+/* Platform strategies */
+.platforms-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.platform-card {
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.platform-card:hover {
+  border-color: var(--gold-dim);
+  background: rgba(200,136,30,0.04);
+}
+
+.platform-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.platform-name {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.priority-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.06em;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+.priority-high { background: rgba(200,136,30,0.15); color: rgba(220,160,60,0.9); border: 0.5px solid rgba(200,136,30,0.25); }
+.priority-med { background: rgba(255,255,255,0.06); color: var(--white-dim); border: 0.5px solid var(--border); }
+
+.platform-tactic {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.65);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+.platform-copy {
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  padding: 8px 12px;
+  border-left: 1px solid var(--gold-dim);
+  margin-top: 4px;
+  cursor: text;
+}
+
+.platform-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-copy {
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: transparent;
+  border: 0.5px solid rgba(79,195,161,0.25);
+  color: rgba(79,195,161,0.7);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-copy:hover {
+  background: rgba(79,195,161,0.08);
+  border-color: rgba(79,195,161,0.5);
+  color: rgba(79,195,161,1);
+}
+
+.btn-copy.copied {
+  border-color: rgba(79,195,161,0.6);
+  color: rgba(79,195,161,1);
+  background: rgba(79,195,161,0.1);
+}
+
+.platform-card.approved {
+  border-color: rgba(79,195,161,0.3);
+  background: rgba(79,195,161,0.04);
+}
+
+.approved-mark {
+  font-size: 10px;
+  color: rgba(79,195,161,0.7);
+  letter-spacing: 0.08em;
+  font-family: 'Jost', sans-serif;
+  display: none;
+}
+
+.platform-card.approved .approved-mark { display: inline; }
+
+/* Approve section */
+.approve-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.btn-approve {
+  flex: 1;
+  padding: 11px 20px;
+  border-radius: 8px;
+  background: rgba(200,136,30,0.12);
+  border: 0.5px solid rgba(200,136,30,0.3);
+  color: rgba(220,160,60,0.9);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-approve:hover {
+  background: rgba(200,136,30,0.22);
+  border-color: rgba(200,136,30,0.5);
+}
+
+.btn-reset {
+  padding: 11px 18px;
+  border-radius: 8px;
+  background: transparent;
+  border: 0.5px solid var(--border);
+  color: var(--white-dim);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.btn-reset:hover { border-color: rgba(255,255,255,0.25); }
+
+/* API key config */
+.api-config {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20;
+}
+
+.api-toggle {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.api-toggle:hover { background: rgba(255,255,255,0.08); }
+.api-toggle svg { width: 14px; height: 14px; stroke: var(--white-dim); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+
+.api-panel {
+  position: absolute;
+  bottom: 44px;
+  right: 0;
+  background: #0a0908;
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  width: 260px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.api-panel.open { display: flex; }
+
+.api-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--white-dim);
+  text-transform: uppercase;
+  font-family: 'Jost', sans-serif;
+}
+
+.api-input {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--white);
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+  letter-spacing: 0.02em;
+}
+
+.api-input:focus { border-color: var(--gold-dim); }
+
+.api-save {
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: rgba(200,136,30,0.12);
+  border: 0.5px solid rgba(200,136,30,0.25);
+  color: rgba(220,160,60,0.9);
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.api-save:hover { background: rgba(200,136,30,0.22); }
+
+.api-status {
+  font-size: 10px;
+  color: var(--white-dim);
+  letter-spacing: 0.04em;
+}
+
+.api-status.ok { color: rgba(80,200,130,0.8); }
+.api-status.err { color: rgba(220,80,80,0.8); }
+
+/* approved toast */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(200,136,30,0.15);
+  border: 0.5px solid rgba(200,136,30,0.35);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: rgba(220,160,60,0.9);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 100;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+}
+
+/* ─── HISTORY OVERLAY ─── */
+.history-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 20px 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  overflow-y: auto;
+}
+
+.history-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.history-panel {
+  background: #0a0908;
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  width: min(560px, 92vw);
+  padding: 28px 28px 24px;
+  transform: translateY(10px);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+.history-overlay.open .history-panel { transform: translateY(0); }
+
+.history-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.history-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 20px;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.04em;
+}
+
+.history-count {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.history-empty {
+  text-align: center;
+  padding: 32px 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.2);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+.history-item {
+  border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  padding: 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-item:last-child { border-bottom: none; }
+
+.history-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.history-input {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-date {
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.history-type {
+  font-size: 10px;
+  color: rgba(200,136,30,0.6);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Jost', sans-serif;
+}
+
+.history-platforms {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.history-platform-chip {
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.35);
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+.history-backlinks {
+  font-size: 10px;
+  color: rgba(79,195,161,0.5);
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.06em;
+  margin-left: auto;
+}
+
+.history-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+}
+
+.btn-history-close {
+  padding: 8px 20px;
+  border-radius: 7px;
+  background: transparent;
+  border: 0.5px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.35);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-history-close:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); }
+
+.btn-history-clear {
+  padding: 8px 16px;
+  border-radius: 7px;
+  background: transparent;
+  border: 0.5px solid rgba(220,80,80,0.2);
+  color: rgba(220,80,80,0.4);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-history-clear:hover { border-color: rgba(220,80,80,0.45); color: rgba(220,80,80,0.7); }
+
+/* ─── PROFILE OVERLAY ─── */
+.profile-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 200;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 40px 20px 40px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+  overflow-y: auto;
+}
+.profile-overlay.open { opacity: 1; pointer-events: all; }
+
+.profile-panel {
+  background: #0a0908;
+  border: 0.5px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  width: min(580px, 94vw);
+  padding: 32px 32px 28px;
+  transform: translateY(10px);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.profile-overlay.open .profile-panel { transform: translateY(0); }
+
+.profile-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600; font-style: italic;
+  font-size: 22px; color: rgba(255,255,255,0.85);
+  margin-bottom: 6px;
+}
+.profile-subtitle {
+  font-size: 11px; color: rgba(255,255,255,0.25);
+  font-family: 'Jost', sans-serif; letter-spacing: 0.08em;
+  margin-bottom: 28px;
+}
+
+.profile-section-title {
+  font-size: 10px; letter-spacing: 0.18em;
+  color: rgba(200,136,30,0.6); text-transform: uppercase;
+  font-family: 'Jost', sans-serif; font-weight: 400;
+  margin-bottom: 12px; margin-top: 24px;
+}
+.profile-section-title:first-of-type { margin-top: 0; }
+
+.profile-field {
+  display: flex; flex-direction: column; gap: 5px;
+  margin-bottom: 12px;
+}
+.profile-field label {
+  font-size: 11px; color: rgba(255,255,255,0.3);
+  font-family: 'Jost', sans-serif; letter-spacing: 0.06em;
+}
+.profile-field input,
+.profile-field textarea {
+  background: rgba(255,255,255,0.04);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 7px;
+  padding: 9px 12px;
+  color: rgba(255,255,255,0.8);
+  font-family: 'Jost', sans-serif;
+  font-size: 13px; font-weight: 300;
+  width: 100%; outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+}
+.profile-field input:focus,
+.profile-field textarea:focus { border-color: rgba(200,136,30,0.4); }
+
+.profile-field input::placeholder,
+.profile-field textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+.profile-two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+
+/* Identity chips */
+.identity-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px;
+}
+.identity-chip {
+  padding: 5px 14px; border-radius: 20px;
+  font-size: 12px; font-family: 'Jost', sans-serif; font-weight: 300;
+  border: 0.5px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.04em;
+  background: transparent;
+}
+.identity-chip.active {
+  border-color: rgba(79,195,161,0.5);
+  color: rgba(79,195,161,0.9);
+  background: rgba(79,195,161,0.08);
+}
+
+.profile-actions {
+  display: flex; gap: 10px; margin-top: 24px;
+  padding-top: 20px; border-top: 0.5px solid rgba(255,255,255,0.06);
+}
+.btn-profile-save {
+  flex: 1; padding: 10px;
+  border-radius: 8px;
+  background: rgba(200,136,30,0.12);
+  border: 0.5px solid rgba(200,136,30,0.3);
+  color: rgba(220,160,60,0.9);
+  font-family: 'Jost', sans-serif; font-weight: 300;
+  font-size: 13px; letter-spacing: 0.06em;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-profile-save:hover { background: rgba(200,136,30,0.22); }
+.btn-profile-close {
+  padding: 10px 18px; border-radius: 8px;
+  background: transparent;
+  border: 0.5px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.3);
+  font-family: 'Jost', sans-serif; font-weight: 300;
+  font-size: 13px; letter-spacing: 0.06em;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.btn-profile-close:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.6); }
+
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<div class="app">
+  <div class="portal-section" id="portal-section">
+
+    <!-- Black hole -->
+    <div class="hole-wrap">
+      <div class="disk disk-1"></div>
+      <div class="disk disk-3"></div>
+      <div class="lens"></div>
+      <div class="void"></div>
+      <div class="void-label">Jakelu</div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-wrap" id="input-wrap">
+      <label class="attach-btn" id="attach-btn" title="attach file">
+        <input type="file" id="file-input" accept="audio/*,image/*" style="display:none"/>
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13.5 8.5l-5.5 5.5a4 4 0 01-5.66-5.66l6-6a2.5 2.5 0 013.54 3.54l-6.01 6a1 1 0 01-1.41-1.41l5.5-5.5"/>
+        </svg>
+      </label>
+      <input type="text" id="main-input" placeholder="drop it here, I'll distribute it..." autocomplete="off" />
+      <div class="send-btn" id="send-btn" title="send">
+        <svg viewBox="0 0 16 16">
+          <polyline points="3,8 13,8"/>
+          <polyline points="9,4 13,8 9,12"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- File preview -->
+    <div id="file-preview" style="display:none;align-items:center;gap:10px;padding:8px 18px;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.12);border-radius:20px;width:min(500px,90vw);">
+      <span id="file-preview-icon" style="font-size:14px;color:rgba(79,195,161,0.8);flex-shrink:0;"></span>
+      <span id="file-preview-name" style="font-size:12px;color:rgba(255,255,255,0.7);font-family:'Jost',sans-serif;font-weight:300;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.02em;"></span>
+      <span id="file-remove" style="font-size:11px;color:rgba(255,255,255,0.25);cursor:pointer;padding:2px 8px;flex-shrink:0;">✕</span>
+    </div>
+
+    <!-- Question box (shown when Jakelu needs clarification) -->
+    <div id="question-box" style="display:none;align-items:flex-start;gap:10px;padding:12px 18px;background:rgba(79,195,161,0.06);border:0.5px solid rgba(79,195,161,0.2);border-radius:12px;width:min(500px,90vw);">
+      <span style="color:rgba(79,195,161,0.7);font-size:13px;flex-shrink:0;">?</span>
+      <span id="question-text" style="font-size:13px;color:rgba(255,255,255,0.65);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;flex:1;"></span>
+    </div>
+
+    <!-- Analyzing -->
+    <div class="analyzing-bar" id="analyzing-bar">
+      <div class="pulse-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <span class="analyzing-text" id="analyzing-text">analyzing</span>
+    </div>
+
+  </div>
+
+  <!-- Result -->
+  <div class="result-section" id="result-section">
+    <div class="flow-connector">
+      <svg width="2" height="32" viewBox="0 0 2 32">
+        <line x1="1" y1="0" x2="1" y2="32" stroke="rgba(200,136,30,0.4)" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+
+    <div class="analysis-card" id="analysis-card">
+      <div class="card-label">content analysis</div>
+      <div class="card-body" id="analysis-body"></div>
+    </div>
+
+    <div class="platforms-grid" id="platforms-grid"></div>
+
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0 6px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="support-jakelu" style="width:13px;height:13px;accent-color:#4FC3A1;cursor:pointer;"/>
+        <span style="font-size:11px;color:rgba(255,255,255,0.25);font-family:'Jost',sans-serif;letter-spacing:0.06em;">support Jakelu — add a link to your posts</span>
+      </label>
+    </div>
+
+    <div class="approve-section">
+      <button class="btn-approve" id="btn-approve">approve strategy</button>
+      <button class="btn-reset" id="btn-reset">new content</button>
+    </div>
+  </div>
+</div>
+
+<!-- API key panel -->
+<div class="api-config">
+  <div class="api-toggle" id="api-toggle" title="API Ayarları">
+    <svg viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="3"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>
+    </svg>
+  </div>
+  <div class="api-panel" id="api-panel">
+    <div class="api-label">Anthropic API Key</div>
+    <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-..." />
+    <button class="api-save" id="api-save">save</button>
+    <div class="api-status" id="api-status"></div>
+  </div>
+</div>
+
+<!-- History button -->
+<div id="history-btn" title="history" style="position:fixed;bottom:68px;right:24px;z-index:20;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;">
+  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="6"/>
+    <polyline points="8,5 8,8 10,10"/>
+  </svg>
+</div>
+
+<!-- Profile button -->
+<div id="profile-btn" title="profile" style="position:fixed;bottom:112px;right:24px;z-index:20;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 0.2s;">
+  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round">
+    <circle cx="8" cy="6" r="3"/>
+    <path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/>
+  </svg>
+</div>
+
+<!-- Profile overlay -->
+<div class="profile-overlay" id="profile-overlay">
+  <div class="profile-panel">
+    <div class="profile-title">who are you</div>
+    <div class="profile-subtitle">Jakelu reads this before every distribution — shape it carefully</div>
+
+    <div class="profile-section-title">identity</div>
+    <div class="profile-two-col">
+      <div class="profile-field">
+        <label>name</label>
+        <input id="p-name" type="text" placeholder="your name"/>
+      </div>
+      <div class="profile-field">
+        <label>location</label>
+        <input id="p-location" type="text" placeholder="where you are"/>
+      </div>
+    </div>
+    <div class="profile-field">
+      <label>who you are — in your own words</label>
+      <textarea id="p-bio" rows="3" placeholder="how you'd describe yourself to a stranger who gets it"></textarea>
+    </div>
+
+    <div class="profile-section-title">your dimensions</div>
+    <div class="profile-subtitle" style="margin-bottom:10px;margin-top:-8px;">Jakelu detects which one is speaking from the content — you can also set it manually per upload</div>
+    <div class="identity-chips" id="identity-chips"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <input id="new-dimension-input" type="text" placeholder="add a dimension..." style="flex:1;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);border-radius:7px;padding:7px 12px;color:rgba(255,255,255,0.7);font-family:'Jost',sans-serif;font-size:12px;outline:none;"/>
+      <button id="add-dimension-btn" style="padding:7px 14px;border-radius:7px;background:transparent;border:0.5px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.35);font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;">+</button>
+    </div>
+
+    <div class="profile-section-title">home base</div>
+    <div class="profile-two-col">
+      <div class="profile-field">
+        <label>main site</label>
+        <input id="p-site" type="text" placeholder="casacaravan.space"/>
+      </div>
+      <div class="profile-field">
+        <label>bandcamp</label>
+        <input id="p-bandcamp" type="text" placeholder="bandcamp url"/>
+      </div>
+    </div>
+    <div class="profile-two-col">
+      <div class="profile-field">
+        <label>soundcloud</label>
+        <input id="p-soundcloud" type="text" placeholder="soundcloud url"/>
+      </div>
+      <div class="profile-field">
+        <label>instagram</label>
+        <input id="p-instagram" type="text" placeholder="instagram handle"/>
+      </div>
+    </div>
+
+    <div class="profile-section-title">voice & tone</div>
+    <div class="profile-field">
+      <label>how you communicate — what to avoid</label>
+      <textarea id="p-voice" rows="2" placeholder="e.g. honest, no hype, no manipulation, contribution over promotion"></textarea>
+    </div>
+    <div class="profile-field">
+      <label>reference artists / creators / worlds</label>
+      <textarea id="p-references" rows="2" placeholder="who or what resonates with what you make"></textarea>
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn-profile-save" id="btn-profile-save">save profile</button>
+      <button class="btn-profile-close" id="btn-profile-close">close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- History overlay -->
+<div class="history-overlay" id="history-overlay">
+  <div class="history-panel">
+    <div class="history-header">
+      <div class="history-title">history</div>
+      <div class="history-count" id="history-count"></div>
+    </div>
+    <div id="history-list"></div>
+    <div class="history-actions">
+      <button class="btn-history-clear" id="btn-history-clear">clear all</button>
+      <button class="btn-history-close" id="btn-history-close">close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── STARS ─── */
+(function() {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 0.8 + 0.2,
+        op: Math.random(),
+        speed: Math.random() * 0.008 + 0.003,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    frame += 0.012;
+    stars.forEach(s => {
+      const o = (Math.sin(frame * s.speed * 60 + s.phase) + 1) / 2;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${o * 0.7})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+})();
+
+let apiKey = localStorage.getItem('jakelu_api_key') || '';
+
+const apiToggle = document.getElementById('api-toggle');
+const apiPanel = document.getElementById('api-panel');
+const apiKeyInput = document.getElementById('api-key-input');
+const apiSave = document.getElementById('api-save');
+const apiStatus = document.getElementById('api-status');
+
+if (apiKey) {
+  apiKeyInput.value = apiKey;
+  apiStatus.textContent = 'key saved';
+  apiStatus.className = 'api-status ok';
+}
+
+apiToggle.addEventListener('click', () => {
+  apiPanel.classList.toggle('open');
+});
+
+apiSave.addEventListener('click', () => {
+  const val = apiKeyInput.value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    apiStatus.textContent = 'invalid key format';
+    apiStatus.className = 'api-status err';
+    return;
+  }
+  apiKey = val;
+  localStorage.setItem('jakelu_api_key', apiKey);
+  apiStatus.textContent = 'saved ✓';
+  apiStatus.className = 'api-status ok';
+  setTimeout(() => apiPanel.classList.remove('open'), 800);
+});
+
+document.addEventListener('click', (e) => {
+  if (!apiToggle.contains(e.target) && !apiPanel.contains(e.target)) {
+    apiPanel.classList.remove('open');
+  }
+});
+
+/* ─── PLATFORM LIST (names only — no hardcoded tactics) ─── */
+const PLATFORM_NAMES = {
+  soundcloud: 'SoundCloud',
+  bandcamp: 'Bandcamp',
+  reddit: 'Reddit',
+  youtube: 'YouTube',
+  pinterest: 'Pinterest',
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  audius: 'Audius',
+  tiktok: 'TikTok',
+  twitter: 'Twitter / X',
+  linkedin: 'LinkedIn',
+  discord: 'Discord',
+  substack: 'Substack',
+  mixcloud: 'Mixcloud'
+};
+
+/* ─── DISCOVERY ENGINE (future) ─────────────────────────────────────────────
+ *
+ * PHASE 1 — Community Discovery
+ * Before analysis, run a web_search layer to find live communities:
+ *   - Active subreddits matching content identity (last post < 7 days)
+ *   - Bandcamp tags with recent uploads in the same genre
+ *   - YouTube channels with similar content, upload frequency > 2/month
+ *   - Discord servers (via disboard.org search)
+ *   - Pinterest boards actively repinned
+ *
+ * PHASE 2 — Noise Filter
+ * Raw search results pass through a filter prompt before reaching strategy:
+ *   Filter criteria (all must pass):
+ *   [x] Active in last 30 days
+ *   [x] Direct content identity match (not just genre — feel, tone, texture)
+ *   [x] Community is organic (not ad-dominated or bot-heavy)
+ *   [x] Open to external contributions (not invite-only or closed)
+ *   Results failing any criterion are silently dropped — user never sees them.
+ *
+ * PHASE 3 — Momentum Detection
+ * Among filtered results, score by:
+ *   - Rising (trending up this week) > Stable > Declining
+ *   - Prefer communities where similar content got traction in last 14 days
+ *   - Flag "early" opportunities — active but underserved niche
+ *
+ * PHASE 4 — Gap Analysis
+ * What exists vs. what's missing:
+ *   - Identify content type gaps in discovered communities
+ *   - Flag if Tagmac's content would be the first/only of its kind there
+ *   - Surface untouched platforms where the audience exists but no one is reaching them
+ *
+ * PHASE 5 — Backlink Web
+ * Every discovered community becomes a backlink node:
+ *   - Each distribution point links back to casacaravan.space
+ *   - Track which nodes generate return traffic (future: analytics integration)
+ *   - Build spider web, not broadcast — each share connects to the next
+ *
+ * IMPLEMENTATION NOTES:
+ *   - Two-call architecture: call 1 = discovery + filter, call 2 = strategy
+ *   - Pass only filtered communities to call 2 (no noise in strategy prompt)
+ *   - Cache filtered results per content fingerprint (avoid redundant searches)
+ *   - Manual send always required for Reddit/Discord (bot detection)
+ *   - Timing intelligence: inject platform-specific peak hours into copy
+ *
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* ─── ANALYZE ─── */
+async function analyze(inputText) {
+  if (!apiKey) {
+    showToast('No API key — add it via the ⚙ icon bottom right');
+    return;
+  }
+
+  setAnalyzing(true);
+  document.getElementById('question-box').style.display = 'none';
+
+  const profile = loadProfile();
+  const profileContext = buildProfileContext(profile);
+
+  const systemPrompt = `You are Jakelu — distribution intelligence for a specific creator. You know them. Every strategy is shaped by who they are.
+
+${profileContext}
+
+FUNDAMENTAL: Never distribute what you haven't understood. If content is unclear or a URL is inaccessible, ask — don't guess.
+- Inaccessible URL (Instagram, Facebook, private) → {"error": "cannot_access", "message": "I can't see this. One line: what is it?"}
+- Less than 80% confident AND no audio/image metadata present → {"error": "need_clarification", "message": "your specific question"}
+- If AUDIO FILE metadata is present (duration, sample rate, BPM etc): proceed with strategy. Use the technical data plus the creator profile to build the distribution. Do NOT ask for clarification on audio files — the metadata is enough to work with.
+
+DIMENSION DETECTION: Read the content and identify which dimension of this creator is speaking. Each dimension reaches different communities with different voices. The active dimension shapes everything.
+
+PLATFORM CONSTRAINTS:
+- Facebook suppresses external links — visual post + link in first comment
+- Reddit requires genuine participation before sharing
+- ${profile.site || 'casacaravan.space'} is always the destination
+
+You are not limited to known platforms. Niche forums, Discord servers, newsletters — if it fits better, propose it.
+
+Respond ONLY with valid JSON (no preamble, no backticks):
+
+{"content_type":"precise description","content_summary":"1-2 sentences","active_dimension":"which dimension and why","audience":"specific, not generic","tone":"feeling/energy/texture","platforms":[{"id":"platform_id","name":"Platform Name","why":"why this dimension belongs here","how":"the exact move — not the principle","copy":"ready-to-use post text native to this platform","backlink_placement":"where ${profile.site || 'casacaravan.space'} goes","backlink_text":"exact text to copy"}],"seo_keywords":["k1","k2","k3","k4","k5"],"backlink_web":"how these placements build cumulative reach back to ${profile.site || 'casacaravan.space'}"}
+
+3-5 platforms. Each choice must be earned.`;
+
+
+  let result = null;
+
+  try {
+    setAnalyzingText('analyzing');
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: inputText }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    result = JSON.parse(clean);
+
+    // Handle clarification / cannot access
+    if (result.error) {
+      setAnalyzing(false);
+      const msg = result.message || 'Tell me more about this content.';
+      const qBox = document.getElementById('question-box');
+      document.getElementById('question-text').textContent = msg;
+      qBox.style.display = 'flex';
+      document.getElementById('main-input').focus();
+      return;
+    }
+
+  } catch (e) {
+    setAnalyzing(false);
+    showToast('Error: ' + (e.message || 'unknown'));
+    console.error(e);
+    return;
+  }
+
+  setAnalyzing(false);
+  renderResult(result, inputText);
+}
+
+function setAnalyzing(on) {
+  const bar = document.getElementById('analyzing-bar');
+  const inputWrap = document.getElementById('input-wrap');
+  if (on) {
+    bar.classList.add('active');
+    inputWrap.style.display = 'none';
+  } else {
+    bar.classList.remove('active');
+    inputWrap.style.display = 'flex';
+  }
+}
+
+function setAnalyzingText(t) {
+  document.getElementById('analyzing-text').textContent = t;
+}
+
+/* ─── RENDER RESULT ─── */
+function renderResult(r, originalInput) {
+  currentResult = r;
+  currentInput = originalInput;
+  // Analysis card
+  const analysisBody = document.getElementById('analysis-body');
+  analysisBody.innerHTML = `
+    <strong style="color: rgba(255,255,255,0.85); font-weight: 400;">${escHtml(r.content_type || '')}</strong>
+    &nbsp;·&nbsp;
+    ${escHtml(r.content_summary || '')}
+    <br><br>
+    ${r.active_dimension ? `<div style="font-size:12px;color:rgba(79,195,161,0.7);margin-bottom:6px;letter-spacing:0.02em;">↳ ${escHtml(r.active_dimension)}</div>` : ''}
+    <span style="color: rgba(255,255,255,0.45); font-size: 12px;">
+      Audience: ${escHtml(r.audience || '')} &nbsp;·&nbsp; Tone: ${escHtml(r.tone || '')}
+    </span>
+    ${r.seo_keywords?.length ? `<br><span style="color: rgba(200,136,30,0.6); font-size: 11px; letter-spacing: 0.04em;">${r.seo_keywords.map(k => '#' + k).join(' ')}</span>` : ''}
+  `;
+
+  // Platform cards
+  const grid = document.getElementById('platforms-grid');
+  grid.innerHTML = '';
+
+  const selectedPlatforms = r.platforms || [];
+  selectedPlatforms.forEach((p) => {
+    const displayName = p.name || PLATFORM_NAMES[p.id] || p.id;
+
+    const card = document.createElement('div');
+    card.className = 'platform-card';
+    card.dataset.platform = p.id || p.name;
+    card.innerHTML = `
+      <div class="platform-header">
+        <span class="platform-name">${escHtml(displayName)}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="approved-mark">sent ✓</span>
+        </div>
+      </div>
+      ${p.why ? `<div class="platform-tactic" style="color:rgba(255,255,255,0.5);font-style:italic;">${escHtml(p.why)}</div>` : ''}
+      ${p.how ? `<div class="platform-tactic" style="margin-top:4px;">${escHtml(p.how)}</div>` : ''}
+      ${p.copy ? `<div class="platform-copy">${escHtml(p.copy)}</div>` : ''}
+      ${p.backlink_placement ? `<div style="font-size:11px;color:rgba(79,195,161,0.55);letter-spacing:0.06em;font-family:'Jost',sans-serif;margin-top:6px;">↳ ${escHtml(p.backlink_placement)}</div>` : ''}
+      <div class="platform-actions">
+        ${p.copy ? `<button class="btn-copy" data-copy="${escHtml(p.copy)}">copy text</button>` : ''}
+        ${p.backlink_text ? `<button class="btn-copy btn-copy-link" data-copy="${escHtml(p.backlink_text)}" style="border-color:rgba(79,195,161,0.25);color:rgba(79,195,161,0.7);">copy link</button>` : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Copy button handlers
+  grid.querySelectorAll('.btn-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let text = btn.dataset.copy;
+      // Support Jakelu — append link if checked
+      const supportChecked = document.getElementById('support-jakelu')?.checked;
+      if (supportChecked && !btn.classList.contains('btn-copy-link')) {
+        text += '\n\ndistributed via jakelu.casacaravan.space';
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copied ✓';
+        btn.classList.add('copied');
+        btn.closest('.platform-card').classList.add('approved');
+        setTimeout(() => {
+          btn.textContent = btn.classList.contains('btn-copy-link') ? 'copy link' : 'copy text';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = 'copied ✓';
+        btn.classList.add('copied');
+        btn.closest('.platform-card').classList.add('approved');
+        setTimeout(() => {
+          btn.textContent = btn.classList.contains('btn-copy-link') ? 'copy link' : 'copy text';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+  });
+
+  // Backlink web card
+  // backlink_web kept in data only — not shown in UI
+
+  // Show result section
+  const resultSection = document.getElementById('result-section');
+  resultSection.style.display = 'block';
+  requestAnimationFrame(() => {
+    resultSection.classList.add('visible');
+    document.getElementById('portal-section').classList.add('has-result');
+  });
+}
+
+/* ─── PROFILE ─── */
+const DEFAULT_PROFILE = {
+  name: 'Tagmac Çankaya',
+  location: 'Lefkoşa, Kuzey Kıbrıs',
+  bio: 'Müzisyen, gong yapımcısı ve çalıcısı, çoban flütü çalıcısı, ses terapisti, improvizasyon odaklı karma tür müzisyen. Casa Caravan\'ın kurucusu. Tagmac Wellness App\'i geliştiriyor. Simyacı-Girişimci (Alchemist-Entrepreneur) olarak tanımlıyor kendini — her zaman hareket halinde, her zaman ortam inşa ediyor.',
+  site: 'casacaravan.space',
+  bandcamp: '',
+  soundcloud: '',
+  instagram: '',
+  voice: 'Dürüst, manipülatif değil, katkı odaklı, reklam değil. Cheesy ve şaşalı hiçbir şey yok. Net ve şeffaf. Pazarlama gibi hissettiren içeriklerden uzak.',
+  references: 'Gong akustiği, fermentasyon, nefes çalışması, vajus siniri, doğa sesleri, uzak topluluklar, bağımsız müzisyenler',
+  dimensions: [
+    'musician — gong maker, shepherd flute, ambient, improvisation',
+    'sound therapist — breath, vagus nerve, frequency, wellness',
+    'maker — fermentation, plants, hands-on creation',
+    'founder — Casa Caravan, digital sanctuary, community',
+    'developer — Tagmac Wellness App, breath-sync audio'
+  ]
+};
+
+function loadProfile() {
+  const saved = localStorage.getItem('jakelu_profile');
+  return saved ? JSON.parse(saved) : { ...DEFAULT_PROFILE };
+}
+
+function saveProfile(profile) {
+  localStorage.setItem('jakelu_profile', JSON.stringify(profile));
+}
+
+function buildProfileContext(profile) {
+  return `
+CREATOR PROFILE:
+Name: ${profile.name}
+Location: ${profile.location}
+Home base: ${profile.site || 'casacaravan.space'}
+${profile.bandcamp ? `Bandcamp: ${profile.bandcamp}` : ''}
+${profile.soundcloud ? `SoundCloud: ${profile.soundcloud}` : ''}
+${profile.instagram ? `Instagram: ${profile.instagram}` : ''}
+
+Who they are: ${profile.bio}
+
+Dimensions (Jakelu detects which is active from the content):
+${(profile.dimensions || []).map((d, i) => `  ${i+1}. ${d}`).join('\n')}
+
+Voice & communication: ${profile.voice}
+Reference worlds: ${profile.references}
+`;
+}
+
+function renderDimensions(dimensions) {
+  const container = document.getElementById('identity-chips');
+  container.innerHTML = '';
+  dimensions.forEach((d, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'identity-chip active';
+    chip.textContent = d.split('—')[0].trim();
+    chip.title = d;
+    chip.dataset.index = i;
+    chip.addEventListener('click', () => chip.classList.toggle('active'));
+    container.appendChild(chip);
+  });
+}
+
+function openProfile() {
+  const p = loadProfile();
+  document.getElementById('p-name').value = p.name || '';
+  document.getElementById('p-location').value = p.location || '';
+  document.getElementById('p-bio').value = p.bio || '';
+  document.getElementById('p-site').value = p.site || '';
+  document.getElementById('p-bandcamp').value = p.bandcamp || '';
+  document.getElementById('p-soundcloud').value = p.soundcloud || '';
+  document.getElementById('p-instagram').value = p.instagram || '';
+  document.getElementById('p-voice').value = p.voice || '';
+  document.getElementById('p-references').value = p.references || '';
+  renderDimensions(p.dimensions || []);
+  document.getElementById('profile-overlay').classList.add('open');
+}
+
+document.getElementById('profile-btn').addEventListener('click', openProfile);
+document.getElementById('btn-profile-close').addEventListener('click', () => {
+  document.getElementById('profile-overlay').classList.remove('open');
+});
+
+document.getElementById('btn-profile-save').addEventListener('click', () => {
+  const chips = document.querySelectorAll('#identity-chips .identity-chip');
+  const p = loadProfile();
+  const dims = Array.from(chips).map(c => c.title || c.textContent);
+  const updated = {
+    ...p,
+    name: document.getElementById('p-name').value.trim(),
+    location: document.getElementById('p-location').value.trim(),
+    bio: document.getElementById('p-bio').value.trim(),
+    site: document.getElementById('p-site').value.trim(),
+    bandcamp: document.getElementById('p-bandcamp').value.trim(),
+    soundcloud: document.getElementById('p-soundcloud').value.trim(),
+    instagram: document.getElementById('p-instagram').value.trim(),
+    voice: document.getElementById('p-voice').value.trim(),
+    references: document.getElementById('p-references').value.trim(),
+    dimensions: dims
+  };
+  saveProfile(updated);
+  document.getElementById('profile-overlay').classList.remove('open');
+  showToast('profile saved');
+});
+
+document.getElementById('add-dimension-btn').addEventListener('click', () => {
+  const input = document.getElementById('new-dimension-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const p = loadProfile();
+  p.dimensions = p.dimensions || [];
+  p.dimensions.push(val);
+  renderDimensions(p.dimensions);
+  input.value = '';
+});
+
+document.getElementById('new-dimension-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('add-dimension-btn').click();
+});
+
+document.getElementById('profile-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('profile-overlay'))
+    document.getElementById('profile-overlay').classList.remove('open');
+});
+
+/* profile btn hover */
+const pBtn = document.getElementById('profile-btn');
+pBtn.addEventListener('mouseenter', () => pBtn.style.background = 'rgba(255,255,255,0.07)');
+pBtn.addEventListener('mouseleave', () => pBtn.style.background = 'rgba(255,255,255,0.03)');
+
+/* initialize profile on first load */
+if (!localStorage.getItem('jakelu_profile')) saveProfile(DEFAULT_PROFILE);
+function dbSave(session) {
+  const history = JSON.parse(localStorage.getItem('jakelu_history') || '[]');
+  history.unshift(session);
+  if (history.length > 50) history.pop();
+  localStorage.setItem('jakelu_history', JSON.stringify(history));
+}
+
+function dbGetAll() {
+  return JSON.parse(localStorage.getItem('jakelu_history') || '[]');
+}
+
+/* ─── APPROVE ─── */
+let currentResult = null;
+let currentInput = '';
+
+document.getElementById('btn-approve').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.platform-card');
+  const approvedCards = document.querySelectorAll('.platform-card.approved');
+  const total = cards.length;
+  const approved = approvedCards.length;
+
+  if (approved === 0) {
+    showToast('Copy at least one platform text first');
+    return;
+  }
+
+  // Save to DB
+  const session = {
+    id: Date.now(),
+    date: new Date().toISOString(),
+    input: currentInput,
+    content_type: currentResult?.content_type || '',
+    content_summary: currentResult?.content_summary || '',
+    platforms_approved: Array.from(approvedCards).map(c => c.dataset.platform),
+    platforms_total: total,
+    backlinks: approved,
+    seo_keywords: currentResult?.seo_keywords || []
+  };
+  dbSave(session);
+
+  const remaining = total - approved;
+  const btn = document.getElementById('btn-approve');
+  btn.textContent = 'approved ✓';
+  btn.style.borderColor = 'rgba(79,195,161,0.5)';
+  btn.style.color = 'rgba(79,195,161,0.9)';
+
+  if (remaining > 0) {
+    showToast(`${approved} of ${total} platforms ready — ${remaining} remaining`, 4000);
+  } else {
+    showToast('Strategy complete — saved to history', 3000);
+  }
+});
+
+/* ─── HISTORY ─── */
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' · ' +
+    d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderHistory() {
+  const sessions = dbGetAll();
+  const list = document.getElementById('history-list');
+  const count = document.getElementById('history-count');
+  count.textContent = sessions.length ? `${sessions.length} session${sessions.length > 1 ? 's' : ''}` : '';
+
+  if (!sessions.length) {
+    list.innerHTML = '<div class="history-empty">no sessions yet</div>';
+    return;
+  }
+
+  list.innerHTML = sessions.map(s => `
+    <div class="history-item">
+      <div class="history-item-top">
+        <div class="history-input">${escHtml(s.input || s.content_summary || '—')}</div>
+        <div class="history-date">${formatDate(s.date)}</div>
+      </div>
+      <div class="history-meta">
+        <div class="history-type">${escHtml(s.content_type || '—')}</div>
+        <div class="history-platforms">
+          ${(s.platforms_approved || []).map(p => `<span class="history-platform-chip">${escHtml(PLATFORM_DB[p]?.name || p)}</span>`).join('')}
+        </div>
+        <div class="history-backlinks">${s.backlinks} backlink${s.backlinks !== 1 ? 's' : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('history-btn').addEventListener('click', () => {
+  renderHistory();
+  document.getElementById('history-overlay').classList.add('open');
+});
+
+document.getElementById('btn-history-close').addEventListener('click', () => {
+  document.getElementById('history-overlay').classList.remove('open');
+});
+
+document.getElementById('btn-history-clear').addEventListener('click', () => {
+  if (!confirm('Clear all history?')) return;
+  localStorage.removeItem('jakelu_history');
+  renderHistory();
+});
+
+document.getElementById('history-overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('history-overlay')) {
+    document.getElementById('history-overlay').classList.remove('open');
+  }
+});
+
+/* ─── HISTORY BTN HOVER ─── */
+const hBtn = document.getElementById('history-btn');
+hBtn.addEventListener('mouseenter', () => hBtn.style.background = 'rgba(255,255,255,0.07)');
+hBtn.addEventListener('mouseleave', () => hBtn.style.background = 'rgba(255,255,255,0.03)');
+
+document.getElementById('btn-reset').addEventListener('click', () => { reset(); });
+
+function reset() {
+  const resultSection = document.getElementById('result-section');
+  resultSection.classList.remove('visible');
+  document.getElementById('portal-section').classList.remove('has-result');
+  document.getElementById('main-input').value = '';
+  document.getElementById('question-box').style.display = 'none';
+  const btn = document.getElementById('btn-approve');
+  btn.textContent = 'approve strategy';
+  btn.style.borderColor = '';
+  btn.style.color = '';
+  setTimeout(() => { resultSection.style.display = 'none'; }, 700);
+}
+
+/* ─── FILE HANDLING ─── */
+let attachedFile = null;
+let attachedMeta = null;
+
+const fileInput = document.getElementById('file-input');
+const filePreview = document.getElementById('file-preview');
+const filePreviewName = document.getElementById('file-preview-name');
+const filePreviewIcon = document.getElementById('file-preview-icon');
+const fileRemove = document.getElementById('file-remove');
+const attachBtn = document.getElementById('attach-btn');
+
+fileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  attachedFile = file;
+  attachedMeta = null;
+
+  const isAudio = file.type.startsWith('audio/');
+  const isImage = file.type.startsWith('image/');
+
+  filePreviewIcon.textContent = isAudio ? '♫' : '◻';
+  filePreviewName.textContent = file.name;
+  filePreview.style.display = 'flex';
+  attachBtn.classList.add('has-file');
+
+  if (isAudio) {
+    filePreviewName.textContent = file.name + ' — analyzing...';
+    attachedMeta = await analyzeAudio(file);
+    filePreviewName.textContent = file.name + (attachedMeta ? ` — ${attachedMeta.duration}s · ${attachedMeta.bpm ? attachedMeta.bpm + ' bpm' : ''}` : '');
+  }
+
+  if (isImage) {
+    attachedMeta = await analyzeImage(file);
+  }
+
+  fileInput.value = '';
+});
+
+fileRemove.addEventListener('click', () => {
+  attachedFile = null;
+  attachedMeta = null;
+  filePreview.style.display = 'none';
+  attachBtn.classList.remove('has-file');
+});
+
+async function analyzeAudio(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const actxA = new (window.AudioContext || window.webkitAudioContext)();
+        const buffer = await actxA.decodeAudioData(e.target.result);
+        const duration = Math.round(buffer.duration);
+        const sampleRate = buffer.sampleRate;
+        const channels = buffer.numberOfChannels;
+
+        // Frequency analysis — dominant range
+        const offlineCtx = new OfflineAudioContext(1, buffer.length, sampleRate);
+        const source = offlineCtx.createBufferSource();
+        source.buffer = buffer;
+        const analyser = offlineCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        source.connect(analyser);
+        analyser.connect(offlineCtx.destination);
+        source.start();
+
+        // RMS energy — estimate quietness/density
+        const data = buffer.getChannelData(0);
+        let rms = 0;
+        const step = Math.floor(data.length / 1000);
+        for (let i = 0; i < data.length; i += step) rms += data[i] * data[i];
+        rms = Math.sqrt(rms / 1000);
+
+        // Rough BPM via onset detection
+        let bpm = null;
+        try {
+          const pcm = buffer.getChannelData(0);
+          const windowSize = Math.floor(sampleRate * 0.01);
+          const energies = [];
+          for (let i = 0; i < pcm.length - windowSize; i += windowSize) {
+            let e = 0;
+            for (let j = 0; j < windowSize; j++) e += pcm[i+j] * pcm[i+j];
+            energies.push(e);
+          }
+          const avg = energies.reduce((a,b) => a+b, 0) / energies.length;
+          let onsets = 0;
+          for (let i = 1; i < energies.length; i++) {
+            if (energies[i] > avg * 1.5 && energies[i-1] <= avg * 1.5) onsets++;
+          }
+          const beatsPerSec = onsets / buffer.duration;
+          bpm = Math.round(beatsPerSec * 60);
+          if (bpm < 40 || bpm > 220) bpm = null;
+        } catch(e) {}
+
+        actxA.close();
+        resolve({
+          duration,
+          sampleRate,
+          channels,
+          rms: rms.toFixed(3),
+          bpm,
+          size: Math.round(file.size / 1024) + 'KB',
+          format: file.type
+        });
+      } catch(err) {
+        resolve({ duration: '?', format: file.type, size: Math.round(file.size/1024) + 'KB' });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+async function analyzeImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        size: Math.round(file.size / 1024) + 'KB',
+        format: file.type
+      });
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
+}
+
+function buildFileContext() {
+  if (!attachedFile || !attachedMeta) return '';
+  const isAudio = attachedFile.type.startsWith('audio/');
+  const isImage = attachedFile.type.startsWith('image/');
+  if (isAudio) {
+    return `\n\n[AUDIO FILE: "${attachedFile.name}" · Duration: ${attachedMeta.duration}s · Format: ${attachedMeta.format} · Size: ${attachedMeta.size} · Channels: ${attachedMeta.channels} · Sample rate: ${attachedMeta.sampleRate}Hz${attachedMeta.bpm ? ' · Estimated BPM: ' + attachedMeta.bpm : ''} · Energy level: ${attachedMeta.rms}]`;
+  }
+  if (isImage) {
+    return `\n\n[IMAGE FILE: "${attachedFile.name}" · Dimensions: ${attachedMeta.width}×${attachedMeta.height}px · Format: ${attachedMeta.format} · Size: ${attachedMeta.size}]`;
+  }
+  return '';
+}
+
+/* ─── TRIGGER ─── */
+document.getElementById('send-btn').addEventListener('click', trigger);
+document.getElementById('main-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') trigger();
+});
+
+function trigger() {
+  const val = document.getElementById('main-input').value.trim();
+  const fileCtx = buildFileContext();
+  if (!val && !fileCtx) return;
+  // send text + file context to Claude, but never write to input bar
+  const fullInput = (val || (attachedFile?.name || '')) + fileCtx;
+  analyze(fullInput);
+}
+
+/* ─── TOAST ─── */
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+/* ─── 40Hz ─── */
+let actx = null;
+let osc40 = null;
+let gain40 = null;
+let soundOn = true;
+
+function start40() {
+  if (actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  gain40 = actx.createGain();
+  gain40.gain.setValueAtTime(0, actx.currentTime);
+  gain40.gain.linearRampToValueAtTime(0.5, actx.currentTime + 6);
+  gain40.connect(actx.destination);
+  osc40 = actx.createOscillator();
+  osc40.type = 'sine';
+  osc40.frequency.value = 40;
+  osc40.connect(gain40);
+  osc40.start();
+}
+
+function stop40() {
+  if (!actx) return;
+  gain40.gain.linearRampToValueAtTime(0, actx.currentTime + 2);
+  setTimeout(() => { try { osc40.stop(); actx.close(); } catch(e){} actx = null; osc40 = null; gain40 = null; }, 2200);
+}
+
+/* auto-start on first user gesture */
+function onFirstGesture() {
+  start40();
+  document.removeEventListener('click', onFirstGesture);
+  document.removeEventListener('keydown', onFirstGesture);
+}
+document.addEventListener('click', onFirstGesture);
+document.addEventListener('keydown', onFirstGesture);
+
+/* toggle button */
+const soundBtn = document.createElement('div');
+soundBtn.title = 'sound';
+soundBtn.innerHTML = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3 6H1v4h2l4 3V3L3 6z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)"/>
+  <path class="w1" d="M11 5.5a3 3 0 010 5" stroke="rgba(255,255,255,0.4)"/>
+  <path class="w2" d="M13.5 3a7 7 0 010 10" stroke="rgba(255,255,255,0.2)"/>
+</svg>`;
+soundBtn.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:20;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;cursor:pointer;';
+
+soundBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  soundOn = !soundOn;
+  const w1 = soundBtn.querySelector('.w1');
+  const w2 = soundBtn.querySelector('.w2');
+  if (soundOn) {
+    start40();
+    w1.setAttribute('stroke', 'rgba(255,255,255,0.4)');
+    w2.setAttribute('stroke', 'rgba(255,255,255,0.2)');
+  } else {
+    stop40();
+    w1.setAttribute('stroke', 'rgba(255,255,255,0.1)');
+    w2.setAttribute('stroke', 'rgba(255,255,255,0.05)');
+  }
+});
+
+document.body.appendChild(soundBtn);
+
+/* ─── UTILS ─── */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
