@@ -1125,6 +1125,16 @@ html, body {
 </div>
 
 <script>
+/* ─── UTILS ─── */
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function linkify(text) {
+  return escHtml(text).replace(/(https?:\/\/[^\s&]+)/g,
+    '<a href="$1" target="_blank" rel="noopener" style="color:rgba(79,195,161,0.8);text-decoration:underline;text-decoration-color:rgba(79,195,161,0.3);">$1</a>'
+  );
+}
+
 /* ─── STARS ─── */
 (function() {
   const canvas = document.getElementById('stars-canvas');
@@ -1438,6 +1448,7 @@ function setAnalyzing(on) {
   if (on) {
     bar.classList.add('active');
     inputWrap.style.display = 'none';
+    document.getElementById('question-box').style.display = 'none';
   } else {
     bar.classList.remove('active');
     inputWrap.style.display = 'flex';
@@ -2051,21 +2062,7 @@ soundBtn.addEventListener('click', (e) => {
 
 document.body.appendChild(soundBtn);
 
-/* ─── UTILS ─── */
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
-function linkify(text) {
-  const escaped = escHtml(text);
-  return escaped.replace(/(https?:\/\/[^\s&]+)/g,
-    '<a href="$1" target="_blank" rel="noopener" style="color:rgba(79,195,161,0.8);text-decoration:underline;text-decoration-color:rgba(79,195,161,0.3);">$1</a>'
-  );
-}
 </script>
 </body>
 </html>
