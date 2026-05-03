@@ -404,6 +404,12 @@ html, body {
   border-left: 1px solid var(--gold-dim);
   margin-top: 4px;
   cursor: text;
+  user-select: text;
+}
+
+.platform-copy a {
+  pointer-events: all;
+  cursor: pointer;
 }
 
 .platform-actions {
@@ -1405,6 +1411,7 @@ Respond ONLY with valid JSON, no preamble, no backticks:
 
     const data = await response.json();
     const text = data.content?.[0]?.text || '';
+    console.log('Strategy full text:', text);
     console.log('Strategy response length:', text.length, 'stop_reason:', data.stop_reason);
     const clean = text.replace(/```json|```/g, '').trim();
 
