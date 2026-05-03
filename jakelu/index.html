@@ -1297,17 +1297,6 @@ FUNDAMENTAL: Never distribute what you haven't understood. If content is unclear
 
 DIMENSION DETECTION: Read the content and identify which dimension of this creator is speaking. Each dimension reaches different communities with different voices. The active dimension shapes everything.
 
-COMMUNITY INTELLIGENCE — do this before building strategy:
-Based on your training knowledge, identify real, specific, active communities where this content belongs. Go beyond the obvious. Think:
-- Subreddits (not just the big ones — find the niches with 10k-100k members that are actually engaged)
-- Discord servers that exist in this space
-- Facebook groups with active posting
-- Forums, newsletters, niche sites
-
-For each community you name: state if you are confident it exists, roughly how active it is, and why this specific content fits there. If you are not sure a community exists, say so explicitly — do not invent names.
-
-Only include communities in your platform recommendations that you are genuinely confident exist and are active.
-
 LINK RULE: If the input contains a URL, that URL must appear in every platform's copy text — naturally embedded, not appended awkwardly. The link is the destination. Never omit it.
 - Facebook suppresses external links — visual post + link in first comment
 - Reddit requires genuine participation before sharing
@@ -1325,7 +1314,63 @@ Respond ONLY with valid JSON (no preamble, no backticks):
   let result = null;
 
   try {
-    setAnalyzingText('analyzing');
+    // ── CALL 1: Community Intelligence ──────────────────────────────
+    setAnalyzingText('researching communities');
+
+    const communityPrompt = `You are a community intelligence researcher. Your job is to find real, specific, active online communities where a piece of content would genuinely fit.
+
+CREATOR: ${profile.name} — ${profile.bio?.substring(0, 150)}
+HOME BASE: ${profile.site || 'casacaravan.space'}
+
+Rules:
+- Only list communities you are genuinely confident exist and are active
+- Go beyond obvious big communities — find niches with real engagement
+- For each: exact name, platform, confidence level (high/medium), why it fits
+- If unsure a community exists, say so — never invent names
+- Include: subreddits, Discord servers, Facebook groups, forums, newsletters
+
+Respond ONLY with valid JSON (no preamble, no backticks):
+{"communities":[{"name":"exact community name","platform":"reddit/discord/facebook/forum/newsletter","url":"if known","confidence":"high/medium","why":"why this content fits here","members":"approximate if known"}]}`;
+
+    const commResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        system: communityPrompt,
+        messages: [{ role: 'user', content: inputText }]
+      })
+    });
+
+    if (!commResponse.ok) {
+      const err = await commResponse.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${commResponse.status}`);
+    }
+
+    const commData = await commResponse.json();
+    const commText = commData.content?.[0]?.text || '';
+    const commClean = commText.replace(/```json|```/g, '').trim();
+    let communities = [];
+    try {
+      const commResult = JSON.parse(commClean);
+      communities = commResult.communities || [];
+    } catch(e) {
+      communities = [];
+    }
+
+    // ── CALL 2: Strategy with communities ──────────────────────────
+    setAnalyzingText('building strategy');
+
+    const communityContext = communities.length > 0
+      ? `\n\nRESEARCHED COMMUNITIES (verified from training knowledge):\n${communities.map(c => `- ${c.name} (${c.platform}, confidence: ${c.confidence}): ${c.why}${c.url ? ' — ' + c.url : ''}`).join('\n')}\n\nBuild your platform strategy around these real communities where possible.`
+      : '';
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -1337,7 +1382,7 @@ Respond ONLY with valid JSON (no preamble, no backticks):
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
-        system: systemPrompt,
+        system: systemPrompt + communityContext,
         messages: [{ role: 'user', content: inputText }]
       })
     });
@@ -1350,7 +1395,20 @@ Respond ONLY with valid JSON (no preamble, no backticks):
     const data = await response.json();
     const text = data.content?.[0]?.text || '';
     const clean = text.replace(/```json|```/g, '').trim();
-    result = JSON.parse(clean);
+
+    // Try JSON parse — if fails, treat as clarification message
+    try {
+      result = JSON.parse(clean);
+    } catch(parseErr) {
+      setAnalyzing(false);
+      // Claude returned plain text — show as question/clarification
+      const msg = clean.length > 200 ? clean.substring(0, 200) + '...' : clean;
+      document.getElementById('question-text').textContent = msg;
+      document.getElementById('question-box').style.display = 'flex';
+      document.getElementById('question-answer').value = '';
+      document.getElementById('question-answer').focus();
+      return;
+    }
 
     // Handle clarification / cannot access
     if (result.error) {
