@@ -1584,8 +1584,8 @@ function renderResult(r, originalInput) {
   });
 
   // Backlink web card
-  // Mastodon post — event delegation
-  grid.addEventListener('click', async (e) => {
+  // Mastodon post — event delegation on document
+  document.addEventListener('click', async (e) => {
     const btn = e.target.closest('.btn-mastodon');
     if (!btn) return;
     const text = btn.dataset.copy;
