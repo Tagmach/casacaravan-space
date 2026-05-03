@@ -927,6 +927,12 @@ html, body {
       <div class="void-label">Jakelu</div>
     </div>
 
+    <!-- Question box (shown when Jakelu needs clarification) -->
+    <div id="question-box" style="display:none;align-items:flex-start;gap:10px;padding:10px 18px;background:rgba(79,195,161,0.06);border:0.5px solid rgba(79,195,161,0.2);border-radius:12px 12px 0 0;width:min(500px,90vw);margin-bottom:-1px;">
+      <span style="color:rgba(79,195,161,0.7);font-size:13px;flex-shrink:0;padding-top:1px;">?</span>
+      <span id="question-text" style="font-size:12px;color:rgba(79,195,161,0.8);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;flex:1;letter-spacing:0.02em;"></span>
+    </div>
+
     <!-- Input -->
     <div class="input-wrap" id="input-wrap">
       <label class="attach-btn" id="attach-btn" title="attach file">
@@ -949,12 +955,6 @@ html, body {
       <span id="file-preview-icon" style="font-size:14px;color:rgba(79,195,161,0.8);flex-shrink:0;"></span>
       <span id="file-preview-name" style="font-size:12px;color:rgba(255,255,255,0.7);font-family:'Jost',sans-serif;font-weight:300;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.02em;"></span>
       <span id="file-remove" style="font-size:11px;color:rgba(255,255,255,0.25);cursor:pointer;padding:2px 8px;flex-shrink:0;">✕</span>
-    </div>
-
-    <!-- Question box (shown when Jakelu needs clarification) -->
-    <div id="question-box" style="display:none;align-items:flex-start;gap:10px;padding:12px 18px;background:rgba(79,195,161,0.06);border:0.5px solid rgba(79,195,161,0.2);border-radius:12px;width:min(500px,90vw);">
-      <span style="color:rgba(79,195,161,0.7);font-size:13px;flex-shrink:0;">?</span>
-      <span id="question-text" style="font-size:13px;color:rgba(255,255,255,0.65);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;flex:1;"></span>
     </div>
 
     <!-- Analyzing -->
@@ -1339,8 +1339,12 @@ Respond ONLY with valid JSON (no preamble, no backticks):
       document.getElementById('question-text').textContent = msg;
       qBox.style.display = 'flex';
       document.getElementById('input-wrap').style.display = 'flex';
-      document.getElementById('main-input').value = '';
-      document.getElementById('main-input').focus();
+      document.getElementById('input-wrap').style.borderRadius = '0 0 50px 50px';
+      document.getElementById('input-wrap').style.borderTop = '0.5px solid rgba(79,195,161,0.2)';
+      const inp = document.getElementById('main-input');
+      inp.value = '';
+      inp.placeholder = 'type your answer...';
+      inp.focus();
       return;
     }
 
@@ -1706,7 +1710,10 @@ function reset() {
   resultSection.classList.remove('visible');
   document.getElementById('portal-section').classList.remove('has-result');
   document.getElementById('main-input').value = '';
+  document.getElementById('main-input').placeholder = 'drop it here, I\'ll distribute it...';
   document.getElementById('question-box').style.display = 'none';
+  document.getElementById('input-wrap').style.borderRadius = '';
+  document.getElementById('input-wrap').style.borderTop = '';
   const btn = document.getElementById('btn-approve');
   btn.textContent = 'approve strategy';
   btn.style.borderColor = '';
