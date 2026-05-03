@@ -1776,11 +1776,13 @@ document.getElementById('mastodon-save').addEventListener('click', () => {
 });
 
 async function postToMastodon(text) {
+  console.log('postToMastodon called, token:', mastodonToken ? 'set' : 'empty', 'instance:', mastodonInstance);
   if (!mastodonToken) {
     showToast('Mastodon token not set — add via ⚙');
     return false;
   }
   try {
+    console.log('Posting to:', `https://${mastodonInstance}/api/v1/statuses`);
     const res = await fetch(`https://${mastodonInstance}/api/v1/statuses`, {
       method: 'POST',
       headers: {
