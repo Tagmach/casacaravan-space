@@ -48,10 +48,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 /* Red tree indicator */
 #red-path-hint{position:fixed;right:20%;bottom:120px;z-index:10;font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:rgba(180,60,40,0.4);opacity:0;transition:opacity 1s;letter-spacing:1px;pointer-events:none;}
 
-/* Key VI overlay firefly */
-#key6-ff{position:fixed;z-index:50;width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 24px rgba(200,168,74,0.6);cursor:pointer;animation:k6b 2s ease-in-out infinite;top:52%;left:48%;display:none;transform:translate(-50%,-50%);}
-@keyframes k6b{0%,100%{opacity:1;}50%{opacity:0.2;}}
-
 </style>
 </head>
 <body>
@@ -567,21 +563,7 @@ function choosePath(path){
     document.getElementById('path-choice').style.pointerEvents='none';
     document.getElementById('red-path-hint').style.opacity='1';
     camTargetX = -9;  // red tree = sol x:-10
-    setTimeout(checkKey6, 3000);
   }
-}
-
-function checkKey6(){
-  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()) return;
-  if(CC_KEYS.hasKey(6)) return;
-  if(CC_KEYS.keyCount()>=5){
-    document.getElementById('key6-ff').style.display='block';
-  }
-}
-
-function takeKey6(){
-  CC_KEYS.award(6);
-  document.getElementById('key6-ff').style.display='none';
 }
 
 // Override animate to include path camera
@@ -609,7 +591,6 @@ function toggleCricket(){
   else { cricket.play(); cricketOn=true; btn.classList.remove('muted'); btn.textContent='♪ crickets'; }
 }
 </script>
-<script src="keys.js"></script>
 <script src="tracking.js"></script>
 </body>
 </html>

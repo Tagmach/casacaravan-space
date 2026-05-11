@@ -349,37 +349,6 @@ function calculate() {
     <div class="tip-text">${p.tip}</div>`;
 
   document.getElementById('productDesc').innerHTML = p.desc;
-
-  // Key III firefly — only on sourdough, only for registered players
-  const existing = document.getElementById('key3-firefly');
-  if (existing) existing.remove();
-
-  if (p.hasKey && typeof CC_KEYS !== 'undefined' && CC_KEYS.isPlaying() && !CC_KEYS.hasKey(3)) {
-    setTimeout(() => {
-      const ff = document.createElement('div');
-      ff.id = 'key3-firefly';
-      ff.style.cssText = `
-        display:inline-block;width:10px;height:10px;border-radius:50%;
-        background:#c8a84a;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);
-        cursor:pointer;margin:32px auto 0;
-        animation:ff3blink 1.8s ease-in-out infinite;
-        position:relative;
-      `;
-      ff.title = '✦';
-      ff.onclick = () => CC_KEYS.award(3);
-
-      const wrap = document.createElement('div');
-      wrap.style.cssText = 'text-align:center;padding:24px 0 8px;';
-      wrap.appendChild(ff);
-
-      const style = document.getElementById('ff3-style') || document.createElement('style');
-      style.id = 'ff3-style';
-      style.textContent = '@keyframes ff3blink{0%,100%{opacity:1;box-shadow:0 0 8px #c8a84a,0 0 20px rgba(200,168,74,0.5);}50%{opacity:0.3;box-shadow:none;}}';
-      document.head.appendChild(style);
-
-      document.querySelector('.product-desc').after(wrap);
-    }, 800);
-  }
 }
 
 calculate();
@@ -395,7 +364,6 @@ calculate();
 </div>
 <div id="copyToast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1208;border:1px solid var(--gold);color:var(--cream);font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:100px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:100;">Link copied</div>
 
-<script src="keys.js"></script>
 <script src="tracking.js"></script>
 </body>
 </html>
