@@ -99,7 +99,6 @@ canvas { display:block; flex:1; min-height:0; }
   </div>
 </div>
 
-<div id="door-label"></div>
 
 <div id="room-overlay">
   <div id="room-content">
@@ -108,6 +107,106 @@ canvas { display:block; flex:1; min-height:0; }
     <button id="room-back" onclick="closeRoom()">&#8592; Back to corridor</button>
   </div>
 </div>
+
+<!-- Audio Sanctuary sub-choice overlay -->
+<div id="sanctuary-overlay">
+  <div id="sanctuary-content">
+    <div id="sanctuary-title">Audio Sanctuary</div>
+    <div id="sanctuary-subtitle">choose your room</div>
+    <div id="sanctuary-options">
+      <div class="sanct-opt" onclick="window.location.href='audio_sanctuary.html'">
+        <div class="sanct-opt-name">Recording Room</div>
+        <div class="sanct-opt-desc">browser studio · reverb · eq · record</div>
+      </div>
+      <div class="sanct-opt" onclick="window.location.href='headspace.html'">
+        <div class="sanct-opt-name">Cymatics Tool</div>
+        <div class="sanct-opt-desc">frequency · pattern · resonance</div>
+      </div>
+    </div>
+    <button id="sanctuary-back" onclick="closeSanctuary()">← back</button>
+  </div>
+</div>
+
+<style>
+#sanctuary-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,8,6,0.97);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  flex-direction: column;
+}
+#sanctuary-overlay.open { display: flex; }
+#sanctuary-content { text-align: center; max-width: 420px; padding: 40px; width: 100%; }
+#sanctuary-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 300;
+  color: #D2C3AF;
+  margin-bottom: 8px;
+}
+#sanctuary-subtitle {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #7A7068;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+#sanctuary-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.sanct-opt {
+  border: 1px solid rgba(160,128,96,0.2);
+  border-radius: 8px;
+  padding: 24px 28px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s;
+  background: rgba(160,128,96,0.03);
+}
+.sanct-opt:hover {
+  border-color: rgba(29,210,100,0.4);
+  background: rgba(29,210,100,0.04);
+}
+.sanct-opt-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: #D2C3AF;
+  margin-bottom: 6px;
+}
+.sanct-opt-desc {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #7A7068;
+}
+.sanct-opt:hover .sanct-opt-name {
+  color: rgba(29,210,100,0.9);
+  text-shadow: 0 0 12px rgba(29,210,100,0.4);
+}
+#sanctuary-back {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #7A7068;
+  background: none;
+  border: 1px solid rgba(46,42,38,0.5);
+  padding: 8px 20px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+#sanctuary-back:hover { color: #A08060; border-color: #A08060; }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -228,12 +327,12 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
-  {name:'Audio Sanctuary',color:0xc89030,border:0xe8a830,z:-2, side:'L',action:'sanctuary'},
-  {name:'Fermentation Lab',color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
-  {name:'Games',           color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
-  {name:'Headspace',       color:0x4060a0,border:0x6090c0,z:-10,side:'R',action:'headspace'},
-  {name:'Idea Basket',     color:0xc06030,border:0xd07040,z:-18,side:'L',action:'ideas'},
-  {name:'Herbal Atelier',  color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
+  {name:'Shop',             color:0xb03020,border:0xff4030,z:-2, side:'L',action:'sanctuary'},
+  {name:'Fermentation Lab', color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
+  {name:'Games',            color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
+  {name:'Audio Sanctuary',  color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary_direct'},
+  {name:'Idea Basket',      color:0xc06030,border:0xd07040,z:-18,side:'L',action:'ideas'},
+  {name:'Herbal Atelier',   color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
 ];
 
 const DW=2.2, DH=2.8;
@@ -312,24 +411,40 @@ doors.forEach(d => {
     new THREE.MeshStandardMaterial({color:bc,emissive:bc,emissiveIntensity:0.6}));
   crack.rotation.y=rotY; crack.position.set(d.side==='L'?px+0.01:px-0.01,py,d.z+0.09); scene.add(crack);
 
-  // Sign — canvas, Cormorant Garamond
+  // Sign — simplified, neon Cormorant italic
   const sc=document.createElement('canvas');
-  sc.width=1024; sc.height=512;
+  sc.width=1024; sc.height=384;
   const ctx=sc.getContext('2d');
-  ctx.fillStyle='#0a0806'; ctx.fillRect(0,0,1024,512);
-  const hex='#'+bc.getHexString();
-  ctx.strokeStyle=hex; ctx.lineWidth=4; ctx.strokeRect(8,8,1008,496);
-  ctx.lineWidth=1.5; ctx.strokeStyle=hex+'55'; ctx.strokeRect(18,18,988,476);
-  ctx.fillStyle='#D2C3AF'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.clearRect(0,0,1024,384);
+  // Subtle dark backing
+  ctx.fillStyle='rgba(10,8,6,0.82)'; 
+  ctx.beginPath();
+  ctx.roundRect(24,24,976,336,18);
+  ctx.fill();
+  // Thin border — neon green
+  ctx.strokeStyle='rgba(29,210,100,0.35)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.roundRect(24,24,976,336,18); ctx.stroke();
+  // Text — Cormorant italic, neon green glow
+  ctx.fillStyle='rgba(29,210,100,0.92)';
+  ctx.shadowColor='rgba(29,210,100,0.8)';
+  ctx.shadowBlur=22;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
   const words=d.name.split(' ');
-  if(words.length===1){ctx.font='300 120px "Cormorant Garamond",serif';ctx.fillText(words[0],512,256);}
-  else if(words.length===2){ctx.font='300 96px "Cormorant Garamond",serif';ctx.fillText(words[0],512,185);ctx.fillText(words[1],512,330);}
-  else{const mid=Math.ceil(words.length/2);ctx.font='300 80px "Cormorant Garamond",serif';ctx.fillText(words.slice(0,mid).join(' '),512,185);ctx.fillText(words.slice(mid).join(' '),512,310);}
-  ctx.strokeStyle=hex; ctx.lineWidth=3; ctx.globalAlpha=0.35;
-  ctx.beginPath(); ctx.moveTo(140,420); ctx.lineTo(884,420); ctx.stroke(); ctx.globalAlpha=1;
+  if(words.length===1){
+    ctx.font='italic 300 128px "Cormorant Garamond",serif';
+    ctx.fillText(words[0],512,192);
+  } else if(words.length===2){
+    ctx.font='italic 300 104px "Cormorant Garamond",serif';
+    ctx.fillText(words[0],512,148); ctx.fillText(words[1],512,264);
+  } else {
+    const mid=Math.ceil(words.length/2);
+    ctx.font='italic 300 88px "Cormorant Garamond",serif';
+    ctx.fillText(words.slice(0,mid).join(' '),512,148);
+    ctx.fillText(words.slice(mid).join(' '),512,264);
+  }
   const tex=new THREE.CanvasTexture(sc); tex.needsUpdate=true;
-  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.53,0.77),
-    new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:new THREE.Color(0xffffff),emissiveIntensity:1.6}));
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.53,0.58),
+    new THREE.MeshStandardMaterial({map:tex,emissiveMap:tex,emissive:new THREE.Color(0x1dd264),emissiveIntensity:1.2,transparent:true,alphaTest:0.01}));
   const sx=d.side==='L'?-1.0:1.0;
   sign.position.set(sx,0.3,d.z-0.3); scene.add(sign); billboardSigns.push(sign);
   sign.userData={door:d};
@@ -643,13 +758,16 @@ canvas.addEventListener('touchend',e=>{
 },{passive:true});
 
 function openD(d){
-  if(d.action==='sanctuary'){window.location.href='audio_sanctuary.html';return;}
+  if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
+  if(d.action==='sanctuary_direct'){window.location.href='audio_sanctuary.html';return;}
+function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
   if(d.action==='garden'){window.location.href='garden.html';return;}
   if(d.action==='games'){window.location.href='games.html';return;}
   if(d.action==='headspace'){window.location.href='headspace.html';return;}
   if(d.action==='fermentation'){window.location.href='fermentation_lab.html';return;}
   if(d.action==='herbal'){window.location.href='herbal_atelier.html';return;}
   if(d.action==='ideas'){window.location.href='idea_basket.html';return;}
+  if(d.action==='shop'){window.location.href='shop.html';return;}
   document.getElementById('room-name').textContent=d.name;
   document.getElementById('room-overlay').classList.add('open');
 }
@@ -663,8 +781,14 @@ function animate(){
   camera.position.z+=(tgtZ-camera.position.z)*Math.min(t*3.5,0.1);
   camera.position.y=Math.sin(e*0.3)*0.01;
   billboardSigns.forEach(s=>s.quaternion.copy(camera.quaternion));
-  renderer.render(scene,camera);
-}
+  // Neon sign update
+  if(scene.userData.drawNeon) scene.userData.drawNeon(e);
+  if(scene.userData.neonLight){
+    const nl = scene.userData.neonLight;
+    const flk = Math.random()<0.05 ? Math.random()*0.4 : 0.6+Math.sin(e*2.3)*0.2;
+    nl.intensity = flk;
+  }
+  renderer.render(scene,camera);}
 
 document.fonts.load('300 80px "Cormorant Garamond"').then(()=>{
   buildDots(); resize(); animate();
@@ -792,105 +916,6 @@ function checkKey7(){
 }
 setInterval(checkKey7,3000);
 setTimeout(checkKey7,2000);
-
-// Welcome screen
-let selectedReward=null;
-const SUPA_URL_W='https://iwfvlatywksvnnxymweb.supabase.co';
-const SUPA_KEY_W='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
-
-function openWelcome(){
-  if(typeof CC_KEYS!=='undefined'&&CC_KEYS.isPlaying()) CC_KEYS.award(7);
-  const w=document.getElementById('welcome7');
-  w.style.display='flex';setTimeout(()=>w.style.opacity='1',50);
-}
-function selectReward(type){
-  selectedReward=type;
-  const titles={room:'A room of your own — tell us about yourself.',tool:'A tool for your world — what do you need?',next:'Join us to build the next game — introduce yourself.'};
-  document.querySelectorAll('.r-opt').forEach(b=>b.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-  document.getElementById('form-title').textContent=titles[type];
-  document.getElementById('reward-form').style.display='block';
-  document.getElementById('reward-form').scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-async function submitReward(){
-  const name=document.getElementById('f-name').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const msg=document.getElementById('f-msg').value.trim();
-  if(!name||!email) return;
-  await fetch(SUPA_URL_W+'/rest/v1/idea_basket',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','apikey':SUPA_KEY_W,'Authorization':'Bearer '+SUPA_KEY_W,'Prefer':'return=minimal'},
-    body:JSON.stringify({name,email,idea:'[KEY VII — '+selectedReward+'] '+msg,why:'Seventh door reward',approved:false})
-  }).catch(()=>{});
-  document.getElementById('form-sent').style.display='block';
-  ['f-name','f-email','f-msg'].forEach(id=>document.getElementById(id).disabled=true);
-}
-</script>
-
-
-<!-- 7th Door — appears when player has 6 keys -->
-<div id="door7" onclick="openWelcome()" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:30;opacity:0;pointer-events:none;transition:opacity 1.5s;text-align:center;cursor:pointer;width:180px;display:none;">
-  <div style="font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:3px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:10px;animation:d7txt 3s ease-in-out infinite;">a seventh door</div>
-  <div style="width:120px;height:180px;margin:0 auto;position:relative;border:2px solid rgba(200,168,74,0.8);border-bottom:none;border-radius:60px 60px 0 0;background:linear-gradient(to bottom,rgba(200,168,74,0.15),rgba(200,168,74,0.04));animation:d7glow 2.5s ease-in-out infinite;">
-    <div style="position:absolute;right:18px;top:50%;width:10px;height:10px;border-radius:50%;background:rgba(200,168,74,0.9);box-shadow:0 0 10px rgba(200,168,74,0.7);"></div>
-    <div style="position:absolute;top:30px;left:50%;transform:translateX(-50%);font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:4px;color:rgba(200,168,74,0.7);">VII</div>
-    <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-family:'Jost',sans-serif;font-size:7px;letter-spacing:2px;color:rgba(200,168,74,0.5);text-transform:uppercase;white-space:nowrap;">enter</div>
-  </div>
-</div>
-
-<!-- Welcome Screen -->
-<div id="welcome7" style="position:fixed;inset:0;z-index:100;background:rgba(6,5,10,0.97);display:none;align-items:flex-start;justify-content:center;opacity:0;transition:opacity 0.8s;overflow-y:auto;">
-  <div style="max-width:560px;padding:80px 40px 60px;text-align:center;width:100%;">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:10px;letter-spacing:4px;color:rgba(200,168,74,0.6);text-transform:uppercase;margin-bottom:28px;">The Seventh Door</div>
-    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,48px);font-weight:300;color:#D2C3AF;line-height:1.2;margin-bottom:24px;">Welcome.</h1>
-    <p style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:#7A7068;line-height:1.9;margin-bottom:48px;">
-      You explored this corridor like an explorer.<br>
-      You collected the keys. You found the door.<br><br>
-      Now tell us what you want.
-    </p>
-    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:40px;">
-      <button onclick="selectReward('room')" class="r-opt"><div class="r-title">A room of your own</div>One month, free. Your own space in this corridor — a tool, a project, whatever fits. We'll help you build it.</button>
-      <button onclick="selectReward('tool')" class="r-opt"><div class="r-title">A tool, somewhere else</div>We help you build something for your own world. Yours to keep.</button>
-      <button onclick="selectReward('next')" class="r-opt"><div class="r-title">Join us to build the next game</div>Your name will appear as one of the makers.</button>
-    </div>
-    <div id="reward-form" style="display:none;text-align:left;border:1px solid rgba(46,42,38,0.6);border-radius:10px;padding:28px;margin-bottom:32px;">
-      <div id="form-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(200,168,74,0.9);margin-bottom:20px;"></div>
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <input id="f-name" type="text" placeholder="Your name" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
-        <input id="f-email" type="email" placeholder="Your email" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;">
-        <textarea id="f-msg" placeholder="Anything you want to say..." rows="3" style="background:rgba(255,255,255,0.03);border:1px solid rgba(46,42,38,0.8);border-radius:6px;color:#D2C3AF;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:16px;outline:none;width:100%;resize:none;"></textarea>
-        <button onclick="submitReward()" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;padding:12px 28px;border:1px solid rgba(200,168,74,0.5);color:#c8a84a;background:none;border-radius:100px;cursor:pointer;align-self:flex-start;">Send →</button>
-      </div>
-      <div id="form-sent" style="display:none;font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:rgba(200,168,74,0.8);margin-top:16px;">Received. We'll be in touch.</div>
-    </div>
-    <a href="corridor-3d.html" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(120,110,100,0.5);text-decoration:none;border:1px solid rgba(46,42,38,0.5);padding:8px 20px;border-radius:100px;display:inline-block;">← Back to the corridor</a>
-  </div>
-</div>
-
-<style>
-.r-opt{font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1.5px;padding:18px 24px;border:1px solid rgba(160,128,96,0.25);color:#A08060;background:rgba(160,128,96,0.04);border-radius:8px;cursor:pointer;transition:all 0.25s;text-align:left;line-height:1.8;width:100%;}
-.r-opt:hover{border-color:rgba(200,168,74,0.5);background:rgba(200,168,74,0.06);}
-.r-opt.selected{border-color:rgba(200,168,74,0.7);background:rgba(200,168,74,0.08);}
-.r-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:#D2C3AF;margin-bottom:4px;}
-@keyframes d7glow{0%,100%{box-shadow:0 0 20px rgba(200,168,74,0.15);}50%{box-shadow:0 0 40px rgba(200,168,74,0.4);}}
-@keyframes d7txt{0%,100%{opacity:0.5;}50%{opacity:1;}}
-</style>
-
-<script src="keys.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script>
-// ── KEY VII — 6 keys trigger ──────────────────────────────────────
-function checkKey7(){
-  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()) return;
-  if(CC_KEYS.hasKey(7)) return;
-  if(CC_KEYS.keyCount()>=6){
-    const el=document.getElementById('door7');
-    if(el){el.style.display='block';setTimeout(()=>el.style.opacity='1',100);}
-  }
-}
-// Check every 3 seconds
-setInterval(checkKey7, 3000);
-setTimeout(checkKey7, 2000);
 
 // Welcome screen
 let selectedReward=null;
