@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — Casa Caravan Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #080705;
+  --surface: #0f0d0a;
+  --border: rgba(160,128,96,0.15);
+  --gold: #A08060;
+  --cream: #D2C3AF;
+  --dim: #7A7068;
+  --green: rgba(29,210,100,0.85);
+  --red: rgba(255,70,60,0.85);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,7,5,0.92);
+  backdrop-filter: blur(8px);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--cream);
+  text-decoration: none;
+}
+.nav-back {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--cream); }
+
+/* ── HERO ── */
+.hero {
+  padding: 140px 40px 60px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.hero-label {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1.15;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+/* ── SECTIONS ── */
+.section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.section-label {
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 36px;
+}
+
+/* ── PRODUCT ROW ── */
+.product {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(160,128,96,0.08);
+  cursor: pointer;
+  transition: all 0.2s;
+  gap: 20px;
+}
+.product:last-child { border-bottom: none; }
+.product:hover { padding-left: 8px; }
+.product:hover .product-name { color: var(--cream); }
+
+.product-left { flex: 1; }
+.product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 300;
+  color: rgba(210,195,175,0.85);
+  margin-bottom: 4px;
+  transition: color 0.2s;
+}
+.product-desc {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  line-height: 1.7;
+}
+.product-tag {
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.6;
+  margin-top: 6px;
+}
+
+.product-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.product-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.product-price .price-note {
+  display: block;
+  font-family: 'Jost', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  font-style: normal;
+  margin-top: 2px;
+}
+.btn-add {
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid rgba(160,128,96,0.3);
+  color: var(--gold);
+  background: none;
+  border-radius: 100px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.btn-add:hover {
+  border-color: var(--gold);
+  background: rgba(160,128,96,0.06);
+}
+
+/* Digital products — €1 each, listed differently */
+.digital-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.digital-item {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.digital-item:hover {
+  border-color: rgba(160,128,96,0.35);
+  background: rgba(160,128,96,0.03);
+}
+.digital-item.selected {
+  border-color: var(--gold);
+  background: rgba(160,128,96,0.06);
+}
+.digital-item-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--cream);
+}
+.digital-item-price {
+  font-size: 11px;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.digital-cart-info {
+  font-size: 10px;
+  color: var(--dim);
+  margin-top: 16px;
+  line-height: 1.7;
+}
+
+/* ── CART BAR ── */
+#cart-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 40;
+  background: rgba(15,13,10,0.97);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+}
+#cart-bar.visible { transform: translateY(0); }
+.cart-summary {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--dim);
+}
+.cart-summary strong {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cream);
+  font-weight: 300;
+  margin-right: 8px;
+}
+.btn-checkout {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: 1px solid rgba(160,128,96,0.5);
+  color: var(--gold);
+  background: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-checkout:hover {
+  background: rgba(160,128,96,0.08);
+  border-color: var(--gold);
+}
+
+/* ── ORDER OVERLAY ── */
+#order-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(8,7,5,0.98);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+}
+#order-overlay.open { display: flex; }
+#order-content {
+  max-width: 520px;
+  width: 100%;
+  padding: 80px 40px 60px;
+}
+.order-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 32px;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+.order-subtitle {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 40px;
+}
+
+/* Cart items in order */
+#order-items {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(160,128,96,0.08);
+  gap: 12px;
+}
+.order-item:last-child { border-bottom: none; }
+.order-item-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--cream);
+  flex: 1;
+}
+.order-item-price {
+  font-size: 13px;
+  color: var(--gold);
+  white-space: nowrap;
+}
+.order-item-remove {
+  font-size: 11px;
+  color: var(--dim);
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: color 0.2s;
+}
+.order-item-remove:hover { color: var(--cream); }
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  background: rgba(160,128,96,0.04);
+}
+.order-total-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.order-total-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream);
+}
+
+/* Form */
+.form-section { margin-bottom: 28px; }
+.form-label {
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 14px;
+  display: block;
+}
+.form-row { display: flex; flex-direction: column; gap: 10px; }
+.form-input {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(46,42,38,0.8);
+  border-radius: 6px;
+  color: var(--cream);
+  padding: 12px 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: rgba(160,128,96,0.5); }
+.form-input::placeholder { color: var(--dim); font-style: italic; }
+textarea.form-input { resize: none; }
+
+/* Payment options */
+.payment-opts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.payment-opt {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.payment-opt:hover { border-color: rgba(160,128,96,0.35); }
+.payment-opt.selected {
+  border-color: var(--gold);
+  background: rgba(160,128,96,0.06);
+}
+.payment-opt-name {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+.payment-opt-detail {
+  font-size: 8px;
+  color: var(--dim);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Shipping notice */
+.shipping-notice {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  line-height: 1.8;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+.shipping-notice strong { color: var(--cream); font-weight: 400; }
+
+.btn-send {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border: 1px solid rgba(160,128,96,0.5);
+  color: var(--gold);
+  background: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 8px;
+}
+.btn-send:hover {
+  background: rgba(160,128,96,0.08);
+  border-color: var(--gold);
+}
+
+.btn-back-order {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: none;
+  border: 1px solid rgba(46,42,38,0.5);
+  padding: 10px 22px;
+  border-radius: 100px;
+  cursor: pointer;
+  margin-top: 12px;
+  width: 100%;
+  transition: all 0.2s;
+}
+.btn-back-order:hover { color: var(--cream); border-color: var(--dim); }
+
+/* Confirmation */
+#order-confirm {
+  display: none;
+  text-align: center;
+  padding: 60px 0;
+}
+.confirm-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 36px;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+.confirm-text {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 2;
+  max-width: 360px;
+  margin: 0 auto 40px;
+}
+
+/* Testimonials */
+.testimonials {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px 100px;
+}
+.testimonial {
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(160,128,96,0.08);
+}
+.testimonial:last-child { border-bottom: none; }
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 18px;
+  font-weight: 300;
+  color: rgba(210,195,175,0.8);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+.testimonial-author {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.testimonial-date {
+  font-size: 8px;
+  color: rgba(122,112,104,0.5);
+  margin-left: 16px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  nav { padding: 16px 20px; }
+  .hero, .section, .testimonials { padding-left: 20px; padding-right: 20px; }
+  .payment-opts { grid-template-columns: 1fr 1fr; }
+  #cart-bar { padding: 14px 20px; }
+  .product-right { gap: 12px; }
+  #order-content { padding: 60px 20px 40px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="corridor-3d.html" class="nav-logo">Casa Caravan Space</a>
+  <a href="corridor-3d.html" class="nav-back">← corridor</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">The Shop</div>
+  <h1 class="hero-title">Things made<br>with care.</h1>
+  <p class="hero-sub">Sound sessions, fermented starters, stone-ground butters, and music — each carrying its own story. Physical delivery within Cyprus only.</p>
+</div>
+
+<!-- EXPERIENCES -->
+<div class="section">
+  <div class="section-label">Experiences</div>
+
+  <div class="product" onclick="addToCart('Sonic Journey — Individual Session', 75, 'experience')">
+    <div class="product-left">
+      <div class="product-name">Sonic Journey</div>
+      <div class="product-desc">45-minute immersive sound session · hand-forged gongs · handpan · individual</div>
+      <div class="product-tag">Lefkoşa · Wednesdays · by appointment</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€75</div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+
+  <div class="product" onclick="addToCart('Sonic Journey — Duo Session', 37.50, 'experience')">
+    <div class="product-left">
+      <div class="product-name">Sonic Journey — Duo</div>
+      <div class="product-desc">Same journey, shared · ideal for friends, partners, colleagues · each person pays half</div>
+      <div class="product-tag">Lefkoşa · Wednesdays · by appointment</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€37.50 <span class="price-note">per person</span></div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+
+  <div class="product" onclick="addToCart('Sonic Journey — Online Session', 60, 'experience')">
+    <div class="product-left">
+      <div class="product-name">Sonic Journey — Online</div>
+      <div class="product-desc">Live streamed session · anywhere in the world · group price when multiple join</div>
+      <div class="product-tag">Worldwide · schedule by email</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€60 <span class="price-note">individual</span></div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOD -->
+<div class="section">
+  <div class="section-label">From the Kitchen</div>
+
+  <div class="product" onclick="addToCart('Ukiyo Nut Butter — 6 Pack', 52, 'physical')">
+    <div class="product-left">
+      <div class="product-name">Ukiyo Nut Butter</div>
+      <div class="product-desc">Stone-ground · cashews, coconut, goji berries · 190g per jar · 6 jars · 24+ month shelf life</div>
+      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€52</div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+
+  <div class="product" onclick="addToCart('Coconut Butter — 6 Pack', 51, 'physical')">
+    <div class="product-left">
+      <div class="product-name">Coconut Butter</div>
+      <div class="product-desc">Pure stone-ground coconut · 290g per jar · 6 jars · no additives</div>
+      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€51</div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+
+  <div class="product" onclick="addToCart('Sourdough Starter', 15, 'physical')">
+    <div class="product-left">
+      <div class="product-name">Sourdough Starter</div>
+      <div class="product-desc">200g living culture · decade-old · feed 1:1 flour/water · enough for 1000g flour</div>
+      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
+    </div>
+    <div class="product-right">
+      <div class="product-price">€15</div>
+      <button class="btn-add">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIGITAL -->
+<div class="section">
+  <div class="section-label">Digital — €1 each</div>
+  <div class="digital-grid" id="digital-grid">
+    <!-- populated by JS -->
+  </div>
+  <div class="digital-cart-info">Select one or more · payment confirmed · download link sent to your email</div>
+</div>
+
+<!-- SONIC JOURNEY REVIEWS -->
+<div class="testimonials">
+  <div class="section-label">What people say about Sonic Journey</div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"I experienced a true journey; an inner journey into a place I had never reached before. My body received the sounds and vibrations, not just through my ears, but through every part of me. I could feel the energy moving through me, carrying my mind with it. It was an adventure, and like all journeys, it touched the way I see the world and deepened my understanding."</div>
+    <div class="testimonial-author">Mehdi Abedi <span class="testimonial-date">December 2025</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"It is hard to put in words an experience that touched me on so many levels, so much deeper than can be captured by only mind. It was a dance between my mind trying to analyze what is happening, and the moments where all this let go and I dissolved into a deep relaxation — feeling the music on the levels of mind, body, energy, all together in a perfect resonance with me, simply being present in that nourishing experience."</div>
+    <div class="testimonial-author">Jana Rutova <span class="testimonial-date">December 2025</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"I was at a short sound session with Tagmac and honestly… goosebumps. Real chills. All the sounds were amazing, but what surprised me the most was that the strongest feeling came from the shaker, not the gongs. He also played the handpan so well, and knowing that he actually made the gongs himself made the whole experience feel even more special."</div>
+    <div class="testimonial-author">Rūta Staskeviciute <span class="testimonial-date">January 2026</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"Unexpectedly impactful. It was truly a journey from beginning to end. I never could have guessed just how profound an impact individual sounds could have until this session. Each sound had its own character, texture, and emotion. I feel that there is a power in sounds which can change inner and deep feelings."</div>
+    <div class="testimonial-author">Tuğberk Emirzade <span class="testimonial-date">March 2026</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"I've joined Tağmaç's Sonic Journey a number of times over the years, and it's been really interesting to see how they've evolved. Each time feels a bit more grounded, a bit more intentional. For me, it's never just been about 'sound therapy' as a concept. It feels more like being guided through a space with sound; sometimes subtle, sometimes intense, but always with a sense of flow."</div>
+    <div class="testimonial-author">Barış Parlan <span class="testimonial-date">March 2026</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemiş hissetmek ve o geceki uyku kalitemde belirgin bir fark. Sürecin kendisi başlı başına bir trans hali."</div>
+    <div class="testimonial-author">Ahmet Baba <span class="testimonial-date">2025</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"Müthiş ve çok rahatlatıcı bir deneyimdi. Bu deneyimden sonra ses ve frekansların hayatımızda ne kadar önemli olduğunu farkettim."</div>
+    <div class="testimonial-author">Hasan İlban <span class="testimonial-date">2025</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"I walked in carrying a weight, I was looking for peace. But the moment the music began, everything shifted. It was a deeply felt experience, where gentle vibrations delicately untied the emotional knots I didn't know I was carrying."</div>
+    <div class="testimonial-author">Nora Abouzi <span class="testimonial-date">2025</span></div>
+  </div>
+
+  <div class="testimonial">
+    <div class="testimonial-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div>
+    <div class="testimonial-author">Sergen Uysal <span class="testimonial-date">2025</span></div>
+  </div>
+</div>
+
+<!-- CART BAR -->
+<div id="cart-bar">
+  <div class="cart-summary">
+    <strong id="cart-count-label"></strong>
+    <span id="cart-total-label"></span>
+  </div>
+  <button class="btn-checkout" onclick="openOrder()">Checkout →</button>
+</div>
+
+<!-- ORDER OVERLAY -->
+<div id="order-overlay">
+  <div id="order-content">
+
+    <div id="order-form-view">
+      <div class="order-title">Your Order</div>
+      <div class="order-subtitle">review & complete</div>
+
+      <div id="order-items"></div>
+
+      <div id="order-shipping" style="display:none;" class="shipping-notice">
+        <strong>Delivery</strong> — Cyprus only. Address required below. Shipping fee: <strong>€5</strong> added per physical order.
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Contact</label>
+        <div class="form-row">
+          <input class="form-input" id="f-name" type="text" placeholder="Your name" maxlength="80">
+          <input class="form-input" id="f-email" type="email" placeholder="Email address" maxlength="100">
+          <input class="form-input" id="f-phone" type="tel" placeholder="Phone number" maxlength="30">
+        </div>
+      </div>
+
+      <div class="form-section" id="address-section" style="display:none;">
+        <label class="form-label">Delivery Address</label>
+        <div class="form-row">
+          <textarea class="form-input" id="f-address" rows="2" placeholder="Street, city, postcode"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Payment Method</label>
+        <div class="payment-opts">
+          <div class="payment-opt" onclick="selectPayment('IBAN')">
+            <div class="payment-opt-name">Bank Transfer</div>
+            <div class="payment-opt-detail">IBAN details sent after order</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Revolut')">
+            <div class="payment-opt-name">Revolut</div>
+            <div class="payment-opt-detail">Link sent after order</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Ethereum')">
+            <div class="payment-opt-name">Ethereum</div>
+            <div class="payment-opt-detail">Wallet address on request</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Note (optional)</label>
+        <div class="form-row">
+          <textarea class="form-input" id="f-note" rows="2" placeholder="Preferred session time, special requests…"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-send" onclick="submitOrder()">Send Order →</button>
+      <button class="btn-back-order" onclick="closeOrder()">← back to shop</button>
+    </div>
+
+    <div id="order-confirm">
+      <div class="confirm-title">Order received.</div>
+      <p class="confirm-text">We'll be in touch shortly with payment details.<br>Thank you for choosing something made with care.</p>
+      <button class="btn-back-order" onclick="closeOrder(); resetCart();">← back to shop</button>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────
+const SUPA_URL = 'https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── DIGITAL PRODUCTS ─────────────────────────────────────────────
+const digitalProducts = [
+  { id: 'd1', name: 'Gong Recording — I',     type: 'gong' },
+  { id: 'd2', name: 'Gong Recording — II',    type: 'gong' },
+  { id: 'd3', name: 'Gong Recording — III',   type: 'gong' },
+  { id: 'd4', name: 'Breath Session — I',     type: 'breath' },
+  { id: 'd5', name: 'Breath Session — II',    type: 'breath' },
+  { id: 'd6', name: 'Music — Track I',        type: 'music' },
+  { id: 'd7', name: 'Music — Track II',       type: 'music' },
+  { id: 'd8', name: 'Music — Track III',      type: 'music' },
+];
+
+const digitalGrid = document.getElementById('digital-grid');
+digitalProducts.forEach(p => {
+  const el = document.createElement('div');
+  el.className = 'digital-item';
+  el.id = 'dp-' + p.id;
+  el.innerHTML = `<span class="digital-item-name">${p.name}</span><span class="digital-item-price">€1</span>`;
+  el.onclick = () => toggleDigital(p);
+  digitalGrid.appendChild(el);
+});
+
+// ── CART ─────────────────────────────────────────────────────────
+let cart = [];
+let selectedPayment = null;
+const selectedDigital = new Set();
+
+function toggleDigital(p) {
+  const el = document.getElementById('dp-' + p.id);
+  if (selectedDigital.has(p.id)) {
+    selectedDigital.delete(p.id);
+    el.classList.remove('selected');
+    cart = cart.filter(i => i.id !== p.id);
+  } else {
+    selectedDigital.add(p.id);
+    el.classList.add('selected');
+    cart.push({ id: p.id, name: p.name, price: 1, type: 'digital' });
+  }
+  updateCartBar();
+}
+
+function addToCart(name, price, type) {
+  // Avoid exact duplicates
+  if (cart.find(i => i.name === name)) return;
+  cart.push({ name, price, type });
+  updateCartBar();
+}
+
+function removeFromCart(idx) {
+  const item = cart[idx];
+  if (item && item.type === 'digital') selectedDigital.delete(item.id);
+  if (item && item.id) document.getElementById('dp-' + item.id)?.classList.remove('selected');
+  cart.splice(idx, 1);
+  updateCartBar();
+  renderOrderItems();
+}
+
+function cartTotal() {
+  const base = cart.reduce((s, i) => s + i.price, 0);
+  const hasPhysical = cart.some(i => i.type === 'physical');
+  return base + (hasPhysical ? 5 : 0);
+}
+
+function updateCartBar() {
+  const bar = document.getElementById('cart-bar');
+  if (cart.length === 0) {
+    bar.classList.remove('visible');
+    return;
+  }
+  bar.classList.add('visible');
+  const total = cartTotal();
+  const hasPhysical = cart.some(i => i.type === 'physical');
+  document.getElementById('cart-count-label').textContent = cart.length + (cart.length === 1 ? ' item' : ' items');
+  document.getElementById('cart-total-label').textContent = '— €' + total.toFixed(2) + (hasPhysical ? ' (incl. €5 shipping)' : '');
+}
+
+function resetCart() {
+  cart = [];
+  selectedDigital.clear();
+  document.querySelectorAll('.digital-item.selected').forEach(e => e.classList.remove('selected'));
+  updateCartBar();
+  selectedPayment = null;
+  document.querySelectorAll('.payment-opt.selected').forEach(e => e.classList.remove('selected'));
+}
+
+// ── ORDER OVERLAY ────────────────────────────────────────────────
+function openOrder() {
+  document.getElementById('order-overlay').classList.add('open');
+  document.getElementById('order-form-view').style.display = 'block';
+  document.getElementById('order-confirm').style.display = 'none';
+  renderOrderItems();
+}
+function closeOrder() {
+  document.getElementById('order-overlay').classList.remove('open');
+}
+
+function renderOrderItems() {
+  const hasPhysical = cart.some(i => i.type === 'physical');
+  document.getElementById('order-shipping').style.display = hasPhysical ? 'block' : 'none';
+  document.getElementById('address-section').style.display = hasPhysical ? 'block' : 'none';
+
+  const total = cartTotal();
+  let html = cart.map((item, i) => `
+    <div class="order-item">
+      <div class="order-item-name">${item.name}</div>
+      <div class="order-item-price">€${item.price.toFixed(2)}</div>
+      <div class="order-item-remove" onclick="removeFromCart(${i})">✕</div>
+    </div>
+  `).join('');
+
+  if (hasPhysical) {
+    html += `<div class="order-item">
+      <div class="order-item-name" style="font-style:normal;font-size:12px;color:var(--dim)">Shipping</div>
+      <div class="order-item-price">€5.00</div>
+      <div class="order-item-remove"></div>
+    </div>`;
+  }
+
+  document.getElementById('order-items').innerHTML = `
+    ${html}
+    <div class="order-total">
+      <div class="order-total-label">Total</div>
+      <div class="order-total-price">€${total.toFixed(2)}</div>
+    </div>
+  `;
+}
+
+function selectPayment(method) {
+  selectedPayment = method;
+  document.querySelectorAll('.payment-opt').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+}
+
+async function submitOrder() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const note = document.getElementById('f-note').value.trim();
+  const address = document.getElementById('f-address')?.value.trim() || '';
+  const hasPhysical = cart.some(i => i.type === 'physical');
+
+  if (!name || !email) { alert('Name and email are required.'); return; }
+  if (!selectedPayment) { alert('Please select a payment method.'); return; }
+  if (hasPhysical && !address) { alert('Please enter a delivery address.'); return; }
+  if (cart.length === 0) return;
+
+  const products = cart.map(i => `${i.name} (€${i.price.toFixed(2)})`).join(', ');
+  const total = cartTotal();
+
+  try {
+    await supa.from('orders').insert({
+      name,
+      email,
+      product: products,
+      price: total,
+      payment_method: selectedPayment,
+      payment_note: [
+        note,
+        hasPhysical ? `Address: ${address}` : '',
+        phone ? `Phone: ${phone}` : ''
+      ].filter(Boolean).join(' | '),
+      approved: false
+    });
+
+    document.getElementById('order-form-view').style.display = 'none';
+    document.getElementById('order-confirm').style.display = 'block';
+  } catch(e) {
+    alert('Something went wrong. Please try again.');
+    console.error(e);
+  }
+}
+</script>
+
+<script src="tracking.js"></script>
+</body>
+</html>
