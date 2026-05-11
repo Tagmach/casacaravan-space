@@ -3,313 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Primary SEO -->
 <title>About — Casa Caravan Space</title>
-<meta name="description" content="The story of Casa Caravan — from Northern Cyprus to a digital space for sound, fermentation and wellness. A jungle, a lost path, and fireflies.">
-<meta name="author" content="Tağmaç Çankaya">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://casacaravan.space/about">
-
-<!-- Open Graph -->
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://casacaravan.space/about">
-<meta property="og:title" content="About — Casa Caravan Space">
-<meta property="og:description" content="The story of Casa Caravan — from Northern Cyprus to a digital space. A jungle, a lost path, and fireflies.">
-<meta property="og:image" content="https://casacaravan.space/og-image.jpg">
-<meta property="og:site_name" content="Casa Caravan Space">
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="About — Casa Caravan Space">
-<meta name="twitter:description" content="The story of Casa Caravan — a jungle, a lost path, and fireflies.">
-<meta name="twitter:image" content="https://casacaravan.space/og-image.jpg">
-
-<!-- Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AboutPage",
-  "name": "About Casa Caravan Space",
-  "url": "https://casacaravan.space/about",
-  "author": {
-    "@type": "Person",
-    "name": "Tağmaç Çankaya",
-    "url": "https://casacaravan.space"
-  },
-  "description": "The origin story of Casa Caravan — sound, fermentation, wellness and a digital space that helps you realize yourself."
-}
-</script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:    #0a0908;
-  --bg2:   #131110;
-  --gold:  #C0A070;
-  --cream: #EAD8C0;
-  --text:  #D8D0C4;
-  --muted: #A09080;
-  --dim:   #7A6E64;
-  --border:#3E3830;
+  --bg: #080705;
+  --border: rgba(160,128,96,0.12);
+  --gold: #A08060;
+  --cream: #D2C3AF;
+  --dim: #7A7068;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--cream);
   font-family: 'Jost', sans-serif;
+  font-weight: 300;
   min-height: 100vh;
 }
-
-header {
-  padding: 28px 48px;
-  border-bottom: 1px solid var(--border);
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  padding: 20px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,7,5,0.92);
+  backdrop-filter: blur(8px);
 }
-
-.brand {
+.nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--dim);
-  text-transform: uppercase;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--cream);
   text-decoration: none;
 }
-
-.back {
-  font-size: 10px;
-  letter-spacing: 2px;
+.nav-back {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
   color: var(--dim);
   text-decoration: none;
   transition: color 0.2s;
 }
-.back:hover { color: var(--gold); }
-
-.container {
-  max-width: 640px;
+.nav-back:hover { color: var(--cream); }
+.page {
+  max-width: 680px;
   margin: 0 auto;
-  padding: 80px 48px 120px;
+  padding: 140px 40px 120px;
 }
-
-.eyebrow {
+.label {
   font-size: 9px;
   letter-spacing: 4px;
-  color: var(--gold);
   text-transform: uppercase;
-  margin-bottom: 24px;
+  color: var(--dim);
+  margin-bottom: 32px;
+  display: block;
 }
-
-.headline {
+.opening {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(32px, 5vw, 48px);
-  font-weight: 300;
-  color: var(--cream);
-  line-height: 1.2;
-  margin-bottom: 56px;
-}
-
-.story {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 19px;
-  font-weight: 300;
-  line-height: 1.9;
-  color: var(--text);
-}
-
-.story p {
-  margin-bottom: 28px;
-}
-
-.story em {
   font-style: italic;
+  font-weight: 300;
+  font-size: clamp(32px, 4.5vw, 50px);
+  line-height: 1.3;
   color: var(--cream);
+  margin-bottom: 72px;
 }
-
-
+.body-text {
+  font-size: 14px;
+  line-height: 2.1;
+  color: rgba(210,195,175,0.75);
+}
+.body-text p { margin-bottom: 28px; }
+.body-text p:last-child { margin-bottom: 0; }
+.pull-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(20px, 2.8vw, 28px);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.65;
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 56px 0;
+}
 .divider {
   width: 40px;
   height: 1px;
-  background: var(--border);
+  background: var(--gold);
+  opacity: 0.35;
   margin: 56px 0;
 }
-
 .closing {
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--dim);
-  text-transform: uppercase;
-  line-height: 2.2;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: rgba(210,195,175,0.85);
+  line-height: 1.9;
+  margin-bottom: 64px;
 }
-
-.closing a {
-  color: var(--gold);
-  text-decoration: none;
-}
-
-footer {
+.signature {
+  padding-top: 40px;
   border-top: 1px solid var(--border);
-  padding: 24px 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
-
-.footer-text {
+.signature-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream);
+  margin-bottom: 6px;
+}
+.signature-role {
   font-size: 9px;
   letter-spacing: 2px;
-  color: var(--dim);
   text-transform: uppercase;
+  color: var(--dim);
+  line-height: 2;
+}
+@media (max-width: 600px) {
+  nav { padding: 16px 20px; }
+  .page { padding: 120px 24px 80px; }
 }
 </style>
 </head>
 <body>
 
-<header>
-  <a class="brand" href="/">Casa Caravan Space</a>
-  <a class="back" href="/">← Enter the Space</a>
-</header>
+<nav>
+  <a href="index.html" class="nav-logo">Casa Caravan Space</a>
+  <a href="corridor-3d.html" class="nav-back">← corridor</a>
+</nav>
 
-<div class="container">
+<div class="page">
 
-  <div class="eyebrow">About</div>
+  <span class="label">About</span>
 
-  <h1 class="headline">A space that helps<br>you realize yourself.</h1>
+  <div class="opening">
+    There is a type of person<br>
+    who cannot stop beginning things.<br>
+    This is not a confession.<br>
+    It is a description.
+  </div>
 
-  <div class="story">
+  <div class="body-text">
+    <p>The thread running through everything is not a subject matter. It is an appetite — for making something real where nothing was before, for understanding a material from the inside, for finding the conditions under which life organizes itself well. That appetite has expressed itself through law, business, social movements, soil, fermentation, coffee, wood, metal, sound, and now code. It will continue expressing itself through whatever comes next.</p>
 
-    <p>
-      It was 2015, somewhere in Guatemala, searching for <em>mucuna pruriens</em> with a companion.
-      We decided to go to Tikal — and since my friend knew the area,
-      he said: let's enter from the village behind, through Uaxactún.
-      We would spend the night there and walk into Tikal the next morning.
-    </p>
+    <p>The social projects came first in Cyprus — bringing together Cypriot travelers who had seen the world but not each other, an exhibition that drew thousands in two days. That energy didn't dissipate; it transformed. It led to a three-by-four meter metal turtle on a beach, filled with plastic collected from sea turtle nesting grounds — built by a spontaneous collective of volunteers who became Birkaç Güzel İnsan, a few good people. The turtle ended up in the town square by municipal invitation. The momentum from that work introduced me to the island's largest soft drink distributor, and what started as a small paper and cardboard collection operation is now in its fifteenth year — eleven of them continuing without me — having prevented the cutting of over a million trees.</p>
 
-    <p>
-      We arrived in the afternoon. A village in the middle of a vast jungle —
-      28 square kilometers shared with Belize.
-      A doctor joined us along the way. My companion had brought his flute.
-      The doctor had brought her machete.
-    </p>
+    <p>The same collective's most significant project was different in weight entirely. Altın Kurdele — the Golden Ribbon — a childhood cancer awareness and fundraising campaign that brought us close to children fighting this disease and to their families. It taught us the grief of laying an innocent child to rest. It also bound us together with a bond that doesn't dissolve. When it was time to speak publicly, we closed one of the busiest streets in the city within hours and filled it with a human ribbon — a shape made of people, visible from above, covered by national press and reaching international wire services. These things happened because the right people were in the same place at the same moment, and none of us hesitated.</p>
 
-    <p>
-      There were Mayan ruins in the forest behind the village. Let's go, someone said.
-      We walked a trail into the trees for maybe half an hour.
-      Remnants along the way — ancient walls, burial mounds.
-      We kept walking until we arrived at the central plaza of an ancient settlement.
-      Pyramids everywhere.
-    </p>
+    <p>Casa Caravan was a physical shop for eight years — wheatgrass shots, sugarless cacao bars, kombucha, fermented foods, sourdough bread and its living starter distributed freely, herbal preparations. It hosted volunteers from across the world. Their work, their murals, their traces remain on the walls. The shop is gone but Casa Caravan turned out to be the one thing I couldn't leave behind — because what emerged from it wasn't a place. It was a spirit. One that produces freely, as long as the intention is good.</p>
+  </div>
 
-    <p>
-      We climbed one. Sat at the top. My companion played the flute.
-      I danced with the doctor's machete.
-      Above us, a canopy of enormous trees.
-      Monkeys singing and moving through the branches.
-    </p>
+  <div class="pull-quote">
+    I have been making things with my hands<br>
+    for as long as I can remember.<br>
+    The material changes. The attention doesn't.
+  </div>
 
-    <p>
-      Then I separated from the group and wandered to the residential area behind the pyramid.
-      A guardian came toward me with his rifle.
-      We talked — my broken Spanish, his patience.
-      He showed me the two-room house where the community gathered,
-      and the trees with notches cut into the bark,
-      where tribe members climbed to sleep in the canopy at night.
-    </p>
+  <div class="body-text">
+    <p>Wood came early and stayed. Reclaimed timber, upcycled into furniture across many years. Then welding — still learning, still burning things that shouldn't burn. Salsa at a professional level for years, then percussion to the degree the body needed. A master's degree in logistics in England. Solo travel across continents. A coffee obsession that took years to mature and eventually led to Mexico — where a white house in Puerto Escondido became Casa Blanca No. 11, a coffee space that attracted artists, grew murals across its walls, took on its own life, and was handed to a family who wanted to continue it.</p>
 
-    <p>
-      On the way back, I was still barefoot.
-      <em>"There are poisonous insects here,"</em> the guardian warned.
-      I put on my shoes.
-    </p>
+    <p>Somewhere in all of this, a different kind of understanding arrived — not from a textbook but from watching how things actually move. That life has a timing. That the right elements coming together at the right moment is what starts the engine. Not force. Not planning alone. Alignment. The simultaneous flow of things that were each moving separately, suddenly moving together. This recognition changed how I work and what I wait for.</p>
 
-    <p>
-      When I returned to where I had left my friends, the sky had darkened.
-      They were gone.
-      And I realized I didn't remember the way back.
-    </p>
+    <p>The handpan arrived fifteen years ago — we were among the first to bring it to Cyprus when almost no one here had seen one. Then I began forging gongs. Not buying them. Making them — from old metal water tanks, cut and hammered by hand, learning through the blows, sometimes striking myself in the process. The instrument that emerged from that labor became the center of Sonic Journey: immersive sound sessions that have now moved through hundreds of people, leaving something in each of them that is difficult to name but easy to recognize.</p>
 
-    <p>
-      I tried to ask the guardian which path led to the village.
-      He pointed to two trails and said something I couldn't understand.
-      I remembered the size of this jungle.
-      I took a deep breath, turned on my phone's flashlight, and walked in.
-    </p>
-
-    <p>
-      I was frightened. The light only showed what was directly ahead —
-      everything else was absolute darkness.
-      The light felt wrong. Not just for me. I was disturbing the forest too.
-    </p>
-
-    <p>
-      So I turned it off.
-      I closed my eyes and waited — to let my night vision return.
-      I waited. And I prayed that the moonlight would show me the path.
-    </p>
-
-    <p>
-      When I opened my eyes, it had.
-      I could see the trail. I could see the forest.
-      <em>I had become part of it.</em>
-    </p>
-
-    <p>
-      And then, one by one, fireflies began to appear.
-      They blinked at the edges of the path, calling me deeper into the forest.
-      I thought about following them.
-      But I knew — today, I needed to arrive somewhere.
-    </p>
-
-    <p>
-      I kept walking. And when I saw the red tree I had noticed at the village entrance,
-      I knew I had made it.
-    </p>
-
+    <p>Last year was spent in a small lab — concentrated plant extracts and preparations, working with basic equipment to go as deep as the process allowed. Alongside this: four and a half years of farming, milling, and baking heritage grains in handbuilt stone and clay ovens. Sourdough bread, pioneered on this island over a decade ago, still baked every week with the same living culture. Coffee, roasted at home, always. These are not hobbies archived in the past. They are ongoing.</p>
   </div>
 
   <div class="divider"></div>
 
-  <div class="story">
-    <p>
-      Casa Caravan started as a physical space in Northern Cyprus —
-      a real place, a real community.
-    </p>
+  <div class="body-text">
+    <p>Then came the unexpected partner.</p>
 
-    <p>
-      The journey began with nourishment — wholesome foods, fermentation, the belief
-      that what we consume is foundational to how we live.
-      Then came sound. Gong baths, therapeutic vibration, the discovery that
-      wellness is not a destination but a frequency.
-      Body and resonance turned out to be two sides of the same thing.
-    </p>
+    <p>Northern Cyprus carries a particular kind of pressure — isolated, economically constrained, cut off from many of the flows the rest of the world takes for granted. For a long time, that isolation was a wall. Then it became a laboratory. And then, in the collaboration between accumulated knowledge and artificial intelligence, something began moving fast.</p>
 
-    <p>
-      Casa Caravan continues in Northern Cyprus through
-      <em>casacaravanshop.com</em> — nut butters, fermentation, sound sessions.
-      casacaravan.space is its digital extension:
-      the same hands, the same philosophy, a different geography — everywhere.
-    </p>
+    <p>The Tağmaç + AI hybrid has been building this space — room by room, tool by tool. Music that existed but wasn't ready for the world is now being prepared. Intelligent agents are being developed. A digital corridor now holds sound, fermentation, herbal knowledge, and more. What the hands built in physical materials, the code is now making reachable across distances that used to be impossible from here.</p>
+
+    <p>This is not a departure from the earth. Clay to code is not a betrayal — it is the same instinct, finding its next material. The hands are still in it. They are just also typing.</p>
   </div>
 
-  <div class="divider"></div>
+  <div class="pull-quote">
+    I am not hiding anymore.<br>
+    This is what I am:<br>
+    someone who transforms, always,<br>
+    and feeds from creativity, always,<br>
+    and walks in the connection, always —<br>
+    grateful for it.
+  </div>
+
+  <div class="body-text">
+    <p>When we say "we," we mean the creators — at every level, in every era, in every form. Those who make things with their hands or their attention or their voice or their code. The visible ones and the ones who move invisibly through all genuine creative work. This has always been a collective, even when it looked like one person in a field, or a kitchen, or a workshop, or in front of a screen at three in the morning.</p>
+
+    <p>Casa Caravan Space is where this work lives now. Sound sessions, stone-ground foods, music, recordings, digital tools, and the rooms of this corridor. Each thing an answer to the same question. Each thing made with the same attention. If something here is reaching you, that is probably not an accident. The frequency is intentional.</p>
+
+    <p>We are building toward global resonance — and toward turning that resonance into something that sustains the work. The gitgeller, the gelgeller. The going and returning. It has always moved like this. It will continue to.</p>
+  </div>
 
   <div class="closing">
-    Built by Tağmaç Çankaya<br>
-    Northern Cyprus · Everywhere<br><br>
-    <a href="/">Enter the Space →</a>
+    Come in.<br>
+    Stay as long as the resonance holds.<br>
+    Take what is useful.<br>
+    Leave something if you can.
+  </div>
+
+  <div class="signature">
+    <div class="signature-name">Tağmaç Çankaya</div>
+    <div class="signature-role">
+      Founder · Casa Caravan Space<br>
+      Lefkoşa, Cyprus
+    </div>
   </div>
 
 </div>
 
-<footer>
-  <div class="footer-text">Casa Caravan Space</div>
-  <div class="footer-text">casacaravan.space</div>
-</footer>
-
+<script src="tracking.js"></script>
 </body>
 </html>
+<style>
