@@ -327,11 +327,11 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
-  {name:'Shop',             color:0xb03020,border:0xff4030,z:-2, side:'L',action:'sanctuary'},
+  {name:'Shop',             color:0xb03020,border:0xff4030,z:-2, side:'L',action:'shop'},
   {name:'Fermentation Lab', color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
-  {name:'Games',            color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'games'},
-  {name:'Audio Sanctuary',  color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary_direct'},
-  {name:'Idea Basket',      color:0xc06030,border:0xd07040,z:-18,side:'L',action:'ideas'},
+  {name:'Work in Progress', color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'wip'},
+  {name:'Audio Sanctuary',  color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
+  {name:'Work in Progress', color:0xc06030,border:0xd07040,z:-18,side:'L',action:'wip'},
   {name:'Herbal Atelier',   color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
 ];
 
@@ -758,8 +758,8 @@ canvas.addEventListener('touchend',e=>{
 },{passive:true});
 
 function openD(d){
+  if(d.action==='wip'){return;}
   if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
-  if(d.action==='sanctuary_direct'){window.location.href='audio_sanctuary.html';return;}
 function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
   if(d.action==='garden'){window.location.href='garden.html';return;}
   if(d.action==='games'){window.location.href='games.html';return;}
