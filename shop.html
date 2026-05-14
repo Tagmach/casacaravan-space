@@ -159,15 +159,16 @@ nav {
   color: var(--gold);
   white-space: nowrap;
 }
-.product-price .price-note {
+.product-price .try-price {
   display: block;
   font-family: 'Jost', sans-serif;
-  font-size: 8px;
-  letter-spacing: 1.5px;
+  font-size: 9px;
+  letter-spacing: 1px;
   color: var(--dim);
+  margin-top: 3px;
   font-style: normal;
-  margin-top: 2px;
 }
+.try-loading { opacity: 0.4; }
 .btn-add {
   font-size: 8px;
   letter-spacing: 2px;
@@ -230,7 +231,127 @@ nav {
   line-height: 1.7;
 }
 
-/* ── CART BAR ── */
+/* ── MINI PLAYER ── */
+#mini-player {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 45;
+  background: rgba(10,8,6,0.97);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+}
+#mini-player.visible { transform: translateY(0); }
+#mini-player.cart-up { bottom: 56px; }
+
+.player-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(160,128,96,0.3);
+  background: none;
+  color: var(--gold);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.player-btn:hover { border-color: var(--gold); background: rgba(160,128,96,0.06); }
+
+.player-prev, .player-next {
+  width: 28px; height: 28px;
+  border: none;
+  background: none;
+  color: var(--dim);
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+.player-prev:hover, .player-next:hover { color: var(--cream); }
+
+.player-info { flex: 1; min-width: 0; }
+.player-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player-artist {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.player-progress-wrap {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.player-time {
+  font-size: 9px;
+  color: var(--dim);
+  white-space: nowrap;
+  letter-spacing: 1px;
+  min-width: 32px;
+}
+.player-progress {
+  flex: 1;
+  height: 2px;
+  background: rgba(160,128,96,0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.player-progress-bar {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.5s linear;
+  pointer-events: none;
+}
+
+.player-vol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.player-vol-icon { font-size: 11px; color: var(--dim); }
+input[type=range].vol-slider {
+  -webkit-appearance: none;
+  width: 70px; height: 2px;
+  background: rgba(160,128,96,0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range].vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  #mini-player { padding: 10px 16px; gap: 12px; }
+  .player-progress-wrap { display: none; }
+  .player-vol { display: none; }
+}
 #cart-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -602,7 +723,7 @@ textarea.form-input { resize: none; }
       <div class="product-tag">Cyprus delivery · +€5 shipping</div>
     </div>
     <div class="product-right">
-      <div class="product-price">€52</div>
+      <div class="product-price">€52 <span class="try-price try-loading" data-eur="52">— ₺</span></div>
       <button class="btn-add">Add</button>
     </div>
   </div>
@@ -614,7 +735,7 @@ textarea.form-input { resize: none; }
       <div class="product-tag">Cyprus delivery · +€5 shipping</div>
     </div>
     <div class="product-right">
-      <div class="product-price">€51</div>
+      <div class="product-price">€51 <span class="try-price try-loading" data-eur="51">— ₺</span></div>
       <button class="btn-add">Add</button>
     </div>
   </div>
@@ -626,7 +747,7 @@ textarea.form-input { resize: none; }
       <div class="product-tag">Cyprus delivery · +€5 shipping</div>
     </div>
     <div class="product-right">
-      <div class="product-price">€15</div>
+      <div class="product-price">€15 <span class="try-price try-loading" data-eur="15">— ₺</span></div>
       <button class="btn-add">Add</button>
     </div>
   </div>
@@ -688,6 +809,28 @@ textarea.form-input { resize: none; }
   <div class="testimonial">
     <div class="testimonial-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div>
     <div class="testimonial-author">Sergen Uysal <span class="testimonial-date">2025</span></div>
+  </div>
+</div>
+
+<!-- MINI PLAYER -->
+<div id="mini-player">
+  <button class="player-prev" onclick="playerPrev()">⏮</button>
+  <button class="player-btn" id="play-btn" onclick="playerToggle()">▶</button>
+  <button class="player-next" onclick="playerNext()">⏭</button>
+  <div class="player-info">
+    <div class="player-title" id="player-title">—</div>
+    <div class="player-artist">Tağmaç Çankaya</div>
+  </div>
+  <div class="player-progress-wrap">
+    <span class="player-time" id="player-current">0:00</span>
+    <div class="player-progress" id="player-progress" onclick="playerSeek(event)">
+      <div class="player-progress-bar" id="player-bar"></div>
+    </div>
+    <span class="player-time" id="player-duration">0:00</span>
+  </div>
+  <div class="player-vol">
+    <span class="player-vol-icon">♪</span>
+    <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="playerVol(this.value)">
   </div>
 </div>
 
@@ -770,7 +913,122 @@ textarea.form-input { resize: none; }
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── SUPABASE ──────────────────────────────────────────────────────
+// ── MINI PLAYER ──────────────────────────────────────────────────
+const SUPABASE_STORAGE = 'https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/';
+
+// Add your tracks here — filename must match what you upload to Supabase Storage > music bucket
+const tracks = [
+  // { title: 'Song Name', file: 'filename.mp3' },
+  // Example: { title: 'Morning Gong', file: 'morning-gong.mp3' },
+];
+
+let playerIdx = 0;
+let playerPlaying = false;
+const audio = new Audio();
+audio.volume = 0.8;
+
+function playerLoad(idx) {
+  if (!tracks.length) return;
+  playerIdx = (idx + tracks.length) % tracks.length;
+  const t = tracks[playerIdx];
+  audio.src = SUPABASE_STORAGE + t.file;
+  document.getElementById('player-title').textContent = t.title;
+  document.getElementById('player-bar').style.width = '0%';
+  document.getElementById('player-current').textContent = '0:00';
+  document.getElementById('player-duration').textContent = '0:00';
+  document.getElementById('mini-player').classList.add('visible');
+  if (playerPlaying) audio.play().catch(() => {});
+}
+
+function playerToggle() {
+  if (!tracks.length) return;
+  if (!audio.src) playerLoad(0);
+  if (audio.paused) {
+    audio.play().catch(() => {});
+    playerPlaying = true;
+    document.getElementById('play-btn').textContent = '⏸';
+  } else {
+    audio.pause();
+    playerPlaying = false;
+    document.getElementById('play-btn').textContent = '▶';
+  }
+}
+
+function playerPrev() { playerLoad(playerIdx - 1); }
+function playerNext() { playerLoad(playerIdx + 1); }
+
+function playerVol(v) { audio.volume = parseFloat(v); }
+
+function playerSeek(e) {
+  if (!audio.duration) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const ratio = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = ratio * audio.duration;
+}
+
+function fmtTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('player-bar').style.width = pct + '%';
+  document.getElementById('player-current').textContent = fmtTime(audio.currentTime);
+});
+
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('player-duration').textContent = fmtTime(audio.duration);
+});
+
+audio.addEventListener('ended', () => {
+  if (tracks.length > 1) playerLoad(playerIdx + 1);
+  else { playerPlaying = false; document.getElementById('play-btn').textContent = '▶'; }
+});
+
+// Show player if tracks exist
+if (tracks.length) {
+  document.getElementById('mini-player').classList.add('visible');
+  document.getElementById('player-title').textContent = tracks[0].title;
+}
+
+// Keep cart bar above player
+function updateCartPosition() {
+  const player = document.getElementById('mini-player');
+  const cart = document.getElementById('cart-bar');
+  if (player.classList.contains('visible') && cart.classList.contains('visible')) {
+    cart.style.bottom = '64px';
+  } else {
+    cart.style.bottom = '0';
+  }
+}
+const cartObs = new MutationObserver(updateCartPosition);
+cartObs.observe(document.getElementById('cart-bar'), { attributes: true });
+
+// ── LIVE EUR/TRY RATE ────────────────────────────────────────────
+(async function() {
+  try {
+    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=TRY');
+    const data = await res.json();
+    const rate = data.rates?.TRY;
+    if (!rate) return;
+
+    document.querySelectorAll('.try-price[data-eur]').forEach(el => {
+      const eur = parseFloat(el.getAttribute('data-eur'));
+      const try_ = Math.round(eur * rate);
+      el.textContent = `≈ ₺${try_.toLocaleString('tr-TR')}`;
+      el.classList.remove('try-loading');
+    });
+  } catch(e) {
+    // silently fail — EUR prices still shown
+    document.querySelectorAll('.try-price').forEach(el => el.remove());
+  }
+})();
+
+
 const SUPA_URL = 'https://iwfvlatywksvnnxymweb.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
