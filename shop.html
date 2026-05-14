@@ -6,655 +6,218 @@
 <title>Shop — Casa Caravan Space</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
-
 <style>
 :root {
-  --bg: #080705;
-  --surface: #0f0d0a;
-  --border: rgba(160,128,96,0.15);
-  --gold: #A08060;
-  --cream: #D2C3AF;
-  --dim: #7A7068;
-  --green: rgba(29,210,100,0.85);
-  --red: rgba(255,70,60,0.85);
+  --bg: #F5F0E8;
+  --surface: #EDE8DE;
+  --border: rgba(80,60,40,0.12);
+  --gold: #7A5C3A;
+  --cream: #2A1F14;
+  --dim: #8A7A6A;
+  --dark: #1A1208;
+  --card: #FFFFFF;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   background: var(--bg);
   color: var(--cream);
   font-family: 'Jost', sans-serif;
   font-weight: 300;
   min-height: 100vh;
+  padding-bottom: 140px;
 }
-
-/* ── NAV ── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  padding: 20px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  background: rgba(8,7,5,0.92);
-  backdrop-filter: blur(8px);
+  background: rgba(245,240,232,0.95); backdrop-filter: blur(8px);
 }
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 16px;
-  letter-spacing: 1px;
-  color: var(--cream);
-  text-decoration: none;
-}
-.nav-back {
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--dim);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.nav-back:hover { color: var(--cream); }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--dark); text-decoration:none; }
+.nav-back { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+.nav-back:hover { color:var(--dark); }
 
-/* ── HERO ── */
 .hero {
-  padding: 140px 40px 60px;
-  max-width: 900px;
-  margin: 0 auto;
+  padding: 100px 40px 40px; max-width: 960px; margin: 0 auto;
+  display: flex; align-items: baseline; justify-content: space-between;
   border-bottom: 1px solid var(--border);
 }
-.hero-label {
-  font-size: 9px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 20px;
-}
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(36px, 5vw, 58px);
-  line-height: 1.15;
-  color: var(--cream);
-  margin-bottom: 16px;
-}
-.hero-sub {
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: var(--dim);
-  line-height: 1.8;
-  max-width: 480px;
-}
+.hero-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(32px,5vw,52px); color:var(--dark); line-height:1.15; }
+.hero-note { font-size:10px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
 
-/* ── SECTIONS ── */
-.section {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 40px;
-  border-bottom: 1px solid var(--border);
-}
-.section-label {
-  font-size: 8px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 36px;
-}
+.section { max-width:960px; margin:0 auto; padding:48px 40px; border-bottom:1px solid var(--border); }
+.section-head { display:flex; align-items:center; gap:14px; margin-bottom:32px; }
+.section-icon { font-size:22px; line-height:1; }
+.section-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:26px; font-weight:300; color:var(--dark); }
 
-/* ── PRODUCT ROW ── */
-.product {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(160,128,96,0.08);
-  cursor: pointer;
-  transition: all 0.2s;
-  gap: 20px;
+/* MUSIC GRID */
+.music-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
+.track-card {
+  background:var(--card); border:1px solid var(--border); border-radius:8px;
+  overflow:hidden; cursor:pointer; transition:all 0.2s;
 }
-.product:last-child { border-bottom: none; }
-.product:hover { padding-left: 8px; }
-.product:hover .product-name { color: var(--cream); }
+.track-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(80,60,40,0.1); }
+.track-card.playing { border-color:var(--gold); }
+.track-artwork {
+  width:100%; aspect-ratio:1; background:var(--surface);
+  display:flex; align-items:center; justify-content:center; position:relative;
+}
+.track-artwork-placeholder { font-size:32px; opacity:0.2; }
+.track-play-overlay {
+  position:absolute; inset:0; background:rgba(0,0,0,0.3);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity 0.2s; font-size:18px; color:white;
+}
+.track-card:hover .track-play-overlay,
+.track-card.playing .track-play-overlay { opacity:1; }
+.track-info { padding:10px 10px 8px; }
+.track-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12px; color:var(--dark); margin-bottom:6px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track-footer { display:flex; align-items:center; justify-content:space-between; }
+.track-price { font-size:11px; color:var(--gold); }
+.track-add {
+  font-size:8px; letter-spacing:1px; padding:3px 8px;
+  border:1px solid rgba(122,92,58,0.3); border-radius:100px;
+  color:var(--gold); background:none; cursor:pointer; transition:all 0.2s;
+}
+.track-add:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.track-add.in-cart { background:var(--gold); color:white; border-color:var(--gold); }
 
-.product-left { flex: 1; }
-.product-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 20px;
-  font-weight: 300;
-  color: rgba(210,195,175,0.85);
-  margin-bottom: 4px;
-  transition: color 0.2s;
-}
-.product-desc {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: var(--dim);
-  line-height: 1.7;
-}
-.product-tag {
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0.6;
-  margin-top: 6px;
-}
+/* EXPERIENCES */
+.exp-item { display:flex; align-items:flex-start; gap:20px; padding:20px 0; border-bottom:1px solid var(--border); }
+.exp-item:last-of-type { border-bottom:none; }
+.exp-img { width:80px; height:80px; border-radius:6px; object-fit:cover; flex-shrink:0; background:var(--surface); display:block; }
+.exp-body { flex:1; }
+.exp-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); margin-bottom:4px; }
+.exp-desc { font-size:10px; letter-spacing:0.5px; color:var(--dim); margin-bottom:8px; line-height:1.7; }
+.exp-right { display:flex; flex-direction:column; align-items:flex-end; gap:10px; flex-shrink:0; }
+.exp-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); }
+.price-row { display:flex; align-items:center; gap:12px; }
+.price-note { font-size:9px; color:var(--dim); letter-spacing:1px; text-align:right; }
+.try-price { display:block; font-family:'Jost',sans-serif; font-size:9px; color:var(--dim); font-style:normal; margin-top:2px; }
+.try-loading { opacity:0.4; }
 
-.product-right {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-shrink: 0;
-}
-.product-price {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 300;
-  color: var(--gold);
-  white-space: nowrap;
-}
-.product-price .try-price {
-  display: block;
-  font-family: 'Jost', sans-serif;
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: var(--dim);
-  margin-top: 3px;
-  font-style: normal;
-}
-.try-loading { opacity: 0.4; }
 .btn-add {
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  border: 1px solid rgba(160,128,96,0.3);
-  color: var(--gold);
-  background: none;
-  border-radius: 100px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
+  font-size:8px; letter-spacing:2px; text-transform:uppercase;
+  padding:7px 14px; border:1px solid rgba(122,92,58,0.3);
+  color:var(--gold); background:none; border-radius:100px; cursor:pointer;
+  white-space:nowrap; transition:all 0.2s; flex-shrink:0;
 }
-.btn-add:hover {
-  border-color: var(--gold);
-  background: rgba(160,128,96,0.06);
-}
+.btn-add:hover { border-color:var(--gold); background:rgba(122,92,58,0.04); }
 
-/* Digital products — €1 each, listed differently */
-.digital-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 8px;
+/* REVIEWS */
+.reviews-toggle {
+  display:inline-flex; align-items:center; gap:8px;
+  cursor:pointer; border:none; background:none; padding:0; margin-top:8px;
 }
-.digital-item {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px 18px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.digital-item:hover {
-  border-color: rgba(160,128,96,0.35);
-  background: rgba(160,128,96,0.03);
-}
-.digital-item.selected {
-  border-color: var(--gold);
-  background: rgba(160,128,96,0.06);
-}
-.digital-item-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 14px;
-  color: var(--cream);
-}
-.digital-item-price {
-  font-size: 11px;
-  color: var(--gold);
-  white-space: nowrap;
-}
-.digital-cart-info {
-  font-size: 10px;
-  color: var(--dim);
-  margin-top: 16px;
-  line-height: 1.7;
-}
+.reviews-stars { color:#C8A84A; font-size:12px; letter-spacing:1px; }
+.reviews-count { font-size:9px; letter-spacing:1.5px; color:var(--dim); text-transform:uppercase; text-decoration:underline; text-underline-offset:3px; }
+.reviews-panel { display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); }
+.reviews-panel.open { display:block; }
+.review { padding:14px 0; border-bottom:1px solid rgba(80,60,40,0.06); }
+.review:last-child { border-bottom:none; }
+.review-stars { color:#C8A84A; font-size:10px; margin-bottom:5px; }
+.review-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--dark); line-height:1.75; margin-bottom:6px; }
+.review-author { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
 
-/* ── MINI PLAYER ── */
+/* FOOD GRID */
+.food-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+.food-card { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:all 0.2s; }
+.food-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(80,60,40,0.08); }
+.food-img { width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--surface); display:block; }
+.food-body { padding:16px; }
+.food-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); margin-bottom:4px; }
+.food-desc { font-size:9px; letter-spacing:0.5px; color:var(--dim); line-height:1.7; margin-bottom:12px; }
+.food-footer { display:flex; align-items:flex-end; justify-content:space-between; }
+.food-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); }
+.shipping-note { font-size:9px; color:var(--dim); margin-top:16px; letter-spacing:1px; }
+
+/* MINI PLAYER */
 #mini-player {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 45;
-  background: rgba(10,8,6,0.97);
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  padding: 12px 40px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  transform: translateY(100%);
-  transition: transform 0.35s ease;
+  position:fixed; bottom:0; left:0; right:0; z-index:45;
+  background:rgba(26,18,8,0.97); border-top:1px solid rgba(160,128,96,0.2);
+  backdrop-filter:blur(12px); padding:12px 40px;
+  display:flex; align-items:center; gap:20px;
+  transform:translateY(100%); transition:transform 0.35s ease;
 }
-#mini-player.visible { transform: translateY(0); }
-#mini-player.cart-up { bottom: 56px; }
+#mini-player.visible { transform:translateY(0); }
+.player-btn { width:34px; height:34px; border-radius:50%; border:1px solid rgba(160,128,96,0.3); background:none; color:#A08060; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.2s; }
+.player-btn:hover { border-color:#A08060; }
+.player-nav { width:26px; height:26px; border:none; background:none; color:rgba(160,128,96,0.5); font-size:11px; cursor:pointer; flex-shrink:0; transition:color 0.2s; }
+.player-nav:hover { color:#A08060; }
+.player-info { flex:1; min-width:0; }
+.player-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:#D2C3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.player-artist { font-size:9px; letter-spacing:1.5px; color:rgba(160,128,96,0.5); margin-top:2px; }
+.player-progress-wrap { flex:2; display:flex; align-items:center; gap:10px; min-width:0; }
+.player-time { font-size:9px; color:rgba(160,128,96,0.5); white-space:nowrap; min-width:32px; }
+.player-progress { flex:1; height:2px; background:rgba(160,128,96,0.15); border-radius:2px; cursor:pointer; }
+.player-bar { height:100%; background:#A08060; border-radius:2px; width:0%; transition:width 0.5s linear; pointer-events:none; }
+.player-vol-wrap { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.player-vol-icon { font-size:11px; color:rgba(160,128,96,0.5); }
+input[type=range].vol-slider { -webkit-appearance:none; width:70px; height:2px; background:rgba(160,128,96,0.2); border-radius:2px; outline:none; cursor:pointer; }
+input[type=range].vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:10px; height:10px; border-radius:50%; background:#A08060; cursor:pointer; }
 
-.player-btn {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(160,128,96,0.3);
-  background: none;
-  color: var(--gold);
-  font-size: 14px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-.player-btn:hover { border-color: var(--gold); background: rgba(160,128,96,0.06); }
-
-.player-prev, .player-next {
-  width: 28px; height: 28px;
-  border: none;
-  background: none;
-  color: var(--dim);
-  font-size: 12px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: color 0.2s;
-}
-.player-prev:hover, .player-next:hover { color: var(--cream); }
-
-.player-info { flex: 1; min-width: 0; }
-.player-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 14px;
-  color: var(--cream);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.player-artist {
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  color: var(--dim);
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-.player-progress-wrap {
-  flex: 2;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
-.player-time {
-  font-size: 9px;
-  color: var(--dim);
-  white-space: nowrap;
-  letter-spacing: 1px;
-  min-width: 32px;
-}
-.player-progress {
-  flex: 1;
-  height: 2px;
-  background: rgba(160,128,96,0.15);
-  border-radius: 2px;
-  cursor: pointer;
-  position: relative;
-}
-.player-progress-bar {
-  height: 100%;
-  background: var(--gold);
-  border-radius: 2px;
-  width: 0%;
-  transition: width 0.5s linear;
-  pointer-events: none;
-}
-
-.player-vol {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-.player-vol-icon { font-size: 11px; color: var(--dim); }
-input[type=range].vol-slider {
-  -webkit-appearance: none;
-  width: 70px; height: 2px;
-  background: rgba(160,128,96,0.2);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-input[type=range].vol-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--gold);
-  cursor: pointer;
-}
-
-@media (max-width: 600px) {
-  #mini-player { padding: 10px 16px; gap: 12px; }
-  .player-progress-wrap { display: none; }
-  .player-vol { display: none; }
-}
+/* CART BAR */
 #cart-bar {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 40;
-  background: rgba(15,13,10,0.97);
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  padding: 16px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transform: translateY(100%);
-  transition: transform 0.35s ease;
+  position:fixed; bottom:0; left:0; right:0; z-index:40;
+  background:rgba(26,18,8,0.97); border-top:1px solid rgba(160,128,96,0.15);
+  backdrop-filter:blur(12px); padding:14px 40px;
+  display:flex; align-items:center; justify-content:space-between;
+  transform:translateY(100%); transition:transform 0.35s ease, bottom 0.35s ease;
 }
-#cart-bar.visible { transform: translateY(0); }
-.cart-summary {
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: var(--dim);
-}
-.cart-summary strong {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 16px;
-  color: var(--cream);
-  font-weight: 300;
-  margin-right: 8px;
-}
-.btn-checkout {
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  padding: 12px 28px;
-  border: 1px solid rgba(160,128,96,0.5);
-  color: var(--gold);
-  background: none;
-  border-radius: 100px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-checkout:hover {
-  background: rgba(160,128,96,0.08);
-  border-color: var(--gold);
-}
+#cart-bar.visible { transform:translateY(0); }
+.cart-summary { font-size:11px; color:rgba(160,128,96,0.7); }
+.cart-summary strong { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#D2C3AF; font-weight:300; margin-right:8px; }
+.btn-checkout { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:10px 24px; border:1px solid rgba(160,128,96,0.4); color:#A08060; background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; }
+.btn-checkout:hover { background:rgba(160,128,96,0.08); border-color:#A08060; }
 
-/* ── ORDER OVERLAY ── */
-#order-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  background: rgba(8,7,5,0.98);
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  overflow-y: auto;
-}
-#order-overlay.open { display: flex; }
-#order-content {
-  max-width: 520px;
-  width: 100%;
-  padding: 80px 40px 60px;
-}
-.order-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: 32px;
-  color: var(--cream);
-  margin-bottom: 8px;
-}
-.order-subtitle {
-  font-size: 9px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 40px;
-}
+/* ORDER */
+#order-overlay { position:fixed; inset:0; z-index:60; background:rgba(245,240,232,0.98); display:none; align-items:flex-start; justify-content:center; overflow-y:auto; }
+#order-overlay.open { display:flex; }
+#order-content { max-width:520px; width:100%; padding:80px 40px 60px; }
+.order-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:32px; color:var(--dark); margin-bottom:8px; }
+.order-subtitle { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-bottom:40px; }
+#order-items { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:32px; }
+.order-item { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid rgba(80,60,40,0.06); gap:12px; }
+.order-item:last-child { border-bottom:none; }
+.order-item-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--dark); flex:1; }
+.order-item-price { font-size:13px; color:var(--gold); white-space:nowrap; }
+.order-item-remove { font-size:11px; color:var(--dim); cursor:pointer; padding:2px 6px; }
+.order-total { display:flex; justify-content:space-between; padding:16px 20px; border-top:1px solid var(--border); background:var(--surface); }
+.order-total-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); }
+.order-total-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); }
+.form-section { margin-bottom:24px; }
+.form-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-bottom:12px; display:block; }
+.form-row { display:flex; flex-direction:column; gap:10px; }
+.form-input { background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--dark); padding:12px 16px; font-family:'Cormorant Garamond',serif; font-size:16px; outline:none; width:100%; transition:border-color 0.2s; }
+.form-input:focus { border-color:rgba(122,92,58,0.4); }
+.form-input::placeholder { color:var(--dim); font-style:italic; }
+textarea.form-input { resize:none; }
+.payment-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.payment-opt { border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.payment-opt:hover { border-color:rgba(122,92,58,0.3); }
+.payment-opt.selected { border-color:var(--gold); background:rgba(122,92,58,0.04); }
+.payment-opt-name { font-size:10px; letter-spacing:1px; color:var(--dark); text-transform:uppercase; }
+.payment-opt-detail { font-size:8px; color:var(--dim); margin-top:4px; }
+.shipping-notice { font-size:9px; letter-spacing:1px; color:var(--dim); line-height:1.8; padding:14px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:24px; }
+.shipping-notice strong { color:var(--dark); font-weight:400; }
+.btn-send { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:14px 32px; border:1px solid rgba(122,92,58,0.4); color:var(--gold); background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; width:100%; margin-top:8px; }
+.btn-send:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.btn-back-order { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); background:none; border:1px solid var(--border); padding:10px 22px; border-radius:100px; cursor:pointer; margin-top:12px; width:100%; }
+#order-confirm { display:none; text-align:center; padding:60px 0; }
+.confirm-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:36px; color:var(--dark); margin-bottom:16px; }
+.confirm-text { font-size:12px; color:var(--dim); line-height:2; max-width:360px; margin:0 auto 40px; }
 
-/* Cart items in order */
-#order-items {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 32px;
-}
-.order-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(160,128,96,0.08);
-  gap: 12px;
-}
-.order-item:last-child { border-bottom: none; }
-.order-item-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 15px;
-  color: var(--cream);
-  flex: 1;
-}
-.order-item-price {
-  font-size: 13px;
-  color: var(--gold);
-  white-space: nowrap;
-}
-.order-item-remove {
-  font-size: 11px;
-  color: var(--dim);
-  cursor: pointer;
-  padding: 2px 6px;
-  transition: color 0.2s;
-}
-.order-item-remove:hover { color: var(--cream); }
-.order-total {
-  display: flex;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  background: rgba(160,128,96,0.04);
-}
-.order-total-label {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-.order-total-price {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 20px;
-  color: var(--cream);
-}
-
-/* Form */
-.form-section { margin-bottom: 28px; }
-.form-label {
-  font-size: 8px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 14px;
-  display: block;
-}
-.form-row { display: flex; flex-direction: column; gap: 10px; }
-.form-input {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(46,42,38,0.8);
-  border-radius: 6px;
-  color: var(--cream);
-  padding: 12px 16px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-  outline: none;
-  width: 100%;
-  transition: border-color 0.2s;
-}
-.form-input:focus { border-color: rgba(160,128,96,0.5); }
-.form-input::placeholder { color: var(--dim); font-style: italic; }
-textarea.form-input { resize: none; }
-
-/* Payment options */
-.payment-opts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.payment-opt {
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.payment-opt:hover { border-color: rgba(160,128,96,0.35); }
-.payment-opt.selected {
-  border-color: var(--gold);
-  background: rgba(160,128,96,0.06);
-}
-.payment-opt-name {
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  color: var(--cream);
-  text-transform: uppercase;
-}
-.payment-opt-detail {
-  font-size: 8px;
-  color: var(--dim);
-  margin-top: 4px;
-  letter-spacing: 0.5px;
-}
-
-/* Shipping notice */
-.shipping-notice {
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: var(--dim);
-  line-height: 1.8;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin-bottom: 24px;
-}
-.shipping-notice strong { color: var(--cream); font-weight: 400; }
-
-.btn-send {
-  font-family: 'Jost', sans-serif;
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  padding: 14px 32px;
-  border: 1px solid rgba(160,128,96,0.5);
-  color: var(--gold);
-  background: none;
-  border-radius: 100px;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-  margin-top: 8px;
-}
-.btn-send:hover {
-  background: rgba(160,128,96,0.08);
-  border-color: var(--gold);
-}
-
-.btn-back-order {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--dim);
-  background: none;
-  border: 1px solid rgba(46,42,38,0.5);
-  padding: 10px 22px;
-  border-radius: 100px;
-  cursor: pointer;
-  margin-top: 12px;
-  width: 100%;
-  transition: all 0.2s;
-}
-.btn-back-order:hover { color: var(--cream); border-color: var(--dim); }
-
-/* Confirmation */
-#order-confirm {
-  display: none;
-  text-align: center;
-  padding: 60px 0;
-}
-.confirm-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 36px;
-  color: var(--cream);
-  margin-bottom: 16px;
-}
-.confirm-text {
-  font-size: 12px;
-  color: var(--dim);
-  line-height: 2;
-  max-width: 360px;
-  margin: 0 auto 40px;
-}
-
-/* Testimonials */
-.testimonials {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 40px 100px;
-}
-.testimonial {
-  padding: 32px 0;
-  border-bottom: 1px solid rgba(160,128,96,0.08);
-}
-.testimonial:last-child { border-bottom: none; }
-.testimonial-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 18px;
-  font-weight: 300;
-  color: rgba(210,195,175,0.8);
-  line-height: 1.8;
-  margin-bottom: 12px;
-}
-.testimonial-author {
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-.testimonial-date {
-  font-size: 8px;
-  color: rgba(122,112,104,0.5);
-  margin-left: 16px;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  nav { padding: 16px 20px; }
-  .hero, .section, .testimonials { padding-left: 20px; padding-right: 20px; }
-  .payment-opts { grid-template-columns: 1fr 1fr; }
-  #cart-bar { padding: 14px 20px; }
-  .product-right { gap: 12px; }
-  #order-content { padding: 60px 20px 40px; }
+@media(max-width:600px){
+  nav{padding:14px 20px;}
+  .hero,.section{padding-left:20px;padding-right:20px;}
+  .hero{flex-direction:column;gap:8px;}
+  .music-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+  .food-grid{grid-template-columns:1fr;}
+  .payment-opts{grid-template-columns:1fr 1fr;}
+  #cart-bar,#mini-player{padding:12px 20px;}
+  .player-progress-wrap,.player-vol-wrap{display:none;}
+  #order-content{padding:60px 20px 40px;}
+  .exp-item{flex-direction:column;}
+  .exp-right{align-items:flex-start;}
 }
 </style>
 </head>
@@ -666,171 +229,126 @@ textarea.form-input { resize: none; }
 </nav>
 
 <div class="hero">
-  <div class="hero-label">The Shop</div>
-  <h1 class="hero-title">Things made<br>with care.</h1>
-  <p class="hero-sub">Sound sessions, fermented starters, stone-ground butters, and music — each carrying its own story. Physical delivery within Cyprus only.</p>
+  <div class="hero-title">Things made<br>with care.</div>
+  <div class="hero-note">Lefkoşa · Cyprus</div>
+</div>
+
+<!-- MUSIC -->
+<div class="section">
+  <div class="section-head">
+    <span class="section-icon">𝄞</span>
+    <span class="section-title">Music</span>
+  </div>
+  <div class="music-grid" id="music-grid"></div>
 </div>
 
 <!-- EXPERIENCES -->
 <div class="section">
-  <div class="section-label">Experiences</div>
-
-  <div class="product" onclick="addToCart('Sonic Journey — Individual Session', 75, 'experience')">
-    <div class="product-left">
-      <div class="product-name">Sonic Journey</div>
-      <div class="product-desc">45-minute immersive sound session · hand-forged gongs · handpan · individual</div>
-      <div class="product-tag">Lefkoşa · Wednesdays · by appointment</div>
-    </div>
-    <div class="product-right">
-      <div class="product-price">€75</div>
-      <button class="btn-add">Add</button>
-    </div>
+  <div class="section-head">
+    <span class="section-icon">◎</span>
+    <span class="section-title">Experiences</span>
   </div>
-
-  <div class="product" onclick="addToCart('Sonic Journey — Duo Session', 37.50, 'experience')">
-    <div class="product-left">
-      <div class="product-name">Sonic Journey — Duo</div>
-      <div class="product-desc">Same journey, shared · ideal for friends, partners, colleagues · each person pays half</div>
-      <div class="product-tag">Lefkoşa · Wednesdays · by appointment</div>
+  <div class="exp-item">
+    <img class="exp-img" src="https://casacaravanshop.com/wp-content/uploads/2025/11/IMG_9117-300x300.jpg" alt="Sonic Journey" onerror="this.style.background='#e8e0d0'">
+    <div class="exp-body">
+      <div class="exp-name">Sonic Journey</div>
+      <div class="exp-desc">45 min · hand-forged gongs · handpan · bells · Wednesdays · Lefkoşa</div>
+      <button class="reviews-toggle" onclick="toggleReviews()">
+        <span class="reviews-stars">★★★★★</span>
+        <span class="reviews-count">9 reviews</span>
+      </button>
+      <div class="reviews-panel" id="reviews-panel">
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I experienced a true journey; an inner journey into a place I had never reached before. My body received the sounds and vibrations, not just through my ears, but through every part of me."</div><div class="review-author">Mehdi Abedi · Dec 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"It was a dance between my mind trying to analyze what is happening, and the moments where all this let go and I dissolved into a deep relaxation — feeling the music on the levels of mind, body, energy, all together in a perfect resonance."</div><div class="review-author">Jana Rutova · Dec 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Goosebumps. Real chills. The strongest feeling came from the shaker, not the gongs. Knowing he made the gongs himself made it even more special."</div><div class="review-author">Rūta Staskeviciute · Jan 2026</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Unexpectedly impactful. Each sound had its own character, texture, and emotion. There is a power in sounds which can change inner and deep feelings."</div><div class="review-author">Tuğberk Emirzade · Mar 2026</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I've joined a number of times and it's been really interesting to see how they've evolved. It feels like being guided through a space with sound — sometimes subtle, sometimes intense, but always with a sense of flow."</div><div class="review-author">Barış Parlan · Mar 2026</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemiş hissetmek ve o geceki uyku kalitemde belirgin bir fark."</div><div class="review-author">Ahmet Baba · 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Müthiş ve çok rahatlatıcı bir deneyimdi. Ses ve frekansların hayatımızda ne kadar önemli olduğunu farkettim."</div><div class="review-author">Hasan İlban · 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I walked in carrying a weight. But the moment the music began, everything shifted. Gentle vibrations delicately untied the emotional knots I didn't know I was carrying."</div><div class="review-author">Nora Abouzi · 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div><div class="review-author">Sergen Uysal · 2025</div></div>
+      </div>
     </div>
-    <div class="product-right">
-      <div class="product-price">€37.50 <span class="price-note">per person</span></div>
-      <button class="btn-add">Add</button>
-    </div>
-  </div>
-
-  <div class="product" onclick="addToCart('Sonic Journey — Online Session', 60, 'experience')">
-    <div class="product-left">
-      <div class="product-name">Sonic Journey — Online</div>
-      <div class="product-desc">Live streamed session · anywhere in the world · group price when multiple join</div>
-      <div class="product-tag">Worldwide · schedule by email</div>
-    </div>
-    <div class="product-right">
-      <div class="product-price">€60 <span class="price-note">individual</span></div>
-      <button class="btn-add">Add</button>
+    <div class="exp-right">
+      <div class="price-row">
+        <div><div class="exp-price">€75</div><span class="try-price try-loading" data-eur="75">— ₺</span></div>
+        <button class="btn-add" onclick="addToCart('Sonic Journey — Individual',75,'experience')">Add</button>
+      </div>
+      <div class="price-row">
+        <div><div class="exp-price" style="font-size:16px;">€37.50</div><span class="try-price try-loading" data-eur="37.50">— ₺</span><span class="price-note">per person · duo</span></div>
+        <button class="btn-add" onclick="addToCart('Sonic Journey — Duo',37.50,'experience')">Add</button>
+      </div>
+      <div class="price-row">
+        <div><div class="exp-price" style="font-size:16px;">€60</div><span class="try-price try-loading" data-eur="60">— ₺</span><span class="price-note">online</span></div>
+        <button class="btn-add" onclick="addToCart('Sonic Journey — Online',60,'experience')">Add</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- FOOD -->
+<!-- KITCHEN -->
 <div class="section">
-  <div class="section-label">From the Kitchen</div>
-
-  <div class="product" onclick="addToCart('Ukiyo Nut Butter — 6 Pack', 52, 'physical')">
-    <div class="product-left">
-      <div class="product-name">Ukiyo Nut Butter</div>
-      <div class="product-desc">Stone-ground · cashews, coconut, goji berries · 190g per jar · 6 jars · 24+ month shelf life</div>
-      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
+  <div class="section-head">
+    <span class="section-icon">🫙</span>
+    <span class="section-title">From the Kitchen</span>
+  </div>
+  <div class="food-grid">
+    <div class="food-card">
+      <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_n6skmbn6skmbn6sk-768x1024.png" alt="Ukiyo Nut Butter" onerror="this.style.background='#e8e0d0'">
+      <div class="food-body">
+        <div class="food-name">Ukiyo Nut Butter</div>
+        <div class="food-desc">Stone-ground · cashews, coconut, goji · 190g × 6 jars · 24+ month shelf life</div>
+        <div class="food-footer">
+          <div class="food-price">€52 <span class="try-price try-loading" data-eur="52">— ₺</span></div>
+          <button class="btn-add" onclick="addToCart('Ukiyo Nut Butter — 6 Pack',52,'physical')">Add</button>
+        </div>
+      </div>
     </div>
-    <div class="product-right">
-      <div class="product-price">€52 <span class="try-price try-loading" data-eur="52">— ₺</span></div>
-      <button class="btn-add">Add</button>
+    <div class="food-card">
+      <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_nan8q6nan8q6nan8-768x1024.png" alt="Coconut Butter" onerror="this.style.background='#e8e0d0'">
+      <div class="food-body">
+        <div class="food-name">Coconut Butter</div>
+        <div class="food-desc">Pure stone-ground coconut · 290g × 6 jars · no additives</div>
+        <div class="food-footer">
+          <div class="food-price">€51 <span class="try-price try-loading" data-eur="51">— ₺</span></div>
+          <button class="btn-add" onclick="addToCart('Coconut Butter — 6 Pack',51,'physical')">Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="food-card">
+      <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/sourdough-product-pic.jpg" alt="Sourdough Starter" onerror="this.style.background='#e8e0d0'">
+      <div class="food-body">
+        <div class="food-name">Sourdough Starter</div>
+        <div class="food-desc">200g living culture · decade-old · 1:1 feed ratio</div>
+        <div class="food-footer">
+          <div class="food-price">€15 <span class="try-price try-loading" data-eur="15">— ₺</span></div>
+          <button class="btn-add" onclick="addToCart('Sourdough Starter',15,'physical')">Add</button>
+        </div>
+      </div>
     </div>
   </div>
-
-  <div class="product" onclick="addToCart('Coconut Butter — 6 Pack', 51, 'physical')">
-    <div class="product-left">
-      <div class="product-name">Coconut Butter</div>
-      <div class="product-desc">Pure stone-ground coconut · 290g per jar · 6 jars · no additives</div>
-      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
-    </div>
-    <div class="product-right">
-      <div class="product-price">€51 <span class="try-price try-loading" data-eur="51">— ₺</span></div>
-      <button class="btn-add">Add</button>
-    </div>
-  </div>
-
-  <div class="product" onclick="addToCart('Sourdough Starter', 15, 'physical')">
-    <div class="product-left">
-      <div class="product-name">Sourdough Starter</div>
-      <div class="product-desc">200g living culture · decade-old · feed 1:1 flour/water · enough for 1000g flour</div>
-      <div class="product-tag">Cyprus delivery · +€5 shipping</div>
-    </div>
-    <div class="product-right">
-      <div class="product-price">€15 <span class="try-price try-loading" data-eur="15">— ₺</span></div>
-      <button class="btn-add">Add</button>
-    </div>
-  </div>
-</div>
-
-<!-- DIGITAL -->
-<div class="section">
-  <div class="section-label">Digital — €1 each</div>
-  <div class="digital-grid" id="digital-grid">
-    <!-- populated by JS -->
-  </div>
-  <div class="digital-cart-info">Select one or more · payment confirmed · download link sent to your email</div>
-</div>
-
-<!-- SONIC JOURNEY REVIEWS -->
-<div class="testimonials">
-  <div class="section-label">What people say about Sonic Journey</div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"I experienced a true journey; an inner journey into a place I had never reached before. My body received the sounds and vibrations, not just through my ears, but through every part of me. I could feel the energy moving through me, carrying my mind with it. It was an adventure, and like all journeys, it touched the way I see the world and deepened my understanding."</div>
-    <div class="testimonial-author">Mehdi Abedi <span class="testimonial-date">December 2025</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"It is hard to put in words an experience that touched me on so many levels, so much deeper than can be captured by only mind. It was a dance between my mind trying to analyze what is happening, and the moments where all this let go and I dissolved into a deep relaxation — feeling the music on the levels of mind, body, energy, all together in a perfect resonance with me, simply being present in that nourishing experience."</div>
-    <div class="testimonial-author">Jana Rutova <span class="testimonial-date">December 2025</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"I was at a short sound session with Tagmac and honestly… goosebumps. Real chills. All the sounds were amazing, but what surprised me the most was that the strongest feeling came from the shaker, not the gongs. He also played the handpan so well, and knowing that he actually made the gongs himself made the whole experience feel even more special."</div>
-    <div class="testimonial-author">Rūta Staskeviciute <span class="testimonial-date">January 2026</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"Unexpectedly impactful. It was truly a journey from beginning to end. I never could have guessed just how profound an impact individual sounds could have until this session. Each sound had its own character, texture, and emotion. I feel that there is a power in sounds which can change inner and deep feelings."</div>
-    <div class="testimonial-author">Tuğberk Emirzade <span class="testimonial-date">March 2026</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"I've joined Tağmaç's Sonic Journey a number of times over the years, and it's been really interesting to see how they've evolved. Each time feels a bit more grounded, a bit more intentional. For me, it's never just been about 'sound therapy' as a concept. It feels more like being guided through a space with sound; sometimes subtle, sometimes intense, but always with a sense of flow."</div>
-    <div class="testimonial-author">Barış Parlan <span class="testimonial-date">March 2026</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemiş hissetmek ve o geceki uyku kalitemde belirgin bir fark. Sürecin kendisi başlı başına bir trans hali."</div>
-    <div class="testimonial-author">Ahmet Baba <span class="testimonial-date">2025</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"Müthiş ve çok rahatlatıcı bir deneyimdi. Bu deneyimden sonra ses ve frekansların hayatımızda ne kadar önemli olduğunu farkettim."</div>
-    <div class="testimonial-author">Hasan İlban <span class="testimonial-date">2025</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"I walked in carrying a weight, I was looking for peace. But the moment the music began, everything shifted. It was a deeply felt experience, where gentle vibrations delicately untied the emotional knots I didn't know I was carrying."</div>
-    <div class="testimonial-author">Nora Abouzi <span class="testimonial-date">2025</span></div>
-  </div>
-
-  <div class="testimonial">
-    <div class="testimonial-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div>
-    <div class="testimonial-author">Sergen Uysal <span class="testimonial-date">2025</span></div>
-  </div>
+  <div class="shipping-note">Cyprus delivery only · +€5 shipping per order</div>
 </div>
 
 <!-- MINI PLAYER -->
 <div id="mini-player">
-  <button class="player-prev" onclick="playerPrev()">⏮</button>
+  <button class="player-nav" onclick="playerPrev()">⏮</button>
   <button class="player-btn" id="play-btn" onclick="playerToggle()">▶</button>
-  <button class="player-next" onclick="playerNext()">⏭</button>
+  <button class="player-nav" onclick="playerNext()">⏭</button>
   <div class="player-info">
     <div class="player-title" id="player-title">—</div>
     <div class="player-artist">Tağmaç Çankaya</div>
   </div>
   <div class="player-progress-wrap">
     <span class="player-time" id="player-current">0:00</span>
-    <div class="player-progress" id="player-progress" onclick="playerSeek(event)">
-      <div class="player-progress-bar" id="player-bar"></div>
+    <div class="player-progress" onclick="playerSeek(event)">
+      <div class="player-bar" id="player-bar"></div>
     </div>
     <span class="player-time" id="player-duration">0:00</span>
   </div>
-  <div class="player-vol">
+  <div class="player-vol-wrap">
     <span class="player-vol-icon">♪</span>
-    <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="playerVol(this.value)">
+    <input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.8" oninput="playerVol(this.value)">
   </div>
 </div>
 
@@ -846,376 +364,223 @@ textarea.form-input { resize: none; }
 <!-- ORDER OVERLAY -->
 <div id="order-overlay">
   <div id="order-content">
-
     <div id="order-form-view">
       <div class="order-title">Your Order</div>
       <div class="order-subtitle">review & complete</div>
-
       <div id="order-items"></div>
-
-      <div id="order-shipping" style="display:none;" class="shipping-notice">
-        <strong>Delivery</strong> — Cyprus only. Address required below. Shipping fee: <strong>€5</strong> added per physical order.
-      </div>
-
+      <div id="order-shipping" style="display:none;" class="shipping-notice"><strong>Delivery</strong> — Cyprus only. Address required. Shipping: <strong>+€5</strong></div>
       <div class="form-section">
         <label class="form-label">Contact</label>
         <div class="form-row">
           <input class="form-input" id="f-name" type="text" placeholder="Your name" maxlength="80">
-          <input class="form-input" id="f-email" type="email" placeholder="Email address" maxlength="100">
-          <input class="form-input" id="f-phone" type="tel" placeholder="Phone number" maxlength="30">
+          <input class="form-input" id="f-email" type="email" placeholder="Email" maxlength="100">
+          <input class="form-input" id="f-phone" type="tel" placeholder="Phone" maxlength="30">
         </div>
       </div>
-
       <div class="form-section" id="address-section" style="display:none;">
         <label class="form-label">Delivery Address</label>
-        <div class="form-row">
-          <textarea class="form-input" id="f-address" rows="2" placeholder="Street, city, postcode"></textarea>
-        </div>
+        <div class="form-row"><textarea class="form-input" id="f-address" rows="2" placeholder="Street, city, postcode"></textarea></div>
       </div>
-
       <div class="form-section">
         <label class="form-label">Payment Method</label>
         <div class="payment-opts">
-          <div class="payment-opt" onclick="selectPayment('IBAN')">
-            <div class="payment-opt-name">Bank Transfer</div>
-            <div class="payment-opt-detail">IBAN details sent after order</div>
-          </div>
-          <div class="payment-opt" onclick="selectPayment('Revolut')">
-            <div class="payment-opt-name">Revolut</div>
-            <div class="payment-opt-detail">Link sent after order</div>
-          </div>
-          <div class="payment-opt" onclick="selectPayment('Ethereum')">
-            <div class="payment-opt-name">Ethereum</div>
-            <div class="payment-opt-detail">Wallet address on request</div>
-          </div>
+          <div class="payment-opt" onclick="selectPayment('IBAN',this)"><div class="payment-opt-name">Bank Transfer</div><div class="payment-opt-detail">IBAN sent after order</div></div>
+          <div class="payment-opt" onclick="selectPayment('Revolut',this)"><div class="payment-opt-name">Revolut</div><div class="payment-opt-detail">Link sent after order</div></div>
+          <div class="payment-opt" onclick="selectPayment('Ethereum',this)"><div class="payment-opt-name">Ethereum</div><div class="payment-opt-detail">Wallet on request</div></div>
         </div>
       </div>
-
       <div class="form-section">
         <label class="form-label">Note (optional)</label>
-        <div class="form-row">
-          <textarea class="form-input" id="f-note" rows="2" placeholder="Preferred session time, special requests…"></textarea>
-        </div>
+        <div class="form-row"><textarea class="form-input" id="f-note" rows="2" placeholder="Session time, special requests…"></textarea></div>
       </div>
-
       <button class="btn-send" onclick="submitOrder()">Send Order →</button>
-      <button class="btn-back-order" onclick="closeOrder()">← back to shop</button>
+      <button class="btn-back-order" onclick="closeOrder()">← back</button>
     </div>
-
     <div id="order-confirm">
       <div class="confirm-title">Order received.</div>
       <p class="confirm-text">We'll be in touch shortly with payment details.<br>Thank you for choosing something made with care.</p>
-      <button class="btn-back-order" onclick="closeOrder(); resetCart();">← back to shop</button>
+      <button class="btn-back-order" onclick="closeOrder();resetCart();">← back to shop</button>
     </div>
-
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-// ── MINI PLAYER ──────────────────────────────────────────────────
-const SUPABASE_STORAGE = 'https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/';
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
+const STORAGE=SUPA_URL+'/storage/v1/object/public/music/';
 
-// Add your tracks here — filename must match what you upload to Supabase Storage > music bucket
-const tracks = [
-  { title: 'And You', file: 'And you(v3).mp3' },
-  { title: 'Fox Tail — Goodbye 2025', file: 'Fox tail - goodbye 2025.mp3' },
-  { title: 'Half', file: 'Half.mp3' },
-  { title: 'I Don\'t Know', file: 'I Don\'t Know.mp3' },
-  { title: 'I Know', file: 'I know.mp3' },
-  { title: 'Keeping It Together', file: 'Keeping it together - handpan song Ocak 2025.mp3' },
-  { title: 'Late Afternoon', file: 'late afternoon - synth impro. first play record.mp3' },
-  { title: 'Monkey & Gong', file: 'monkey & gong.mp3' },
-  { title: 'Purnima', file: 'Purnima.mp3' },
-  { title: 'Synth Impro.', file: 'Synth Impro..mp3' },
-  { title: 'Trot', file: 'Trot.mp3' },
-  { title: 'Vocal & Shruti', file: 'Vocal & Shruti.mp3' },
+const tracks=[
+  {title:'And You',file:'And you(v3).mp3'},
+  {title:'Fox Tail — Goodbye 2025',file:'Fox tail - goodbye 2025.mp3'},
+  {title:'Half',file:'Half.mp3'},
+  {title:"I Don't Know",file:"I Don't Know.mp3"},
+  {title:'I Know',file:'I know.mp3'},
+  {title:'Keeping It Together',file:'Keeping it together - handpan song Ocak 2025.mp3'},
+  {title:'Late Afternoon',file:'late afternoon - synth impro. first play record.mp3'},
+  {title:'Monkey & Gong',file:'monkey & gong.mp3'},
+  {title:'Purnima',file:'Purnima.mp3'},
+  {title:'Synth Impro.',file:'Synth Impro..mp3'},
+  {title:'Trot',file:'Trot.mp3'},
+  {title:'Vocal & Shruti',file:'Vocal & Shruti.mp3'},
 ];
 
-let playerIdx = 0;
-let playerPlaying = false;
-const audio = new Audio();
-audio.volume = 0.8;
+// Build music grid
+const grid=document.getElementById('music-grid');
+tracks.forEach((t,i)=>{
+  const card=document.createElement('div');
+  card.className='track-card';
+  card.id='tc-'+i;
+  card.innerHTML=`
+    <div class="track-artwork">
+      <div class="track-artwork-placeholder">𝄞</div>
+      <div class="track-play-overlay" id="tpo-${i}">▶</div>
+    </div>
+    <div class="track-info">
+      <div class="track-name" title="${t.title}">${t.title}</div>
+      <div class="track-footer">
+        <span class="track-price">€1</span>
+        <button class="track-add" id="ta-${i}" onclick="event.stopPropagation();trackAdd(${i})">+ Add</button>
+      </div>
+    </div>`;
+  card.onclick=()=>playerLoad(i);
+  grid.appendChild(card);
+});
 
-function playerLoad(idx) {
-  if (!tracks.length) return;
-  playerIdx = (idx + tracks.length) % tracks.length;
-  const t = tracks[playerIdx];
-  audio.src = SUPABASE_STORAGE + t.file;
-  document.getElementById('player-title').textContent = t.title;
-  document.getElementById('player-bar').style.width = '0%';
-  document.getElementById('player-current').textContent = '0:00';
-  document.getElementById('player-duration').textContent = '0:00';
+// Player
+let pidx=0,playing=false;
+const audio=new Audio();
+audio.volume=0.8;
+
+function playerLoad(i){
+  document.querySelectorAll('.track-card').forEach(c=>c.classList.remove('playing'));
+  document.querySelectorAll('[id^=tpo-]').forEach(o=>o.textContent='▶');
+  pidx=(i+tracks.length)%tracks.length;
+  audio.src=STORAGE+encodeURIComponent(tracks[pidx].file);
+  document.getElementById('player-title').textContent=tracks[pidx].title;
+  document.getElementById('player-bar').style.width='0%';
+  document.getElementById('player-current').textContent='0:00';
+  document.getElementById('player-duration').textContent='0:00';
   document.getElementById('mini-player').classList.add('visible');
-  if (playerPlaying) audio.play().catch(() => {});
+  updateBottom();
+  document.getElementById('tc-'+pidx)?.classList.add('playing');
+  document.getElementById('tpo-'+pidx).textContent='⏸';
+  audio.play().catch(()=>{});
+  playing=true;
+  document.getElementById('play-btn').textContent='⏸';
 }
 
-function playerToggle() {
-  if (!tracks.length) return;
-  if (!audio.src) playerLoad(0);
-  if (audio.paused) {
-    audio.play().catch(() => {});
-    playerPlaying = true;
-    document.getElementById('play-btn').textContent = '⏸';
-  } else {
-    audio.pause();
-    playerPlaying = false;
-    document.getElementById('play-btn').textContent = '▶';
-  }
+function playerToggle(){
+  if(!audio.src){playerLoad(0);return;}
+  if(audio.paused){audio.play().catch(()=>{});playing=true;document.getElementById('play-btn').textContent='⏸';document.getElementById('tpo-'+pidx).textContent='⏸';}
+  else{audio.pause();playing=false;document.getElementById('play-btn').textContent='▶';document.getElementById('tpo-'+pidx).textContent='▶';}
+}
+function playerPrev(){playerLoad(pidx-1);}
+function playerNext(){playerLoad(pidx+1);}
+function playerVol(v){audio.volume=parseFloat(v);}
+function playerSeek(e){if(!audio.duration)return;const r=e.currentTarget.getBoundingClientRect();audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;}
+function fmt(s){if(!s||isNaN(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');}
+audio.addEventListener('timeupdate',()=>{if(!audio.duration)return;document.getElementById('player-bar').style.width=(audio.currentTime/audio.duration*100)+'%';document.getElementById('player-current').textContent=fmt(audio.currentTime);});
+audio.addEventListener('loadedmetadata',()=>{document.getElementById('player-duration').textContent=fmt(audio.duration);});
+audio.addEventListener('ended',()=>{if(tracks.length>1)playerLoad(pidx+1);else{playing=false;document.getElementById('play-btn').textContent='▶';}});
+
+// Cart
+let cart=[],selPayment=null;
+const inCart=new Set();
+
+function trackAdd(i){
+  const key='m'+i;
+  const btn=document.getElementById('ta-'+i);
+  if(inCart.has(key)){inCart.delete(key);cart=cart.filter(x=>x.id!==key);btn.textContent='+ Add';btn.classList.remove('in-cart');}
+  else{inCart.add(key);cart.push({id:key,name:tracks[i].title,price:1,type:'digital'});btn.textContent='✓';btn.classList.add('in-cart');}
+  updateCartBar();
 }
 
-function playerPrev() { playerLoad(playerIdx - 1); }
-function playerNext() { playerLoad(playerIdx + 1); }
-
-function playerVol(v) { audio.volume = parseFloat(v); }
-
-function playerSeek(e) {
-  if (!audio.duration) return;
-  const rect = e.currentTarget.getBoundingClientRect();
-  const ratio = (e.clientX - rect.left) / rect.width;
-  audio.currentTime = ratio * audio.duration;
+function addToCart(name,price,type){
+  if(cart.find(i=>i.name===name&&i.type===type))return;
+  cart.push({name,price,type});
+  updateCartBar();
 }
 
-function fmtTime(s) {
-  if (!s || isNaN(s)) return '0:00';
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return m + ':' + (sec < 10 ? '0' : '') + sec;
+function removeFromCart(i){
+  const item=cart[i];
+  if(item?.id){inCart.delete(item.id);const btn=document.getElementById('ta-'+item.id.slice(1));if(btn){btn.textContent='+ Add';btn.classList.remove('in-cart');}}
+  cart.splice(i,1);
+  updateCartBar();renderOrderItems();
 }
 
-audio.addEventListener('timeupdate', () => {
-  if (!audio.duration) return;
-  const pct = (audio.currentTime / audio.duration) * 100;
-  document.getElementById('player-bar').style.width = pct + '%';
-  document.getElementById('player-current').textContent = fmtTime(audio.currentTime);
-});
+function cartTotal(){return cart.reduce((s,i)=>s+i.price,0)+(cart.some(i=>i.type==='physical')?5:0);}
 
-audio.addEventListener('loadedmetadata', () => {
-  document.getElementById('player-duration').textContent = fmtTime(audio.duration);
-});
-
-audio.addEventListener('ended', () => {
-  if (tracks.length > 1) playerLoad(playerIdx + 1);
-  else { playerPlaying = false; document.getElementById('play-btn').textContent = '▶'; }
-});
-
-// Show player if tracks exist
-if (tracks.length) {
-  document.getElementById('mini-player').classList.add('visible');
-  document.getElementById('player-title').textContent = tracks[0].title;
+function updateCartBar(){
+  const bar=document.getElementById('cart-bar');
+  if(!cart.length){bar.classList.remove('visible');updateBottom();return;}
+  bar.classList.add('visible');
+  document.getElementById('cart-count-label').textContent=cart.length+(cart.length===1?' item':' items');
+  document.getElementById('cart-total-label').textContent='— €'+cartTotal().toFixed(2)+(cart.some(i=>i.type==='physical')?' (incl. €5 shipping)':'');
+  updateBottom();
 }
 
-// Keep cart bar above player
-function updateCartPosition() {
-  const player = document.getElementById('mini-player');
-  const cart = document.getElementById('cart-bar');
-  if (player.classList.contains('visible') && cart.classList.contains('visible')) {
-    cart.style.bottom = '64px';
-  } else {
-    cart.style.bottom = '0';
-  }
+function updateBottom(){
+  const ph=document.getElementById('mini-player').classList.contains('visible')?56:0;
+  document.getElementById('cart-bar').style.bottom=ph+'px';
 }
-const cartObs = new MutationObserver(updateCartPosition);
-cartObs.observe(document.getElementById('cart-bar'), { attributes: true });
 
-// ── LIVE EUR/TRY RATE ────────────────────────────────────────────
-(async function() {
-  try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=TRY');
-    const data = await res.json();
-    const rate = data.rates?.TRY;
-    if (!rate) return;
+function resetCart(){
+  cart=[];inCart.clear();
+  document.querySelectorAll('.track-add').forEach(b=>{b.textContent='+ Add';b.classList.remove('in-cart');});
+  updateCartBar();selPayment=null;
+  document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));
+}
 
-    document.querySelectorAll('.try-price[data-eur]').forEach(el => {
-      const eur = parseFloat(el.getAttribute('data-eur'));
-      const try_ = Math.round(eur * rate);
-      el.textContent = `≈ ₺${try_.toLocaleString('tr-TR')}`;
+function toggleReviews(){document.getElementById('reviews-panel').classList.toggle('open');}
+
+function openOrder(){document.getElementById('order-overlay').classList.add('open');document.getElementById('order-form-view').style.display='block';document.getElementById('order-confirm').style.display='none';renderOrderItems();}
+function closeOrder(){document.getElementById('order-overlay').classList.remove('open');}
+
+function renderOrderItems(){
+  const hasP=cart.some(i=>i.type==='physical');
+  document.getElementById('order-shipping').style.display=hasP?'block':'none';
+  document.getElementById('address-section').style.display=hasP?'block':'none';
+  let html=cart.map((item,i)=>`<div class="order-item"><div class="order-item-name">${item.name}</div><div class="order-item-price">€${item.price.toFixed(2)}</div><div class="order-item-remove" onclick="removeFromCart(${i})">✕</div></div>`).join('');
+  if(hasP)html+=`<div class="order-item"><div class="order-item-name" style="font-size:12px;color:var(--dim);font-style:normal">Shipping</div><div class="order-item-price">€5.00</div><div></div></div>`;
+  document.getElementById('order-items').innerHTML=html+`<div class="order-total"><div class="order-total-label">Total</div><div class="order-total-price">€${cartTotal().toFixed(2)}</div></div>`;
+}
+
+function selectPayment(method,el){selPayment=method;document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
+
+async function submitOrder(){
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const note=document.getElementById('f-note').value.trim();
+  const address=document.getElementById('f-address')?.value.trim()||'';
+  const hasP=cart.some(i=>i.type==='physical');
+  if(!name||!email){alert('Name and email are required.');return;}
+  if(!selPayment){alert('Please select a payment method.');return;}
+  if(hasP&&!address){alert('Please enter a delivery address.');return;}
+  if(!cart.length)return;
+  try{
+    await supa.from('orders').insert({name,email,product:cart.map(i=>`${i.name} (€${i.price.toFixed(2)})`).join(', '),price:cartTotal(),payment_method:selPayment,payment_note:[note,hasP?`Address: ${address}`:'',phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '),approved:false});
+    document.getElementById('order-form-view').style.display='none';
+    document.getElementById('order-confirm').style.display='block';
+  }catch(e){alert('Something went wrong. Please try again.');}
+}
+
+// EUR/TRY
+(async()=>{
+  try{
+    const r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=TRY');
+    const d=await r.json();
+    const rate=d.rates?.TRY;
+    if(!rate)return;
+    document.querySelectorAll('.try-price[data-eur]').forEach(el=>{
+      el.textContent='≈ ₺'+Math.round(parseFloat(el.getAttribute('data-eur'))*rate).toLocaleString('tr-TR');
       el.classList.remove('try-loading');
     });
-  } catch(e) {
-    // silently fail — EUR prices still shown
-    document.querySelectorAll('.try-price').forEach(el => el.remove());
-  }
+  }catch(e){document.querySelectorAll('.try-price').forEach(el=>el.remove());}
 })();
-
-
-const SUPA_URL = 'https://iwfvlatywksvnnxymweb.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
-
-// ── DIGITAL PRODUCTS ─────────────────────────────────────────────
-const digitalProducts = [
-  { id: 'd1', name: 'Gong Recording — I',     type: 'gong' },
-  { id: 'd2', name: 'Gong Recording — II',    type: 'gong' },
-  { id: 'd3', name: 'Gong Recording — III',   type: 'gong' },
-  { id: 'd4', name: 'Breath Session — I',     type: 'breath' },
-  { id: 'd5', name: 'Breath Session — II',    type: 'breath' },
-  { id: 'd6', name: 'Music — Track I',        type: 'music' },
-  { id: 'd7', name: 'Music — Track II',       type: 'music' },
-  { id: 'd8', name: 'Music — Track III',      type: 'music' },
-];
-
-const digitalGrid = document.getElementById('digital-grid');
-digitalProducts.forEach(p => {
-  const el = document.createElement('div');
-  el.className = 'digital-item';
-  el.id = 'dp-' + p.id;
-  el.innerHTML = `<span class="digital-item-name">${p.name}</span><span class="digital-item-price">€1</span>`;
-  el.onclick = () => toggleDigital(p);
-  digitalGrid.appendChild(el);
-});
-
-// ── CART ─────────────────────────────────────────────────────────
-let cart = [];
-let selectedPayment = null;
-const selectedDigital = new Set();
-
-function toggleDigital(p) {
-  const el = document.getElementById('dp-' + p.id);
-  if (selectedDigital.has(p.id)) {
-    selectedDigital.delete(p.id);
-    el.classList.remove('selected');
-    cart = cart.filter(i => i.id !== p.id);
-  } else {
-    selectedDigital.add(p.id);
-    el.classList.add('selected');
-    cart.push({ id: p.id, name: p.name, price: 1, type: 'digital' });
-  }
-  updateCartBar();
-}
-
-function addToCart(name, price, type) {
-  // Avoid exact duplicates
-  if (cart.find(i => i.name === name)) return;
-  cart.push({ name, price, type });
-  updateCartBar();
-}
-
-function removeFromCart(idx) {
-  const item = cart[idx];
-  if (item && item.type === 'digital') selectedDigital.delete(item.id);
-  if (item && item.id) document.getElementById('dp-' + item.id)?.classList.remove('selected');
-  cart.splice(idx, 1);
-  updateCartBar();
-  renderOrderItems();
-}
-
-function cartTotal() {
-  const base = cart.reduce((s, i) => s + i.price, 0);
-  const hasPhysical = cart.some(i => i.type === 'physical');
-  return base + (hasPhysical ? 5 : 0);
-}
-
-function updateCartBar() {
-  const bar = document.getElementById('cart-bar');
-  if (cart.length === 0) {
-    bar.classList.remove('visible');
-    return;
-  }
-  bar.classList.add('visible');
-  const total = cartTotal();
-  const hasPhysical = cart.some(i => i.type === 'physical');
-  document.getElementById('cart-count-label').textContent = cart.length + (cart.length === 1 ? ' item' : ' items');
-  document.getElementById('cart-total-label').textContent = '— €' + total.toFixed(2) + (hasPhysical ? ' (incl. €5 shipping)' : '');
-}
-
-function resetCart() {
-  cart = [];
-  selectedDigital.clear();
-  document.querySelectorAll('.digital-item.selected').forEach(e => e.classList.remove('selected'));
-  updateCartBar();
-  selectedPayment = null;
-  document.querySelectorAll('.payment-opt.selected').forEach(e => e.classList.remove('selected'));
-}
-
-// ── ORDER OVERLAY ────────────────────────────────────────────────
-function openOrder() {
-  document.getElementById('order-overlay').classList.add('open');
-  document.getElementById('order-form-view').style.display = 'block';
-  document.getElementById('order-confirm').style.display = 'none';
-  renderOrderItems();
-}
-function closeOrder() {
-  document.getElementById('order-overlay').classList.remove('open');
-}
-
-function renderOrderItems() {
-  const hasPhysical = cart.some(i => i.type === 'physical');
-  document.getElementById('order-shipping').style.display = hasPhysical ? 'block' : 'none';
-  document.getElementById('address-section').style.display = hasPhysical ? 'block' : 'none';
-
-  const total = cartTotal();
-  let html = cart.map((item, i) => `
-    <div class="order-item">
-      <div class="order-item-name">${item.name}</div>
-      <div class="order-item-price">€${item.price.toFixed(2)}</div>
-      <div class="order-item-remove" onclick="removeFromCart(${i})">✕</div>
-    </div>
-  `).join('');
-
-  if (hasPhysical) {
-    html += `<div class="order-item">
-      <div class="order-item-name" style="font-style:normal;font-size:12px;color:var(--dim)">Shipping</div>
-      <div class="order-item-price">€5.00</div>
-      <div class="order-item-remove"></div>
-    </div>`;
-  }
-
-  document.getElementById('order-items').innerHTML = `
-    ${html}
-    <div class="order-total">
-      <div class="order-total-label">Total</div>
-      <div class="order-total-price">€${total.toFixed(2)}</div>
-    </div>
-  `;
-}
-
-function selectPayment(method) {
-  selectedPayment = method;
-  document.querySelectorAll('.payment-opt').forEach(el => el.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-}
-
-async function submitOrder() {
-  const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
-  const note = document.getElementById('f-note').value.trim();
-  const address = document.getElementById('f-address')?.value.trim() || '';
-  const hasPhysical = cart.some(i => i.type === 'physical');
-
-  if (!name || !email) { alert('Name and email are required.'); return; }
-  if (!selectedPayment) { alert('Please select a payment method.'); return; }
-  if (hasPhysical && !address) { alert('Please enter a delivery address.'); return; }
-  if (cart.length === 0) return;
-
-  const products = cart.map(i => `${i.name} (€${i.price.toFixed(2)})`).join(', ');
-  const total = cartTotal();
-
-  try {
-    await supa.from('orders').insert({
-      name,
-      email,
-      product: products,
-      price: total,
-      payment_method: selectedPayment,
-      payment_note: [
-        note,
-        hasPhysical ? `Address: ${address}` : '',
-        phone ? `Phone: ${phone}` : ''
-      ].filter(Boolean).join(' | '),
-      approved: false
-    });
-
-    document.getElementById('order-form-view').style.display = 'none';
-    document.getElementById('order-confirm').style.display = 'block';
-  } catch(e) {
-    alert('Something went wrong. Please try again.');
-    console.error(e);
-  }
-}
 </script>
-
 <script src="tracking.js"></script>
 </body>
 </html>
