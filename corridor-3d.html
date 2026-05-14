@@ -3,7 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Casa Caravan Space</title>
+<title>Casa Caravan Space — Corridor</title>
+<meta name="description" content="A digital corridor with rooms for sound healing, fermentation, plant medicine and creative tools. By Tağmaç Çankaya, Lefkoşa Cyprus.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://casacaravan.space/corridor-3d.html">
+<link rel="alternate" type="application/rss+xml" title="Casa Caravan Space" href="https://casacaravan.space/rss.xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Casa Caravan Space — The Corridor",
+  "description": "A 3D digital corridor with rooms for sound healing, fermentation, plant medicine, music and creative tools.",
+  "url": "https://casacaravan.space/corridor-3d.html",
+  "author": {"@type":"Person","name":"Tağmaç Çankaya"},
+  "isPartOf": {"@type":"WebSite","url":"https://casacaravan.space"}
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
@@ -84,6 +99,39 @@ canvas { display:block; flex:1; min-height:0; }
 </style>
 </head>
 <body>
+
+<noscript>
+<style>
+  .ns-wrap{font-family:Georgia,serif;max-width:800px;margin:0 auto;padding:60px 32px;color:#1a1208;background:#f5f0e8;min-height:100vh;}
+  .ns-title{font-size:42px;font-style:italic;margin-bottom:8px;}
+  .ns-sub{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:#8a7a6a;margin-bottom:48px;}
+  .ns-body{font-size:16px;line-height:2;color:#2a1f14;margin-bottom:48px;}
+  .ns-rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:48px;}
+  .ns-room{border:1px solid rgba(80,60,40,0.15);border-radius:8px;padding:20px;text-decoration:none;color:#1a1208;}
+  .ns-room h3{font-size:18px;font-style:italic;margin-bottom:6px;}
+  .ns-room p{font-size:12px;color:#8a7a6a;line-height:1.6;}
+  .ns-room:hover{background:#fff;}
+</style>
+<div class="ns-wrap">
+  <div class="ns-title">Casa Caravan Space</div>
+  <div class="ns-sub">· create with life · Lefkoşa, Cyprus</div>
+  <div class="ns-body">
+    A digital space built by Tağmaç Çankaya — musician, gong maker, fermentation pioneer, and creator. Sound healing, plant medicine, fermentation, music and creative tools. A corridor with many rooms, each one a different door into the same question: what are the conditions under which life organizes itself well?
+  </div>
+  <div class="ns-rooms">
+    <a href="shop.html" class="ns-room"><h3>Shop</h3><p>Sonic Journey sessions, handcrafted foods, music recordings. €1–€75.</p></a>
+    <a href="garden.html" class="ns-room"><h3>The Garden</h3><p>A night space with live chat, real moon phase, ambient forest sounds and radio.</p></a>
+    <a href="audio_sanctuary.html" class="ns-room"><h3>Audio Sanctuary</h3><p>Browser recording studio — reverb, EQ, 48kHz. No install, no account.</p></a>
+    <a href="fermentation_lab.html" class="ns-room"><h3>Fermentation Lab</h3><p>Recipe calculators for sourdough, kombucha, kefir, kimchi and more.</p></a>
+    <a href="herbal_atelier.html" class="ns-room"><h3>Herbal Atelier</h3><p>Plant extract calculator and herbal preparation guide.</p></a>
+    <a href="forest.html" class="ns-room"><h3>The Forest</h3><p>Walk in. Choose your path. See what lies deeper.</p></a>
+    <a href="observatory.html" class="ns-room"><h3>Star Observatory</h3><p>Star dome, constellations, zodiac and night sky from Cyprus.</p></a>
+    <a href="khashif.html" class="ns-room"><h3>Khashif</h3><p>Discovery agent. For those seeking resonance across disciplines.</p></a>
+    <a href="about.html" class="ns-room"><h3>About</h3><p>The story of Casa Caravan — from soil to sound to code.</p></a>
+  </div>
+  <p style="font-size:12px;color:#8a7a6a;">RSS: <a href="rss.xml" style="color:#7a5c3a;">casacaravan.space/rss.xml</a> · Shop: <a href="shop.html" style="color:#7a5c3a;">casacaravan.space/shop.html</a></p>
+</div>
+</noscript>
 
 <div id="canvas-wrap">
   <div id="header">
@@ -327,12 +375,12 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
-  {name:'Shop',             color:0xb03020,border:0xff4030,z:-2, side:'L',action:'shop'},
-  {name:'Fermentation Lab', color:0x5a9030,border:0x70b040,z:-2, side:'R',action:'fermentation'},
-  {name:'Work in Progress', color:0x8060c0,border:0x9070d0,z:-10,side:'L',action:'wip'},
-  {name:'Audio Sanctuary',  color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
-  {name:'Work in Progress', color:0xc06030,border:0xd07040,z:-18,side:'L',action:'wip'},
-  {name:'Herbal Atelier',   color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
+  {name:'Shop',                    color:0xb03020,border:0xff4030,z:-2, side:'L',action:'shop'},
+  {name:'Khashif Discovery Agent', color:0x206080,border:0x40a0c8,z:-2, side:'R',action:'khashif'},
+  {name:'Fermentation Lab',        color:0x5a9030,border:0x70b040,z:-10,side:'L',action:'fermentation'},
+  {name:'Audio Sanctuary',         color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
+  {name:'Work in Progress',        color:0xc06030,border:0xd07040,z:-18,side:'L',action:'wip'},
+  {name:'Herbal Atelier',          color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
 ];
 
 const DW=2.2, DH=2.8;
@@ -759,6 +807,7 @@ canvas.addEventListener('touchend',e=>{
 
 function openD(d){
   if(d.action==='wip'){return;}
+  if(d.action==='khashif'){window.location.href='khashif.html';return;}
   if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
 function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
   if(d.action==='garden'){window.location.href='garden.html';return;}
@@ -822,7 +871,6 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
 <script>
 
 </script>
-
 
 
 </body>

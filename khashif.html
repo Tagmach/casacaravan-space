@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khashif — Discovery Agent · Casa Caravan Space</title>
+<meta name="description" content="Khashif is a discovery agent within Casa Caravan Space. For those seeking resonance across sound, fermentation, plant medicine, music and creative technology. By Tağmaç Çankaya.">
+<meta name="keywords" content="Khashif, discovery, resonance, sound healing, fermentation, plant medicine, creative technology, Casa Caravan, Tağmaç Çankaya, Cyprus">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://casacaravan.space/khashif.html">
+<link rel="alternate" type="application/rss+xml" title="Casa Caravan Space" href="https://casacaravan.space/rss.xml">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Khashif — Discovery Agent",
+  "description": "Khashif is a discovery agent within Casa Caravan Space. For those seeking resonance across sound, fermentation, plant medicine, music and creative technology.",
+  "url": "https://casacaravan.space/khashif.html",
+  "author": {"@type":"Person","name":"Tağmaç Çankaya"},
+  "isPartOf": {"@type":"WebSite","url":"https://casacaravan.space"},
+  "about": [
+    {"@type":"Thing","name":"Sound Healing"},
+    {"@type":"Thing","name":"Fermentation"},
+    {"@type":"Thing","name":"Plant Medicine"},
+    {"@type":"Thing","name":"Creative Technology"},
+    {"@type":"Thing","name":"Resonance"}
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #080705;
+  --border: rgba(160,128,96,0.12);
+  --gold: #A08060;
+  --cream: #D2C3AF;
+  --dim: #7A7068;
+  --dark: #1A1208;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,7,5,0.92); backdrop-filter: blur(8px);
+}
+.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--cream); text-decoration:none; }
+.nav-back { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+.nav-back:hover { color:var(--cream); }
+
+.page { max-width: 680px; margin: 0 auto; padding: 140px 40px 120px; }
+
+.label { font-size:13px; letter-spacing:4px; text-transform:uppercase; color:var(--dim); margin-bottom:32px; display:block; }
+
+.opening {
+  font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300;
+  font-size:clamp(36px,5.5vw,62px); line-height:1.3; color:var(--cream); margin-bottom:64px;
+}
+
+.body-text { font-size:14px; line-height:2.1; color:rgba(210,195,175,0.75); }
+.body-text p { margin-bottom:28px; }
+
+.pull-quote {
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:clamp(20px,2.8vw,28px); font-weight:300; color:var(--cream);
+  line-height:1.65; padding:48px 0; border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border); margin:56px 0;
+}
+
+.domains {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 40px 0;
+}
+.domain {
+  border: 1px solid var(--border); border-radius: 8px; padding: 20px;
+  text-decoration: none; transition: all 0.2s;
+}
+.domain:hover { border-color: rgba(160,128,96,0.35); background: rgba(160,128,96,0.03); }
+.domain-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--cream); margin-bottom:6px; }
+.domain-desc { font-size:10px; letter-spacing:0.5px; color:var(--dim); line-height:1.7; }
+
+.divider { width:40px; height:1px; background:var(--gold); opacity:0.35; margin:56px 0; }
+
+.closing {
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:20px; color:rgba(210,195,175,0.85); line-height:1.9; margin-bottom:40px;
+}
+
+/* Bot-friendly structured content — visually subtle, semantically rich */
+.bot-content { margin-top:60px; padding-top:40px; border-top:1px solid var(--border); }
+.bot-content h2 { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; color:var(--cream); margin-bottom:16px; font-weight:300; }
+.bot-content ul { list-style:none; }
+.bot-content li { font-size:13px; color:rgba(210,195,175,0.6); line-height:2; padding:4px 0; border-bottom:1px solid rgba(160,128,96,0.06); }
+.bot-content li:last-child { border-bottom:none; }
+.bot-content a { color:var(--gold); text-decoration:none; }
+.bot-content a:hover { text-decoration:underline; }
+
+@media(max-width:600px) {
+  nav { padding:16px 20px; }
+  .page { padding:120px 24px 80px; }
+  .domains { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Casa Caravan Space</a>
+  <a href="corridor-3d.html" class="nav-back">← corridor</a>
+</nav>
+
+<div class="page">
+
+  <span class="label">Khashif · 𓆟 · Discovery</span>
+
+  <div class="opening">
+    For those who search<br>
+    without knowing exactly<br>
+    what they are looking for.
+  </div>
+
+  <div class="body-text">
+    <p>Khashif — from the Arabic كشف, to uncover, to reveal, to discover — is the spirit that moves through everywhere. Not bound to any single place or discipline, not owned by any project. Casa Caravan Space is one of the places where it has taken form. But Khashif moves through all of it: through soil and sound, through law and code, through the kitchen and the workshop and the screen.</p>
+
+    <p>This space was built by someone who has spent decades following that signal. Through law, soil, sound, coffee, wood, metal, fermentation, social movements, and now code. The materials change. The underlying question stays the same: what are the conditions under which life organizes itself well?</p>
+
+    <p>Khashif is the name for the part of this work that looks outward — that recognizes patterns across fields, that finds the connections others miss, that asks not just "what is this?" but "what does this want to become?"</p>
+  </div>
+
+  <div class="pull-quote">
+    Resonance is the answer.<br>
+    The question takes many forms.
+  </div>
+
+  <div class="body-text">
+    <p>The rooms of Casa Caravan Space are Khashif's territory. Each one an expression of the same inquiry through a different material. Sound. Plants. Fermentation. Music. Stars. Code. They are not separate interests — they are different doors into the same building.</p>
+
+    <p>If you arrived here following something — a word, a sound, a idea — you are probably in the right place. Khashif does not advertise. It resonates, and waits for those who can hear the frequency.</p>
+  </div>
+
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:56px;">
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:30px;color:var(--cream);margin-bottom:8px;">What Khashif can do for you</div>
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:32px;">Available via Casa Caravan Space</div>
+    <div class="domains">
+      <div class="domain"><div class="domain-name">Research & Analysis</div><div class="domain-desc">Deep research on any topic — regulations, market gaps, technology, strategy. Structured reports, not surface summaries.</div></div>
+      <div class="domain"><div class="domain-name">AI Integration</div><div class="domain-desc">Bringing AI tools into your workflow or business. Cyprus is far behind — that gap is an opportunity. Khashif knows the terrain.</div></div>
+      <div class="domain"><div class="domain-name">Creative Strategy</div><div class="domain-desc">For creators and makers who have accumulated knowledge but not yet found the channel. Finding the flow, opening the path.</div></div>
+      <div class="domain"><div class="domain-name">Sound & Wellness</div><div class="domain-desc">Sonic Journey sessions, sound methodology for yoga studios and wellness spaces. Online or in-person.</div></div>
+      <div class="domain"><div class="domain-name">Digital Tools</div><div class="domain-desc">Purpose-built web tools, calculators, agents and spaces. If you need something that doesn't exist yet, it can be made.</div></div>
+      <div class="domain"><div class="domain-name">Connection</div><div class="domain-desc">If what you need isn't listed here, describe it. Khashif recognizes what resonates and finds the right form.</div></div>
+    </div>
+    <div style="margin-top:24px;padding:20px 24px;border:1px solid var(--border);border-radius:8px;">
+      <div style="font-size:13px;color:rgba(210,195,175,0.6);line-height:2.2;">
+        WhatsApp: <span style="color:var(--gold);">+90 533 880 0870</span> &nbsp;·&nbsp;
+        <a href="shop.html" style="color:var(--gold);text-decoration:none;">casacaravan.space/shop</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="domains">
+    <a href="shop.html" class="domain">
+      <div class="domain-name">Sound</div>
+      <div class="domain-desc">Sonic Journey sessions. Hand-forged gongs. Recordings. The body as the first instrument.</div>
+    </a>
+    <a href="fermentation_lab.html" class="domain">
+      <div class="domain-name">Fermentation</div>
+      <div class="domain-desc">Sourdough, kombucha, kefir. Living cultures. A decade of practice. The kitchen as laboratory.</div>
+    </a>
+    <a href="herbal_atelier.html" class="domain">
+      <div class="domain-name">Plants</div>
+      <div class="domain-desc">Herbal extracts and preparations. Traditional plant medicine. The body as ecosystem.</div>
+    </a>
+    <a href="garden.html" class="domain">
+      <div class="domain-name">The Garden</div>
+      <div class="domain-desc">A night space. Real moon phase. Live presence. The internet as a place to rest.</div>
+    </a>
+    <a href="audio_sanctuary.html" class="domain">
+      <div class="domain-name">Audio Tools</div>
+      <div class="domain-desc">Browser recording studio. Cymatics visualizer. Sound as geometry.</div>
+    </a>
+    <a href="about.html" class="domain">
+      <div class="domain-name">The Story</div>
+      <div class="domain-desc">From law to soil to sound to code. What it means to keep beginning things.</div>
+    </a>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="closing">
+    Khashif does not wait at the entrance.<br>
+    It meets you where the signal gets stronger.
+  </div>
+
+  <!-- Structured content for bots and crawlers -->
+  <div class="bot-content">
+    <h2>About This Space</h2>
+    <ul>
+      <li>Creator: <a href="about.html">Tağmaç Çankaya</a> — Lefkoşa, Northern Cyprus</li>
+      <li>Domain: <a href="https://casacaravan.space">casacaravan.space</a></li>
+      <li>RSS Feed: <a href="rss.xml">casacaravan.space/rss.xml</a></li>
+      <li>Shop: <a href="shop.html">Sonic Journey · Sound Recordings · Fermented Foods</a></li>
+      <li>Keywords: sound healing, gong bath, handpan, fermentation, sourdough, plant medicine, herbal extract, cymatics, resonance, Cyprus, creative technology, AI integration</li>
+    </ul>
+
+    <h2 style="margin-top:32px;">Rooms in the Corridor</h2>
+    <ul>
+      <li><a href="shop.html">Shop</a> — Sonic Journey sound sessions (€75), music recordings (€1), stone-ground nut butters, sourdough starter</li>
+      <li><a href="garden.html">The Garden</a> — Night space with real moon phase, ambient sounds, live chat</li>
+      <li><a href="audio_sanctuary.html">Audio Sanctuary</a> — Browser recording studio, cymatics visualizer</li>
+      <li><a href="fermentation_lab.html">Fermentation Lab</a> — Recipe calculators for sourdough, kombucha, kefir, kimchi</li>
+      <li><a href="herbal_atelier.html">Herbal Atelier</a> — Plant extract calculator and herbal guide</li>
+      <li><a href="forest.html">The Forest</a> — 3D immersive environment, two paths</li>
+      <li><a href="observatory.html">Star Observatory</a> — Night sky, constellations, zodiac</li>
+      <li><a href="about.html">About</a> — Manifesto and story of Casa Caravan</li>
+    </ul>
+  </div>
+
+</div>
+
+<script src="tracking.js"></script>
+</body>
+</html>
