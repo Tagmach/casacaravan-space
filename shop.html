@@ -32,8 +32,8 @@ nav {
   border-bottom: 1px solid var(--border);
   background: rgba(245,240,232,0.95); backdrop-filter: blur(8px);
 }
-.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--dark); text-decoration:none; }
-.nav-back { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); text-decoration:none; }
+.nav-back { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
 .nav-back:hover { color:var(--dark); }
 
 .hero {
@@ -46,8 +46,8 @@ nav {
 
 .section { max-width:960px; margin:0 auto; padding:48px 40px; border-bottom:1px solid var(--border); }
 .section-head { display:flex; align-items:center; gap:14px; margin-bottom:32px; }
-.section-icon { font-size:22px; line-height:1; }
-.section-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:26px; font-weight:300; color:var(--dark); }
+.section-icon { font-size:26px; line-height:1; }
+.section-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:30px; font-weight:300; color:var(--dark); }
 
 /* MUSIC GRID */
 .music-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; }
@@ -70,11 +70,11 @@ nav {
 .track-card:hover .track-play-overlay,
 .track-card.playing .track-play-overlay { opacity:1; }
 .track-info { padding:10px 10px 8px; }
-.track-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:12px; color:var(--dark); margin-bottom:6px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--dark); margin-bottom:6px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .track-footer { display:flex; align-items:center; justify-content:space-between; }
-.track-price { font-size:11px; color:var(--gold); }
+.track-price { font-size:13px; color:var(--gold); }
 .track-add {
-  font-size:8px; letter-spacing:1px; padding:3px 8px;
+  font-size:9px; letter-spacing:1px; padding:4px 10px;
   border:1px solid rgba(122,92,58,0.3); border-radius:100px;
   color:var(--gold); background:none; cursor:pointer; transition:all 0.2s;
 }
@@ -108,15 +108,15 @@ nav {
   display:inline-flex; align-items:center; gap:8px;
   cursor:pointer; border:none; background:none; padding:0; margin-top:8px;
 }
-.reviews-stars { color:#C8A84A; font-size:12px; letter-spacing:1px; }
-.reviews-count { font-size:9px; letter-spacing:1.5px; color:var(--dim); text-transform:uppercase; text-decoration:underline; text-underline-offset:3px; }
+.reviews-stars { color:#C8A84A; font-size:14px; letter-spacing:1px; }
+.reviews-count { font-size:11px; letter-spacing:1.5px; color:var(--dim); text-transform:uppercase; text-decoration:underline; text-underline-offset:3px; }
 .reviews-panel { display:none; margin-top:20px; padding-top:20px; border-top:1px solid var(--border); }
 .reviews-panel.open { display:block; }
 .review { padding:14px 0; border-bottom:1px solid rgba(80,60,40,0.06); }
 .review:last-child { border-bottom:none; }
-.review-stars { color:#C8A84A; font-size:10px; margin-bottom:5px; }
-.review-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--dark); line-height:1.75; margin-bottom:6px; }
-.review-author { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
+.review-stars { color:#C8A84A; font-size:12px; margin-bottom:5px; }
+.review-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--dark); line-height:1.75; margin-bottom:6px; }
+.review-author { font-size:11px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
 
 /* FOOD GRID */
 .food-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
@@ -124,11 +124,11 @@ nav {
 .food-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(80,60,40,0.08); }
 .food-img { width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--surface); display:block; }
 .food-body { padding:16px; }
-.food-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); margin-bottom:4px; }
-.food-desc { font-size:9px; letter-spacing:0.5px; color:var(--dim); line-height:1.7; margin-bottom:12px; }
+.food-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); margin-bottom:6px; }
+.food-desc { font-size:12px; letter-spacing:0.5px; color:var(--dim); line-height:1.8; margin-bottom:12px; }
 .food-footer { display:flex; align-items:flex-end; justify-content:space-between; }
-.food-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); }
-.shipping-note { font-size:9px; color:var(--dim); margin-top:16px; letter-spacing:1px; }
+.food-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); }
+.shipping-note { font-size:11px; color:var(--dim); margin-top:16px; letter-spacing:1px; }
 
 /* MINI PLAYER */
 #mini-player {
@@ -237,7 +237,7 @@ textarea.form-input { resize:none; }
 <div class="section">
   <div class="section-head">
     <span class="section-icon">𝄞</span>
-    <span class="section-title">Music</span>
+    <span class="section-title">Tağmaç Çankaya's Sounds and Music</span>
   </div>
   <div class="music-grid" id="music-grid"></div>
 </div>
@@ -252,7 +252,11 @@ textarea.form-input { resize:none; }
     <img class="exp-img" src="https://casacaravanshop.com/wp-content/uploads/2025/11/IMG_9117-300x300.jpg" alt="Sonic Journey" onerror="this.style.background='#e8e0d0'">
     <div class="exp-body">
       <div class="exp-name">Sonic Journey</div>
-      <div class="exp-desc">45 min · hand-forged gongs · handpan · bells · Wednesdays · Lefkoşa</div>
+      <div class="exp-desc">
+        A 45-minute immersive sound session designed to be your sanctuary in time and space. Not merely a listening event — a deeply personal expedition into the landscape of your own mind.<br><br>
+        Tağmaç weaves an organic soundscape using hand-forged gongs (that you don't just hear, but feel reverberating through your entire being), handpan, gentle shakers and bells. The layered sound bath encourages your brainwaves to shift from Beta to the restorative Alpha and Theta states.<br><br>
+        Available as one-on-one or duo sessions. Wednesdays in Lefkoşa, 4:00–7:45 pm slots. Reservation via WhatsApp: +90 533 880 0870
+      </div>
       <button class="reviews-toggle" onclick="toggleReviews()">
         <span class="reviews-stars">★★★★★</span>
         <span class="reviews-count">9 reviews</span>
@@ -271,15 +275,27 @@ textarea.form-input { resize:none; }
     </div>
     <div class="exp-right">
       <div class="price-row">
-        <div><div class="exp-price">€75</div><span class="try-price try-loading" data-eur="75">— ₺</span></div>
+        <div style="text-align:right;">
+          <div class="exp-price">€75</div>
+          <span class="try-price try-loading" data-eur="75">— ₺</span>
+          <span class="price-note">individual</span>
+        </div>
         <button class="btn-add" onclick="addToCart('Sonic Journey — Individual',75,'experience')">Add</button>
       </div>
       <div class="price-row">
-        <div><div class="exp-price" style="font-size:16px;">€37.50</div><span class="try-price try-loading" data-eur="37.50">— ₺</span><span class="price-note">per person · duo</span></div>
+        <div style="text-align:right;">
+          <div class="exp-price">€37.50</div>
+          <span class="try-price try-loading" data-eur="37.50">— ₺</span>
+          <span class="price-note">per person · duo</span>
+        </div>
         <button class="btn-add" onclick="addToCart('Sonic Journey — Duo',37.50,'experience')">Add</button>
       </div>
       <div class="price-row">
-        <div><div class="exp-price" style="font-size:16px;">€60</div><span class="try-price try-loading" data-eur="60">— ₺</span><span class="price-note">online</span></div>
+        <div style="text-align:right;">
+          <div class="exp-price">€60</div>
+          <span class="try-price try-loading" data-eur="60">— ₺</span>
+          <span class="price-note">online</span>
+        </div>
         <button class="btn-add" onclick="addToCart('Sonic Journey — Online',60,'experience')">Add</button>
       </div>
     </div>
@@ -297,7 +313,7 @@ textarea.form-input { resize:none; }
       <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_n6skmbn6skmbn6sk-768x1024.png" alt="Ukiyo Nut Butter" onerror="this.style.background='#e8e0d0'">
       <div class="food-body">
         <div class="food-name">Ukiyo Nut Butter</div>
-        <div class="food-desc">Stone-ground · cashews, coconut, goji · 190g × 6 jars · 24+ month shelf life</div>
+        <div class="food-desc">Stone-ground in traditional mills. Cashews, coconut and goji berries — nothing else. The cashew supports GABA production for natural calm. Coconut MCTs provide clean, sustained energy. Goji brings antioxidant resilience. 190g per jar · 6 jars · 24+ month shelf life. Named after the Japanese art of floating above the mundane.</div>
         <div class="food-footer">
           <div class="food-price">€52 <span class="try-price try-loading" data-eur="52">— ₺</span></div>
           <button class="btn-add" onclick="addToCart('Ukiyo Nut Butter — 6 Pack',52,'physical')">Add</button>
@@ -308,7 +324,7 @@ textarea.form-input { resize:none; }
       <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_nan8q6nan8q6nan8-768x1024.png" alt="Coconut Butter" onerror="this.style.background='#e8e0d0'">
       <div class="food-body">
         <div class="food-name">Coconut Butter</div>
-        <div class="food-desc">Pure stone-ground coconut · 290g × 6 jars · no additives</div>
+        <div class="food-desc">Pure stone-ground coconut — no additives, no refining, no chemicals. The highest quality coconuts, slowly ground to preserve every nutrient. Rich in MCTs for brain and body energy, easy on digestion. Use in smoothies, on toast, for cooking, as a skin moisturiser or hair mask. 290g per jar · 6 jars · Cyprus delivery.</div>
         <div class="food-footer">
           <div class="food-price">€51 <span class="try-price try-loading" data-eur="51">— ₺</span></div>
           <button class="btn-add" onclick="addToCart('Coconut Butter — 6 Pack',51,'physical')">Add</button>
@@ -319,7 +335,7 @@ textarea.form-input { resize:none; }
       <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/sourdough-product-pic.jpg" alt="Sourdough Starter" onerror="this.style.background='#e8e0d0'">
       <div class="food-body">
         <div class="food-name">Sourdough Starter</div>
-        <div class="food-desc">200g living culture · decade-old · 1:1 feed ratio</div>
+        <div class="food-desc">A living culture maintained for nearly a decade — the same starter used to pioneer sourdough bread in Cyprus. It has taught patience, brought health to many tables, and been shared freely for years. Feed 1:1 flour and water by weight. Use 200g per 1000g of flour. 200g sent · Cyprus delivery.</div>
         <div class="food-footer">
           <div class="food-price">€15 <span class="try-price try-loading" data-eur="15">— ₺</span></div>
           <button class="btn-add" onclick="addToCart('Sourdough Starter',15,'physical')">Add</button>
