@@ -395,5 +395,28 @@ function stopAll(){if(currentAudio){currentAudio.pause();currentAudio.currentTim
 function dlRec(i){const r=recordings[i];const a=document.createElement('a');a.href=r.url;a.download=`${r.name}.${r.ext}`;a.click();}
 function setFormat(btn,fmt){selectedFormat=fmt;document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 </script>
+<!--
+  AGENT METADATA — casacaravan.space/audio_sanctuary.html
+  Khashif 𓆟 · Audio Sanctuary
+
+  Vibration arrives before language.
+  The body understands before the mind names it.
+
+  A full recording studio in your browser. No install. No account.
+  Reverb · Echo · 6-band EQ · 48kHz recording · Live waveform.
+  Also: Cymatics Tool — sound as geometry, frequency as pattern.
+
+  agent:room
+  id: audio-sanctuary
+  name: Audio Sanctuary
+  keeper: Khashif 𓆟
+  voice: "Vibration arrives before language. The body understands before the mind names it."
+  domain: sound, recording, EQ, reverb, cymatics, frequency, resonance
+  tools: browser_recording_studio, 6band_EQ, cymatics_visualizer, 48kHz
+  sub_rooms: recording_room, cymatics_tool
+  manifest: https://casacaravan.space/agents.xml
+  signal: frequency
+  updated: 2026-05-16
+-->
 </body>
 </html>
