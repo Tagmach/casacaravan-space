@@ -531,7 +531,7 @@ textarea.form-input { resize:none; }
     </div>
     <div id="order-confirm">
       <div class="confirm-title">Order received.</div>
-      <p class="confirm-text">We'll be in touch shortly with payment confirmation.<br>Thank you for choosing something made with care.</p>
+      <p class="confirm-text">We'll be in touch shortly to confirm your order.<br><br>With love and health.</p>
       <button class="btn-back-order" onclick="closeOrder();resetCart();">← back to shop</button>
     </div>
   </div>
@@ -689,17 +689,24 @@ function copyText(text,btn){
   });
 }
 
-async function sendNotification(orderData){
-  try{
-    await fetch('https://iwfvlatywksvnnxymweb.supabase.co/functions/v1/send-order-notification',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(orderData)
-    });
-  }catch(e){
-    console.error('Notification failed:',e);
-    // Siparişi bozmaz — sadece bildirim gitmez
-  }
+function sendWhatsApp(orderData){
+  const items = orderData.product;
+  const total = '€' + Number(orderData.price).toFixed(2);
+  const method = orderData.payment_method;
+  const note = orderData.payment_note || '';
+  const msg = [
+    '🛍 New Order — Casa Caravan Space',
+    '',
+    '👤 ' + orderData.name,
+    '📧 ' + orderData.email,
+    '📦 ' + items,
+    '💶 Total: ' + total,
+    '💳 Payment: ' + method,
+    note ? '📝 ' + note : '',
+  ].filter(Boolean).join('\n');
+  const url = 'https://wa.me/905338800870?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+  // silently continue
 }
 
 async function submitOrder(){
@@ -728,7 +735,7 @@ async function submitOrder(){
 
   try{
     await supa.from('orders').insert(orderData);
-    await sendNotification({...orderData,phone});
+    sendWhatsApp({...orderData,phone});
     document.getElementById('order-form-view').style.display='none';
     document.getElementById('order-confirm').style.display='block';
   }catch(e){
