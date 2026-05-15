@@ -1,0 +1,7 @@
+flask
+feedparser
+google-generativeai
+groq
+cerebras-cloud-sdk
+schedule
+requests
