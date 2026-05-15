@@ -359,23 +359,13 @@ gongBtn.addEventListener('click', function() {
     }, i * 180);
   });
 
-  // Gong sound via Web Audio
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.setValueAtTime(136.1, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 2.5);
-    gain.gain.setValueAtTime(0.4, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 2.5);
-  } catch(e) {}
+  // Play gong entrance sound
+  const snd = new Audio('gong_entrance.mp3');
+  snd.volume = 0.85;
+  snd.play().catch(() => {});
 
-  // Navigate after brief delay
-  setTimeout(() => { window.location.href = 'corridor-3d.html'; }, 900);
+  // Navigate after 2.5 seconds
+  setTimeout(() => { window.location.href = 'corridor-3d.html'; }, 2500);
 });
 </script>
 
