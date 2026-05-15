@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Casa Caravan — The Garden</title>
+    <link>https://casacaravan.space/garden.html</link>
+    <description>A night garden with live chat, real moon phase, ambient sounds and radio. A place to rest on the internet.</description>
+    <language>en</language>
+    <managingEditor>casacaravanspace@gmail.com (Tağmaç Çankaya)</managingEditor>
+    <atom:link href="https://casacaravan.space/feeds/garden.xml" rel="self" type="application/rss+xml"/>
+    <link>https://casacaravan.space/rss.xml</link>
+
+  <item>
+    <title>The Garden — Real Moon Phase, Live Chat, Ambient Sounds</title>
+    <link>https://casacaravan.space/garden.html</link>
+    <guid isPermaLink="false">the-garden-space</guid>
+    <pubDate>Mon, 01 Dec 2025 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Garden</category>
+      <category>Moon</category>
+      <category>Ambient</category>
+      <category>Chat</category>
+    <description><![CDATA[A night garden open to all. The moon shows today's real lunar phase — 
+calculated from astronomical data in real time (synodic month, canvas-rendered).
+Ambient forest sounds, live chat with others in the garden, three radio stations.
+Star Observatory with nebula animation. Forest path with runic markers.
+No account required. casacaravan.space/garden.html]]></description>
+  </item>
+  </channel>
+</rss>

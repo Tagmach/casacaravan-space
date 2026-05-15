@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Casa Caravan — Fermentation Lab</title>
+    <link>https://casacaravan.space/fermentation_lab.html</link>
+    <description>Sourdough, kombucha, kefir, kimchi and fermentation knowledge from a decade of practice in Cyprus.</description>
+    <language>en</language>
+    <managingEditor>casacaravanspace@gmail.com (Tağmaç Çankaya)</managingEditor>
+    <atom:link href="https://casacaravan.space/feeds/fermentation.xml" rel="self" type="application/rss+xml"/>
+    <link>https://casacaravan.space/rss.xml</link>
+
+  <item>
+    <title>Sourdough Starter — A Decade of Living Culture</title>
+    <link>https://casacaravan.space/shop.html</link>
+    <guid isPermaLink="false">sourdough-starter-cyprus</guid>
+    <pubDate>Fri, 27 Dec 2025 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Fermentation</category>
+      <category>Sourdough</category>
+      <category>Bread</category>
+    <description><![CDATA[200g of living sourdough culture maintained for nearly a decade. 
+Pioneer of sourdough bread in Cyprus. Feed 1:1 flour and water by weight. 
+Use 200g per 1000g of flour. Cyprus delivery. €15.
+The Fermentation Lab offers calculators for sourdough, kombucha, kefir, kimchi and more.]]></description>
+  </item>
+  <item>
+    <title>Fermentation Lab — Browser-Based Recipe Calculators</title>
+    <link>https://casacaravan.space/fermentation_lab.html</link>
+    <guid isPermaLink="false">fermentation-lab-tools</guid>
+    <pubDate>Mon, 01 Dec 2025 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Fermentation</category>
+      <category>Tools</category>
+      <category>Recipe</category>
+    <description><![CDATA[Free browser-based calculators for sourdough bread, kombucha, water kefir, 
+milk kefir, kimchi and lacto-fermented vegetables. No account required. 
+Built from a decade of fermentation practice in Cyprus.]]></description>
+  </item>
+  </channel>
+</rss>

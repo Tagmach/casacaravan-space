@@ -1,1 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Casa Caravan — Sound</title>
+    <link>https://casacaravan.space/shop.html</link>
+    <description>Sound healing sessions, gong recordings, handpan music and sonic journey notes by Tağmaç Çankaya.</description>
+    <language>en</language>
+    <managingEditor>casacaravanspace@gmail.com (Tağmaç Çankaya)</managingEditor>
+    <atom:link href="https://casacaravan.space/feeds/sound.xml" rel="self" type="application/rss+xml"/>
+    <link>https://casacaravan.space/rss.xml</link>
 
+  <item>
+    <title>Sonic Journey — 45-Minute Immersive Sound Session</title>
+    <link>https://casacaravan.space/shop.html</link>
+    <guid isPermaLink="false">sonic-journey-session</guid>
+    <pubDate>Mon, 12 May 2026 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Sound Healing</category>
+      <category>Gong Bath</category>
+      <category>Handpan</category>
+    <description><![CDATA[A 45-minute immersive sound session with hand-forged gongs and handpan. 
+Not merely a listening event — the vibrations move through the body, not just the ears.
+Brainwaves shift from Beta to Alpha and Theta. Nine five-star reviews.
+Wednesdays in Lefkoşa. €75 individual, €37.50 duo per person, €60 online.
+WhatsApp: +90 533 880 0870]]></description>
+  </item>
+  <item>
+    <title>Music by Tağmaç Çankaya — 12 Recordings Available</title>
+    <link>https://casacaravan.space/shop.html</link>
+    <guid isPermaLink="false">tagmac-music-recordings</guid>
+    <pubDate>Fri, 09 May 2026 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Gong</category>
+      <category>Handpan</category>
+      <category>Synth</category>
+    <description><![CDATA[12 recordings available: And You, Fox Tail, Half, I Don't Know, I Know, 
+Keeping It Together (handpan), Late Afternoon (synth impro), Monkey & Gong, 
+Purnima, Synth Impro., Trot, Vocal & Shruti. €1 each. Digital download.]]></description>
+  </item>
+  </channel>
+</rss>

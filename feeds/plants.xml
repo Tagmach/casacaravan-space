@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Casa Caravan — Herbal Atelier</title>
+    <link>https://casacaravan.space/herbal_atelier.html</link>
+    <description>Plant medicine, herbal extracts and traditional preparations from the Herbal Atelier.</description>
+    <language>en</language>
+    <managingEditor>casacaravanspace@gmail.com (Tağmaç Çankaya)</managingEditor>
+    <atom:link href="https://casacaravan.space/feeds/plants.xml" rel="self" type="application/rss+xml"/>
+    <link>https://casacaravan.space/rss.xml</link>
+
+  <item>
+    <title>Herbal Atelier — Extract Calculator and Plant Guide</title>
+    <link>https://casacaravan.space/herbal_atelier.html</link>
+    <guid isPermaLink="false">herbal-atelier-tools</guid>
+    <pubDate>Mon, 01 Dec 2025 10:00:00 +0300</pubDate>
+    <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Plant Medicine</category>
+      <category>Herbal</category>
+      <category>Extract</category>
+    <description><![CDATA[Browser-based plant extract calculator and herbal preparation guide. 
+Concentrated extracts, traditional methods. Built from hands-on practice with 
+basic lab equipment, working toward maximum concentration from plant material.
+Free to use, no account required.]]></description>
+  </item>
+  </channel>
+</rss>
