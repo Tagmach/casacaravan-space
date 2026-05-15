@@ -733,9 +733,11 @@ async function submitOrder(){
     approved:false
   };
 
+  // WhatsApp önce açılır — popup blocker bypass
+  sendWhatsApp({...orderData,phone});
+
   try{
     await supa.from('orders').insert(orderData);
-    sendWhatsApp({...orderData,phone});
     document.getElementById('order-form-view').style.display='none';
     document.getElementById('order-confirm').style.display='block';
   }catch(e){
