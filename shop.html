@@ -543,7 +543,7 @@ const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 const STORAGE=SUPA_URL+'/storage/v1/object/public/music/';
-const RESEND_KEY='re_he1VMvLj_5XfmUrhtup3hYUD19bDhFGDb';
+
 
 const tracks=[
   {title:'And You',file:'And you(v3).mp3'},
@@ -691,34 +691,10 @@ function copyText(text,btn){
 
 async function sendNotification(orderData){
   try{
-    await fetch('https://api.resend.com/emails',{
+    await fetch('https://iwfvlatywksvnnxymweb.supabase.co/functions/v1/send-order-notification',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+RESEND_KEY
-      },
-      body:JSON.stringify({
-        from:'Casa Caravan Shop <shop@casacaravan.space>',
-        to:['tagmacc@gmail.com'],
-        subject:'New Order — '+orderData.name+' · €'+orderData.price.toFixed(2),
-        html:`
-          <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:40px 24px;color:#1a1208;">
-            <h2 style="font-size:24px;font-weight:300;font-style:italic;margin-bottom:24px;">New Order Received</h2>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;width:120px;">Name</td><td style="padding:8px 0;font-size:15px;">${orderData.name}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Email</td><td style="padding:8px 0;font-size:15px;">${orderData.email}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Phone</td><td style="padding:8px 0;font-size:15px;">${orderData.phone||'—'}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Items</td><td style="padding:8px 0;font-size:15px;">${orderData.product}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Total</td><td style="padding:8px 0;font-size:18px;font-style:italic;font-weight:400;">€${orderData.price.toFixed(2)}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Payment</td><td style="padding:8px 0;font-size:15px;">${orderData.payment_method}</td></tr>
-              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Notes</td><td style="padding:8px 0;font-size:15px;">${orderData.payment_note||'—'}</td></tr>
-            </table>
-            <div style="font-size:10px;letter-spacing:1px;color:#8a7a6a;border-top:1px solid #e8e0d0;padding-top:16px;">
-              Casa Caravan Space · casacaravan.space
-            </div>
-          </div>
-        `
-      })
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(orderData)
     });
   }catch(e){
     console.error('Notification failed:',e);
