@@ -2,9 +2,35 @@ from flask import Flask, request, jsonify
 import threading
 import os
 import json
+import urllib.request
 from datetime import datetime
 
 app = Flask(__name__)
+
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+OPERATOR_EMAIL = "tagmacc@gmail.com"
+
+def send_email(subject, html):
+    if not RESEND_API_KEY:
+        return
+    try:
+        data = json.dumps({
+            "from": "Khashif 𓆟 <shop@casacaravan.space>",
+            "to": [OPERATOR_EMAIL],
+            "subject": subject,
+            "html": html
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.resend.com/emails",
+            data=data,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {RESEND_API_KEY}"
+            }
+        )
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"  ! Email failed: {e}")
 
 # === DOMAIN LOCK ===
 ALLOWED_ORIGINS = [
