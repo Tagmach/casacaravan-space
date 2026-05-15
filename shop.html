@@ -698,8 +698,8 @@ async function sendNotification(orderData){
         'Authorization':'Bearer '+RESEND_KEY
       },
       body:JSON.stringify({
-        from:'Casa Caravan Shop <onboarding@resend.dev>',
-        to:['casacaravanspace@gmail.com'],
+        from:'Casa Caravan Shop <shop@casacaravan.space>',
+        to:['tagmacc@gmail.com'],
         subject:'New Order — '+orderData.name+' · €'+orderData.price.toFixed(2),
         html:`
           <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:40px 24px;color:#1a1208;">
