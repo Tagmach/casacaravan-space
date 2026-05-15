@@ -709,14 +709,20 @@ async function fetchEthPrice(){
     const d = await r.json();
     const rate = d?.ethereum?.eur;
     if(!rate) throw new Error('no rate');
-    const ethAmount = (total / rate).toFixed(6);
-    amountEl.textContent = ethAmount + ' ETH';
+    const ethAmount = total / rate;
+    // Wei hesapla (1 ETH = 10^18 wei)
+    ethAmountWei = '0x' + Math.floor(ethAmount * 1e18).toString(16);
+    amountEl.textContent = ethAmount.toFixed(6) + ' ETH';
     rateEl.textContent = '1 ETH = €' + rate.toLocaleString() + ' · Total: €' + total.toFixed(2);
   }catch(e){
     amountEl.textContent = '—';
     rateEl.textContent = 'Rate unavailable. Check current ETH price before sending.';
   }
 }
+
+const RECIPIENT = '0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894';
+let ethConnectedAddr = null;
+let ethAmountWei = null;
 
 async function connectPhantom(){
   const btn = document.getElementById('eth-connect-btn');
@@ -727,19 +733,53 @@ async function connectPhantom(){
   try{
     btn.textContent = 'Connecting…';
     const accounts = await window.ethereum.request({method:'eth_requestAccounts'});
-    const addr = accounts[0];
-    document.getElementById('eth-connected-addr').textContent = addr;
+    ethConnectedAddr = accounts[0];
+    document.getElementById('eth-connected-addr').textContent = ethConnectedAddr;
     document.getElementById('eth-wallet-info').style.display = 'block';
     btn.textContent = 'Connected ✓';
     btn.classList.add('copied');
-    // note alanına cüzdan adresini ekle
     const note = document.getElementById('f-note');
     if(note && !note.value.includes('Wallet:')){
-      note.value = (note.value ? note.value + ' | ' : '') + 'Wallet: ' + addr;
+      note.value = (note.value ? note.value + ' | ' : '') + 'Wallet: ' + ethConnectedAddr;
     }
   }catch(e){
     btn.textContent = 'Connect Wallet';
     if(e.code !== 4001) alert('Connection failed: ' + e.message);
+  }
+}
+
+async function sendEthTransaction(){
+  if(!ethConnectedAddr){
+    alert('Please connect your wallet first.');
+    return false;
+  }
+  if(!ethAmountWei){
+    alert('ETH amount not calculated yet. Please wait a moment.');
+    return false;
+  }
+  try{
+    const txHash = await window.ethereum.request({
+      method:'eth_sendTransaction',
+      params:[{
+        from: ethConnectedAddr,
+        to: RECIPIENT,
+        value: ethAmountWei,
+        gas: '0x5208', // 21000 — standard ETH transfer
+      }]
+    });
+    // TX hash'i note alanına ekle
+    const note = document.getElementById('f-note');
+    if(note){
+      note.value = (note.value ? note.value + ' | ' : '') + 'TX: ' + txHash;
+    }
+    return true;
+  }catch(e){
+    if(e.code === 4001){
+      alert('Transaction cancelled.');
+    } else {
+      alert('Transaction failed: ' + e.message);
+    }
+    return false;
   }
 }
 
@@ -777,6 +817,12 @@ async function submitOrder(){
 
   const btn=document.getElementById('send-btn');
   btn.disabled=true;btn.textContent='Sending…';
+
+  // ETH seçiliyse önce transaction gönder
+  if(selPayment==='Ethereum'){
+    const txOk=await sendEthTransaction();
+    if(!txOk){btn.disabled=false;btn.textContent='Send Order →';return;}
+  }
 
   const orderData={
     name,email,
