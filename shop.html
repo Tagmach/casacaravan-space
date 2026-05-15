@@ -693,7 +693,7 @@ async function sendNotification(orderData){
   try{
     await fetch('https://iwfvlatywksvnnxymweb.supabase.co/functions/v1/send-order-notification',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
       body:JSON.stringify(orderData)
     });
   }catch(e){
