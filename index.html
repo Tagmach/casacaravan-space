@@ -316,6 +316,8 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
 }
 
 </style>
+</head>
+<body>
 <div id="entrance">
   <div class="entrance-lines">
     <span></span><span></span><span></span>
@@ -343,5 +345,39 @@ body { background:var(--bg); color:var(--text); font-family:'Jost',sans-serif; o
      CORRIDOR
 -------------------------------------------- -->
 <script src="tracking.js"></script>
+<script>
+const gongBtn = document.getElementById('gongBtn');
+const rings = [document.getElementById('ring1'), document.getElementById('ring2'), document.getElementById('ring3')];
+
+gongBtn.addEventListener('click', function() {
+  // Ripple animation
+  rings.forEach((r, i) => {
+    setTimeout(() => {
+      r.classList.remove('pulse');
+      void r.offsetWidth;
+      r.classList.add('pulse');
+    }, i * 180);
+  });
+
+  // Gong sound via Web Audio
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(136.1, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 2.5);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 2.5);
+  } catch(e) {}
+
+  // Navigate after brief delay
+  setTimeout(() => { window.location.href = 'corridor-3d.html'; }, 900);
+});
+</script>
+
 </body>
 </html>
