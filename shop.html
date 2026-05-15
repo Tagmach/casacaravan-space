@@ -169,7 +169,7 @@ input[type=range].vol-slider::-webkit-slider-thumb { -webkit-appearance:none; wi
 .btn-checkout { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:10px 24px; border:1px solid rgba(160,128,96,0.4); color:#A08060; background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; }
 .btn-checkout:hover { background:rgba(160,128,96,0.08); border-color:#A08060; }
 
-/* ORDER */
+/* ORDER OVERLAY */
 #order-overlay { position:fixed; inset:0; z-index:60; background:rgba(245,240,232,0.98); display:none; align-items:flex-start; justify-content:center; overflow-y:auto; }
 #order-overlay.open { display:flex; }
 #order-content { max-width:520px; width:100%; padding:80px 40px 60px; }
@@ -191,16 +191,42 @@ input[type=range].vol-slider::-webkit-slider-thumb { -webkit-appearance:none; wi
 .form-input:focus { border-color:rgba(122,92,58,0.4); }
 .form-input::placeholder { color:var(--dim); font-style:italic; }
 textarea.form-input { resize:none; }
+.shipping-notice { font-size:9px; letter-spacing:1px; color:var(--dim); line-height:1.8; padding:14px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:24px; }
+.shipping-notice strong { color:var(--dark); font-weight:400; }
+
+/* PAYMENT OPTIONS */
 .payment-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .payment-opt { border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center; cursor:pointer; transition:all 0.2s; }
 .payment-opt:hover { border-color:rgba(122,92,58,0.3); }
 .payment-opt.selected { border-color:var(--gold); background:rgba(122,92,58,0.04); }
 .payment-opt-name { font-size:10px; letter-spacing:1px; color:var(--dark); text-transform:uppercase; }
 .payment-opt-detail { font-size:8px; color:var(--dim); margin-top:4px; }
-.shipping-notice { font-size:9px; letter-spacing:1px; color:var(--dim); line-height:1.8; padding:14px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:24px; }
-.shipping-notice strong { color:var(--dark); font-weight:400; }
+
+/* PAYMENT DETAIL PANEL */
+.payment-detail-panel {
+  display:none; margin-top:16px; padding:20px;
+  border:1px solid var(--border); border-radius:8px;
+  background:var(--surface);
+}
+.payment-detail-panel.open { display:block; }
+.pdp-title { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:14px; }
+.pdp-row { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+.pdp-row:last-child { margin-bottom:0; }
+.pdp-label { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); }
+.pdp-value { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--dark); word-break:break-all; line-height:1.5; }
+.pdp-note { font-size:9px; color:var(--dim); margin-top:8px; line-height:1.7; padding-top:12px; border-top:1px solid var(--border); }
+.copy-btn {
+  display:inline-flex; align-items:center; gap:6px; margin-top:6px;
+  font-size:8px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--gold); background:none; border:1px solid rgba(122,92,58,0.3);
+  border-radius:100px; padding:4px 12px; cursor:pointer; transition:all 0.2s;
+}
+.copy-btn:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.copy-btn.copied { color:#2a7a4a; border-color:#2a7a4a; }
+
 .btn-send { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:14px 32px; border:1px solid rgba(122,92,58,0.4); color:var(--gold); background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; width:100%; margin-top:8px; }
 .btn-send:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.btn-send:disabled { opacity:0.5; cursor:not-allowed; }
 .btn-back-order { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); background:none; border:1px solid var(--border); padding:10px 22px; border-radius:100px; cursor:pointer; margin-top:12px; width:100%; }
 #order-confirm { display:none; text-align:center; padding:60px 0; }
 .confirm-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:36px; color:var(--dark); margin-bottom:16px; }
@@ -245,7 +271,7 @@ textarea.form-input { resize:none; }
 <!-- EXPERIENCES -->
 <div class="section">
   <div class="section-head">
-    <span class="section-icon">◎</span>
+    <span class="section-icon">✎</span>
     <span class="section-title">Experiences</span>
   </div>
   <div class="exp-item">
@@ -267,7 +293,7 @@ textarea.form-input { resize:none; }
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Goosebumps. Real chills. The strongest feeling came from the shaker, not the gongs. Knowing he made the gongs himself made it even more special."</div><div class="review-author">Rūta Staskeviciute · Jan 2026</div></div>
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Unexpectedly impactful. Each sound had its own character, texture, and emotion. There is a power in sounds which can change inner and deep feelings."</div><div class="review-author">Tuğberk Emirzade · Mar 2026</div></div>
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I've joined a number of times and it's been really interesting to see how they've evolved. It feels like being guided through a space with sound — sometimes subtle, sometimes intense, but always with a sense of flow."</div><div class="review-author">Barış Parlan · Mar 2026</div></div>
-        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemiş hissetmek ve o geceki uyku kalitemde belirgin bir fark."</div><div class="review-author">Ahmet Baba · 2025</div></div>
+        <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemişlik hissetmek ve o geceki uyku kalitemde belirgin bir fark."</div><div class="review-author">Ahmet Baba · 2025</div></div>
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Müthiş ve çok rahatlatıcı bir deneyimdi. Ses ve frekansların hayatımızda ne kadar önemli olduğunu farkettim."</div><div class="review-author">Hasan İlban · 2025</div></div>
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I walked in carrying a weight. But the moment the music began, everything shifted. Gentle vibrations delicately untied the emotional knots I didn't know I was carrying."</div><div class="review-author">Nora Abouzi · 2025</div></div>
         <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div><div class="review-author">Sergen Uysal · 2025</div></div>
@@ -334,7 +360,7 @@ textarea.form-input { resize:none; }
   </div>
   <div class="food-grid">
     <div class="food-card">
-      <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_n6skmbn6skmbn6sk-768x1024.png" alt="Ukiyo Nut Butter" onerror="this.style.background='#e8e0d0'">
+      <img class="food-img" src="https://casacaravanshop.com/wp-content/uploads/2025/12/Gemini_Generated_Image_n6skmbн6skmbн6sk-768x1024.png" alt="Ukiyo Nut Butter" onerror="this.style.background='#e8e0d0'">
       <div class="food-body">
         <div class="food-name">Ukiyo Nut Butter</div>
         <div class="food-desc">Stone-ground in traditional mills. Cashews, coconut and goji berries — nothing else. The cashew supports GABA production for natural calm. Coconut MCTs provide clean, sustained energy. Goji brings antioxidant resilience. 190g per jar · 6 jars · 24+ month shelf life. Named after the Japanese art of floating above the mundane.</div>
@@ -409,6 +435,7 @@ textarea.form-input { resize:none; }
       <div class="order-subtitle">review & complete</div>
       <div id="order-items"></div>
       <div id="order-shipping" style="display:none;" class="shipping-notice"><strong>Delivery</strong> — Cyprus only. Address required. Shipping: <strong>+€5</strong></div>
+
       <div class="form-section">
         <label class="form-label">Contact</label>
         <div class="form-row">
@@ -421,24 +448,90 @@ textarea.form-input { resize:none; }
         <label class="form-label">Delivery Address</label>
         <div class="form-row"><textarea class="form-input" id="f-address" rows="2" placeholder="Street, city, postcode"></textarea></div>
       </div>
+
       <div class="form-section">
         <label class="form-label">Payment Method</label>
         <div class="payment-opts">
-          <div class="payment-opt" onclick="selectPayment('IBAN',this)"><div class="payment-opt-name">Bank Transfer</div><div class="payment-opt-detail">IBAN sent after order</div></div>
-          <div class="payment-opt" onclick="selectPayment('Revolut',this)"><div class="payment-opt-name">Revolut</div><div class="payment-opt-detail">Link sent after order</div></div>
-          <div class="payment-opt" onclick="selectPayment('Ethereum',this)"><div class="payment-opt-name">Ethereum</div><div class="payment-opt-detail">Wallet on request</div></div>
+          <div class="payment-opt" onclick="selectPayment('Bank Transfer',this,'iban-detail')">
+            <div class="payment-opt-name">Bank Transfer</div>
+            <div class="payment-opt-detail">IBAN · TR & LT</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Revolut',this,'revolut-detail')">
+            <div class="payment-opt-name">Revolut</div>
+            <div class="payment-opt-detail">IBAN · LT62</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Ethereum',this,'eth-detail')">
+            <div class="payment-opt-name">Ethereum</div>
+            <div class="payment-opt-detail">ETH · ERC-20</div>
+          </div>
+        </div>
+
+        <!-- IBAN DETAIL -->
+        <div class="payment-detail-panel" id="iban-detail">
+          <div class="pdp-title">Bank Transfer — TR IBAN</div>
+          <div class="pdp-row">
+            <div class="pdp-label">Beneficiary</div>
+            <div class="pdp-value">TAGMACH CHANKAYA</div>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">IBAN</div>
+            <div class="pdp-value">TR20 0006 4000 0016 8130 0605 15</div>
+            <button class="copy-btn" onclick="copyText('TR200006400000168130060515',this)">Copy IBAN</button>
+          </div>
+          <div class="pdp-note">After sending, include your order reference in the payment description. We will confirm once received.</div>
+        </div>
+
+        <!-- REVOLUT DETAIL -->
+        <div class="payment-detail-panel" id="revolut-detail">
+          <div class="pdp-title">Revolut — International Transfer</div>
+          <div class="pdp-row">
+            <div class="pdp-label">Beneficiary</div>
+            <div class="pdp-value">TAGMACH CHANKAYA</div>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">IBAN</div>
+            <div class="pdp-value">LT62 3250 0984 5562 5476</div>
+            <button class="copy-btn" onclick="copyText('LT623250098455625476',this)">Copy IBAN</button>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">BIC / SWIFT</div>
+            <div class="pdp-value">REVOLT21</div>
+            <button class="copy-btn" onclick="copyText('REVOLT21',this)">Copy BIC</button>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">Bank</div>
+            <div class="pdp-value">Revolut Bank UAB · Konstitucijos ave. 21B, 08130 Vilnius, Lithuania</div>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">Correspondent BIC</div>
+            <div class="pdp-value">CHASDEFX</div>
+          </div>
+          <div class="pdp-note">Send exactly the order total in EUR. Include your name in the reference field.</div>
+        </div>
+
+        <!-- ETH DETAIL -->
+        <div class="payment-detail-panel" id="eth-detail">
+          <div class="pdp-title">Ethereum — ERC-20</div>
+          <div class="pdp-row">
+            <div class="pdp-label">Wallet Address</div>
+            <div class="pdp-value">0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894</div>
+            <button class="copy-btn" onclick="copyText('0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894',this)">Copy Address</button>
+          </div>
+          <div class="pdp-note">Send ETH or ERC-20 stablecoins (USDC/USDT) on Ethereum mainnet only. After sending, paste your transaction hash in the note field below. We will confirm once the transaction is verified.</div>
         </div>
       </div>
+
       <div class="form-section">
         <label class="form-label">Note (optional)</label>
-        <div class="form-row"><textarea class="form-input" id="f-note" rows="2" placeholder="Session time, special requests…"></textarea></div>
+        <div class="form-row"><textarea class="form-input" id="f-note" rows="2" placeholder="Session time, special requests, TX hash for ETH…"></textarea></div>
       </div>
-      <button class="btn-send" onclick="submitOrder()">Send Order →</button>
+
+      <button class="btn-send" id="send-btn" onclick="submitOrder()">Send Order →</button>
       <button class="btn-back-order" onclick="closeOrder()">← back</button>
     </div>
     <div id="order-confirm">
       <div class="confirm-title">Order received.</div>
-      <p class="confirm-text">We'll be in touch shortly with payment details.<br>Thank you for choosing something made with care.</p>
+      <p class="confirm-text">We'll be in touch shortly with payment confirmation.<br>Thank you for choosing something made with care.</p>
       <button class="btn-back-order" onclick="closeOrder();resetCart();">← back to shop</button>
     </div>
   </div>
@@ -450,6 +543,7 @@ const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 const STORAGE=SUPA_URL+'/storage/v1/object/public/music/';
+const RESEND_KEY='re_he1VMvLj_5XfmUrhtup3hYUD19bDhFGDb';
 
 const tracks=[
   {title:'And You',file:'And you(v3).mp3'},
@@ -510,7 +604,6 @@ function playerLoad(i){
   playing=true;
   document.getElementById('play-btn').textContent='⏸';
 }
-
 function playerToggle(){
   if(!audio.src){playerLoad(0);return;}
   if(audio.paused){audio.play().catch(()=>{});playing=true;document.getElementById('play-btn').textContent='⏸';document.getElementById('tpo-'+pidx).textContent='⏸';}
@@ -536,22 +629,18 @@ function trackAdd(i){
   else{inCart.add(key);cart.push({id:key,name:tracks[i].title,price:1,type:'digital'});btn.textContent='✓';btn.classList.add('in-cart');}
   updateCartBar();
 }
-
 function addToCart(name,price,type){
   if(cart.find(i=>i.name===name&&i.type===type))return;
   cart.push({name,price,type});
   updateCartBar();
 }
-
 function removeFromCart(i){
   const item=cart[i];
   if(item?.id){inCart.delete(item.id);const btn=document.getElementById('ta-'+item.id.slice(1));if(btn){btn.textContent='+ Add';btn.classList.remove('in-cart');}}
   cart.splice(i,1);
   updateCartBar();renderOrderItems();
 }
-
 function cartTotal(){return cart.reduce((s,i)=>s+i.price,0)+(cart.some(i=>i.type==='physical')?5:0);}
-
 function updateCartBar(){
   const bar=document.getElementById('cart-bar');
   if(!cart.length){bar.classList.remove('visible');updateBottom();return;}
@@ -560,21 +649,18 @@ function updateCartBar(){
   document.getElementById('cart-total-label').textContent='— €'+cartTotal().toFixed(2)+(cart.some(i=>i.type==='physical')?' (incl. €5 shipping)':'');
   updateBottom();
 }
-
 function updateBottom(){
   const ph=document.getElementById('mini-player').classList.contains('visible')?56:0;
   document.getElementById('cart-bar').style.bottom=ph+'px';
 }
-
 function resetCart(){
   cart=[];inCart.clear();
   document.querySelectorAll('.track-add').forEach(b=>{b.textContent='+ Add';b.classList.remove('in-cart');});
   updateCartBar();selPayment=null;
   document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.payment-detail-panel').forEach(p=>p.classList.remove('open'));
 }
-
 function toggleReviews(){document.getElementById('reviews-panel').classList.toggle('open');}
-
 function openOrder(){document.getElementById('order-overlay').classList.add('open');document.getElementById('order-form-view').style.display='block';document.getElementById('order-confirm').style.display='none';renderOrderItems();}
 function closeOrder(){document.getElementById('order-overlay').classList.remove('open');}
 
@@ -587,7 +673,58 @@ function renderOrderItems(){
   document.getElementById('order-items').innerHTML=html+`<div class="order-total"><div class="order-total-label">Total</div><div class="order-total-price">€${cartTotal().toFixed(2)}</div></div>`;
 }
 
-function selectPayment(method,el){selPayment=method;document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));el.classList.add('selected');}
+function selectPayment(method,el,panelId){
+  selPayment=method;
+  document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.payment-detail-panel').forEach(p=>p.classList.remove('open'));
+  el.classList.add('selected');
+  document.getElementById(panelId).classList.add('open');
+}
+
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Copied ✓';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent=orig;btn.classList.remove('copied');},2000);
+  });
+}
+
+async function sendNotification(orderData){
+  try{
+    await fetch('https://api.resend.com/emails',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+RESEND_KEY
+      },
+      body:JSON.stringify({
+        from:'Casa Caravan Shop <onboarding@resend.dev>',
+        to:['casacaravanspace@gmail.com'],
+        subject:'New Order — '+orderData.name+' · €'+orderData.price.toFixed(2),
+        html:`
+          <div style="font-family:Georgia,serif;max-width:480px;margin:0 auto;padding:40px 24px;color:#1a1208;">
+            <h2 style="font-size:24px;font-weight:300;font-style:italic;margin-bottom:24px;">New Order Received</h2>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;width:120px;">Name</td><td style="padding:8px 0;font-size:15px;">${orderData.name}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Email</td><td style="padding:8px 0;font-size:15px;">${orderData.email}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Phone</td><td style="padding:8px 0;font-size:15px;">${orderData.phone||'—'}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Items</td><td style="padding:8px 0;font-size:15px;">${orderData.product}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Total</td><td style="padding:8px 0;font-size:18px;font-style:italic;font-weight:400;">€${orderData.price.toFixed(2)}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Payment</td><td style="padding:8px 0;font-size:15px;">${orderData.payment_method}</td></tr>
+              <tr><td style="padding:8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a7a6a;">Notes</td><td style="padding:8px 0;font-size:15px;">${orderData.payment_note||'—'}</td></tr>
+            </table>
+            <div style="font-size:10px;letter-spacing:1px;color:#8a7a6a;border-top:1px solid #e8e0d0;padding-top:16px;">
+              Casa Caravan Space · casacaravan.space
+            </div>
+          </div>
+        `
+      })
+    });
+  }catch(e){
+    console.error('Notification failed:',e);
+    // Siparişi bozmaz — sadece bildirim gitmez
+  }
+}
 
 async function submitOrder(){
   const name=document.getElementById('f-name').value.trim();
@@ -600,11 +737,29 @@ async function submitOrder(){
   if(!selPayment){alert('Please select a payment method.');return;}
   if(hasP&&!address){alert('Please enter a delivery address.');return;}
   if(!cart.length)return;
+
+  const btn=document.getElementById('send-btn');
+  btn.disabled=true;btn.textContent='Sending…';
+
+  const orderData={
+    name,email,
+    product:cart.map(i=>`${i.name} (€${i.price.toFixed(2)})`).join(', '),
+    price:cartTotal(),
+    payment_method:selPayment,
+    payment_note:[note,hasP?`Address: ${address}`:'',phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '),
+    approved:false
+  };
+
   try{
-    await supa.from('orders').insert({name,email,product:cart.map(i=>`${i.name} (€${i.price.toFixed(2)})`).join(', '),price:cartTotal(),payment_method:selPayment,payment_note:[note,hasP?`Address: ${address}`:'',phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '),approved:false});
+    await supa.from('orders').insert(orderData);
+    await sendNotification({...orderData,phone});
     document.getElementById('order-form-view').style.display='none';
     document.getElementById('order-confirm').style.display='block';
-  }catch(e){alert('Something went wrong. Please try again.');}
+  }catch(e){
+    alert('Something went wrong. Please try again.');
+  }finally{
+    btn.disabled=false;btn.textContent='Send Order →';
+  }
 }
 
 // EUR/TRY
