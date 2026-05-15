@@ -513,9 +513,23 @@ textarea.form-input { resize:none; }
         <div class="payment-detail-panel" id="eth-detail">
           <div class="pdp-title">Ethereum — ERC-20</div>
           <div class="pdp-row">
-            <div class="pdp-label">Wallet Address</div>
+            <div class="pdp-label">Recipient Address</div>
             <div class="pdp-value">0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894</div>
             <button class="copy-btn" onclick="copyText('0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894',this)">Copy Address</button>
+          </div>
+          <div class="pdp-row" style="margin-top:12px;">
+            <button class="copy-btn" id="eth-connect-btn" onclick="connectPhantom()" style="font-size:9px;padding:8px 16px;">
+              Connect Wallet
+            </button>
+            <div id="eth-wallet-info" style="margin-top:10px;display:none;">
+              <div class="pdp-label">Connected</div>
+              <div class="pdp-value" id="eth-connected-addr" style="font-size:12px;word-break:break-all;"></div>
+            </div>
+          </div>
+          <div id="eth-price-row" class="pdp-row" style="margin-top:12px;display:none;">
+            <div class="pdp-label">Amount to send</div>
+            <div class="pdp-value" id="eth-amount" style="font-size:18px;"></div>
+            <div style="font-size:9px;color:var(--dim);margin-top:4px;" id="eth-rate-note"></div>
           </div>
           <div class="pdp-note">Send ETH or ERC-20 stablecoins (USDC/USDT) on Ethereum mainnet only. After sending, paste your transaction hash in the note field below. We will confirm once the transaction is verified.</div>
         </div>
@@ -679,6 +693,54 @@ function selectPayment(method,el,panelId){
   document.querySelectorAll('.payment-detail-panel').forEach(p=>p.classList.remove('open'));
   el.classList.add('selected');
   document.getElementById(panelId).classList.add('open');
+  if(method==='Ethereum') fetchEthPrice();
+}
+
+async function fetchEthPrice(){
+  const row = document.getElementById('eth-price-row');
+  const amountEl = document.getElementById('eth-amount');
+  const rateEl = document.getElementById('eth-rate-note');
+  const total = cartTotal();
+  if(!total){ row.style.display='none'; return; }
+  try{
+    amountEl.textContent = 'Loading…';
+    row.style.display = 'block';
+    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur');
+    const d = await r.json();
+    const rate = d?.ethereum?.eur;
+    if(!rate) throw new Error('no rate');
+    const ethAmount = (total / rate).toFixed(6);
+    amountEl.textContent = ethAmount + ' ETH';
+    rateEl.textContent = '1 ETH = €' + rate.toLocaleString() + ' · Total: €' + total.toFixed(2);
+  }catch(e){
+    amountEl.textContent = '—';
+    rateEl.textContent = 'Rate unavailable. Check current ETH price before sending.';
+  }
+}
+
+async function connectPhantom(){
+  const btn = document.getElementById('eth-connect-btn');
+  if(!window.ethereum){
+    alert('No Ethereum wallet detected. Please install Phantom or MetaMask extension.');
+    return;
+  }
+  try{
+    btn.textContent = 'Connecting…';
+    const accounts = await window.ethereum.request({method:'eth_requestAccounts'});
+    const addr = accounts[0];
+    document.getElementById('eth-connected-addr').textContent = addr;
+    document.getElementById('eth-wallet-info').style.display = 'block';
+    btn.textContent = 'Connected ✓';
+    btn.classList.add('copied');
+    // note alanına cüzdan adresini ekle
+    const note = document.getElementById('f-note');
+    if(note && !note.value.includes('Wallet:')){
+      note.value = (note.value ? note.value + ' | ' : '') + 'Wallet: ' + addr;
+    }
+  }catch(e){
+    btn.textContent = 'Connect Wallet';
+    if(e.code !== 4001) alert('Connection failed: ' + e.message);
+  }
 }
 
 function copyText(text,btn){
