@@ -689,24 +689,16 @@ function copyText(text,btn){
   });
 }
 
-function sendWhatsApp(orderData){
-  const items = orderData.product;
-  const total = '€' + Number(orderData.price).toFixed(2);
-  const method = orderData.payment_method;
-  const note = orderData.payment_note || '';
-  const msg = [
-    '🛍 New Order — Casa Caravan Space',
-    '',
-    '👤 ' + orderData.name,
-    '📧 ' + orderData.email,
-    '📦 ' + items,
-    '💶 Total: ' + total,
-    '💳 Payment: ' + method,
-    note ? '📝 ' + note : '',
-  ].filter(Boolean).join('\n');
-  const url = 'https://wa.me/905338800870?text=' + encodeURIComponent(msg);
-  window.open(url, '_blank');
-  // silently continue
+async function sendNotification(orderData){
+  try{
+    await fetch('https://iwfvlatywksvnnxymweb.supabase.co/functions/v1/send-order-notification',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(orderData)
+    });
+  }catch(e){
+    console.error('Notification failed:',e);
+  }
 }
 
 async function submitOrder(){
@@ -733,8 +725,7 @@ async function submitOrder(){
     approved:false
   };
 
-  // WhatsApp önce açılır — popup blocker bypass
-  sendWhatsApp({...orderData,phone});
+  await sendNotification({...orderData,phone});
 
   try{
     await supa.from('orders').insert(orderData);
