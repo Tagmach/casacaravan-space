@@ -474,6 +474,110 @@ def commands_list():
         return jsonify({"commands": [], "count": 0})
 
 
+
+@app.route("/analyze-music", methods=["POST"])
+def analyze_music():
+    """Ham akustik veriyi al, LLM ile analiz et"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    data = request.json
+    tracks = data.get("tracks", [])
+    if not tracks:
+        return jsonify({"error": "No tracks provided"}), 400
+
+    results = []
+    for track in tracks:
+        name = track.get("name", "Unknown")
+        duration = track.get("duration", 0)
+        dominant_freq = track.get("dominant_freq", 0)
+        spectral_centroid = track.get("spectral_centroid", 0)
+        rms_energy = track.get("rms_energy", 0)
+        tempo_estimate = track.get("tempo_estimate", 0)
+        freq_bands = track.get("freq_bands", {})
+        
+        # Frekans bandı yorumu
+        low = freq_bands.get("low", 0)      # 0-200Hz
+        mid = freq_bands.get("mid", 0)      # 200-2000Hz  
+        high = freq_bands.get("high", 0)    # 2000Hz+
+        
+        prompt = f"""You are Khashif — music analyst and discovery agent for Tagmac Cankaya.
+
+Analyze this track based on acoustic data:
+
+Track: {name}
+Duration: {duration:.1f} seconds
+Dominant frequency: {dominant_freq:.1f} Hz
+Spectral centroid (brightness): {spectral_centroid:.1f} Hz
+RMS energy (dynamics): {rms_energy:.4f}
+Tempo estimate: {tempo_estimate:.0f} BPM
+Frequency bands:
+  Low (0-200Hz): {low:.1%}
+  Mid (200-2000Hz): {mid:.1%}  
+  High (2000Hz+): {high:.1%}
+
+TAGMAC CONTEXT:
+- Gong maker and player, handpan, drone, breathwork, improvisation
+- Sound healing, somatic practices, resonance
+- Based in Lefkosa, Cyprus
+- Creates: ambient, drone, sacred sound, experimental
+
+Provide analysis in this exact format:
+GENRE: (2-3 genres, comma separated)
+MOD: (musical mode or quality: major/minor/modal/atonal/drone/rhythmic)
+FLOW: (drone/ambient/meditative/rhythmic/melodic/textural/ceremonial)
+DOMINANT_NOTE: (musical note if detectable, or "drone" or "noise")
+ENERGY: (low/medium/high)
+MOOD: (2-3 mood words in Turkish)
+USE_CASE: (2-3 use cases: sound_healing/meditation/background/ceremony/movement/sleep)
+DESCRIPTION_TR: (2-3 cümle Türkçe, sanatçı bakış açısıyla — ne taşıyor bu parça?)
+DESCRIPTION_EN: (2-3 sentences English — what does this piece carry?)
+RESONANCE: (1-5, how strongly this resonates with Tagmac's identity)"""
+
+        try:
+            import khashif as kh
+            result, layer = kh.llm(prompt)
+            
+            # Parse result
+            parsed = {}
+            for line in result.strip().split('\n'):
+                if ':' in line:
+                    k, v = line.split(':', 1)
+                    parsed[k.strip()] = v.strip()
+            
+            results.append({
+                "name": name,
+                "duration": duration,
+                "acoustic": {
+                    "dominant_freq": dominant_freq,
+                    "spectral_centroid": spectral_centroid,
+                    "rms_energy": rms_energy,
+                    "tempo_estimate": tempo_estimate,
+                    "freq_bands": freq_bands
+                },
+                "analysis": {
+                    "genre": parsed.get("GENRE", ""),
+                    "mod": parsed.get("MOD", ""),
+                    "flow": parsed.get("FLOW", ""),
+                    "dominant_note": parsed.get("DOMINANT_NOTE", ""),
+                    "energy": parsed.get("ENERGY", ""),
+                    "mood": parsed.get("MOOD", ""),
+                    "use_case": parsed.get("USE_CASE", ""),
+                    "description_tr": parsed.get("DESCRIPTION_TR", ""),
+                    "description_en": parsed.get("DESCRIPTION_EN", ""),
+                    "resonance": parsed.get("RESONANCE", ""),
+                },
+                "layer": layer
+            })
+        except Exception as e:
+            results.append({
+                "name": name,
+                "error": str(e)
+            })
+
+    return jsonify({"results": results, "count": len(results)})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
