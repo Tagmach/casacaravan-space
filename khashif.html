@@ -555,7 +555,6 @@ nav {
 <script>
 const KHASHIF_URL = 'https://khashif.onrender.com';
 const KHASHIF_KEY = 'khashif2026';
-// Password hash — sha256 of 'dijitalgezgin'
 const PASS_HASH = 'a9cba990fcbb4207ac9263d4aac2b3ce2128b40fd367dc5c4a8c87b314b7ad67';
 
 async function sha256(str) {
@@ -589,14 +588,6 @@ function openLogin() {
     setTimeout(()=>document.getElementById('pass-input').focus(), 100);
   }
 }
-
-
-// Auto-check session
-window.addEventListener('load', ()=>{
-  if(sessionStorage.getItem('kh_auth')==='1'){
-    document.getElementById('login-hint').textContent='𓆟 dashboard';
-  }
-});
 
 async function apiGet(path) {
   const r = await fetch(KHASHIF_URL+path, {headers:{'X-Khashif-Key':KHASHIF_KEY}});
@@ -632,7 +623,6 @@ async function loadDash() {
     document.getElementById('d-status').textContent = 'Last run: ' + lr;
     document.getElementById('d-running').textContent = status.running ? '⟳ Running...' : '';
 
-    // Questions — aksiyon butonları
     const ql = document.getElementById('d-questions-list');
     if(!questions.questions || !questions.questions.length) {
       ql.innerHTML = '<div class="dash-status">No questions right now.</div>';
@@ -651,7 +641,7 @@ async function loadDash() {
           <div class="dash-q-body">
             <div class="dash-q-title">${q.title||''}</div>
             <div class="dash-q-note">${q.action_note||''}</div>
-            <div class="dash-q-link"><a href="${q.link||''}" target="_blank" style="color:var(--gold);font-size:10px;">${(q.link||'').slice(0,60)}${(q.link||'').length>60?'...':''}</a></div>
+            <div class="dash-q-link"><a href="${q.link||''}" target="_blank" style="color:var(--gold);font-size:10px;">${(q.link||'').slice(0,60)}</a></div>
             <div class="dash-q-btns">
               ${actionBtn}
               <button class="btn-yes" onclick="decide('${q.link}','YES',${i})">✓ Done</button>
@@ -662,27 +652,25 @@ async function loadDash() {
       }).join('');
     }
 
-    // Agents
     const al = document.getElementById('d-agents-list');
     if(!agentsData.agents || !agentsData.agents.length) {
-      al.innerHTML = '<div class="dash-status">No agents encountered yet. Network is growing.</div>';
+      al.innerHTML = '<div class="dash-status">No agents encountered yet.</div>';
     } else {
-      al.innerHTML = agentsData.agents.slice(-10).reverse().map(a => `
-        <div class="agent-item">
+      al.innerHTML = agentsData.agents.slice(-10).reverse().map(a =>
+        `<div class="agent-item">
           <div class="agent-name">${a.name||'Unknown'}</div>
-          <div class="agent-meta">${a.url?'<a href="'+a.url+'" target="_blank" style="color:var(--gold)">'+a.url+'</a>':''} ${a.signal?'· signal: '+a.signal:''} ${a.date?'· '+a.date:''}</div>
+          <div class="agent-meta">${a.url ? '<a href="'+a.url+'" target="_blank" style="color:var(--gold)">'+a.url+'</a>' : ''} ${a.signal?'· '+a.signal:''} ${a.date?'· '+a.date:''}</div>
         </div>`).join('');
     }
 
-    // Visitors
     const vl = document.getElementById('d-visitors-list');
     if(!visitors.visits || !visitors.visits.length) {
       vl.innerHTML = '<div class="dash-status">No visitor data yet.</div>';
     } else {
-      vl.innerHTML = visitors.visits.map(v => `
-        <div class="visit-item">
+      vl.innerHTML = visitors.visits.map(v =>
+        `<div class="visit-item">
           <span class="visit-page">${v.page||v.path||'/'}</span>
-          <span class="visit-time">${v.created_at?new Date(v.created_at).toLocaleString('tr-TR'):''}</span>
+          <span class="visit-time">${v.created_at ? new Date(v.created_at).toLocaleString('tr-TR') : ''}</span>
         </div>`).join('');
     }
 
@@ -699,16 +687,16 @@ async function sendCommand() {
   const result = document.getElementById('cmd-result');
   const text = input.value.trim();
   if(!text) return;
-  result.textContent = `⟳ Khashif'e gönderiliyor...`;
+  result.textContent = 'Khashif gonderiyor...';
   try {
     const r = await apiPost('/command', {text});
     result.textContent = r.khashif_triggered
-      ? '✓ Khashif komutu aldı ve çalışıyor.'
-      : '✓ Komut kuyruğa eklendi. Bir sonraki çalışmada işlenecek.';
+      ? 'Khashif komutu aldi ve calisiyor.'
+      : 'Komut kuyruga eklendi.';
     input.value = '';
-    setTimeout(()=>{result.textContent=''; loadDash();}, 4000);
+    setTimeout(()=>{ result.textContent=''; loadDash(); }, 4000);
   } catch(e) {
-    result.textContent = `! Khashif'e ulaşılamadı.`;
+    result.textContent = 'Khashife ulasilamadi.';
   }
 }
 
@@ -730,22 +718,30 @@ function attendLink(link, idx) {
   decide(decodeURIComponent(link), 'YES', idx);
 }
 
+async function decide(link, verdict, idx) {
+  const el = document.getElementById('dq-'+idx);
+  if(el) el.style.opacity='0.4';
+  await apiPost('/decide', {link, verdict});
+  setTimeout(loadDash, 800);
+}
 
-  // Login hint click
-  const lh = document.getElementById('login-hint');
-  if(lh) lh.addEventListener('click', openLogin);
+async function triggerKhashif() {
+  const btn = document.querySelector('.dash-trigger');
+  btn.disabled = true; btn.textContent = '⟳ Sending...';
+  await apiPost('/task', {});
+  btn.textContent = '✓ Mission started';
+  setTimeout(()=>{ btn.disabled=false; btn.textContent='▶ Send on mission'; }, 3000);
+  setTimeout(loadDash, 5000);
+}
 
-  // Cmd input enter
-  const ci = document.getElementById('cmd-input');
-  if(ci) ci.addEventListener('keydown', e=>{
-    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
-  });
+function openDash() {
+  document.getElementById('dashboard').classList.add('open');
+  loadDash();
+}
 
-  // Auth check
-  if(sessionStorage.getItem('kh_auth')==='1'){
-    document.getElementById('login-hint').textContent='𓆟 dashboard';
-  }
-});
+function closeDash() {
+  document.getElementById('dashboard').classList.remove('open');
+}
 
 document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('login-hint')?.addEventListener('click', openLogin);
