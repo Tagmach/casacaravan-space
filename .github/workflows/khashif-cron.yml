@@ -8,7 +8,11 @@ jobs:
   wake:
     runs-on: ubuntu-latest
     steps:
-      - name: Wake Khashif
+      - name: Uyandır
+        run: curl https://khashif.onrender.com/status
+      - name: Bekle
+        run: sleep 30
+      - name: Göreve gönder
         run: |
           curl -X POST \
             -H "X-Khashif-Key: khashif2026" \
