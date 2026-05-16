@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import threading
 import os
 import json
@@ -6,6 +7,7 @@ import urllib.request
 from datetime import datetime
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": ["https://casacaravan.space", "http://localhost", "http://127.0.0.1"]}})
 
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 OPERATOR_EMAIL = "tagmacc@gmail.com"
@@ -282,6 +284,195 @@ def status():
         "pending_questions": len(khashif_state["pending_questions"]),
         "decisions_today": len(khashif_state["decisions"])
     })
+
+
+@app.route("/command", methods=["POST"])
+def command():
+    """Serbest komut al — Türkçe/İngilizce, LLM yorumlar"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    data = request.json
+    text = data.get("text", "").strip()
+    if not text:
+        return jsonify({"error": "text gerekli"}), 400
+
+    # Komutu hafızaya ekle — Khashif sonraki çalışmada işler
+    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+    try:
+        try:
+            with open(memory_file, "r", encoding="utf-8") as f:
+                memory = json.load(f)
+        except:
+            memory = {}
+
+        cmd = {
+            "text": text,
+            "date": datetime.now().isoformat(),
+            "status": "pending"
+        }
+        memory.setdefault("operator_commands", []).append(cmd)
+
+        with open(memory_file, "w", encoding="utf-8") as f:
+            json.dump(memory, f, ensure_ascii=False, indent=2)
+
+        # Khashif'i hemen tetikle
+        if not khashif_state["running"]:
+            thread = threading.Thread(target=run_khashif_task)
+            thread.daemon = True
+            thread.start()
+            triggered = True
+        else:
+            triggered = False
+
+        return jsonify({
+            "status": "queued",
+            "command": text,
+            "khashif_triggered": triggered
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/execute", methods=["POST"])
+def execute():
+    """YES sonrası gerçek aksiyon tetikle"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    data = request.json
+    action = data.get("action", "").upper()
+    link = data.get("link", "")
+    title = data.get("title", "")
+    note = data.get("note", "")
+
+    if action == "RESEARCH":
+        # LLM ile araştırma yap
+        def do_research():
+            try:
+                import khashif as kh
+                prompt = f"""You are Khashif — research agent for Tagmac Cankaya.
+
+PROFILE: {kh.PROFILE}
+
+RESEARCH REQUEST: {title}
+{f"Additional context: {note}" if note else ""}
+{f"Source: {link}" if link else ""}
+
+Write a focused research report in Turkish. Include:
+- Ana bulgular (3-5 madde)
+- Tagmac için fırsat nedir?
+- Önerilen aksiyon
+- İlgili kaynaklar/linkler
+
+Be specific and actionable."""
+                result, layer = kh.llm(prompt)
+                khashif_state["last_report"] = f"=== RESEARCH: {title} ===\n[{layer}]\n\n{result}\n\n" + khashif_state.get("last_report","")
+            except Exception as e:
+                khashif_state["last_report"] = f"Research error: {e}"
+
+        thread = threading.Thread(target=do_research)
+        thread.daemon = True
+        thread.start()
+        return jsonify({"status": "research_started", "title": title})
+
+    elif action == "ATTEND":
+        return jsonify({
+            "status": "attend",
+            "link": link,
+            "instructions": f"Katılım linki: {link}. {note}"
+        })
+
+    elif action == "SUBMIT":
+        # Gönderim taslağı oluştur
+        def do_submit():
+            try:
+                import khashif as kh
+                prompt = f"""Tagmac Cankaya için bu platforma müzik/iş gönderimi taslağı hazırla.
+
+PLATFORM: {title}
+LINK: {link}
+NOT: {note}
+
+TAGMAC PROFİLİ: {kh.PROFILE}
+
+Türkçe olarak:
+1. Gönderilecek eser/içerik önerisi (casacaravan.space müziklerinden)
+2. Gönderim metni taslağı
+3. Dikkat edilmesi gerekenler"""
+                result, layer = kh.llm(prompt)
+                khashif_state["last_report"] = f"=== SUBMIT TASLAK: {title} ===\n[{layer}]\n\n{result}\n\n" + khashif_state.get("last_report","")
+            except Exception as e:
+                khashif_state["last_report"] = f"Submit error: {e}"
+
+        thread = threading.Thread(target=do_submit)
+        thread.daemon = True
+        thread.start()
+        return jsonify({"status": "submit_draft_started", "title": title})
+
+    return jsonify({"error": "unknown action"}), 400
+
+
+@app.route("/agents", methods=["GET"])
+def agents_list():
+    """Khashif'in gezarken karşılaştığı diğer ajanlar"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+    try:
+        with open(memory_file, "r", encoding="utf-8") as f:
+            memory = json.load(f)
+        return jsonify({
+            "agents": memory.get("encountered_agents", []),
+            "count": len(memory.get("encountered_agents", []))
+        })
+    except:
+        return jsonify({"agents": [], "count": 0})
+
+
+@app.route("/visitors", methods=["GET"])
+def visitors():
+    """Supabase page_visits - kim geldi, nereden"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    try:
+        SUPA_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+        SUPA_KEY = os.environ.get("SUPABASE_KEY", "")
+
+        if not SUPA_KEY:
+            return jsonify({"error": "Supabase key missing"}), 400
+
+        req = urllib.request.Request(
+            f"{SUPA_URL}/rest/v1/page_visits?order=created_at.desc&limit=20",
+            headers={
+                "apikey": SUPA_KEY,
+                "Authorization": f"Bearer {SUPA_KEY}"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            data = json.loads(r.read().decode())
+        return jsonify({"visits": data, "count": len(data)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/commands", methods=["GET"])
+def commands_list():
+    """Bekleyen operatör komutları"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+    try:
+        with open(memory_file, "r", encoding="utf-8") as f:
+            memory = json.load(f)
+        cmds = memory.get("operator_commands", [])
+        return jsonify({"commands": cmds[-10:], "count": len(cmds)})
+    except:
+        return jsonify({"commands": [], "count": 0})
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

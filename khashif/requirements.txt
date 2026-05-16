@@ -5,3 +5,4 @@ groq
 cerebras-cloud-sdk
 schedule
 requests
+flask-cors
