@@ -88,15 +88,48 @@ def run_khashif_task():
             with open(memory_file, "r", encoding="utf-8") as f:
                 memory = json.load(f)
                 queue = memory.get("action_queue", [])
-                # İlk 3 yüksek öncelikli aksiyonu soru olarak gönder
+                buckets = memory.get("buckets", {})
                 high_priority = [
                     q for q in queue 
                     if q.get("action") in ["COMMENT", "CONNECT", "SUBMIT", "ATTEND"]
                     and q.get("status") == "pending"
-                ][:3]
+                ][:5]
                 khashif_state["pending_questions"] = high_priority
-    
-    except Exception as e:
+
+                # Raporu state'e al
+                report_file = os.path.join(os.path.dirname(__file__), "khashif_report.txt")
+                report_text = ""
+                if os.path.exists(report_file):
+                    with open(report_file, "r", encoding="utf-8") as rf:
+                        report_text = rf.read()
+                        khashif_state["last_report"] = report_text
+
+                # Email — kova ozeti + sorular
+                rows = ""
+                for i, q in enumerate(high_priority, 1):
+                    rows += f"<tr style='border-bottom:1px solid #f0e8e0;'><td style='padding:10px;font-size:13px;color:#1a1208;'>{i}. {q.get('title','')[:55]}</td><td style='padding:8px;font-size:11px;color:#a08060;font-weight:600;'>{q.get('action','')}</td><td style='padding:8px;font-size:11px;color:#7a7068;'>{q.get('action_note','')[:70]}</td><td style='padding:8px;'><a href=\"{q.get('link','')}\">→</a></td></tr>"
+
+                q_section = f"<h3 style='font-size:16px;font-weight:300;font-style:italic;margin-bottom:16px;'>Sana soruyor</h3><table style='width:100%;border-collapse:collapse;margin-bottom:24px;'><tr style='background:#f5f0e8;'><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Baslik</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Aksiyon</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Ne yapilacak</th><th></th></tr>{rows}</table>" if high_priority else "<p style='font-size:13px;color:#a09080;font-style:italic;'>Bu turda soru yok.</p>"
+
+                html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
+<h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
+<p style='font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a09080;margin-bottom:24px;'>{datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
+<div style='display:flex;gap:12px;margin-bottom:24px;'>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('HUMAN',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>HUMAN</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('INCOME',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>INCOME</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('KNOWLEDGE',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>KNOWLEDGE</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
+</div>
+{q_section}
+<div style='background:#f5f0e8;padding:16px;border-radius:8px;margin-bottom:16px;'>
+<div style='font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#a09080;margin-bottom:8px;'>Karar icin CMD:</div>
+<code style='font-size:10px;color:#1a1208;word-break:break-all;'>curl -X POST -H "X-Khashif-Key: khashif2026" -H "Content-Type: application/json" -d "{{\"link\":\"URL\",\"verdict\":\"YES\"}}" https://khashif.onrender.com/decide</code>
+</div>
+<p style='font-size:10px;color:#a09080;border-top:1px solid #e8e0d0;padding-top:16px;'>casacaravan.space · Khashif 𓆟</p>
+</div>"""
+                send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
+
+        except Exception as e:
         khashif_state["last_report"] = f"Hata: {str(e)}"
     
     finally:
