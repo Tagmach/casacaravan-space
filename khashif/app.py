@@ -76,6 +76,9 @@ def run_khashif_task():
     
     try:
         import khashif
+        # Render timeout için: priority feeds only, hızlı mod
+        import os
+        khashif.EXTENDED_FEEDS = []  # Render'da sadece priority feeds
         khashif.khashif_run()
         
         # Raporu oku
@@ -442,7 +445,7 @@ def visitors():
         SUPA_KEY = os.environ.get("SUPABASE_KEY", "")
 
         if not SUPA_KEY:
-            return jsonify({"error": "Supabase key missing"}), 400
+            return jsonify({"visits": [], "count": 0, "note": "SUPABASE_KEY not set"})
 
         req = urllib.request.Request(
             f"{SUPA_URL}/rest/v1/page_visits?order=created_at.desc&limit=20",
