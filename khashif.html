@@ -553,6 +553,7 @@ nav {
 </div>
 
 <script>
+const KHASHIF_URL
 const KHASHIF_URL = 'https://khashif.onrender.com';
 const KHASHIF_KEY = 'khashif2026';
 // Password hash — sha256 of 'dijitalgezgin'
@@ -590,7 +591,6 @@ function openLogin() {
   }
 }
 
-// Enter listener DOMContentLoaded içinde
 
 // Auto-check session
 window.addEventListener('load', ()=>{
@@ -731,45 +731,33 @@ function attendLink(link, idx) {
   decide(decodeURIComponent(link), 'YES', idx);
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  const pi=document.getElementById('pass-input');
-  if(pi) pi.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-  const lh=document.getElementById('login-hint');
+
+  // Login hint click
+  const lh = document.getElementById('login-hint');
   if(lh) lh.addEventListener('click', openLogin);
+
+  // Cmd input enter
   const ci = document.getElementById('cmd-input');
   if(ci) ci.addEventListener('keydown', e=>{
     if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
   });
-  const pi = document.getElementById('pass-input');
-  if(pi) pi.addEventListener('keydown', e=>{
-    if(e.key==='Enter') doLogin();
-  });
+
+  // Auth check
+  if(sessionStorage.getItem('kh_auth')==='1'){
+    document.getElementById('login-hint').textContent='𓆟 dashboard';
+  }
 });
 
-async function decide(link, verdict, idx) {
-  const el = document.getElementById('dq-'+idx);
-  if(el) el.style.opacity='0.4';
-  await apiPost('/decide', {link, verdict});
-  setTimeout(loadDash, 800);
-}
-
-async function triggerKhashif() {
-  const btn = document.querySelector('.dash-trigger');
-  btn.disabled = true; btn.textContent = '⟳ Sending...';
-  await apiPost('/task', {});
-  btn.textContent = '✓ Mission started';
-  setTimeout(()=>{btn.disabled=false;btn.textContent='▶ Send on mission';}, 3000);
-  setTimeout(loadDash, 5000);
-}
-
-function openDash() {
-  document.getElementById('dashboard').classList.add('open');
-  loadDash();
-}
-
-function closeDash() {
-  document.getElementById('dashboard').classList.remove('open');
-}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('login-hint')?.addEventListener('click', openLogin);
+  document.getElementById('pass-input')?.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  document.getElementById('cmd-input')?.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
+  });
+  if(sessionStorage.getItem('kh_auth')==='1'){
+    document.getElementById('login-hint').textContent='𓆟 dashboard';
+  }
+});
 </script>
 
 </body>
