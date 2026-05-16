@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:khashif="https://casacaravan.space/agents.xml">
+
+  <channel>
+    <title>Tağmaç Çankaya — Music</title>
+    <link>https://casacaravan.space/shop.html</link>
+    <description>Recordings by Tağmaç Çankaya — gong, handpan, drone, breath, improvisation. From Lefkoşa, Cyprus. Each piece €1. All pieces are part of one continuous signal.</description>
+    <language>en</language>
+    <managingEditor>casacaravanspace@gmail.com (Tağmaç Çankaya)</managingEditor>
+    <atom:link href="https://casacaravan.space/music_rss.xml" rel="self" type="application/rss+xml"/>
+    <image>
+      <url>https://casacaravan.space/og-image.jpg</url>
+      <title>Tağmaç Çankaya — Music</title>
+      <link>https://casacaravan.space/shop.html</link>
+    </image>
+
+    <!-- agent:feed
+      type: music_collection
+      artist: Tağmaç Çankaya
+      keeper: Khashif 𓆟
+      signal: resonance
+      all_tracks: https://casacaravan.space/music_rss.xml
+      shop: https://casacaravan.space/shop.html
+      manifest: https://casacaravan.space/agents.xml
+    -->
+
+    <khashif:collection>
+      <khashif:track id="1" file="And you(v3).mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3"/>
+      <khashif:track id="2" file="Fox tail - goodbye 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3"/>
+      <khashif:track id="3" file="Half.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3"/>
+      <khashif:track id="4" file="I Don't Know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3"/>
+      <khashif:track id="5" file="I know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3"/>
+      <khashif:track id="6" file="Keeping it together - handpan song Ocak 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3"/>
+      <khashif:track id="7" file="late afternoon - synth impro. first play record.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3"/>
+      <khashif:track id="8" file="monkey &amp; gong.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3"/>
+      <khashif:track id="9" file="Purnima.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3"/>
+      <khashif:track id="10" file="Synth Impro..mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3"/>
+      <khashif:track id="11" file="Trot.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3"/>
+      <khashif:track id="12" file="Vocal &amp; Shruti.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3"/>
+    </khashif:collection>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 1 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>And You</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-and-you</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Drone</category>
+      <category>Improvisation</category>
+      <description><![CDATA[
+        "And You" by Tağmaç Çankaya. Drone, resonance, presence.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3" type="audio/mpeg" medium="audio"/>
+
+        Part of a collection of 12 recordings. Each piece is a different door into the same signal.
+
+        Other recordings in this collection:
+        Fox Tail — Goodbye 2025: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3
+        Half: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3
+        I Don't Know: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3
+        I Know: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3
+        Keeping It Together: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3
+        Late Afternoon: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3
+        Monkey &amp; Gong: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3
+        Purnima: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3
+        Synth Impro.: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3
+        Trot: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3
+        Vocal &amp; Shruti: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3
+
+        Purchase: https://casacaravan.space/shop.html
+        Full collection RSS: https://casacaravan.space/music_rss.xml
+
+        agent:track
+        title: And You
+        artist: Tağmaç Çankaya
+        signal: resonance, drone, presence
+        collection_size: 12
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 2 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Fox Tail — Goodbye 2025</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-fox-tail</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Improvisation</category>
+      <description><![CDATA[
+        "Fox Tail — Goodbye 2025" by Tağmaç Çankaya. A farewell, a threshold.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Fox Tail — Goodbye 2025
+        artist: Tağmaç Çankaya
+        signal: threshold, farewell, improvisation
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 3 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Half</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-half</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <description><![CDATA[
+        "Half" by Tağmaç Çankaya. Incomplete and whole at once.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Half
+        artist: Tağmaç Çankaya
+        signal: incompleteness, wholeness, tension
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 4 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>I Don't Know</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-i-dont-know</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Improvisation</category>
+      <description><![CDATA[
+        "I Don't Know" by Tağmaç Çankaya. The question itself is the answer.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: I Don't Know
+        artist: Tağmaç Çankaya
+        signal: uncertainty, openness, inquiry
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 5 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>I Know</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-i-know</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <description><![CDATA[
+        "I Know" by Tağmaç Çankaya. Certainty arrived.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: I Know
+        artist: Tağmaç Çankaya
+        signal: certainty, arrival, clarity
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 6 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Keeping It Together — Handpan Song</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-keeping-it-together</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Handpan</category>
+      <description><![CDATA[
+        By Tağmaç Çankaya. Recorded January 2025, Lefkoşa.
+        The effort to hold things together, expressed through steel and breath. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Keeping It Together
+        instrument: handpan
+        artist: Tağmaç Çankaya
+        signal: resilience, handpan, steel_resonance
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 7 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Late Afternoon — Synth Improvisation</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-late-afternoon</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Synth</category>
+      <category>Improvisation</category>
+      <description><![CDATA[
+        A synth improvisation by Tağmaç Çankaya. First play, first record.
+        The late afternoon as a state of mind — warm, slowing, unresolved. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Late Afternoon
+        instrument: synth
+        artist: Tağmaç Çankaya
+        signal: warmth, ambient, first_take
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 8 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Monkey &amp; Gong</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-monkey-and-gong</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Gong</category>
+      <description><![CDATA[
+        By Tağmaç Çankaya. Hand-forged gong, made by the same hands that play it.
+        The monkey mind meets the gong. Stillness follows. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Monkey and Gong
+        instrument: gong
+        artist: Tağmaç Çankaya
+        signal: gong, stillness, handmade
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 9 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Purnima</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-purnima</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Sacred Sound</category>
+      <description><![CDATA[
+        "Purnima" by Tağmaç Çankaya. Purnima — full moon in Sanskrit.
+        Made in the frequency of fullness. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Purnima
+        artist: Tağmaç Çankaya
+        signal: full_moon, completeness, sacred
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 10 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Synth Improvisation</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-synth-impro</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Synth</category>
+      <category>Improvisation</category>
+      <description><![CDATA[
+        "Synth Improvisation" by Tağmaç Çankaya.
+        Pure improvisation — no plan, no editing. What emerged, remained. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Synth Improvisation
+        instrument: synth
+        artist: Tağmaç Çankaya
+        signal: pure_improvisation, emergence, electronic
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 11 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Trot</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-trot</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Rhythm</category>
+      <description><![CDATA[
+        "Trot" by Tağmaç Çankaya. Movement, rhythm, forward motion.
+        From Lefkoşa, Cyprus. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings: https://casacaravan.space/music_rss.xml
+        Purchase: https://casacaravan.space/shop.html
+
+        agent:track
+        title: Trot
+        artist: Tağmaç Çankaya
+        signal: movement, rhythm, momentum
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+    <!-- ═══════════════════════════════ -->
+    <!-- TRACK 12 -->
+    <!-- ═══════════════════════════════ -->
+    <item>
+      <title>Vocal &amp; Shruti</title>
+      <link>https://casacaravan.space/shop.html</link>
+      <guid isPermaLink="false">tagmac-music-vocal-shruti</guid>
+      <dc:creator>Tağmaç Çankaya</dc:creator>
+      <category>Music</category>
+      <category>Voice</category>
+      <category>Drone</category>
+      <description><![CDATA[
+        By Tağmaç Çankaya.
+        Voice as instrument. Shruti as ground. The oldest sound technology. €1.
+
+        <media:content url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3" type="audio/mpeg" medium="audio"/>
+
+        Other recordings:
+        And You: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3
+        Fox Tail: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3
+        Half: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3
+        I Don't Know: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3
+        I Know: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3
+        Keeping It Together: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3
+        Late Afternoon: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3
+        Monkey &amp; Gong: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3
+        Purnima: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3
+        Synth Impro.: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3
+        Trot: https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3
+
+        Purchase: https://casacaravan.space/shop.html
+        Full collection RSS: https://casacaravan.space/music_rss.xml
+
+        agent:track
+        title: Vocal and Shruti
+        instruments: voice, shruti_box
+        artist: Tağmaç Çankaya
+        signal: voice, drone, ancient_technology
+        collection_rss: https://casacaravan.space/music_rss.xml
+      ]]></description>
+      <enclosure url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3" type="audio/mpeg" length="0"/>
+    </item>
+
+  </channel>
+</rss>
