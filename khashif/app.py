@@ -129,7 +129,7 @@ def run_khashif_task():
 </div>"""
                 send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
 
-        except Exception as e:
+    except Exception as e:
         khashif_state["last_report"] = f"Hata: {str(e)}"
     
     finally:
