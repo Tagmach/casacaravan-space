@@ -276,7 +276,7 @@ def buckets():
             "stats": memory.get("stats", {})
         })
     except:
-        return jsonify({"error": "Hafıza dosyası bulunamadı"}), 404
+        return jsonify({"HUMAN":0,"INCOME":0,"KNOWLEDGE":0,"TRASH":0,"action_queue":0,"learned_keywords":0,"dynamic_feeds":0,"stats":{}})
 
 @app.route("/status", methods=["GET"])
 def status():
