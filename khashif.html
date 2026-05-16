@@ -469,7 +469,7 @@ nav {
 </script>
 
 <!-- === LOGIN OVERLAY === -->
-<div id="login-overlay">
+<div id="login-overlay" style="display:none;">
   <div class="login-symbol">𓆟</div>
   <div class="login-title">Khashif</div>
   <div class="login-sub">operator access</div>
@@ -568,7 +568,8 @@ async function doLogin() {
     sessionStorage.setItem('kh_auth','1');
     document.getElementById('login-overlay').classList.add('gone');
     setTimeout(()=>{document.getElementById('login-overlay').style.display='none';},400);
-    document.getElementById('login-hint').style.display='none';
+    document.getElementById('login-hint').textContent='𓆟 dashboard';
+    openDash();
   } else {
     document.getElementById('login-err').style.display='block';
     document.getElementById('pass-input').value='';
@@ -580,19 +581,18 @@ function openLogin() {
   if(sessionStorage.getItem('kh_auth')==='1'){
     openDash();
   } else {
-    document.getElementById('login-overlay').style.display='flex';
-    document.getElementById('login-overlay').classList.remove('gone');
+    const lo = document.getElementById('login-overlay');
+    lo.style.display='flex';
+    lo.classList.remove('gone');
+    setTimeout(()=>document.getElementById('pass-input').focus(), 100);
   }
 }
 
-document.getElementById('pass-input').addEventListener('keydown', e=>{
-  if(e.key==='Enter') doLogin();
-});
+// Enter listener DOMContentLoaded içinde
 
 // Auto-check session
 window.addEventListener('load', ()=>{
   if(sessionStorage.getItem('kh_auth')==='1'){
-    document.getElementById('login-overlay').style.display='none';
     document.getElementById('login-hint').textContent='𓆟 dashboard';
   }
 });
@@ -730,9 +730,15 @@ function attendLink(link, idx) {
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  const pi=document.getElementById('pass-input');
+  if(pi) pi.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
   const ci = document.getElementById('cmd-input');
   if(ci) ci.addEventListener('keydown', e=>{
     if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
+  });
+  const pi = document.getElementById('pass-input');
+  if(pi) pi.addEventListener('keydown', e=>{
+    if(e.key==='Enter') doLogin();
   });
 });
 
