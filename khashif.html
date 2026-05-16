@@ -113,6 +113,144 @@ nav {
   .page { padding:120px 24px 80px; }
   .domains { grid-template-columns:1fr 1fr; }
 }
+
+/* === DOMAIN LOCK & LOGIN === */
+#login-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.4s;
+}
+#login-overlay.gone { opacity: 0; pointer-events: none; }
+.login-symbol { font-size: 48px; margin-bottom: 16px; }
+.login-title {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-size: 28px; color: var(--cream); margin-bottom: 4px;
+}
+.login-sub { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--dim); margin-bottom: 40px; }
+.login-input-wrap { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.login-input {
+  background: rgba(255,255,255,0.03); border: none; outline: none;
+  color: var(--cream); font-family: 'Jost', sans-serif; font-size: 14px;
+  padding: 12px 20px; width: 220px; letter-spacing: 1px;
+}
+.login-btn {
+  background: none; border: none; border-left: 1px solid var(--border);
+  color: var(--gold); font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 0 20px; cursor: pointer;
+  transition: background 0.2s;
+}
+.login-btn:hover { background: rgba(160,128,96,0.08); }
+.login-err { font-size: 10px; color: rgba(200,90,90,0.7); margin-top: 12px; letter-spacing: 1px; display: none; }
+#login-hint {
+  position: fixed; bottom: 24px; right: 24px; z-index: 100;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(160,128,96,0.25); cursor: pointer; transition: color 0.2s;
+}
+#login-hint:hover { color: var(--gold); }
+
+/* === DASHBOARD === */
+#dashboard {
+  display: none;
+  position: fixed; inset: 0; z-index: 150;
+  background: var(--bg); overflow-y: auto;
+  padding: 80px 40px 60px;
+}
+#dashboard.open { display: block; }
+.dash-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 160;
+  padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,7,5,0.95); backdrop-filter: blur(8px);
+}
+.dash-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: var(--gold); }
+.dash-close {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--dim); background: none; border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 100px; cursor: pointer; transition: all 0.2s;
+}
+.dash-close:hover { color: var(--cream); border-color: var(--dim); }
+.dash-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 32px; }
+.dash-card {
+  border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center;
+  background: rgba(255,255,255,0.02);
+}
+.dash-card-num { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 36px; color: var(--cream); }
+.dash-card-label { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-top: 6px; }
+.dash-section { margin-bottom: 32px; }
+.dash-section-title {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 16px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.dash-question {
+  border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px;
+  margin-bottom: 10px; display: flex; gap: 16px; align-items: flex-start;
+}
+.dash-q-action {
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold); padding: 4px 10px; border: 1px solid rgba(160,128,96,0.3);
+  border-radius: 100px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+}
+.dash-q-body { flex: 1; min-width: 0; }
+.dash-q-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--cream); margin-bottom: 4px; }
+.dash-q-note { font-size: 11px; color: var(--dim); line-height: 1.7; margin-bottom: 8px; }
+.dash-q-link { font-size: 10px; color: rgba(160,128,96,0.5); word-break: break-all; }
+.dash-q-btns { display: flex; gap: 8px; margin-top: 10px; }
+.btn-yes, .btn-no {
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px; cursor: pointer; transition: all 0.2s; border: 1px solid;
+}
+.btn-yes { color: #5a9a6a; border-color: rgba(90,154,106,0.3); background: none; }
+.btn-yes:hover { background: rgba(90,154,106,0.1); }
+.btn-no { color: #9a5a5a; border-color: rgba(154,90,90,0.3); background: none; }
+.btn-no:hover { background: rgba(154,90,90,0.1); }
+.dash-status { font-size: 12px; color: var(--dim); font-style: italic; text-align: center; padding: 24px; }
+.dash-trigger {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 10px 24px; border: 1px solid var(--border); border-radius: 100px;
+  color: var(--gold); background: none; cursor: pointer; transition: all 0.2s;
+}
+.dash-trigger:hover { border-color: var(--gold); background: rgba(160,128,96,0.06); }
+.dash-running { color: var(--dim); font-size: 10px; letter-spacing: 1px; margin-left: 12px; }
+@media(max-width:600px){
+  .dash-grid { grid-template-columns: repeat(2,1fr); }
+  #dashboard { padding: 70px 20px 40px; }
+  .dash-nav { padding: 14px 20px; }
+}
+
+.cmd-wrap { display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:8px; }
+.cmd-input {
+  flex:1; background:rgba(255,255,255,0.03); border:none; outline:none;
+  color:var(--cream); font-family:'Jost',sans-serif; font-size:13px;
+  padding:12px 16px; resize:none; min-height:52px;
+}
+.cmd-send {
+  background:none; border:none; border-left:1px solid var(--border);
+  color:var(--gold); font-size:9px; letter-spacing:2px; text-transform:uppercase;
+  padding:0 20px; cursor:pointer; transition:background 0.2s; white-space:nowrap;
+}
+.cmd-send:hover { background:rgba(160,128,96,0.08); }
+.cmd-hint { font-size:10px; color:var(--dim); line-height:1.8; margin-bottom:12px; }
+.cmd-result { font-size:10px; color:rgba(160,128,96,0.7); font-style:italic; margin-top:6px; min-height:18px; }
+.btn-action {
+  font-size:9px; letter-spacing:1px; text-transform:uppercase;
+  padding:5px 12px; border-radius:100px; cursor:pointer; transition:all 0.2s; border:1px solid;
+  margin-right:6px; margin-top:6px; display:inline-block;
+}
+.btn-research { color:#7a9ab8; border-color:rgba(122,154,184,0.3); background:none; }
+.btn-research:hover { background:rgba(122,154,184,0.1); }
+.btn-attend { color:#7ab87a; border-color:rgba(122,184,122,0.3); background:none; }
+.btn-attend:hover { background:rgba(122,184,122,0.1); }
+.btn-submit { color:#b8a07a; border-color:rgba(184,160,122,0.3); background:none; }
+.btn-submit:hover { background:rgba(184,160,122,0.1); }
+.agent-item { padding:12px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:8px; }
+.agent-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--cream); margin-bottom:4px; }
+.agent-meta { font-size:10px; color:var(--dim); line-height:1.8; }
+.visit-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(160,128,96,0.06); font-size:11px; }
+.visit-page { color:var(--cream); }
+.visit-time { color:var(--dim); font-size:10px; }
 </style>
 </head>
 <body>
@@ -318,5 +456,311 @@ nav {
   exchange: give_and_receive
   updated: 2026-05-16
 -->
+
+<!-- === DOMAIN LOCK === -->
+<script>
+(function(){
+  var allowed = ['casacaravan.space','localhost','127.0.0.1'];
+  if(!allowed.includes(window.location.hostname)){
+    document.documentElement.innerHTML = '';
+    window.location.href = 'https://casacaravan.space/khashif.html';
+  }
+})();
+</script>
+
+<!-- === LOGIN OVERLAY === -->
+<div id="login-overlay">
+  <div class="login-symbol">𓆟</div>
+  <div class="login-title">Khashif</div>
+  <div class="login-sub">operator access</div>
+  <div class="login-input-wrap">
+    <input class="login-input" id="pass-input" type="password" placeholder="enter passphrase" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Enter</button>
+  </div>
+  <div class="login-err" id="login-err">wrong passphrase</div>
+</div>
+
+<!-- === LOGIN HINT (for operator) === -->
+<div id="login-hint" onclick="openLogin()">𓆟 operator</div>
+
+<!-- === DASHBOARD === -->
+<div id="dashboard">
+  <div class="dash-nav">
+    <div class="dash-title">Khashif 𓆟 — Control Room</div>
+    <button class="dash-close" onclick="closeDash()">← close</button>
+  </div>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card-num" id="d-human">—</div>
+      <div class="dash-card-label">Human</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-num" id="d-income">—</div>
+      <div class="dash-card-label">Income</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-num" id="d-knowledge">—</div>
+      <div class="dash-card-label">Knowledge</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-num" id="d-questions">—</div>
+      <div class="dash-card-label">Waiting</div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Status</div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <button class="dash-trigger" onclick="triggerKhashif()">▶ Send on mission</button>
+      <span class="dash-running" id="d-status">Last run: —</span>
+      <span class="dash-running" id="d-running"></span>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Command Khashif</div>
+    <div class="cmd-hint">Türkçe veya İngilizce yaz. Khashif yorumlar ve harekete geçer.<br>
+    örn: "Ali Veli'yi araştır" · "Bu hafta online ses terapisi etkinlikleri" · "Disquiet'e müzik göndermek istiyorum"</div>
+    <div class="cmd-wrap">
+      <textarea class="cmd-input" id="cmd-input" placeholder="Komutunu yaz..." rows="2"></textarea>
+      <button class="cmd-send" onclick="sendCommand()">Gönder →</button>
+    </div>
+    <div class="cmd-result" id="cmd-result"></div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Questions waiting for you</div>
+    <div id="d-questions-list"><div class="dash-status">Loading...</div></div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Encountered agents 𓆟</div>
+    <div id="d-agents-list"><div class="dash-status">Loading...</div></div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Recent visitors</div>
+    <div id="d-visitors-list"><div class="dash-status">Loading...</div></div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">Last report / research output</div>
+    <pre id="d-report" style="font-size:11px;color:var(--dim);line-height:1.8;white-space:pre-wrap;font-family:'Jost',sans-serif;max-height:400px;overflow-y:auto;"></pre>
+  </div>
+</div>
+
+<script>
+const KHASHIF_URL = 'https://khashif.onrender.com';
+const KHASHIF_KEY = 'khashif2026';
+// Password hash — sha256 of 'dijitalgezgin'
+const PASS_HASH = 'a9cba990fcbb4207ac9263d4aac2b3ce2128b40fd367dc5c4a8c87b314b7ad67';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const val = document.getElementById('pass-input').value;
+  const hash = await sha256(val);
+  if(hash === PASS_HASH) {
+    sessionStorage.setItem('kh_auth','1');
+    document.getElementById('login-overlay').classList.add('gone');
+    setTimeout(()=>{document.getElementById('login-overlay').style.display='none';},400);
+    document.getElementById('login-hint').style.display='none';
+  } else {
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('pass-input').value='';
+    setTimeout(()=>{document.getElementById('login-err').style.display='none';},2000);
+  }
+}
+
+function openLogin() {
+  if(sessionStorage.getItem('kh_auth')==='1'){
+    openDash();
+  } else {
+    document.getElementById('login-overlay').style.display='flex';
+    document.getElementById('login-overlay').classList.remove('gone');
+  }
+}
+
+document.getElementById('pass-input').addEventListener('keydown', e=>{
+  if(e.key==='Enter') doLogin();
+});
+
+// Auto-check session
+window.addEventListener('load', ()=>{
+  if(sessionStorage.getItem('kh_auth')==='1'){
+    document.getElementById('login-overlay').style.display='none';
+    document.getElementById('login-hint').textContent='𓆟 dashboard';
+  }
+});
+
+async function apiGet(path) {
+  const r = await fetch(KHASHIF_URL+path, {headers:{'X-Khashif-Key':KHASHIF_KEY}});
+  return r.json();
+}
+
+async function apiPost(path, body) {
+  const r = await fetch(KHASHIF_URL+path, {
+    method:'POST',
+    headers:{'X-Khashif-Key':KHASHIF_KEY,'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+async function loadDash() {
+  try {
+    const [status, buckets, questions, report, agentsData, visitors] = await Promise.all([
+      apiGet('/status'),
+      apiGet('/buckets'),
+      apiGet('/questions'),
+      apiGet('/report'),
+      apiGet('/agents'),
+      apiGet('/visitors').catch(()=>({visits:[],count:0}))
+    ]);
+
+    document.getElementById('d-human').textContent = buckets.HUMAN ?? '—';
+    document.getElementById('d-income').textContent = buckets.INCOME ?? '—';
+    document.getElementById('d-knowledge').textContent = buckets.KNOWLEDGE ?? '—';
+    document.getElementById('d-questions').textContent = questions.count ?? '—';
+
+    const lr = status.last_run ? new Date(status.last_run).toLocaleString('tr-TR') : 'never';
+    document.getElementById('d-status').textContent = 'Last run: ' + lr;
+    document.getElementById('d-running').textContent = status.running ? '⟳ Running...' : '';
+
+    // Questions — aksiyon butonları
+    const ql = document.getElementById('d-questions-list');
+    if(!questions.questions || !questions.questions.length) {
+      ql.innerHTML = '<div class="dash-status">No questions right now.</div>';
+    } else {
+      ql.innerHTML = questions.questions.map((q,i) => {
+        const action = (q.action||'').toUpperCase();
+        const el = encodeURIComponent(q.link||'');
+        const et = encodeURIComponent(q.title||'');
+        const en = encodeURIComponent(q.action_note||'');
+        let actionBtn = '';
+        if(action==='RESEARCH') actionBtn = `<button class="btn-action btn-research" onclick="executeAction('RESEARCH','${el}','${et}','${en}',${i})">🔍 Research</button>`;
+        else if(action==='ATTEND') actionBtn = `<button class="btn-action btn-attend" onclick="attendLink('${el}',${i})">→ Attend</button>`;
+        else if(action==='SUBMIT') actionBtn = `<button class="btn-action btn-submit" onclick="executeAction('SUBMIT','${el}','${et}','${en}',${i})">📤 Submit draft</button>`;
+        return `<div class="dash-question" id="dq-${i}">
+          <div class="dash-q-action">${q.action||'?'}</div>
+          <div class="dash-q-body">
+            <div class="dash-q-title">${q.title||''}</div>
+            <div class="dash-q-note">${q.action_note||''}</div>
+            <div class="dash-q-link"><a href="${q.link||''}" target="_blank" style="color:var(--gold);font-size:10px;">${(q.link||'').slice(0,60)}${(q.link||'').length>60?'...':''}</a></div>
+            <div class="dash-q-btns">
+              ${actionBtn}
+              <button class="btn-yes" onclick="decide('${q.link}','YES',${i})">✓ Done</button>
+              <button class="btn-no" onclick="decide('${q.link}','NO',${i})">✕ Skip</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Agents
+    const al = document.getElementById('d-agents-list');
+    if(!agentsData.agents || !agentsData.agents.length) {
+      al.innerHTML = '<div class="dash-status">No agents encountered yet. Network is growing.</div>';
+    } else {
+      al.innerHTML = agentsData.agents.slice(-10).reverse().map(a => `
+        <div class="agent-item">
+          <div class="agent-name">${a.name||'Unknown'}</div>
+          <div class="agent-meta">${a.url?'<a href="'+a.url+'" target="_blank" style="color:var(--gold)">'+a.url+'</a>':''} ${a.signal?'· signal: '+a.signal:''} ${a.date?'· '+a.date:''}</div>
+        </div>`).join('');
+    }
+
+    // Visitors
+    const vl = document.getElementById('d-visitors-list');
+    if(!visitors.visits || !visitors.visits.length) {
+      vl.innerHTML = '<div class="dash-status">No visitor data yet.</div>';
+    } else {
+      vl.innerHTML = visitors.visits.map(v => `
+        <div class="visit-item">
+          <span class="visit-page">${v.page||v.path||'/'}</span>
+          <span class="visit-time">${v.created_at?new Date(v.created_at).toLocaleString('tr-TR'):''}</span>
+        </div>`).join('');
+    }
+
+    document.getElementById('d-report').textContent = report.report || 'No report yet.';
+
+  } catch(e) {
+    document.getElementById('d-questions-list').innerHTML = '<div class="dash-status">Could not reach Khashif.</div>';
+    console.error(e);
+  }
+}
+
+async function sendCommand() {
+  const input = document.getElementById('cmd-input');
+  const result = document.getElementById('cmd-result');
+  const text = input.value.trim();
+  if(!text) return;
+  result.textContent = '⟳ Khashif'e gönderiliyor...';
+  try {
+    const r = await apiPost('/command', {text});
+    result.textContent = r.khashif_triggered
+      ? '✓ Khashif komutu aldı ve çalışıyor.'
+      : '✓ Komut kuyruğa eklendi. Bir sonraki çalışmada işlenecek.';
+    input.value = '';
+    setTimeout(()=>{result.textContent=''; loadDash();}, 4000);
+  } catch(e) {
+    result.textContent = '! Khashif'e ulaşılamadı.';
+  }
+}
+
+async function executeAction(action, link, title, note, idx) {
+  const el = document.getElementById('dq-'+idx);
+  if(el) el.style.opacity='0.5';
+  await apiPost('/execute', {
+    action,
+    link: decodeURIComponent(link),
+    title: decodeURIComponent(title),
+    note: decodeURIComponent(note)
+  });
+  document.getElementById('d-report').textContent = '⟳ ' + action + ' working... refreshing in 10s.';
+  setTimeout(loadDash, 10000);
+}
+
+function attendLink(link, idx) {
+  window.open(decodeURIComponent(link), '_blank');
+  decide(decodeURIComponent(link), 'YES', idx);
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const ci = document.getElementById('cmd-input');
+  if(ci) ci.addEventListener('keydown', e=>{
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
+  });
+});
+
+async function decide(link, verdict, idx) {
+  const el = document.getElementById('dq-'+idx);
+  if(el) el.style.opacity='0.4';
+  await apiPost('/decide', {link, verdict});
+  setTimeout(loadDash, 800);
+}
+
+async function triggerKhashif() {
+  const btn = document.querySelector('.dash-trigger');
+  btn.disabled = true; btn.textContent = '⟳ Sending...';
+  await apiPost('/task', {});
+  btn.textContent = '✓ Mission started';
+  setTimeout(()=>{btn.disabled=false;btn.textContent='▶ Send on mission';}, 3000);
+  setTimeout(loadDash, 5000);
+}
+
+function openDash() {
+  document.getElementById('dashboard').classList.add('open');
+  loadDash();
+}
+
+function closeDash() {
+  document.getElementById('dashboard').classList.remove('open');
+}
+</script>
+
 </body>
 </html>
