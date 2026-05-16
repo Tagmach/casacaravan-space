@@ -145,10 +145,12 @@ nav {
 .login-err { font-size: 10px; color: rgba(200,90,90,0.7); margin-top: 12px; letter-spacing: 1px; display: none; }
 #login-hint {
   position: fixed; bottom: 24px; right: 24px; z-index: 100;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  color: rgba(160,128,96,0.25); cursor: pointer; transition: color 0.2s;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(160,128,96,0.5); cursor: pointer; transition: all 0.2s;
+  border: 1px solid rgba(160,128,96,0.2); padding: 8px 14px; border-radius: 100px;
+  background: rgba(8,7,5,0.8); backdrop-filter: blur(8px);
 }
-#login-hint:hover { color: var(--gold); }
+#login-hint:hover { color: var(--gold); border-color: rgba(160,128,96,0.5); }
 
 /* === DASHBOARD === */
 #dashboard {
@@ -481,7 +483,7 @@ nav {
 </div>
 
 <!-- === LOGIN HINT (for operator) === -->
-<div id="login-hint" onclick="openLogin()">𓆟 operator</div>
+<div id="login-hint">𓆟 operator</div>
 
 <!-- === DASHBOARD === -->
 <div id="dashboard">
@@ -732,6 +734,8 @@ function attendLink(link, idx) {
 document.addEventListener('DOMContentLoaded', ()=>{
   const pi=document.getElementById('pass-input');
   if(pi) pi.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  const lh=document.getElementById('login-hint');
+  if(lh) lh.addEventListener('click', openLogin);
   const ci = document.getElementById('cmd-input');
   if(ci) ci.addEventListener('keydown', e=>{
     if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
