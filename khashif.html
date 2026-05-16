@@ -699,7 +699,7 @@ async function sendCommand() {
   const result = document.getElementById('cmd-result');
   const text = input.value.trim();
   if(!text) return;
-  result.textContent = '⟳ Khashif'e gönderiliyor...';
+  result.textContent = '⟳ Khashif\u2019e g\u00f6nderiliyor...';
   try {
     const r = await apiPost('/command', {text});
     result.textContent = r.khashif_triggered
@@ -708,7 +708,7 @@ async function sendCommand() {
     input.value = '';
     setTimeout(()=>{result.textContent=''; loadDash();}, 4000);
   } catch(e) {
-    result.textContent = '! Khashif'e ulaşılamadı.';
+    result.textContent = '! Khashif\u2019e ula\u015f\u0131lamad\u0131.';
   }
 }
 
