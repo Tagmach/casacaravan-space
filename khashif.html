@@ -666,10 +666,7 @@ function openLogin() {
 }
 
 async function apiGet(path) {
-  const sep = path.includes('?') ? '&' : '?';
-  const r = await fetch(KHASHIF_URL + path + sep + 'key=' + KHASHIF_KEY, {
-    headers: {'X-Khashif-Key': KHASHIF_KEY}
-  });
+  const r = await fetch(KHASHIF_URL+path, {headers:{'X-Khashif-Key':KHASHIF_KEY}});
   return r.json();
 }
 
@@ -693,9 +690,9 @@ async function loadDash() {
       apiGet('/visitors').catch(()=>({visits:[],count:0}))
     ]);
 
-    document.getElementById('d-human').textContent = buckets.HUMAN ?? '—';
-    document.getElementById('d-income').textContent = buckets.INCOME ?? '—';
-    document.getElementById('d-knowledge').textContent = buckets.KNOWLEDGE ?? '—';
+    document.getElementById('d-human').textContent = (Array.isArray(buckets.HUMAN) ? buckets.HUMAN.length : buckets.HUMAN) ?? '—';
+    document.getElementById('d-income').textContent = (Array.isArray(buckets.INCOME) ? buckets.INCOME.length : buckets.INCOME) ?? '—';
+    document.getElementById('d-knowledge').textContent = (Array.isArray(buckets.KNOWLEDGE) ? buckets.KNOWLEDGE.length : buckets.KNOWLEDGE) ?? '—';
     document.getElementById('d-questions').textContent = questions.count ?? '—';
 
     const lr = status.last_run ? new Date(status.last_run).toLocaleString('tr-TR') : 'never';
