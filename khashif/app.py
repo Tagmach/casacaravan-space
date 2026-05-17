@@ -261,12 +261,23 @@ def get_buckets():
     """Dört kovanın özeti"""
     if not is_authorized(request):
         return jsonify({"error": "unauthorized"}), 403
-    
-    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+
+    SUPA_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+    SUPA_KEY = os.environ.get("SUPABASE_KEY", "")
+
     try:
-        with open(memory_file, "r", encoding="utf-8") as f:
-            memory = json.load(f)
-        
+        req = urllib.request.Request(
+            f"{SUPA_URL}/rest/v1/khashif_memory?key=eq.main&select=value",
+            headers={
+                "apikey": SUPA_KEY,
+                "Authorization": f"Bearer {SUPA_KEY}"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            rows = json.loads(r.read().decode())
+        if not rows:
+            return jsonify({"error": "memory not found"}), 404
+        memory = json.loads(rows[0]["value"])
         b = memory.get("buckets", {})
         return jsonify({
             "HUMAN": b.get("HUMAN", [])[-10:],
@@ -278,8 +289,8 @@ def get_buckets():
             "dynamic_feeds": len(memory.get("dynamic_feeds", [])),
             "stats": memory.get("stats", {})
         })
-    except:
-        return jsonify({"error": "Hafıza dosyası bulunamadı"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/status", methods=["GET"])
 def status():

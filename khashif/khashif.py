@@ -122,7 +122,32 @@ EXTENDED_FEEDS = [
 ]
 
 # === MEMORY ===
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+MEMORY_KEY = "main"
+
+def _supa_headers():
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+
 def load_memory():
+    # Try Supabase first
+    if SUPABASE_KEY:
+        try:
+            req = urllib.request.Request(
+                f"{SUPABASE_URL}/rest/v1/khashif_memory?key=eq.{MEMORY_KEY}&select=value",
+                headers=_supa_headers()
+            )
+            with urllib.request.urlopen(req, timeout=8) as r:
+                rows = json.loads(r.read().decode())
+            if rows:
+                return json.loads(rows[0]["value"])
+        except Exception as e:
+            print(f"  ! Supabase load failed: {e}")
+    # Fallback: local file
     try:
         if os.path.exists(MEMORY_FILE):
             with open(MEMORY_FILE, "r", encoding="utf-8") as f:
@@ -144,11 +169,29 @@ def load_memory():
     }
 
 def save_memory(memory):
+    # Save to Supabase
+    if SUPABASE_KEY:
+        try:
+            payload = json.dumps({
+                "key": MEMORY_KEY,
+                "value": json.dumps(memory, ensure_ascii=False),
+                "updated_at": datetime.utcnow().isoformat() + "+00:00"
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                f"{SUPABASE_URL}/rest/v1/khashif_memory",
+                data=payload,
+                headers={**_supa_headers(), "Prefer": "resolution=merge-duplicates"}
+            )
+            req.get_method = lambda: "POST"
+            urllib.request.urlopen(req, timeout=10)
+        except Exception as e:
+            print(f"  ! Supabase save failed: {e}")
+    # Also save local as backup
     try:
         with open(MEMORY_FILE, "w", encoding="utf-8") as f:
             json.dump(memory, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print(f"  ! Memory save failed: {e}")
+        print(f"  ! Local save failed: {e}")
 
 # === LLM LAYERS ===
 LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0}
