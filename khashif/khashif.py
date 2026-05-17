@@ -193,6 +193,37 @@ def save_memory(memory):
     except Exception as e:
         print(f"  ! Local save failed: {e}")
 
+def fetch_pending_commands():
+    """Read pending commands from Supabase khashif_commands table."""
+    if not SUPABASE_KEY:
+        return []
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_commands?status=eq.pending&order=created_at.asc",
+            headers=_supa_headers()
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            return json.loads(r.read().decode())
+    except Exception as e:
+        print(f"  ! Commands fetch failed: {e}")
+        return []
+
+def mark_command_done(command_id):
+    """Mark a command as done in Supabase."""
+    if not SUPABASE_KEY:
+        return
+    try:
+        payload = json.dumps({"status": "done"}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_commands?id=eq.{command_id}",
+            data=payload,
+            headers=_supa_headers()
+        )
+        req.get_method = lambda: "PATCH"
+        urllib.request.urlopen(req, timeout=8)
+    except Exception as e:
+        print(f"  ! Command mark done failed: {e}")
+
 # === LLM LAYERS ===
 LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0}
 
@@ -486,6 +517,15 @@ def khashif_run():
     LLM_STATUS["cerebras_fails"] = 0
     LLM_STATUS["groq_fails"] = 0
 
+    # === CHECK PENDING COMMANDS ===
+    pending_commands = fetch_pending_commands()
+    active_command = None
+    command_intent = ""
+    if pending_commands:
+        active_command = pending_commands[0]  # Take the oldest pending command
+        command_intent = active_command.get("text", "")
+        print(f"\n  *** Command received: {command_intent}")
+
     memory = load_memory()
     seen = set(memory.get("seen_links", []))
     buckets = memory.get("buckets", {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []})
@@ -495,6 +535,21 @@ def khashif_run():
     crawled = memory.get("crawled_pages", [])
     learned = memory.get("learned_keywords", [])
     stats = memory.get("stats", {"total_analyzed": 0, "total_resonant": 0})
+
+    # If there's a command, extract keywords from it via LLM and add to learned
+    if command_intent:
+        try:
+            kw_prompt = f"""Extract 3-6 search keywords from this operator command for a discovery agent.
+Command: "{command_intent}"
+Return only comma-separated keywords in English, lowercase. No explanation."""
+            kw_result, _ = llm(kw_prompt)
+            for kw in kw_result.split(","):
+                kw = kw.strip().lower()
+                if kw and kw not in learned:
+                    learned.append(kw)
+                    print(f"  + Command keyword: {kw}")
+        except Exception as e:
+            print(f"  ! Keyword extraction failed: {e}")
 
     learned = self_improve(memory, learned)
 
@@ -610,6 +665,11 @@ def khashif_run():
         "stats": stats
     })
     save_memory(memory)
+
+    # === MARK COMMAND DONE ===
+    if active_command:
+        mark_command_done(active_command["id"])
+        print(f"  ✓ Command marked done: {command_intent}")
 
     # === REPORT ===
     total = sum(len(v) for v in session.values())
