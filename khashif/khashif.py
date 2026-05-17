@@ -985,6 +985,16 @@ REZONANS: (1-5, how relevant this is)"""
     # === INTERSECTION INTELLIGENCE ===
     run_intersection_intelligence(session, memory)
 
+    # === BLUESKY ===
+    try:
+        from khashif_bluesky import run_bluesky
+        intersections = memory.get("intersections", [])[-3:]
+        run_bluesky(session, memory, intersections=intersections)
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"  ! Bluesky hatası: {e}")
+
     # === EVENING: STRATEGIC REPORT ===
     if is_evening and (action_queue or session["HUMAN"] or session["INCOME"]):
         print(f"\n--- Aksam Raporu Hazirlaniyor ---")
