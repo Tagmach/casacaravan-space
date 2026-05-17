@@ -43,18 +43,16 @@ ALLOWED_ORIGINS = [
 KHASHIF_SECRET = os.environ.get("KHASHIF_SECRET", "")
 
 def is_authorized(req):
-    # Accept key from header or query param
     key = req.headers.get("X-Khashif-Key", "") or req.args.get("key", "")
-    # Hardcoded fallback + env var
     if key == "khashif2026":
         return True
     if KHASHIF_SECRET and key == KHASHIF_SECRET:
         return True
-    # User-Agent (Termux/curl)
+    # User-Agent kontrolü (Termux curl)
     ua = req.headers.get("User-Agent", "")
     if "termux" in ua.lower() or "curl" in ua.lower():
         return True
-    # Origin
+    # Origin kontrolü
     origin = req.headers.get("Origin", req.headers.get("Referer", ""))
     if any(o in origin for o in ALLOWED_ORIGINS):
         return True
@@ -96,7 +94,7 @@ def run_khashif_task():
             with open(memory_file, "r", encoding="utf-8") as f:
                 memory = json.load(f)
                 queue = memory.get("action_queue", [])
-                buckets = memory.get("buckets", {})
+                bkts = memory.get("buckets", {})
                 high_priority = [
                     q for q in queue 
                     if q.get("action") in ["COMMENT", "CONNECT", "SUBMIT", "ATTEND"]
@@ -123,9 +121,9 @@ def run_khashif_task():
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
 <p style='font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a09080;margin-bottom:24px;'>{datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
 <div style='display:flex;gap:12px;margin-bottom:24px;'>
-<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('HUMAN',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>HUMAN</div></div>
-<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('INCOME',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>INCOME</div></div>
-<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(buckets.get('KNOWLEDGE',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>KNOWLEDGE</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('HUMAN',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>HUMAN</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('INCOME',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>INCOME</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('KNOWLEDGE',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>KNOWLEDGE</div></div>
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
 </div>
 {q_section}
@@ -139,9 +137,7 @@ def run_khashif_task():
 
     except Exception as e:
         import traceback
-        tb = traceback.format_exc()
-        khashif_state["last_report"] = f"HATA: {str(e)}\n\nTraceback:\n{tb}"
-        print(f"Khashif error: {str(e)}\n{tb}")
+        khashif_state["last_report"] = f"HATA: {str(e)}\n\n{traceback.format_exc()}"
     
     finally:
         khashif_state["running"] = False
@@ -588,7 +584,4 @@ RESONANCE: (1-5, how strongly this resonates with Tagmac's identity)"""
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    print(f"Khashif API starting on port {port}")
-    print(f"KHASHIF_SECRET set: {bool(KHASHIF_SECRET)}")
-    print(f"RESEND_API_KEY set: {bool(RESEND_API_KEY)}")
     app.run(host="0.0.0.0", port=port)
