@@ -1,5 +1,5 @@
 import feedparser
-import google.generativeai as genai
+from google import genai as google_genai
 import schedule
 import time
 import json
@@ -19,8 +19,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 MEMORY_FILE = os.path.join(SCRIPT_DIR, "khashif_memory.json")
 REPORT_FILE = os.path.join(SCRIPT_DIR, "khashif_report.txt")
 
-genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel("gemini-2.5-flash-lite")
+gemini_client = google_genai.Client(api_key=GEMINI_API_KEY)
 groq_client = Groq(api_key=GROQ_API_KEY)
 cerebras_client = Cerebras(api_key=CEREBRAS_API_KEY)
 
@@ -91,113 +90,45 @@ SKIP_KEYWORDS = [
 ]
 
 # === FEEDS ===
-# Sabit liste yok — Khashif kaldığı yerden devam eder.
-# İlk çalışma için seed feed'ler — sonrası memory'den büyür.
-SEED_FEEDS = [
+PRIORITY_FEEDS = [
     "https://disquiet.com/feed/",
+    "https://acloserlisten.com/feed/",
+    "https://headphonecommute.com/feed/",
+    "http://www.errant.space/blog/feed/",
     "https://www.wildfermentation.com/feed/",
-    "https://www.permaculturenews.org/feed/",
-    "https://opensource.com/feed",
 ]
 
-
-# === SUPABASE MEMORY ===
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
-
-def _supa_headers():
-    return {
-        "apikey": SUPABASE_KEY,
-        "Authorization": f"Bearer {SUPABASE_KEY}",
-        "Content-Type": "application/json",
-        "Prefer": "return=minimal"
-    }
-
-def supa_get_memory():
-    """Supabase'den hafızayı yükle"""
-    if not SUPABASE_KEY:
-        return None
-    try:
-        req = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/khashif_memory?key=eq.main&select=value",
-            headers={**_supa_headers(), "Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=10) as r:
-            data = json.loads(r.read().decode())
-            if data:
-                return json.loads(data[0]["value"])
-    except Exception as e:
-        print(f"  ! Supabase load failed: {e}")
-    return None
-
-def supa_save_memory(memory):
-    """Hafızayı Supabase'e kaydet (upsert)"""
-    if not SUPABASE_KEY:
-        return
-    try:
-        payload = json.dumps({
-            "key": "main",
-            "value": json.dumps(memory, ensure_ascii=False),
-            "updated_at": datetime.now().isoformat()
-        }).encode("utf-8")
-        req = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/khashif_memory",
-            data=payload,
-            headers={**_supa_headers(), "Prefer": "resolution=merge-duplicates,return=minimal"},
-            method="POST"
-        )
-        urllib.request.urlopen(req, timeout=10)
-        print("  ✓ Memory saved to Supabase")
-    except Exception as e:
-        print(f"  ! Supabase save failed: {e}")
-
-def supa_get_commands():
-    """Operatör komutlarını Supabase'den al"""
-    if not SUPABASE_KEY:
-        return []
-    try:
-        req = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/khashif_commands?status=eq.pending&select=*&order=created_at.asc",
-            headers={**_supa_headers(), "Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=10) as r:
-            return json.loads(r.read().decode())
-    except Exception as e:
-        print(f"  ! Supabase commands load failed: {e}")
-        return []
-
-def supa_mark_command_done(cmd_id):
-    """Komutu işlendi olarak işaretle"""
-    if not SUPABASE_KEY:
-        return
-    try:
-        payload = json.dumps({"status": "done"}).encode("utf-8")
-        req = urllib.request.Request(
-            f"{SUPABASE_URL}/rest/v1/khashif_commands?id=eq.{cmd_id}",
-            data=payload,
-            headers=_supa_headers(),
-            method="PATCH"
-        )
-        urllib.request.urlopen(req, timeout=10)
-    except Exception as e:
-        print(f"  ! Supabase command update failed: {e}")
+EXTENDED_FEEDS = [
+    "https://healingsounds.com/feed/",
+    "https://www.handpandojo.com/feed",
+    "https://www.thewire.co.uk/rss",
+    "https://pitchfork.com/rss/reviews/experimental/",
+    "https://chaindlk.com/feed/",
+    "https://cyclicdefrost.com/feed/",
+    "https://inverted-audio.com/genre/ambient/feed/",
+    "https://stationarytravels.wordpress.com/feed/",
+    "https://www.ambient.zone/feed/",
+    "https://freesound.org/forum/rss/",
+    "https://freejazzreview.blogspot.com/feeds/posts/default",
+    "https://breathbliss.com/blog.rss",
+    "https://taichi.ca/feed",
+    "https://www.culturesforhealth.com/learn/feed/",
+    "https://www.resilience.org/feed/",
+    "https://www.shareable.net/feed/",
+    "https://www.permaculturenews.org/feed/",
+    "https://www.permaculture.co.uk/feed",
+    "https://opensource.com/feed",
+    "https://www.wired.com/feed/rss",
+]
 
 # === MEMORY ===
 def load_memory():
-    # Supabase önce dene
-    supa_mem = supa_get_memory()
-    if supa_mem:
-        print("  ✓ Memory loaded from Supabase")
-        return supa_mem
-    # Yedek: local JSON
     try:
         if os.path.exists(MEMORY_FILE):
             with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-                print("  ~ Memory loaded from local JSON")
                 return json.load(f)
     except Exception:
         pass
-    print("  ~ Fresh memory (no previous state)")
     return {
         "seen_links": [],
         "buckets": {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []},
@@ -208,20 +139,16 @@ def load_memory():
         "crawled_pages": [],
         "learned_keywords": [],
         "decisions": [],
-        "operator_commands": [],
         "stats": {"total_analyzed": 0, "total_resonant": 0},
         "sessions": []
     }
 
 def save_memory(memory):
-    # Supabase'e kaydet
-    supa_save_memory(memory)
-    # Yedek: local JSON
     try:
         with open(MEMORY_FILE, "w", encoding="utf-8") as f:
             json.dump(memory, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print(f"  ! Local memory save failed: {e}")
+        print(f"  ! Memory save failed: {e}")
 
 # === LLM LAYERS ===
 LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0}
@@ -243,7 +170,11 @@ def call_groq(prompt):
     return r.choices[0].message.content.strip()
 
 def call_gemini(prompt):
-    return gemini_model.generate_content(prompt).text.strip()
+    response = gemini_client.models.generate_content(
+        model="gemini-2.5-flash-lite",
+        contents=prompt
+    )
+    return response.text.strip()
 
 def llm(prompt, max_tokens=400):
     if LLM_STATUS["cerebras_fails"] < 3:
@@ -499,262 +430,7 @@ def self_improve(memory, learned):
             print(f"  ++ Self-learned: {kw}")
     return learned
 
-
-# === INTERSECTION INTELLIGENCE ===
-INTERSECTION_PAIRS = [
-    ("sound", "fermentation", "Ses + Fermentasyon"),
-    ("sound", "mental health", "Ses + Mental Sağlık"),
-    ("sound", "maker", "Ses + Maker"),
-    ("sound", "consciousness", "Ses + Bilinç"),
-    ("fermentation", "mental health", "Fermentasyon + Mental Sağlık"),
-    ("fermentation", "maker", "Fermentasyon + Maker"),
-    ("coffee", "fermentation", "Kahve + Fermentasyon"),
-    ("coffee", "sound", "Kahve + Ses"),
-    ("breathwork", "sound", "Nefes + Ses"),
-    ("breathwork", "mental health", "Nefes + Mental Sağlık"),
-    ("permaculture", "fermentation", "Permakültür + Fermentasyon"),
-    ("somatic", "sound", "Somatik + Ses"),
-    ("open source", "sound", "Açık Kaynak + Ses"),
-    ("maker", "mental health", "Maker + Mental Sağlık"),
-]
-
-DOMAIN_KEYWORDS = {
-    "sound": ["gong", "sound bath", "sound healing", "handpan", "drone", "resonance",
-              "ambient", "binaural", "overtone", "singing bowl", "soundscape", "sonic",
-              "frequency", "vibration", "acoustic", "sound therapy"],
-    "fermentation": ["fermentation", "kefir", "kombucha", "sourdough", "miso",
-                     "lacto", "probiotic", "starter culture", "wild fermentation",
-                     "fermented", "microbiome"],
-    "mental health": ["mental health", "anxiety", "stress", "nervous system", "vagus nerve",
-                      "meditation", "consciousness", "burnout", "somatic", "embodiment",
-                      "breathwork", "holotropic", "ecstatic", "wellbeing", "mindfulness"],
-    "maker": ["maker", "diy", "craft", "upcycle", "repair", "open source",
-              "creative commons", "workshop", "handmade", "artisan", "build"],
-    "coffee": ["coffee", "specialty coffee", "third wave", "espresso", "pour over",
-               "roast", "brew", "barista"],
-    "consciousness": ["consciousness", "psychedelic", "holotropic", "awareness",
-                      "awakening", "spiritual", "contemplative"],
-    "breathwork": ["breathwork", "breathing", "breath", "pranayama", "holotropic",
-                   "vagus", "parasympathetic"],
-    "permaculture": ["permaculture", "regenerative", "natural farming", "rewilding",
-                     "biodynamic", "agroforestry", "seed saving"],
-    "open source": ["open source", "creative commons", "commons", "cooperative",
-                    "solidarity", "mutual aid", "barter"],
-    "somatic": ["somatic", "embodiment", "body", "nervous system", "trauma", "movement"],
-}
-
-def detect_domain(text):
-    """Bir metnin hangi domainlere girdiğini tespit et"""
-    text = text.lower()
-    domains = []
-    for domain, keywords in DOMAIN_KEYWORDS.items():
-        if any(k in text for k in keywords):
-            domains.append(domain)
-    return domains
-
-def find_intersections(session_items):
-    """Session bulgularında intersection noktalarını bul"""
-    intersections = []
-
-    # Her item için domain tespiti yap
-    items_with_domains = []
-    for item in session_items:
-        text = (item.get("title", "") + " " + item.get("reason", "") +
-                " " + item.get("action_note", "")).lower()
-        domains = detect_domain(text)
-        if domains:
-            items_with_domains.append({**item, "domains": domains})
-
-    # Tanımlı intersection çiftlerini kontrol et
-    found_pairs = {}
-    for d1, d2, label in INTERSECTION_PAIRS:
-        items_d1 = [i for i in items_with_domains if d1 in i["domains"]]
-        items_d2 = [i for i in items_with_domains if d2 in i["domains"]]
-
-        if items_d1 and items_d2:
-            pair_key = f"{d1}_{d2}"
-            if pair_key not in found_pairs:
-                found_pairs[pair_key] = {
-                    "label": label,
-                    "domain1": d1,
-                    "domain2": d2,
-                    "items": items_d1[:2] + items_d2[:2],
-                    "strength": len(items_d1) + len(items_d2)
-                }
-
-    # Gücüne göre sırala
-    intersections = sorted(found_pairs.values(), key=lambda x: x["strength"], reverse=True)
-    return intersections[:5]  # En güçlü 5
-
-def intersection_to_insight(intersection, memory):
-    """LLM ile intersection'dan insight üret"""
-    items_text = ""
-    for item in intersection["items"][:4]:
-        items_text += f"- [{item.get('bucket','?')}] {item.get('title', '')} ({item.get('source', '')})\n"
-        items_text += f"  {item.get('reason', '')}\n"
-
-    prompt = f"""You are Khashif — intersection intelligence for Tagmac Cankaya.
-
-PROFILE: {PROFILE}
-
-INTERSECTION DETECTED: {intersection['label']}
-Strength: {intersection['strength']} findings
-
-Items found in both domains:
-{items_text}
-
-Su + un = ekmek mantığıyla düşün. Bu iki domain birleşince ne üretiyor?
-
-Türkçe olarak şunları yaz:
-REZONANS: Bu kesişim neden önemli? Tagmac için ne ifade ediyor? (1-2 cümle)
-FIRSAT: Somut ne yapılabilir? İçerik, bağlantı, gelir? (1-2 cümle)
-KOVA: HUMAN / INCOME / KNOWLEDGE (hangisi ve neden tek cümle)
-EYLEM: Şimdi ne yapılmalı? (tek cümle, somut)"""
-
-    result, layer = llm(prompt)
-    return result, layer
-
-def send_intersection_email(intersections, insights, layers_used):
-    """Intersection tespitlerini email ile gönder"""
-    resend_key = os.environ.get("RESEND_API_KEY", "")
-    if not resend_key:
-        print("  ! Resend key yok — email atlanamadı")
-        return
-
-    now = datetime.now().strftime("%d.%m.%Y %H:%M")
-
-    body = f"""𓆟 KHASHIF — INTERSECTION INTELLIGENCE
-{now}
-{"=" * 55}
-
-{len(intersections)} KESİŞİM NOKTASI BULUNDU
-
-"""
-    for i, (intersection, (insight, layer)) in enumerate(zip(intersections, insights), 1):
-
-        # insight'ı parse et
-        parsed = {}
-        for line in insight.strip().split("\n"):
-            if ":" in line:
-                k, v = line.split(":", 1)
-                parsed[k.strip().upper()] = v.strip()
-
-        rezonans = parsed.get("REZONANS", insight[:150])
-        firsat = parsed.get("FIRSAT", "")
-        kova = parsed.get("KOVA", "KNOWLEDGE")
-        eylem = parsed.get("EYLEM", "")
-
-        body += f"""{"=" * 55}
-{i}. {intersection['label'].upper()}
-   Güç: {intersection['strength']} bulgu | LLM: {layer}
-{"=" * 55}
-
-REZONANS:
-{rezonans}
-
-FIRSAT:
-{firsat}
-
-KOVA: {kova}
-
-EYLEM:
-{eylem}
-
-Kaynaklar:
-"""
-        for item in intersection["items"][:3]:
-            body += f"  [{item.get('bucket','?')}] {item.get('title', '')[:60]}\n"
-            body += f"  {item.get('link', '')}\n"
-            if item.get('reason'):
-                body += f"  → {item.get('reason', '')}\n"
-            body += "\n"
-
-        body += "\n"
-
-    body += f"""{"=" * 55}
-LLM katmanları: {', '.join(set(l for _, (_, l) in zip(intersections, insights)))}
-casacaravan.space | khashif
-{"=" * 55}
-"""
-
-    try:
-        payload = json.dumps({
-            "from": "khashif@casacaravan.space",
-            "to": ["tagmacc@gmail.com"],
-            "subject": f"𓆟 {len(intersections)} Kesişim — {', '.join(ix['label'] for ix in intersections[:2])} — {now}",
-            "text": body
-        }).encode("utf-8")
-
-        req = urllib.request.Request(
-            "https://api.resend.com/emails",
-            data=payload,
-            headers={
-                "Authorization": f"Bearer {resend_key}",
-                "Content-Type": "application/json"
-            },
-            method="POST"
-        )
-        with urllib.request.urlopen(req, timeout=15) as r:
-            print(f"  ✓ Intersection email gönderildi — {len(intersections)} kesişim")
-    except Exception as e:
-        print(f"  ! Email hatası: {e}")
-
-def run_intersection_intelligence(session, memory):
-    """Session bulgularında intersection intelligence çalıştır"""
-    print(f"\n--- Intersection Intelligence ---")
-
-    # TRASH hariç tüm session itemları
-    all_items = []
-    for bucket in ["HUMAN", "INCOME", "KNOWLEDGE"]:
-        all_items.extend(session.get(bucket, []))
-
-    if len(all_items) < 2:
-        print("  Yeterli bulgu yok — en az 2 item gerekli")
-        return
-
-    # Intersection bul
-    intersections = find_intersections(all_items)
-
-    if not intersections:
-        print("  Bu session'da intersection tespit edilmedi")
-        return
-
-    print(f"  {len(intersections)} intersection bulundu:")
-    for ix in intersections:
-        print(f"  ++ {ix['label']} (güç: {ix['strength']})")
-
-    # Her intersection için insight üret
-    insights = []
-    insights_with_layers = []
-    for ix in intersections[:3]:
-        insight, layer = intersection_to_insight(ix, memory)
-        insights.append(insight)
-        insights_with_layers.append((insight, layer))
-        print(f"  → [{layer}] {ix['label']}: {insight[:80]}...")
-        time.sleep(5)
-
-    # Supabase'e kaydet
-    intersection_data = []
-    for ix, (insight, layer) in zip(intersections, insights_with_layers):
-        intersection_data.append({
-            "date": datetime.now().strftime("%d.%m.%Y %H:%M"),
-            "label": ix["label"],
-            "strength": ix["strength"],
-            "insight": insight,
-            "layer": layer,
-            "items": [{"title": i.get("title"), "link": i.get("link")} for i in ix["items"]]
-        })
-
-    memory.setdefault("intersections", [])
-    memory["intersections"].extend(intersection_data)
-    memory["intersections"] = memory["intersections"][-100:]  # Son 100
-
-    # Email gönder
-    send_intersection_email(intersections[:3], insights_with_layers)
-
-    return intersections
-
-
+# === MAIN ===
 def khashif_run():
     now = datetime.now()
     is_evening = now.hour >= 20 or now.hour < 2
@@ -779,65 +455,8 @@ def khashif_run():
 
     learned = self_improve(memory, learned)
 
-    # === OPERATOR COMMANDS ===
-    commands = supa_get_commands()
-    if commands:
-        print(f"\n--- Operator Komutları ({len(commands)}) ---")
-        for cmd in commands:
-            cmd_text = cmd.get("text", "")
-            cmd_id = cmd.get("id", "")
-            print(f"  CMD: {cmd_text[:60]}")
-            # Komutu araştırmaya ekle - priority feed gibi işle
-            if cmd_text:
-                memory.setdefault("operator_commands", []).append({
-                    "text": cmd_text,
-                    "date": now.strftime("%d.%m.%Y %H:%M"),
-                    "status": "processing"
-                })
-                # LLM ile komuta özel araştırma
-                cmd_prompt = f"""You are Khashif — research agent for Tagmac Cankaya.
-
-PROFILE: {PROFILE}
-
-OPERATOR COMMAND: {cmd_text}
-
-Research this command. Find relevant information, connections, opportunities.
-Reply in Turkish with:
-BULGU: (what you found, 2-3 sentences)
-EYLEM: (what action to take)
-KAYNAK: (any relevant links or sources)
-REZONANS: (1-5, how relevant this is)"""
-                result, layer = llm(cmd_prompt)
-                p = parse(result)
-                if p.get("REZONANS", "0") not in ["0", "1"]:
-                    action_queue.append({
-                        "date": now.strftime("%d.%m.%Y %H:%M"),
-                        "title": f"[CMD] {cmd_text[:50]}",
-                        "link": "",
-                        "source": "operator_command",
-                        "score": p.get("REZONANS", "3"),
-                        "reason": p.get("BULGU", ""),
-                        "action": "RESEARCH",
-                        "action_note": p.get("EYLEM", "") + " " + p.get("KAYNAK", ""),
-                        "bucket": "KNOWLEDGE",
-                        "layer": layer,
-                        "status": "pending",
-                        "keywords": []
-                    })
-                supa_mark_command_done(cmd_id)
-
-    # Feed listesi: memory'deki dynamic_feeds önce (kaldığı yer),
-    # sonra seed feeds (henüz dynamic'e girmemişse)
-    seed_set = set(SEED_FEEDS)
-    all_feeds = list(dict.fromkeys(
-        dynamic_feeds +
-        [f for f in SEED_FEEDS if f not in dynamic_feeds]
-    ))
-    # İlk çalışmada dynamic_feeds boşsa seed'den başla
-    if not all_feeds:
-        all_feeds = list(SEED_FEEDS)
-
-    print(f"  Feed listesi: {len(dynamic_feeds)} crawled + {len([f for f in SEED_FEEDS if f not in dynamic_feeds])} seed = {len(all_feeds)} toplam")
+    all_feeds = list(dict.fromkeys(PRIORITY_FEEDS + EXTENDED_FEEDS + dynamic_feeds))
+    priority_set = set(PRIORITY_FEEDS)
     for f in all_feeds:
         if f not in visited:
             visited.append(f)
@@ -853,14 +472,14 @@ REZONANS: (1-5, how relevant this is)"""
     # === PHASE 1: READ ===
     print(f"\n--- Gezme ---")
     for feed_url in all_feeds:
-        is_seed = feed_url in seed_set
+        is_p = feed_url in priority_set
         try:
             feed = feedparser.parse(feed_url)
             title_f = feed.feed.get("title", feed_url)[:38]
             new = [e for e in feed.entries[:3] if e.get("link", "") not in seen]
             if not new:
                 continue
-            print(f"\n{'[S]' if is_seed else '[C]'} {title_f} ({len(new)} new)")
+            print(f"\n{'[P]' if is_p else '[-]'} {title_f} ({len(new)} new)")
             for entry in new:
                 title = entry.get("title", "").strip()
                 link = entry.get("link", "").strip()
@@ -872,7 +491,7 @@ REZONANS: (1-5, how relevant this is)"""
                     print(f"  . {title[:55]}")
                     continue
                 print(f"  o {title[:55]}")
-                raw, layer = analyze(title, content, title_f, is_seed)
+                raw, layer = analyze(title, content, title_f, is_p)
                 layers[layer] += 1
                 llm_calls += 1
                 stats["total_analyzed"] += 1
@@ -977,23 +596,10 @@ REZONANS: (1-5, how relevant this is)"""
         for b in actions:
             print(f"  [{b['action']}] {b['title']}\n  {b['link']}\n  {b['action_note']}\n")
 
-    print(f"\n TUM RSS FEED LERİ ({len(all_feeds)}):")
-    for f in all_feeds:
-        tag = "[S]" if f in seed_set else "[C]"
+    print(f"\n RSS ({len(visited)}):")
+    for f in visited:
+        tag = "[P]" if f in PRIORITY_FEEDS else "[D]" if f in dynamic_feeds else "[-]"
         print(f"  {tag} {f}")
-
-    # === INTERSECTION INTELLIGENCE ===
-    run_intersection_intelligence(session, memory)
-
-    # === BLUESKY ===
-    try:
-        from khashif_bluesky import run_bluesky
-        intersections = memory.get("intersections", [])[-3:]
-        run_bluesky(session, memory, intersections=intersections)
-    except ImportError:
-        pass
-    except Exception as e:
-        print(f"  ! Bluesky hatası: {e}")
 
     # === EVENING: STRATEGIC REPORT ===
     if is_evening and (action_queue or session["HUMAN"] or session["INCOME"]):

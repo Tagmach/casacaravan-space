@@ -1,6 +1,6 @@
 flask
 feedparser
-google-generativeai
+google-genai
 groq
 cerebras-cloud-sdk
 schedule
