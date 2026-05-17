@@ -521,7 +521,230 @@ def self_improve(memory, learned):
             print(f"  ++ Self-learned: {kw}")
     return learned
 
-# === MAIN ===
+
+# === INTERSECTION INTELLIGENCE ===
+INTERSECTION_PAIRS = [
+    ("sound", "fermentation", "Ses + Fermentasyon"),
+    ("sound", "mental health", "Ses + Mental Sağlık"),
+    ("sound", "maker", "Ses + Maker"),
+    ("sound", "consciousness", "Ses + Bilinç"),
+    ("fermentation", "mental health", "Fermentasyon + Mental Sağlık"),
+    ("fermentation", "maker", "Fermentasyon + Maker"),
+    ("coffee", "fermentation", "Kahve + Fermentasyon"),
+    ("coffee", "sound", "Kahve + Ses"),
+    ("breathwork", "sound", "Nefes + Ses"),
+    ("breathwork", "mental health", "Nefes + Mental Sağlık"),
+    ("permaculture", "fermentation", "Permakültür + Fermentasyon"),
+    ("somatic", "sound", "Somatik + Ses"),
+    ("open source", "sound", "Açık Kaynak + Ses"),
+    ("maker", "mental health", "Maker + Mental Sağlık"),
+]
+
+DOMAIN_KEYWORDS = {
+    "sound": ["gong", "sound bath", "sound healing", "handpan", "drone", "resonance",
+              "ambient", "binaural", "overtone", "singing bowl", "soundscape", "sonic",
+              "frequency", "vibration", "acoustic", "sound therapy"],
+    "fermentation": ["fermentation", "kefir", "kombucha", "sourdough", "miso",
+                     "lacto", "probiotic", "starter culture", "wild fermentation",
+                     "fermented", "microbiome"],
+    "mental health": ["mental health", "anxiety", "stress", "nervous system", "vagus nerve",
+                      "meditation", "consciousness", "burnout", "somatic", "embodiment",
+                      "breathwork", "holotropic", "ecstatic", "wellbeing", "mindfulness"],
+    "maker": ["maker", "diy", "craft", "upcycle", "repair", "open source",
+              "creative commons", "workshop", "handmade", "artisan", "build"],
+    "coffee": ["coffee", "specialty coffee", "third wave", "espresso", "pour over",
+               "roast", "brew", "barista"],
+    "consciousness": ["consciousness", "psychedelic", "holotropic", "awareness",
+                      "awakening", "spiritual", "contemplative"],
+    "breathwork": ["breathwork", "breathing", "breath", "pranayama", "holotropic",
+                   "vagus", "parasympathetic"],
+    "permaculture": ["permaculture", "regenerative", "natural farming", "rewilding",
+                     "biodynamic", "agroforestry", "seed saving"],
+    "open source": ["open source", "creative commons", "commons", "cooperative",
+                    "solidarity", "mutual aid", "barter"],
+    "somatic": ["somatic", "embodiment", "body", "nervous system", "trauma", "movement"],
+}
+
+def detect_domain(text):
+    """Bir metnin hangi domainlere girdiğini tespit et"""
+    text = text.lower()
+    domains = []
+    for domain, keywords in DOMAIN_KEYWORDS.items():
+        if any(k in text for k in keywords):
+            domains.append(domain)
+    return domains
+
+def find_intersections(session_items):
+    """Session bulgularında intersection noktalarını bul"""
+    intersections = []
+
+    # Her item için domain tespiti yap
+    items_with_domains = []
+    for item in session_items:
+        text = (item.get("title", "") + " " + item.get("reason", "") +
+                " " + item.get("action_note", "")).lower()
+        domains = detect_domain(text)
+        if domains:
+            items_with_domains.append({**item, "domains": domains})
+
+    # Tanımlı intersection çiftlerini kontrol et
+    found_pairs = {}
+    for d1, d2, label in INTERSECTION_PAIRS:
+        items_d1 = [i for i in items_with_domains if d1 in i["domains"]]
+        items_d2 = [i for i in items_with_domains if d2 in i["domains"]]
+
+        if items_d1 and items_d2:
+            pair_key = f"{d1}_{d2}"
+            if pair_key not in found_pairs:
+                found_pairs[pair_key] = {
+                    "label": label,
+                    "domain1": d1,
+                    "domain2": d2,
+                    "items": items_d1[:2] + items_d2[:2],
+                    "strength": len(items_d1) + len(items_d2)
+                }
+
+    # Gücüne göre sırala
+    intersections = sorted(found_pairs.values(), key=lambda x: x["strength"], reverse=True)
+    return intersections[:5]  # En güçlü 5
+
+def intersection_to_insight(intersection, memory):
+    """LLM ile intersection'dan insight üret"""
+    items_text = ""
+    for item in intersection["items"][:4]:
+        items_text += f"- {item.get('title', '')} ({item.get('source', '')})\n"
+
+    prompt = f"""You are Khashif — intersection intelligence for Tagmac Cankaya.
+
+PROFILE: {PROFILE}
+
+INTERSECTION DETECTED: {intersection['label']}
+Items found in both domains:
+{items_text}
+
+Su + un = ekmek mantığıyla düşün.
+Bu iki domain'in kesişimi ne üretiyor?
+Bu Tagmac için ne anlama geliyor?
+Somut bir fırsat, içerik veya bağlantı önerisi nedir?
+
+Reply in Turkish, 3 sentences max. Be specific."""
+
+    result, layer = llm(prompt)
+    return result, layer
+
+def send_intersection_email(intersections, insights):
+    """Intersection tespitlerini email ile gönder"""
+    resend_key = os.environ.get("RESEND_API_KEY", "")
+    if not resend_key:
+        print("  ! Resend key yok — email atlanamadı")
+        return
+
+    now = datetime.now().strftime("%d.%m.%Y %H:%M")
+
+    body = f"""KHASHIF — INTERSECTION INTELLIGENCE
+{now}
+
+{"=" * 50}
+{len(intersections)} KESİŞİM NOKTASI BULUNDU
+{"=" * 50}
+
+"""
+    for i, (intersection, insight) in enumerate(zip(intersections, insights), 1):
+        body += f"""
+{i}. {intersection['label'].upper()}
+   Güç: {intersection['strength']} bulgu
+   
+   INSIGHT:
+   {insight}
+   
+   Kaynaklar:
+"""
+        for item in intersection["items"][:3]:
+            body += f"   — {item.get('title', '')[:60]}\n"
+            body += f"     {item.get('link', '')}\n"
+        body += "\n" + "—" * 40 + "\n"
+
+    body += f"""
+{"=" * 50}
+casacaravan.space | khashif
+{"=" * 50}
+"""
+
+    try:
+        payload = json.dumps({
+            "from": "khashif@casacaravan.space",
+            "to": ["tagmacc@gmail.com"],
+            "subject": f"𓆟 Khashif — {len(intersections)} Kesişim Noktası — {now}",
+            "text": body
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            "https://api.resend.com/emails",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {resend_key}",
+                "Content-Type": "application/json"
+            },
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            print(f"  ✓ Intersection email gönderildi — {len(intersections)} kesişim")
+    except Exception as e:
+        print(f"  ! Email hatası: {e}")
+
+def run_intersection_intelligence(session, memory):
+    """Session bulgularında intersection intelligence çalıştır"""
+    print(f"\n--- Intersection Intelligence ---")
+
+    # TRASH hariç tüm session itemları
+    all_items = []
+    for bucket in ["HUMAN", "INCOME", "KNOWLEDGE"]:
+        all_items.extend(session.get(bucket, []))
+
+    if len(all_items) < 2:
+        print("  Yeterli bulgu yok — en az 2 item gerekli")
+        return
+
+    # Intersection bul
+    intersections = find_intersections(all_items)
+
+    if not intersections:
+        print("  Bu session'da intersection tespit edilmedi")
+        return
+
+    print(f"  {len(intersections)} intersection bulundu:")
+    for ix in intersections:
+        print(f"  ++ {ix['label']} (güç: {ix['strength']})")
+
+    # Her intersection için insight üret
+    insights = []
+    for ix in intersections[:3]:  # Max 3 — LLM tasarrufu
+        insight, layer = intersection_to_insight(ix, memory)
+        insights.append(insight)
+        print(f"  → [{layer}] {ix['label']}: {insight[:80]}...")
+        time.sleep(5)
+
+    # Supabase'e kaydet
+    intersection_data = []
+    for ix, insight in zip(intersections, insights):
+        intersection_data.append({
+            "date": datetime.now().strftime("%d.%m.%Y %H:%M"),
+            "label": ix["label"],
+            "strength": ix["strength"],
+            "insight": insight,
+            "items": [{"title": i.get("title"), "link": i.get("link")} for i in ix["items"]]
+        })
+
+    memory.setdefault("intersections", [])
+    memory["intersections"].extend(intersection_data)
+    memory["intersections"] = memory["intersections"][-100:]  # Son 100
+
+    # Email gönder
+    send_intersection_email(intersections[:3], insights)
+
+    return intersections
+
+
 def khashif_run():
     now = datetime.now()
     is_evening = now.hour >= 20 or now.hour < 2
@@ -738,6 +961,9 @@ REZONANS: (1-5, how relevant this is)"""
     for f in visited:
         tag = "[P]" if f in PRIORITY_FEEDS else "[D]" if f in dynamic_feeds else "[-]"
         print(f"  {tag} {f}")
+
+    # === INTERSECTION INTELLIGENCE ===
+    run_intersection_intelligence(session, memory)
 
     # === EVENING: STRATEGIC REPORT ===
     if is_evening and (action_queue or session["HUMAN"] or session["INCOME"]):
