@@ -43,10 +43,8 @@ ALLOWED_ORIGINS = [
 KHASHIF_SECRET = os.environ.get("KHASHIF_SECRET", "")
 
 def is_authorized(req):
-    # Secret key kontrolü — header veya query param
-    key = req.headers.get("X-Khashif-Key", "") or req.args.get("key", "")
-    if key == "khashif2026":
-        return True
+    # Secret key kontrolü
+    key = req.headers.get("X-Khashif-Key", "")
     if KHASHIF_SECRET and key == KHASHIF_SECRET:
         return True
     # User-Agent kontrolü (Termux curl)
@@ -77,10 +75,10 @@ def run_khashif_task():
     khashif_state["last_run"] = datetime.now().isoformat()
     
     try:
+        import traceback
         import khashif
-        # Render timeout için: priority feeds only, hızlı mod
         import os
-        # Seed feeds ile başlar, memory'deki crawled feeds'den devam eder
+        khashif_state["last_report"] = "Khashif basliyor..."
         khashif.khashif_run()
         
         # Raporu oku
@@ -137,7 +135,8 @@ def run_khashif_task():
                 send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
 
     except Exception as e:
-        khashif_state["last_report"] = f"Hata: {str(e)}"
+        err = traceback.format_exc()
+        khashif_state["last_report"] = f"HATA: {str(e)}\n\n{err}"
     
     finally:
         khashif_state["running"] = False
