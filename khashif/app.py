@@ -43,15 +43,18 @@ ALLOWED_ORIGINS = [
 KHASHIF_SECRET = os.environ.get("KHASHIF_SECRET", "")
 
 def is_authorized(req):
-    # Secret key kontrolü
-    key = req.headers.get("X-Khashif-Key", "")
+    # Accept key from header or query param
+    key = req.headers.get("X-Khashif-Key", "") or req.args.get("key", "")
+    # Hardcoded fallback + env var
+    if key == "khashif2026":
+        return True
     if KHASHIF_SECRET and key == KHASHIF_SECRET:
         return True
-    # User-Agent kontrolü (Termux curl)
+    # User-Agent (Termux/curl)
     ua = req.headers.get("User-Agent", "")
     if "termux" in ua.lower() or "curl" in ua.lower():
         return True
-    # Origin kontrolü
+    # Origin
     origin = req.headers.get("Origin", req.headers.get("Referer", ""))
     if any(o in origin for o in ALLOWED_ORIGINS):
         return True
@@ -75,10 +78,10 @@ def run_khashif_task():
     khashif_state["last_run"] = datetime.now().isoformat()
     
     try:
-        import traceback
         import khashif
+        # Render timeout için: priority feeds only, hızlı mod
         import os
-        khashif_state["last_report"] = "Khashif basliyor..."
+        # Seed feeds ile başlar, memory'deki crawled feeds'den devam eder
         khashif.khashif_run()
         
         # Raporu oku
@@ -135,8 +138,10 @@ def run_khashif_task():
                 send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
 
     except Exception as e:
-        err = traceback.format_exc()
-        khashif_state["last_report"] = f"HATA: {str(e)}\n\n{err}"
+        import traceback
+        tb = traceback.format_exc()
+        khashif_state["last_report"] = f"HATA: {str(e)}\n\nTraceback:\n{tb}"
+        print(f"Khashif error: {str(e)}\n{tb}")
     
     finally:
         khashif_state["running"] = False
@@ -583,4 +588,7 @@ RESONANCE: (1-5, how strongly this resonates with Tagmac's identity)"""
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
+    print(f"Khashif API starting on port {port}")
+    print(f"KHASHIF_SECRET set: {bool(KHASHIF_SECRET)}")
+    print(f"RESEND_API_KEY set: {bool(RESEND_API_KEY)}")
     app.run(host="0.0.0.0", port=port)
