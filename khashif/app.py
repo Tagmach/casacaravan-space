@@ -48,11 +48,9 @@ def is_authorized(req):
         return True
     if KHASHIF_SECRET and key == KHASHIF_SECRET:
         return True
-    # User-Agent kontrolü (Termux curl)
     ua = req.headers.get("User-Agent", "")
     if "termux" in ua.lower() or "curl" in ua.lower():
         return True
-    # Origin kontrolü
     origin = req.headers.get("Origin", req.headers.get("Referer", ""))
     if any(o in origin for o in ALLOWED_ORIGINS):
         return True
@@ -137,7 +135,10 @@ def run_khashif_task():
 
     except Exception as e:
         import traceback
-        khashif_state["last_report"] = f"HATA: {str(e)}\n\n{traceback.format_exc()}"
+        err = traceback.format_exc()
+        khashif_state["last_report"] = f"HATA: {str(e)}\n\n{err}"
+        print(f"Khashif error: {str(e)}")
+        print(err)
     
     finally:
         khashif_state["running"] = False
@@ -256,7 +257,7 @@ def decide():
     })
 
 @app.route("/buckets", methods=["GET"])
-def buckets():
+def get_buckets():
     """Dört kovanın özeti"""
     if not is_authorized(request):
         return jsonify({"error": "unauthorized"}), 403
