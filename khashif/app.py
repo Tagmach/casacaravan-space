@@ -78,7 +78,7 @@ def run_khashif_task():
         import khashif
         # Render timeout için: priority feeds only, hızlı mod
         import os
-        khashif.EXTENDED_FEEDS = []  # Render'da sadece priority feeds
+        # Seed feeds ile başlar, memory'deki crawled feeds'den devam eder
         khashif.khashif_run()
         
         # Raporu oku
@@ -578,6 +578,29 @@ RESONANCE: (1-5, how strongly this resonates with Tagmac's identity)"""
             })
 
     return jsonify({"results": results, "count": len(results)})
+
+
+@app.route("/buckets", methods=["GET"])
+def buckets():
+    """Dört kova — HUMAN, INCOME, KNOWLEDGE, TRASH"""
+    if not is_authorized(request):
+        return jsonify({"error": "unauthorized"}), 403
+
+    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+    try:
+        with open(memory_file, "r", encoding="utf-8") as f:
+            memory = json.load(f)
+        b = memory.get("buckets", {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []})
+        return jsonify({
+            "HUMAN": b.get("HUMAN", [])[-10:],
+            "INCOME": b.get("INCOME", [])[-10:],
+            "KNOWLEDGE": b.get("KNOWLEDGE", [])[-10:],
+            "TRASH_count": len(b.get("TRASH", [])),
+            "action_queue": memory.get("action_queue", [])[-10:],
+            "stats": memory.get("stats", {})
+        })
+    except Exception as e:
+        return jsonify({"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH_count": 0, "error": str(e)})
 
 
 if __name__ == "__main__":
