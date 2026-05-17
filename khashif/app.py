@@ -276,7 +276,7 @@ def buckets():
             "stats": memory.get("stats", {})
         })
     except:
-        return jsonify({"HUMAN":0,"INCOME":0,"KNOWLEDGE":0,"TRASH":0,"action_queue":0,"learned_keywords":0,"dynamic_feeds":0,"stats":{}})
+        return jsonify({"error": "Hafıza dosyası bulunamadı"}), 404
 
 @app.route("/status", methods=["GET"])
 def status():
@@ -291,7 +291,7 @@ def status():
 
 @app.route("/command", methods=["POST"])
 def command():
-    """Serbest komut al — Türkçe/İngilizce, LLM yorumlar"""
+    """Serbest komut al — Supabase khashif_commands tablosuna yaz"""
     if not is_authorized(request):
         return jsonify({"error": "unauthorized"}), 403
 
@@ -300,33 +300,32 @@ def command():
     if not text:
         return jsonify({"error": "text gerekli"}), 400
 
-    # Komutu hafızaya ekle — Khashif sonraki çalışmada işler
-    memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
+    SUPA_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+    SUPA_KEY = os.environ.get("SUPABASE_KEY", "")
+
     try:
-        try:
-            with open(memory_file, "r", encoding="utf-8") as f:
-                memory = json.load(f)
-        except:
-            memory = {}
+        # Supabase'e yaz
+        if SUPA_KEY:
+            payload = json.dumps({"text": text, "status": "pending"}).encode("utf-8")
+            req = urllib.request.Request(
+                f"{SUPA_URL}/rest/v1/khashif_commands",
+                data=payload,
+                headers={
+                    "apikey": SUPA_KEY,
+                    "Authorization": f"Bearer {SUPA_KEY}",
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal"
+                }
+            )
+            urllib.request.urlopen(req, timeout=10)
 
-        cmd = {
-            "text": text,
-            "date": datetime.now().isoformat(),
-            "status": "pending"
-        }
-        memory.setdefault("operator_commands", []).append(cmd)
-
-        with open(memory_file, "w", encoding="utf-8") as f:
-            json.dump(memory, f, ensure_ascii=False, indent=2)
-
-        # Khashif'i hemen tetikle
+        # Khashif'i tetikle
+        triggered = False
         if not khashif_state["running"]:
             thread = threading.Thread(target=run_khashif_task)
             thread.daemon = True
             thread.start()
             triggered = True
-        else:
-            triggered = False
 
         return jsonify({
             "status": "queued",

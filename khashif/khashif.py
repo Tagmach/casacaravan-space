@@ -122,14 +122,104 @@ EXTENDED_FEEDS = [
     "https://www.wired.com/feed/rss",
 ]
 
+
+# === SUPABASE MEMORY ===
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+
+def _supa_headers():
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+    }
+
+def supa_get_memory():
+    """Supabase'den hafızayı yükle"""
+    if not SUPABASE_KEY:
+        return None
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_memory?key=eq.main&select=value",
+            headers={**_supa_headers(), "Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as r:
+            data = json.loads(r.read().decode())
+            if data:
+                return json.loads(data[0]["value"])
+    except Exception as e:
+        print(f"  ! Supabase load failed: {e}")
+    return None
+
+def supa_save_memory(memory):
+    """Hafızayı Supabase'e kaydet (upsert)"""
+    if not SUPABASE_KEY:
+        return
+    try:
+        payload = json.dumps({
+            "key": "main",
+            "value": json.dumps(memory, ensure_ascii=False),
+            "updated_at": datetime.now().isoformat()
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_memory",
+            data=payload,
+            headers={**_supa_headers(), "Prefer": "resolution=merge-duplicates,return=minimal"},
+            method="POST"
+        )
+        urllib.request.urlopen(req, timeout=10)
+        print("  ✓ Memory saved to Supabase")
+    except Exception as e:
+        print(f"  ! Supabase save failed: {e}")
+
+def supa_get_commands():
+    """Operatör komutlarını Supabase'den al"""
+    if not SUPABASE_KEY:
+        return []
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_commands?status=eq.pending&select=*&order=created_at.asc",
+            headers={**_supa_headers(), "Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as r:
+            return json.loads(r.read().decode())
+    except Exception as e:
+        print(f"  ! Supabase commands load failed: {e}")
+        return []
+
+def supa_mark_command_done(cmd_id):
+    """Komutu işlendi olarak işaretle"""
+    if not SUPABASE_KEY:
+        return
+    try:
+        payload = json.dumps({"status": "done"}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_commands?id=eq.{cmd_id}",
+            data=payload,
+            headers=_supa_headers(),
+            method="PATCH"
+        )
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"  ! Supabase command update failed: {e}")
+
 # === MEMORY ===
 def load_memory():
+    # Supabase önce dene
+    supa_mem = supa_get_memory()
+    if supa_mem:
+        print("  ✓ Memory loaded from Supabase")
+        return supa_mem
+    # Yedek: local JSON
     try:
         if os.path.exists(MEMORY_FILE):
             with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                print("  ~ Memory loaded from local JSON")
                 return json.load(f)
     except Exception:
         pass
+    print("  ~ Fresh memory (no previous state)")
     return {
         "seen_links": [],
         "buckets": {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []},
@@ -140,16 +230,20 @@ def load_memory():
         "crawled_pages": [],
         "learned_keywords": [],
         "decisions": [],
+        "operator_commands": [],
         "stats": {"total_analyzed": 0, "total_resonant": 0},
         "sessions": []
     }
 
 def save_memory(memory):
+    # Supabase'e kaydet
+    supa_save_memory(memory)
+    # Yedek: local JSON
     try:
         with open(MEMORY_FILE, "w", encoding="utf-8") as f:
             json.dump(memory, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        print(f"  ! Memory save failed: {e}")
+        print(f"  ! Local memory save failed: {e}")
 
 # === LLM LAYERS ===
 LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0}
@@ -451,6 +545,53 @@ def khashif_run():
     stats = memory.get("stats", {"total_analyzed": 0, "total_resonant": 0})
 
     learned = self_improve(memory, learned)
+
+    # === OPERATOR COMMANDS ===
+    commands = supa_get_commands()
+    if commands:
+        print(f"\n--- Operator Komutları ({len(commands)}) ---")
+        for cmd in commands:
+            cmd_text = cmd.get("text", "")
+            cmd_id = cmd.get("id", "")
+            print(f"  CMD: {cmd_text[:60]}")
+            # Komutu araştırmaya ekle - priority feed gibi işle
+            if cmd_text:
+                memory.setdefault("operator_commands", []).append({
+                    "text": cmd_text,
+                    "date": now.strftime("%d.%m.%Y %H:%M"),
+                    "status": "processing"
+                })
+                # LLM ile komuta özel araştırma
+                cmd_prompt = f"""You are Khashif — research agent for Tagmac Cankaya.
+
+PROFILE: {PROFILE}
+
+OPERATOR COMMAND: {cmd_text}
+
+Research this command. Find relevant information, connections, opportunities.
+Reply in Turkish with:
+BULGU: (what you found, 2-3 sentences)
+EYLEM: (what action to take)
+KAYNAK: (any relevant links or sources)
+REZONANS: (1-5, how relevant this is)"""
+                result, layer = llm(cmd_prompt)
+                p = parse(result)
+                if p.get("REZONANS", "0") not in ["0", "1"]:
+                    action_queue.append({
+                        "date": now.strftime("%d.%m.%Y %H:%M"),
+                        "title": f"[CMD] {cmd_text[:50]}",
+                        "link": "",
+                        "source": "operator_command",
+                        "score": p.get("REZONANS", "3"),
+                        "reason": p.get("BULGU", ""),
+                        "action": "RESEARCH",
+                        "action_note": p.get("EYLEM", "") + " " + p.get("KAYNAK", ""),
+                        "bucket": "KNOWLEDGE",
+                        "layer": layer,
+                        "status": "pending",
+                        "keywords": []
+                    })
+                supa_mark_command_done(cmd_id)
 
     all_feeds = list(dict.fromkeys(PRIORITY_FEEDS + EXTENDED_FEEDS + dynamic_feeds))
     priority_set = set(PRIORITY_FEEDS)
