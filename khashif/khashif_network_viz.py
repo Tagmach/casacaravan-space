@@ -7,11 +7,15 @@ Memory'deki rezonans bulguları ve RSS kaynaklarını network HTML'e yazar.
 import json
 import os
 import re
+import urllib.request
 from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 NETWORK_FILE = os.path.join(SCRIPT_DIR, "khashif_network.html")
 MEMORY_FILE = os.path.join(SCRIPT_DIR, "khashif_memory.json")
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 
 SEED_FEEDS = [
     "https://disquiet.com/feed/",
@@ -21,15 +25,65 @@ SEED_FEEDS = [
 ]
 
 
+def supa_save_network(data):
+    """Network verisini Supabase'e kaydet"""
+    if not SUPABASE_KEY:
+        return
+    try:
+        payload = json.dumps({
+            "key": "network",
+            "value": json.dumps(data, ensure_ascii=False),
+            "updated_at": datetime.now().isoformat()
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_memory",
+            data=payload,
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates,return=minimal"
+            },
+            method="POST"
+        )
+        urllib.request.urlopen(req, timeout=10)
+        print("  ✓ Network verisi Supabase'e kaydedildi")
+    except Exception as e:
+        print(f"  ! Supabase network save failed: {e}")
+
+
 def domain_of(url):
     m = re.search(r'https?://(?:www\.)?([^/]+)', url)
     return m.group(1) if m else url[:30]
 
 
+def supa_load_memory():
+    """Memory'yi Supabase'den yükle."""
+    if not SUPABASE_KEY:
+        return None
+    try:
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_memory?key=eq.main&select=value",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            rows = json.loads(r.read().decode())
+        if rows:
+            return json.loads(rows[0]["value"])
+    except Exception as e:
+        print(f"  ! Supabase memory load failed: {e}")
+    return None
+
+
 def generate(memory=None):
     """Network HTML'i memory'deki verilerle güncelle"""
 
-    # Memory yükle
+    # Memory yükle — önce Supabase, sonra local fallback
+    if memory is None:
+        memory = supa_load_memory()
     if memory is None:
         try:
             if os.path.exists(MEMORY_FILE):
@@ -235,6 +289,22 @@ def generate(memory=None):
         f.write(html)
 
     print(f"  ✓ Network güncellendi — {len(nodes)} node, {len(edges)} edge, {intersection_count} kesişim")
+
+    # Supabase'e network verisini kaydet — dinamik okuma için
+    supa_save_network({
+        "nodes": nodes,
+        "edges": edges,
+        "stats": {
+            "node_count": len(nodes),
+            "edge_count": len(edges),
+            "resonant_count": total_resonant,
+            "intersection_count": intersection_count,
+            "feed_count": total_feeds,
+            "keyword_count": keyword_count,
+        },
+        "keywords": learned[-20:],
+        "updated": now
+    })
 
 
 if __name__ == "__main__":
