@@ -736,7 +736,8 @@ function openLogin() {
 
 async function apiGet(path) {
   const sep = path.includes('?') ? '&' : '?';
-  const r = await fetch(KHASHIF_URL + path + sep + 'key=' + KHASHIF_KEY, {
+  const url = KHASHIF_URL + path + sep + 'key=' + KHASHIF_KEY;
+  const r = await fetch(url, {
     headers: {'X-Khashif-Key': KHASHIF_KEY}
   });
   return r.json();
