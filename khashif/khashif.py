@@ -985,12 +985,43 @@ schedule.every().day.at("08:00").do(khashif_run)
 schedule.every().day.at("14:00").do(khashif_run)
 schedule.every().day.at("20:00").do(khashif_run)
 
+def test_email():
+    """Resend email entegrasyonunu test et"""
+    resend_key = os.environ.get("RESEND_API_KEY", "")
+    if not resend_key:
+        print("! RESEND_API_KEY yok")
+        return
+
+    try:
+        payload = json.dumps({
+            "from": "khashif@casacaravan.space",
+            "to": ["tagmacc@gmail.com"],
+            "subject": "𓆟 Khashif — Test Email",
+            "text": "Khashif email sistemi çalışıyor.\ncasacaravan.space"
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            "https://api.resend.com/emails",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {resend_key}",
+                "Content-Type": "application/json"
+            },
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=15) as r:
+            result = json.loads(r.read().decode())
+            print(f"✓ Test email gönderildi: {result}")
+    except Exception as e:
+        print(f"! Test email hatası: {e}")
+
 if __name__ == "__main__":
     print("Khashif — Tek Ajan, Tam Dongu.")
     print(f"LLM: Cerebras -> Groq -> Gemini")
     print(f"Hafiza: {MEMORY_FILE}")
     print(f"Rapor: {REPORT_FILE}")
     print(f"Kovalar: HUMAN | INCOME | KNOWLEDGE | TRASH\n")
+    test_email()
     khashif_run()
     while True:
         schedule.run_pending()
