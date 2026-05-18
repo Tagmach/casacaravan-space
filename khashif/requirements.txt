@@ -1,8 +1,0 @@
-flask
-feedparser
-google-genai
-groq
-cerebras-cloud-sdk
-schedule
-requests
-flask-cors
