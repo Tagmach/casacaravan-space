@@ -622,6 +622,7 @@ nav {
     <button class="dash-tab" data-tab="kesisim" onclick="showTab('kesisim')">Kesişimler<span class="tab-count" id="tc-kesisim"></span></button>
     <button class="dash-tab" data-tab="sorular" onclick="showTab('sorular')">Sorular<span class="tab-count" id="tc-sorular"></span></button>
     <button class="dash-tab" data-tab="derin" onclick="showTab('derin')">Derin dalış<span class="tab-count" id="tc-derin"></span></button>
+    <button class="dash-tab" data-tab="yayin" onclick="showTab('yayin')">Yayın<span class="tab-count" id="tc-yayin"></span></button>
     <button class="dash-tab" data-tab="ag" onclick="showTab('ag')">Ağ</button>
     <button class="dash-tab" data-tab="muzik" onclick="showTab('muzik')">Müzik</button>
   </div>
@@ -682,6 +683,12 @@ nav {
   <div class="dash-panel" id="panel-derin">
     <div class="dash-section-title">Derin dalış — Claude'a taşınacak fırsatlar</div>
     <div id="d-deep"><div class="dash-status">Loading...</div></div>
+  </div>
+
+  <!-- === YAYIN === -->
+  <div class="dash-panel" id="panel-yayin">
+    <div class="dash-section-title">Yayın — Khashif'in önerdiği dışa dönük sinyaller</div>
+    <div id="d-broadcast"><div class="dash-status">Loading...</div></div>
   </div>
 
   <!-- === AĞ === -->
@@ -796,10 +803,12 @@ async function loadDash() {
     const tcX = document.getElementById('tc-kesisim'); if(tcX) tcX.textContent = ' ·'+(buckets.learned_intersections ?? (buckets.intersections||[]).length);
     const tcS = document.getElementById('tc-sorular'); if(tcS) tcS.textContent = ' ·'+(questions.count ?? 0);
     const tcD = document.getElementById('tc-derin'); if(tcD) tcD.textContent = ' ·'+((buckets.deep_queue||[]).length);
+    const tcY = document.getElementById('tc-yayin'); if(tcY) tcY.textContent = ' ·'+((buckets.broadcast_queue||[]).length);
 
     renderBuckets(buckets);
     renderIntersections(buckets.intersections || []);
     renderDeep(buckets.deep_queue || []);
+    renderBroadcast(buckets.broadcast_queue || []);
     renderNetwork(buckets);
 
     const lr = status.last_run ? new Date(status.last_run).toLocaleString('tr-TR') : 'never';
@@ -938,6 +947,36 @@ function copyBriefing(i,btn){
   navigator.clipboard.writeText(text).then(()=>{
     const old = btn.textContent;
     btn.textContent = '✓ Kopyalandı — bir Claude oturumuna yapıştır';
+    setTimeout(()=>{ btn.textContent = old; }, 2500);
+  }).catch(()=>{ btn.textContent = 'Kopyalanamadı — elle seç'; });
+}
+
+// Broadcast drafts — Phase 5 outward signals; the operator approves & posts.
+let BROADCAST_DRAFTS = [];
+function renderBroadcast(list){
+  const el = document.getElementById('d-broadcast');
+  if(!el) return;
+  BROADCAST_DRAFTS = list.map(b=>b.draft||'');
+  if(!list.length){
+    el.innerHTML = '<div class="dash-status">Henüz yayın taslağı yok. Khashif rezonans hissettiği bir yer için additive bir sinyal hazırlayınca buraya düşer.</div>';
+    return;
+  }
+  el.innerHTML = list.slice().reverse().map((b,ri)=>{
+    const idx = list.length-1-ri;
+    return `
+    <div class="bucket-item">
+      <div class="bucket-item-title">${esc(b.type)||'—'} · ${esc(b.item)}</div>
+      <div class="bucket-item-note">${esc(b.draft)}</div>
+      <div class="bucket-item-meta">${esc(b.where)} · ${esc(b.date)}</div>
+      <button class="dash-trigger" style="margin-top:8px;" onclick="copyDraft(${idx},this)">📋 Taslağı kopyala</button>
+    </div>`;
+  }).join('');
+}
+function copyDraft(i,btn){
+  const text = BROADCAST_DRAFTS[i]||'';
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = '✓ Kopyalandı — onayla ve yayınla';
     setTimeout(()=>{ btn.textContent = old; }, 2500);
   }).catch(()=>{ btn.textContent = 'Kopyalanamadı — elle seç'; });
 }
