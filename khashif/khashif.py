@@ -95,6 +95,11 @@ BASE_KEYWORDS = [
     "wellness technology", "breath science", "breath sound",
     "agent intelligence", "additive coding", "discovery agent",
     "experimental music", "esoteric music", "jack of all trades",
+    # Khashif-as-a-service domain — so Khashif also hunts work for itself:
+    # renting out its discovery / intelligence capability to others.
+    "competitive intelligence", "market intelligence", "trend monitoring",
+    "media monitoring", "content curation", "newsletter automation",
+    "research as a service", "intelligence service",
 ]
 
 SKIP_KEYWORDS = [
@@ -148,6 +153,11 @@ OPPORTUNITY_FEEDS = [
     "https://hnrss.org/jobs",
     "https://hnrss.org/whoishiring/jobs",
     "https://hnrss.org/newest?q=AI+agent&points=20",
+    # Khashif-as-a-service demand signals — people needing discovery,
+    # research and competitive/market intelligence are leads for renting
+    # out Khashif itself.
+    "https://hnrss.org/newest?q=competitive+intelligence",
+    "https://hnrss.org/newest?q=market+research&points=10",
 ]
 
 # === MEMORY ===
@@ -400,11 +410,15 @@ THE TEAM:
 - TAGMAC: {PROFILE}
 - CLAUDE: an AI agent partnering with Tagmac — does research, writing, coding,
   automation, data analysis, content production, and builds other agents/tools.
+- KHASHIF: this discovery agent itself — it can be rented to other operators
+  and businesses as a paid service: automated market radar, competitive and
+  market intelligence, niche content discovery, RSS/feed curation, trend and
+  media monitoring. Khashif hunts work for itself too.
 
 TOGETHER they can deliver and SELL: AI integration & automation, custom agents
 and tools, market & competitive research, legal research, content production,
 sound therapy sessions and recordings, fermentation & wellness consulting,
-app and web building.
+app and web building, and Khashif itself as a discovery-intelligence service.
 {"PRIORITY SOURCE — direct outreach is realistic here." if is_priority else ""}
 
 ITEM:
@@ -414,11 +428,13 @@ Content: {content[:1200]}
 
 Classify into ONE bucket — be STRICT:
 
-- INCOME: a CONCRETE opportunity the Claude+Tagmac team could earn money from —
-  a paid job or gig, an open call, a residency, a grant, an RFP, a competition
-  with a prize, a stated client need, someone hiring or seeking a paid
-  collaborator. It must be actionable. An article that is merely interesting
-  is NOT income.
+- INCOME: a CONCRETE opportunity the team could earn money from — a paid job
+  or gig, an open call, a residency, a grant, an RFP, a competition with a
+  prize, a stated client need, someone hiring or seeking a paid collaborator.
+  ALSO INCOME: anyone expressing a need for ongoing discovery, research,
+  monitoring or market/competitive intelligence — Khashif itself can be
+  rented to them. It must be actionable. A merely interesting article is
+  NOT income.
 - INTERSECTION: this item joins TWO unrelated domains so that combining them
   becomes a NEW sellable offer for the team (e.g. sound healing + AI agents =
   an AI-guided sound-therapy product; fermentation + data = a fermentation
@@ -771,23 +787,33 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
         for it in session_resonant[:25]:
             findings += f"- [{it.get('bucket','?')}] {it.get('title','')} ({it.get('source','')}) — {it.get('reason','')}\n"
 
-        ix_prompt = f"""You are Khashif — intersection analyst for Tagmac Cankaya.
+        learned_list = "; ".join(learned_intersections[-25:]) or "(none yet)"
+
+        ix_prompt = f"""You are Khashif — intersection analyst. Intersection
+intelligence is your PRIORITY skill: spotting where two seemingly unrelated
+domains combine into something sellable that neither could be alone.
 
 PROFILE: {PROFILE}
+The team — Tagmac + Claude (AI agent) + Khashif (this discovery agent, also
+rentable as a market-intelligence service) — sells the combined result.
 
 THIS SESSION'S RESONANT FINDINGS:
 {findings}
 
-Philosophy: water + flour = bread. Find where TWO different domains cross
-to produce an opportunity neither could alone.
+INTERSECTIONS ALREADY FOUND (do not just repeat — go deeper, or find new ones):
+{learned_list}
 
-Identify up to 3 domain intersections in these findings. Reply EXACTLY in
-this block format, one block per intersection, blocks separated by '---':
+Philosophy: water + flour = bread. Find where TWO different domains cross to
+produce an INCOME opportunity neither could alone.
+
+Identify up to 3 domain intersections. Each OPPORTUNITY must be a concrete,
+sellable offer and must name who would pay for it. Reply EXACTLY in this
+block format, one block per intersection, blocks separated by '---':
 
 PAIR: domain A + domain B
 INSIGHT: (one sentence Turkish — what the crossing reveals)
-OPPORTUNITY: (one concrete thing Tagmac could do, Turkish)
-STRENGTH: (1-5)
+OPPORTUNITY: (Turkish — a concrete sellable offer, and who pays for it)
+STRENGTH: (1-5 — how real and reachable the income is)
 ---"""
 
         ix_text, ix_layer = llm(ix_prompt)
