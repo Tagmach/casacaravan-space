@@ -663,11 +663,25 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
             print(f"  ! {feed_url[:40]}: {str(e)[:40]}")
 
     # === PHASE 2: CRAWL ===
-    print(f"\n--- Crawl ({len(resonant_links)} sayfa) ---")
+    # Crawl each resonant page AND its root domain. RSS discovery links
+    # (<link rel="alternate" type="application/rss+xml">) live on the site
+    # root, not on individual article pages — so crawling only article URLs
+    # barely grows the network. Root first, then the article page.
+    crawl_targets = []
+    for url in resonant_links[:10]:
+        m = re.match(r'https?://[^/]+', url)
+        if m:
+            root = m.group() + "/"
+            if root not in crawl_targets:
+                crawl_targets.append(root)
+        if url not in crawl_targets:
+            crawl_targets.append(url)
+
+    print(f"\n--- Crawl ({len(crawl_targets)} hedef: kök + makale) ---")
     new_rss = 0
-    for url in resonant_links[:5]:
+    for target in crawl_targets:
         time.sleep(2)
-        for rss in crawl(url, known_set, crawled):
+        for rss in crawl(target, known_set, crawled):
             if rss not in dynamic_feeds:
                 dynamic_feeds.append(rss)
                 visited.append(rss)
@@ -688,7 +702,14 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
         "visited_feeds": list(dict.fromkeys(visited))[-300:],
         "crawled_pages": crawled[-500:],
         "learned_keywords": learned[-300:],
-        "stats": stats
+        "stats": stats,
+        # Last crawl summary — lets the email show network growth at a glance
+        "last_crawl": {
+            "new_feeds": new_rss,
+            "pages": len(crawl_targets),
+            "total_dynamic": len(dynamic_feeds),
+            "at": now.strftime("%d.%m.%Y %H:%M"),
+        },
     })
     save_memory(memory)
 
