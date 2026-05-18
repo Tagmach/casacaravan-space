@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Uyandır
-        run: curl https://khashif.onrender.com/status
+        run: curl https://khashif-agent.onrender.com/status
       - name: Bekle
         run: sleep 30
       - name: Göreve gönder
         run: |
           curl -X POST \
             -H "X-Khashif-Key: khashif2026" \
-            https://khashif.onrender.com/task
+            https://khashif-agent.onrender.com/task
