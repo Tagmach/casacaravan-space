@@ -4,6 +4,7 @@ import threading
 import os
 import json
 import urllib.request
+import urllib.error
 from datetime import datetime
 
 app = Flask(__name__)
@@ -13,11 +14,14 @@ RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
 OPERATOR_EMAIL = "tagmacc@gmail.com"
 
 def send_email(subject, html):
+    """Send an email via Resend. Returns True on success, False otherwise.
+    Runs entirely server-side — no dependency on any local machine."""
     if not RESEND_API_KEY:
-        return
+        print("  ! Email skipped: RESEND_API_KEY not set on the server")
+        return False
     try:
         data = json.dumps({
-            "from": "Khashif 𓆟 <shop@casacaravan.space>",
+            "from": "Khashif 𓆟 <khashif@casacaravan.space>",
             "to": [OPERATOR_EMAIL],
             "subject": subject,
             "html": html
@@ -27,12 +31,26 @@ def send_email(subject, html):
             data=data,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {RESEND_API_KEY}"
+                "Authorization": f"Bearer {RESEND_API_KEY}",
+                # Cloudflare blocks the default Python-urllib User-Agent (error 1010)
+                "User-Agent": "Mozilla/5.0",
             }
         )
-        urllib.request.urlopen(req, timeout=10)
+        with urllib.request.urlopen(req, timeout=10) as r:
+            print(f"  Email sent → {OPERATOR_EMAIL} (HTTP {r.status})")
+        return True
+    except urllib.error.HTTPError as e:
+        # Surface Resend's actual error body (unverified domain, bad key, ...)
+        body = ""
+        try:
+            body = e.read().decode("utf-8", errors="ignore")
+        except Exception:
+            pass
+        print(f"  ! Email failed: HTTP {e.code} — {body}")
+        return False
     except Exception as e:
         print(f"  ! Email failed: {e}")
+        return False
 
 # === DOMAIN LOCK ===
 ALLOWED_ORIGINS = [
@@ -75,47 +93,37 @@ def run_khashif_task():
     
     try:
         import khashif
-        # Render timeout için: priority feeds only, hızlı mod
-        import os
-        # Seed feeds ile başlar, memory'deki crawled feeds'den devam eder
-        khashif.khashif_run()
-        
-        # Raporu oku
+
+        # khashif_run() returns the Supabase-backed memory object.
+        # The email is built straight from that return value — no local
+        # files involved, so it works entirely on the cloud (Render).
+        memory = khashif.khashif_run()
+        if not isinstance(memory, dict):
+            memory = {}
+
+        bkts = memory.get("buckets", {})
+        queue = memory.get("action_queue", [])
+        high_priority = [
+            q for q in queue
+            if q.get("action") in ["COMMENT", "CONNECT", "SUBMIT", "ATTEND"]
+            and q.get("status") == "pending"
+        ][:5]
+        khashif_state["pending_questions"] = high_priority
+
+        # Report — best effort only, never blocks the email
         report_file = os.path.join(os.path.dirname(__file__), "khashif_report.txt")
         if os.path.exists(report_file):
-            with open(report_file, "r", encoding="utf-8") as f:
-                khashif_state["last_report"] = f.read()
-        
-        # Hafızadan bekleyen soruları al
-        memory_file = os.path.join(os.path.dirname(__file__), "khashif_memory.json")
-        if os.path.exists(memory_file):
-            with open(memory_file, "r", encoding="utf-8") as f:
-                memory = json.load(f)
-                queue = memory.get("action_queue", [])
-                bkts = memory.get("buckets", {})
-                high_priority = [
-                    q for q in queue 
-                    if q.get("action") in ["COMMENT", "CONNECT", "SUBMIT", "ATTEND"]
-                    and q.get("status") == "pending"
-                ][:5]
-                khashif_state["pending_questions"] = high_priority
+            with open(report_file, "r", encoding="utf-8") as rf:
+                khashif_state["last_report"] = rf.read()
 
-                # Raporu state'e al
-                report_file = os.path.join(os.path.dirname(__file__), "khashif_report.txt")
-                report_text = ""
-                if os.path.exists(report_file):
-                    with open(report_file, "r", encoding="utf-8") as rf:
-                        report_text = rf.read()
-                        khashif_state["last_report"] = report_text
+        # Email — kova ozeti + sorular
+        rows = ""
+        for i, q in enumerate(high_priority, 1):
+            rows += f"<tr style='border-bottom:1px solid #f0e8e0;'><td style='padding:10px;font-size:13px;color:#1a1208;'>{i}. {q.get('title','')[:55]}</td><td style='padding:8px;font-size:11px;color:#a08060;font-weight:600;'>{q.get('action','')}</td><td style='padding:8px;font-size:11px;color:#7a7068;'>{q.get('action_note','')[:70]}</td><td style='padding:8px;'><a href=\"{q.get('link','')}\">→</a></td></tr>"
 
-                # Email — kova ozeti + sorular
-                rows = ""
-                for i, q in enumerate(high_priority, 1):
-                    rows += f"<tr style='border-bottom:1px solid #f0e8e0;'><td style='padding:10px;font-size:13px;color:#1a1208;'>{i}. {q.get('title','')[:55]}</td><td style='padding:8px;font-size:11px;color:#a08060;font-weight:600;'>{q.get('action','')}</td><td style='padding:8px;font-size:11px;color:#7a7068;'>{q.get('action_note','')[:70]}</td><td style='padding:8px;'><a href=\"{q.get('link','')}\">→</a></td></tr>"
+        q_section = f"<h3 style='font-size:16px;font-weight:300;font-style:italic;margin-bottom:16px;'>Sana soruyor</h3><table style='width:100%;border-collapse:collapse;margin-bottom:24px;'><tr style='background:#f5f0e8;'><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Baslik</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Aksiyon</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Ne yapilacak</th><th></th></tr>{rows}</table>" if high_priority else "<p style='font-size:13px;color:#a09080;font-style:italic;'>Bu turda soru yok.</p>"
 
-                q_section = f"<h3 style='font-size:16px;font-weight:300;font-style:italic;margin-bottom:16px;'>Sana soruyor</h3><table style='width:100%;border-collapse:collapse;margin-bottom:24px;'><tr style='background:#f5f0e8;'><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Baslik</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Aksiyon</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Ne yapilacak</th><th></th></tr>{rows}</table>" if high_priority else "<p style='font-size:13px;color:#a09080;font-style:italic;'>Bu turda soru yok.</p>"
-
-                html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
+        html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
 <p style='font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a09080;margin-bottom:24px;'>{datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
 <div style='display:flex;gap:12px;margin-bottom:24px;'>
@@ -131,7 +139,7 @@ def run_khashif_task():
 </div>
 <p style='font-size:10px;color:#a09080;border-top:1px solid #e8e0d0;padding-top:16px;'>casacaravan.space · Khashif 𓆟</p>
 </div>"""
-                send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
+        send_email(f"Khashif 𓆟 — {datetime.now().strftime('%d.%m %H:%M')} · {len(high_priority)} soru", html)
 
     except Exception as e:
         import traceback
@@ -139,7 +147,14 @@ def run_khashif_task():
         khashif_state["last_report"] = f"HATA: {str(e)}\n\n{err}"
         print(f"Khashif error: {str(e)}")
         print(err)
-    
+        # Even on failure the operator must hear from Khashif — send an error email
+        send_email(
+            f"Khashif 𓆟 — HATA {datetime.now().strftime('%d.%m %H:%M')}",
+            f"<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>"
+            f"<h2 style='font-size:20px;font-weight:300;font-style:italic;'>Khashif bir hata ile karşılaştı.</h2>"
+            f"<pre style='font-size:11px;background:#f5f0e8;padding:16px;border-radius:6px;white-space:pre-wrap;'>{str(e)}</pre></div>"
+        )
+
     finally:
         khashif_state["running"] = False
     

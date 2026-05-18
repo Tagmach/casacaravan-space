@@ -719,6 +719,10 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
 
     print("\nKhashif uyuyor...\n")
 
+    # Return the Supabase-backed memory so callers (app.py) can build
+    # reports/email without touching the local filesystem.
+    return memory
+
 # === SCHEDULER ===
 schedule.every().day.at("08:00").do(khashif_run)
 schedule.every().day.at("14:00").do(khashif_run)
