@@ -82,6 +82,14 @@ BASE_KEYWORDS = [
     "ai integration", "automation", "market research", "competitive analysis",
     "lead generation", "digital transformation", "consulting", "freelance",
     "cyprus", "mediterranean", "lefkosa", "nicosia", "kibris",
+    # Resonance expansion — domains already in Tagmac's PROFILE but missing
+    # from the keyword base. Wider input keeps Phase 3 intersections fresh
+    # instead of looping over the same few domains.
+    "coffee", "specialty coffee", "slow living", "ritual", "ceremony",
+    "storytelling", "oral tradition", "natural building", "cob", "earth building",
+    "tiny house", "herbalism", "plant medicine", "foraging", "ethnobotany",
+    "tincture", "mycology", "mushroom", "mycelium", "fungi",
+    "ecovillage", "intentional community", "cohousing", "gift economy", "degrowth",
 ]
 
 SKIP_KEYWORDS = [
@@ -119,6 +127,9 @@ EXTENDED_FEEDS = [
     "https://www.permaculture.co.uk/feed",
     "https://opensource.com/feed",
     "https://www.wired.com/feed/rss",
+    # Resonance expansion feeds — best-effort; valid_rss() drops any dead URL
+    "https://sprudge.com/feed",
+    "https://www.lowtechmagazine.com/feeds/all.atom.xml",
 ]
 
 # === MEMORY ===

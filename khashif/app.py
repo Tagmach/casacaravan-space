@@ -413,13 +413,23 @@ def get_buckets():
         memory = json.loads(rows[0]["value"])
         b = memory.get("buckets", {})
         return jsonify({
-            "HUMAN": b.get("HUMAN", [])[-10:],
-            "INCOME": b.get("INCOME", [])[-10:],
-            "KNOWLEDGE": b.get("KNOWLEDGE", [])[-10:],
+            "HUMAN": b.get("HUMAN", [])[-20:],
+            "INCOME": b.get("INCOME", [])[-20:],
+            "KNOWLEDGE": b.get("KNOWLEDGE", [])[-20:],
+            # True totals — the arrays above are capped at the last 20 items
+            "counts": {
+                "HUMAN": len(b.get("HUMAN", [])),
+                "INCOME": len(b.get("INCOME", [])),
+                "KNOWLEDGE": len(b.get("KNOWLEDGE", [])),
+            },
             "TRASH_count": len(b.get("TRASH", [])),
             "action_queue": memory.get("action_queue", [])[-10:],
             "learned_keywords": len(memory.get("learned_keywords", [])),
             "dynamic_feeds": len(memory.get("dynamic_feeds", [])),
+            # Phase 3 + crawler — lets the dashboard show intersections + network growth
+            "intersections": memory.get("intersections", [])[-12:],
+            "learned_intersections": len(memory.get("learned_intersections", [])),
+            "last_crawl": memory.get("last_crawl", {}),
             "stats": memory.get("stats", {})
         })
     except Exception as e:
