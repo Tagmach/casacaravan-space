@@ -164,6 +164,8 @@ def load_memory():
         "crawled_pages": [],
         "learned_keywords": [],
         "decisions": [],
+        "intersections": [],
+        "learned_intersections": [],
         "stats": {"total_analyzed": 0, "total_resonant": 0},
         "sessions": []
     }
@@ -689,6 +691,69 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                 new_rss += 1
     print(f"  {new_rss} new RSS added")
 
+    # === PHASE 3: INTERSECTION INTELLIGENCE ===
+    # Look at this session's resonant findings and ask the LLM which domain
+    # pairs crossed — where two signals meet to produce something neither
+    # could alone (su + un = ekmek). New pairs accrue in learned_intersections
+    # and grow the network each journey.
+    intersections = memory.get("intersections", [])
+    learned_intersections = memory.get("learned_intersections", [])
+
+    session_resonant = [i for b in ["HUMAN", "INCOME", "KNOWLEDGE"] for i in session[b]]
+    if len(session_resonant) >= 2:
+        print(f"\n--- Phase 3: Kesisim Zekasi ({len(session_resonant)} bulgu) ---")
+        findings = ""
+        for it in session_resonant[:25]:
+            findings += f"- [{it.get('bucket','?')}] {it.get('title','')} ({it.get('source','')}) — {it.get('reason','')}\n"
+
+        ix_prompt = f"""You are Khashif — intersection analyst for Tagmac Cankaya.
+
+PROFILE: {PROFILE}
+
+THIS SESSION'S RESONANT FINDINGS:
+{findings}
+
+Philosophy: water + flour = bread. Find where TWO different domains cross
+to produce an opportunity neither could alone.
+
+Identify up to 3 domain intersections in these findings. Reply EXACTLY in
+this block format, one block per intersection, blocks separated by '---':
+
+PAIR: domain A + domain B
+INSIGHT: (one sentence Turkish — what the crossing reveals)
+OPPORTUNITY: (one concrete thing Tagmac could do, Turkish)
+STRENGTH: (1-5)
+---"""
+
+        ix_text, ix_layer = llm(ix_prompt)
+        print(f"  Kesisim analizi tamamlandi [{ix_layer}]")
+
+        new_ix = 0
+        for block in ix_text.split("---"):
+            p = parse(block)
+            label = p.get("PAIR", "").strip()
+            if not label or "+" not in label:
+                continue
+            m = re.search(r'\d+', p.get("STRENGTH", "1"))
+            strength = max(1, min(int(m.group()) if m else 1, 5))
+            intersections.append({
+                "label": label,
+                "insight": p.get("INSIGHT", ""),
+                "opportunity": p.get("OPPORTUNITY", ""),
+                "strength": strength,
+                "date": now.strftime("%d.%m.%Y %H:%M"),
+                "layer": ix_layer,
+            })
+            norm = label.lower().replace(" ", "")
+            if norm not in [x.lower().replace(" ", "") for x in learned_intersections]:
+                learned_intersections.append(label)
+                new_ix += 1
+                print(f"  ++ New intersection: {label}")
+        print(f"  {new_ix} yeni kesisim, toplam {len(learned_intersections)}")
+
+    intersections = intersections[-50:]
+    learned_intersections = learned_intersections[-100:]
+
     # === SAVE ===
     for b in buckets:
         buckets[b] = buckets[b][-200:]
@@ -702,6 +767,8 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
         "visited_feeds": list(dict.fromkeys(visited))[-300:],
         "crawled_pages": crawled[-500:],
         "learned_keywords": learned[-300:],
+        "intersections": intersections,
+        "learned_intersections": learned_intersections,
         "stats": stats,
         # Last crawl summary — lets the email show network growth at a glance
         "last_crawl": {

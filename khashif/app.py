@@ -204,8 +204,31 @@ def run_khashif_task():
             "<div style='font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#a09080;margin-bottom:6px;'>Ag durumu</div>"
             f"<div style='font-size:13px;color:#1a1208;'>Bu gezide <b>{lc.get('new_feeds', 0)}</b> yeni RSS &middot; "
             f"toplam <b>{lc.get('total_dynamic', len(memory.get('dynamic_feeds', [])))}</b> kesfedilen feed &middot; "
-            f"<b>{lc.get('pages', 0)}</b> sayfa tarandi</div></div>"
+            f"<b>{lc.get('pages', 0)}</b> sayfa tarandi &middot; "
+            f"<b>{len(memory.get('learned_intersections', []))}</b> kesisim</div></div>"
         )
+
+        # Intersection Intelligence — domain pairs Khashif discovered crossing
+        ix_items = memory.get("intersections", [])[-6:][::-1]
+        if ix_items:
+            ix_rows = ""
+            for ix in ix_items:
+                label = escape(str(ix.get("label", "")))
+                insight = escape(str(ix.get("insight", "")))
+                opp = escape(str(ix.get("opportunity", "")))
+                strength = escape(str(ix.get("strength", "")))
+                ix_rows += (
+                    "<div style='border-bottom:1px solid #f0e8e0;padding:8px 0;'>"
+                    f"<div style='font-size:12px;color:#a060c8;font-weight:600;'>{label} &middot; {strength}/5</div>"
+                    f"<div style='font-size:11px;color:#1a1208;'>{insight}</div>"
+                    f"<div style='font-size:11px;color:#7a7068;font-style:italic;'>&rarr; {opp}</div></div>"
+                )
+            ix_section = (
+                "<h3 style='font-size:16px;font-weight:300;font-style:italic;margin:24px 0 8px;'>Kesisimler</h3>"
+                f"{ix_rows}"
+            )
+        else:
+            ix_section = ""
 
         html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
@@ -217,6 +240,7 @@ def run_khashif_task():
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
 </div>
 {net_section}
+{ix_section}
 {buckets_section}
 {q_section}
 {report_section}
