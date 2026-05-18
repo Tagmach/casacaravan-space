@@ -193,6 +193,29 @@ def save_memory(memory):
     except Exception as e:
         print(f"  ! Local save failed: {e}")
 
+def save_report(text):
+    """Save the latest report to Supabase (key: report) so the dashboard
+    can read it even after a Render spin-down wipes in-memory state."""
+    if not SUPABASE_KEY:
+        return
+    try:
+        payload = json.dumps({
+            "key": "report",
+            # json.dumps the text so it stores cleanly whether the value
+            # column is text or jsonb (same pattern as save_memory)
+            "value": json.dumps(text, ensure_ascii=False),
+            "updated_at": datetime.utcnow().isoformat() + "+00:00"
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/khashif_memory",
+            data=payload,
+            headers={**_supa_headers(), "Prefer": "resolution=merge-duplicates"}
+        )
+        req.get_method = lambda: "POST"
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"  ! Supabase report save failed: {e}")
+
 def fetch_pending_commands():
     """Read pending commands from Supabase khashif_commands table."""
     if not SUPABASE_KEY:
@@ -485,8 +508,11 @@ TUM BEKLEYEN EYLEMLER ({len(queue)})
     with open(REPORT_FILE, "w", encoding="utf-8") as f:
         f.write(report)
 
+    # Persist to Supabase (key: report) — survives Render spin-down
+    save_report(report)
+
     print(report)
-    print(f"\n  Rapor kaydedildi: {REPORT_FILE}")
+    print(f"\n  Rapor kaydedildi: {REPORT_FILE} + Supabase")
 
 # === SELF IMPROVEMENT ===
 def self_improve(memory, learned):

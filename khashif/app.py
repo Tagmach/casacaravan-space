@@ -6,6 +6,7 @@ import json
 import urllib.request
 import urllib.error
 from datetime import datetime
+from html import escape
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://casacaravan.space", "http://localhost", "http://127.0.0.1"]}})
@@ -51,6 +52,33 @@ def send_email(subject, html):
     except Exception as e:
         print(f"  ! Email failed: {e}")
         return False
+
+def fetch_report_text():
+    """Fetch the latest report text from Supabase (key: report).
+    No LLM cost — just reads what evening_report() last persisted
+    (refreshed 2x/day). Returns "" on any failure."""
+    SUPA_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
+    SUPA_KEY = os.environ.get("SUPABASE_KEY", "")
+    if not SUPA_KEY:
+        return ""
+    try:
+        req = urllib.request.Request(
+            f"{SUPA_URL}/rest/v1/khashif_memory?key=eq.report&select=value",
+            headers={"apikey": SUPA_KEY, "Authorization": f"Bearer {SUPA_KEY}"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as r:
+            rows = json.loads(r.read().decode())
+        if rows:
+            raw = rows[0].get("value", "")
+            # value is json.dumps'd by save_report — decode it; tolerate
+            # a legacy raw-text value too
+            try:
+                return json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                return raw or ""
+    except Exception as e:
+        print(f"  ! fetch_report_text failed: {e}")
+    return ""
 
 # === DOMAIN LOCK ===
 ALLOWED_ORIGINS = [
@@ -110,11 +138,12 @@ def run_khashif_task():
         ][:5]
         khashif_state["pending_questions"] = high_priority
 
-        # Report — best effort only, never blocks the email
-        report_file = os.path.join(os.path.dirname(__file__), "khashif_report.txt")
-        if os.path.exists(report_file):
-            with open(report_file, "r", encoding="utf-8") as rf:
-                khashif_state["last_report"] = rf.read()
+        # Report text — latest persisted report from Supabase (key: report).
+        # No LLM cost; evening_report() refreshes it 2x/day. Best effort —
+        # never blocks the email.
+        report_text = fetch_report_text()
+        if report_text:
+            khashif_state["last_report"] = report_text
 
         # Email — kova ozeti + sorular
         rows = ""
@@ -122,6 +151,18 @@ def run_khashif_task():
             rows += f"<tr style='border-bottom:1px solid #f0e8e0;'><td style='padding:10px;font-size:13px;color:#1a1208;'>{i}. {q.get('title','')[:55]}</td><td style='padding:8px;font-size:11px;color:#a08060;font-weight:600;'>{q.get('action','')}</td><td style='padding:8px;font-size:11px;color:#7a7068;'>{q.get('action_note','')[:70]}</td><td style='padding:8px;'><a href=\"{q.get('link','')}\">→</a></td></tr>"
 
         q_section = f"<h3 style='font-size:16px;font-weight:300;font-style:italic;margin-bottom:16px;'>Sana soruyor</h3><table style='width:100%;border-collapse:collapse;margin-bottom:24px;'><tr style='background:#f5f0e8;'><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Baslik</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Aksiyon</th><th style='padding:8px;text-align:left;font-size:9px;color:#7a7068;'>Ne yapilacak</th><th></th></tr>{rows}</table>" if high_priority else "<p style='font-size:13px;color:#a09080;font-style:italic;'>Bu turda soru yok.</p>"
+
+        # Report section — the full report text, embedded verbatim. Plain
+        # text wrapped in <pre>; HTML-escaped so '=' separators etc. render.
+        if report_text:
+            report_section = (
+                "<h3 style='font-size:16px;font-weight:300;font-style:italic;margin:24px 0 12px;'>Rapor</h3>"
+                "<pre style='font-size:11px;line-height:1.5;background:#f5f0e8;padding:16px;border-radius:8px;"
+                "white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;"
+                f"color:#1a1208;margin-bottom:24px;'>{escape(report_text.strip())}</pre>"
+            )
+        else:
+            report_section = "<p style='font-size:13px;color:#a09080;font-style:italic;'>Henuz rapor yok.</p>"
 
         html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
@@ -133,6 +174,7 @@ def run_khashif_task():
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
 </div>
 {q_section}
+{report_section}
 <div style='background:#f5f0e8;padding:16px;border-radius:8px;margin-bottom:16px;'>
 <div style='font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#a09080;margin-bottom:8px;'>Karar icin CMD:</div>
 <code style='font-size:10px;color:#1a1208;word-break:break-all;'>curl -X POST -H "X-Khashif-Key: khashif2026" -H "Content-Type: application/json" -d "{{\"link\":\"URL\",\"verdict\":\"YES\"}}" https://khashif.onrender.com/decide</code>
@@ -193,14 +235,21 @@ def task():
 
 @app.route("/report", methods=["GET"])
 def report():
-    """Son raporu getir"""
+    """Son raporu getir — Supabase'ten okur (key: report), Render spin-down'a
+    dayanıklı. In-memory state'e fallback yapar."""
     if not is_authorized(request):
         return jsonify({"error": "unauthorized"}), 403
-    
+
+    report_text = fetch_report_text()
+
+    # Fallback: in-memory state (fresh output before first Supabase save)
+    if not report_text:
+        report_text = khashif_state["last_report"]
+
     return jsonify({
         "running": khashif_state["running"],
         "last_run": khashif_state["last_run"],
-        "report": khashif_state["last_report"][-3000:] if khashif_state["last_report"] else "Henüz rapor yok.",
+        "report": report_text[-3000:] if report_text else "Henüz rapor yok.",
         "pending_questions": len(khashif_state["pending_questions"])
     })
 
@@ -399,6 +448,7 @@ Write a focused research report in Turkish. Include:
 Be specific and actionable."""
                 result, layer = kh.llm(prompt)
                 khashif_state["last_report"] = f"=== RESEARCH: {title} ===\n[{layer}]\n\n{result}\n\n" + khashif_state.get("last_report","")
+                kh.save_report(khashif_state["last_report"])
             except Exception as e:
                 khashif_state["last_report"] = f"Research error: {e}"
 
@@ -433,6 +483,7 @@ Türkçe olarak:
 3. Dikkat edilmesi gerekenler"""
                 result, layer = kh.llm(prompt)
                 khashif_state["last_report"] = f"=== SUBMIT TASLAK: {title} ===\n[{layer}]\n\n{result}\n\n" + khashif_state.get("last_report","")
+                kh.save_report(khashif_state["last_report"])
             except Exception as e:
                 khashif_state["last_report"] = f"Submit error: {e}"
 
