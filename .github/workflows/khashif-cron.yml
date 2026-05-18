@@ -1,8 +1,10 @@
-name: Khashif Hourly
+name: Khashif Wake (manual backup)
 
+# Backup trigger only — cron-job.org is the primary hourly trigger.
+# Manual (workflow_dispatch) so this does NOT double-fire alongside it,
+# which used to cause duplicate journeys and duplicate operator emails.
 on:
-  schedule:
-    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   wake:
