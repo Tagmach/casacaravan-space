@@ -621,6 +621,7 @@ nav {
     <button class="dash-tab" data-tab="kovalar" onclick="showTab('kovalar')">Kovalar<span class="tab-count" id="tc-kovalar"></span></button>
     <button class="dash-tab" data-tab="kesisim" onclick="showTab('kesisim')">Kesişimler<span class="tab-count" id="tc-kesisim"></span></button>
     <button class="dash-tab" data-tab="sorular" onclick="showTab('sorular')">Sorular<span class="tab-count" id="tc-sorular"></span></button>
+    <button class="dash-tab" data-tab="derin" onclick="showTab('derin')">Derin dalış<span class="tab-count" id="tc-derin"></span></button>
     <button class="dash-tab" data-tab="ag" onclick="showTab('ag')">Ağ</button>
     <button class="dash-tab" data-tab="muzik" onclick="showTab('muzik')">Müzik</button>
   </div>
@@ -675,6 +676,12 @@ nav {
   <div class="dash-panel" id="panel-sorular">
     <div class="dash-section-title">Questions waiting for you</div>
     <div id="d-questions-list"><div class="dash-status">Loading...</div></div>
+  </div>
+
+  <!-- === DERİN DALIŞ === -->
+  <div class="dash-panel" id="panel-derin">
+    <div class="dash-section-title">Derin dalış — Claude'a taşınacak fırsatlar</div>
+    <div id="d-deep"><div class="dash-status">Loading...</div></div>
   </div>
 
   <!-- === AĞ === -->
@@ -788,9 +795,11 @@ async function loadDash() {
     const tcK = document.getElementById('tc-kovalar'); if(tcK) tcK.textContent = ' ·'+(hC+iC+kC);
     const tcX = document.getElementById('tc-kesisim'); if(tcX) tcX.textContent = ' ·'+(buckets.learned_intersections ?? (buckets.intersections||[]).length);
     const tcS = document.getElementById('tc-sorular'); if(tcS) tcS.textContent = ' ·'+(questions.count ?? 0);
+    const tcD = document.getElementById('tc-derin'); if(tcD) tcD.textContent = ' ·'+((buckets.deep_queue||[]).length);
 
     renderBuckets(buckets);
     renderIntersections(buckets.intersections || []);
+    renderDeep(buckets.deep_queue || []);
     renderNetwork(buckets);
 
     const lr = status.last_run ? new Date(status.last_run).toLocaleString('tr-TR') : 'never';
@@ -900,6 +909,37 @@ function renderIntersections(list){
       <div class="ix-opp">→ ${esc(ix.opportunity)}</div>
       <div class="ix-strength">güç ${esc(ix.strength)||'—'}/5 · ${esc(ix.date)}</div>
     </div>`).join('');
+}
+
+// Deep-dive briefings — Khashif marks high-score leads; the operator copies
+// a briefing and carries it into a Claude Code session for the deep research.
+let DEEP_BRIEFINGS = [];
+function renderDeep(list){
+  const el = document.getElementById('d-deep');
+  if(!el) return;
+  DEEP_BRIEFINGS = list.map(d=>d.briefing||'');
+  if(!list.length){
+    el.innerHTML = '<div class="dash-status">Henüz derin dalış önerisi yok. Khashif yüksek skorlu (≥8) bir fırsat bulunca buraya düşer.</div>';
+    return;
+  }
+  el.innerHTML = list.slice().reverse().map((d,ri)=>{
+    const idx = list.length-1-ri;
+    return `
+    <div class="bucket-item">
+      <div class="bucket-item-title"><a href="${esc(d.link)||'#'}" target="_blank">${esc(d.title)}</a></div>
+      <div class="bucket-item-note">${esc(d.reason||d.action_note)}</div>
+      <div class="bucket-item-meta">skor ${esc(d.score)||'—'} · ${esc(d.bucket)} · ${esc(d.source)} · ${esc(d.date)}</div>
+      <button class="dash-trigger" style="margin-top:8px;" onclick="copyBriefing(${idx},this)">📋 Claude'a taşı</button>
+    </div>`;
+  }).join('');
+}
+function copyBriefing(i,btn){
+  const text = DEEP_BRIEFINGS[i]||'';
+  navigator.clipboard.writeText(text).then(()=>{
+    const old = btn.textContent;
+    btn.textContent = '✓ Kopyalandı — bir Claude oturumuna yapıştır';
+    setTimeout(()=>{ btn.textContent = old; }, 2500);
+  }).catch(()=>{ btn.textContent = 'Kopyalanamadı — elle seç'; });
 }
 
 function renderNetwork(buckets){

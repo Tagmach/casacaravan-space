@@ -205,6 +205,7 @@ def load_memory():
         "decisions": [],
         "intersections": [],
         "learned_intersections": [],
+        "deep_queue": [],
         "stats": {"total_analyzed": 0, "total_resonant": 0},
         "sessions": []
     }
@@ -386,6 +387,38 @@ def crawl(url, known, crawled):
             found.append(r)
             print(f"  ++ New RSS: {r[:60]}")
     return found[:3]
+
+def strip_html(html):
+    """Crude HTML -> readable text. Used to enrich deep-dive briefings."""
+    text = re.sub(r'(?is)<(script|style)[^>]*>.*?</\1>', ' ', html)
+    text = re.sub(r'(?s)<[^>]+>', ' ', text)
+    text = re.sub(r'&[a-z]+;', ' ', text)
+    return re.sub(r'\s+', ' ', text).strip()
+
+def build_briefing(item, now):
+    """Package a high-score lead as a copy-ready briefing the operator
+    carries into a Claude Code session for the deep dive — no paid API
+    call, the deep reasoning runs on a channel already paid for. Enriched
+    with the fetched page (a free HTTP fetch, no LLM)."""
+    excerpt = strip_html(fetch_page(item.get("link", "")))[:1800]
+    if not excerpt:
+        excerpt = (item.get("content", "") or "")[:1800] or "(sayfa cekilemedi)"
+    return f"""KHASHIF DERIN DALIS BRIFINGI — {now.strftime('%d.%m.%Y %H:%M')}
+
+FIRSAT: {item.get('title','')}
+LINK: {item.get('link','')}
+KAYNAK: {item.get('source','')} · KOVA: {item.get('bucket','')} · SKOR: {item.get('score','')}/10
+KHASHIF'IN OKUMASI: {item.get('reason','')}
+ONERILEN EYLEM: {item.get('action','')} — {item.get('action_note','')}
+
+SAYFA ICERIGI (Khashif'in cektigi):
+{excerpt}
+
+CLAUDE ICIN GOREV:
+Bu firsati Tagmac + Claude + Khashif ekibi icin derinlemesine degerlendir.
+Organizasyonu/kisiyi arastir, gercek ve ulasilabilir mi belirle, ekibin
+uygunlugunu tart, uygunsa basvuru/teklif/mesaj taslagi hazirla. Uygun
+degilse net sekilde nedenini yaz."""
 
 # === FILTERS ===
 def quick_filter(title, content, learned):
@@ -719,6 +752,10 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                 # Guard: only the two live buckets are kept; anything else
                 # (incl. a stray HUMAN/KNOWLEDGE from the LLM) is discarded.
                 if bucket in ("INCOME", "INTERSECTION"):
+                    # Quality bar, not a quota — a lead scoring >=8 is worth
+                    # a deep dive. Khashif stays selective, not stingy.
+                    m_s = re.search(r'\d+', str(score))
+                    score_n = int(m_s.group()) if m_s else 0
                     item = {
                         "date": now.strftime("%d.%m.%Y %H:%M"),
                         "title": title, "link": link,
@@ -726,8 +763,11 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                         "reason": reason, "action": action,
                         "action_note": action_note,
                         "bucket": bucket, "layer": layer,
+                        "deep": score_n >= 8,
                         "status": "pending"
                     }
+                    if score_n >= 8:
+                        item["content"] = content[:1500]
                     buckets[bucket].append(item)
                     session[bucket].append(item)
                     resonant_links.append(link)
@@ -845,6 +885,30 @@ STRENGTH: (1-5 — how real and reachable the income is)
     intersections = intersections[-50:]
     learned_intersections = learned_intersections[-100:]
 
+    # === PHASE 4: DEEP-DIVE BRIEFINGS ===
+    # High-score INCOME/INTERSECTION leads are packaged as a copy-ready
+    # briefing the operator carries into a Claude Code session — the deep
+    # reasoning runs on a channel already paid for, no paid API call here.
+    deep_queue = memory.get("deep_queue", [])
+    deep_items = [i for b in ("INCOME", "INTERSECTION") for i in session[b] if i.get("deep")]
+    if deep_items:
+        print(f"\n--- Phase 4: Derin Dalis Brifingleri ({len(deep_items)}) ---")
+        for it in deep_items:
+            time.sleep(2)
+            deep_queue.append({
+                "date": it.get("date", ""),
+                "title": it.get("title", ""),
+                "link": it.get("link", ""),
+                "source": it.get("source", ""),
+                "score": it.get("score", ""),
+                "bucket": it.get("bucket", ""),
+                "reason": it.get("reason", ""),
+                "action_note": it.get("action_note", ""),
+                "briefing": build_briefing(it, now),
+            })
+            print(f"  ++ Brifing: {it.get('title','')[:48]}")
+    deep_queue = deep_queue[-20:]
+
     # === SAVE ===
     for b in buckets:
         buckets[b] = buckets[b][-200:]
@@ -860,6 +924,7 @@ STRENGTH: (1-5 — how real and reachable the income is)
         "learned_keywords": learned[-300:],
         "intersections": intersections,
         "learned_intersections": learned_intersections,
+        "deep_queue": deep_queue,
         "stats": stats,
         # Last crawl summary — lets the email show network growth at a glance
         "last_crawl": {
@@ -885,6 +950,7 @@ STRENGTH: (1-5 — how real and reachable the income is)
     print(f"  RAPOR — {now.strftime('%H:%M')}")
     print(f"  LLM: {llm_calls} (C:{layers['cerebras']} G:{layers['groq']} Ge:{layers['gemini']})")
     print(f"  Bulunanlar: INCOME:{len(session['INCOME'])} INTERSECTION:{len(session['INTERSECTION'])}")
+    print(f"  Derin dalis onerisi: {len(deep_items)}")
     print(f"  Eylemler: {len(actions)} | Toplam kuyruk: {len(action_queue)}")
     print(f"  RSS: {len(visited)}")
     print(f"{'='*50}")

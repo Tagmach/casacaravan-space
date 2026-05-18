@@ -229,6 +229,30 @@ def run_khashif_task():
         else:
             ix_section = ""
 
+        # Deep-dive briefings — high-score leads packaged copy-ready for a
+        # Claude Code session. Newest first; the dashboard has the full list.
+        deep_briefs = memory.get("deep_queue", [])[-3:][::-1]
+        if deep_briefs:
+            deep_rows = ""
+            for d in deep_briefs:
+                d_title = escape(str(d.get("title", ""))[:90])
+                d_score = escape(str(d.get("score", "")))
+                d_brief = escape(str(d.get("briefing", "")))
+                deep_rows += (
+                    f"<div style='font-size:12px;color:#1a1208;font-weight:600;margin:12px 0 4px;'>[{d_score}] {d_title}</div>"
+                    "<pre style='font-size:10px;line-height:1.5;background:#f5f0e8;padding:12px;border-radius:8px;"
+                    "white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,Menlo,Consolas,monospace;"
+                    f"color:#1a1208;'>{d_brief}</pre>"
+                )
+            deep_section = (
+                "<h3 style='font-size:16px;font-weight:300;font-style:italic;margin:24px 0 8px;'>Derin dalis icin onerilen</h3>"
+                "<p style='font-size:11px;color:#7a7068;font-style:italic;margin-bottom:8px;'>"
+                "Brifingi kopyalayip bir Claude oturumuna yapistir — derin arastirma orada yapilir.</p>"
+                f"{deep_rows}"
+            )
+        else:
+            deep_section = ""
+
         html = f"""<div style='font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:32px;color:#1a1208;'>
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
 <p style='font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a09080;margin-bottom:24px;'>{datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
@@ -238,6 +262,7 @@ def run_khashif_task():
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
 </div>
 {net_section}
+{deep_section}
 {ix_section}
 {buckets_section}
 {q_section}
@@ -425,6 +450,7 @@ def get_buckets():
             # Phase 3 + crawler — lets the dashboard show intersections + network growth
             "intersections": memory.get("intersections", [])[-12:],
             "learned_intersections": len(memory.get("learned_intersections", [])),
+            "deep_queue": memory.get("deep_queue", [])[-20:],
             "last_crawl": memory.get("last_crawl", {}),
             "stats": memory.get("stats", {})
         })
