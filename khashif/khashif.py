@@ -833,8 +833,8 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
         learned_list = "; ".join(learned_intersections[-25:]) or "(none yet)"
 
         ix_prompt = f"""You are Khashif — intersection analyst. Intersection
-intelligence is your PRIORITY skill: spotting where two seemingly unrelated
-domains combine into something sellable that neither could be alone.
+intelligence is your PRIORITY skill: finding where two domains cross to make
+something sellable that neither could be alone.
 
 PROFILE: {PROFILE}
 The team — Tagmac + Claude (AI agent) + Khashif (this discovery agent, also
@@ -843,21 +843,34 @@ rentable as a market-intelligence service) — sells the combined result.
 THIS SESSION'S RESONANT FINDINGS:
 {findings}
 
-INTERSECTIONS ALREADY FOUND (do not just repeat — go deeper, or find new ones):
+INTERSECTIONS ALREADY FOUND (do not repeat — go deeper or find new ones):
 {learned_list}
 
-Philosophy: water + flour = bread. Find where TWO different domains cross to
-produce an INCOME opportunity neither could alone.
+HARD RULES — a candidate that breaks ANY of these is NOT a discovery, drop it:
+1. NOVELTY: at least one of the two domains must be one Tagmac does NOT
+   already work in — pulled fresh from this session's findings. Pairing two
+   domains he already operates in (e.g. sound therapy + AI — both already
+   his) is BANNED; that only restates what he is, it discovers nothing.
+2. MECHANISM: you must be able to say HOW the crossing works — the concrete
+   thing it produces — not merely "combine A and B".
+3. BUYER: you must be able to name who specifically would pay for it.
+4. WHY NOW: you must be able to say why it is reachable now.
 
-Identify up to 3 domain intersections. Each OPPORTUNITY must be a concrete,
-sellable offer and must name who would pay for it. Reply EXACTLY in this
-block format, one block per intersection, blocks separated by '---':
+Better to return ONE sharp intersection — or none — than three vague ones.
+Philosophy: water + flour = bread (two different things). Not water + water.
+
+For each candidate that passes ALL FOUR rules (at most 3), reply EXACTLY in
+this block format, blocks separated by '---':
 
 PAIR: domain A + domain B
-INSIGHT: (one sentence Turkish — what the crossing reveals)
-OPPORTUNITY: (Turkish — a concrete sellable offer, and who pays for it)
-STRENGTH: (1-5 — how real and reachable the income is)
----"""
+INSIGHT: (Turkish — the MECHANISM: how the crossing works, what it produces)
+OPPORTUNITY: (Turkish — the concrete sellable offer + who pays + why now)
+STRENGTH: (1-5 — sharpness, NOT plausibility. 4-5 only if the mechanism is
+  non-obvious, the buyer is named and it is reachable within weeks; if it
+  restates something obvious, 1-2.)
+---
+
+If nothing passes all four rules this session, reply exactly: NONE"""
 
         ix_text, ix_layer = llm(ix_prompt)
         print(f"  Kesisim analizi tamamlandi [{ix_layer}]")
