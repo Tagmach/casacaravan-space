@@ -54,11 +54,11 @@ SEEKING: resonant people, collaborators, income opportunities, communities.
 VALUES: authenticity, non-commercial, heart-driven, open source spirit.
 """
 
-# === FOUR BUCKETS ===
-# HUMAN   — real producer, potential collaborator
-# INCOME  — can convert to money
-# KNOWLEDGE — expands Tagmac's world
-# TRASH   — no real value
+# === TWO BUCKETS (+ discard) ===
+# INCOME       — a concrete opportunity the Claude + Tagmac team can earn from
+# INTERSECTION — two unrelated domains that combine into a new sellable offer
+# TRASH        — no path to income; discarded
+# INCOME carries ~70% of Khashif's attention; INTERSECTION is the rest.
 
 # === KEYWORDS ===
 BASE_KEYWORDS = [
@@ -90,6 +90,11 @@ BASE_KEYWORDS = [
     "tiny house", "herbalism", "plant medicine", "foraging", "ethnobotany",
     "tincture", "mycology", "mushroom", "mycelium", "fungi",
     "ecovillage", "intentional community", "cohousing", "gift economy", "degrowth",
+    # Income / agent / wellness-tech domains — added 18 May 2026 to sharpen the
+    # resonance toward work the Claude + Tagmac team can do together.
+    "wellness technology", "breath science", "breath sound",
+    "agent intelligence", "additive coding", "discovery agent",
+    "experimental music", "esoteric music", "jack of all trades",
 ]
 
 SKIP_KEYWORDS = [
@@ -132,6 +137,19 @@ EXTENDED_FEEDS = [
     "https://www.lowtechmagazine.com/feeds/all.atom.xml",
 ]
 
+# === OPPORTUNITY FEEDS ===
+# Job / gig / hiring feeds — these carry concrete income leads, but their
+# items rarely contain the sound/fermentation BASE_KEYWORDS, so quick_filter
+# would drop them before they ever reach the classifier. Phase 1 sends every
+# item from these feeds straight to the LLM instead (quick_filter bypassed).
+OPPORTUNITY_FEEDS = [
+    "https://weworkremotely.com/remote-jobs.rss",
+    "https://remoteok.com/remote-jobs.rss",
+    "https://hnrss.org/jobs",
+    "https://hnrss.org/whoishiring/jobs",
+    "https://hnrss.org/newest?q=AI+agent&points=20",
+]
+
 # === MEMORY ===
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://iwfvlatywksvnnxymweb.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
@@ -167,7 +185,7 @@ def load_memory():
         pass
     return {
         "seen_links": [],
-        "buckets": {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []},
+        "buckets": {"INCOME": [], "INTERSECTION": [], "TRASH": []},
         "action_queue": [],
         "acted": [],
         "dynamic_feeds": [],
@@ -261,54 +279,60 @@ def mark_command_done(command_id):
         print(f"  ! Command mark done failed: {e}")
 
 # === LLM LAYERS ===
-LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0}
+# Role-based split — the model is matched to the task's difficulty, not to
+# raw speed. Two entry points:
+#   llm(prompt, "smart") — judgment work (classify, intersection, report).
+#                          Order: Groq 70B -> Gemini -> Cerebras 8B.
+#   llm(prompt, "fast")  — mechanical work (keyword extraction).
+#                          Order: Cerebras 8B -> Groq 70B -> Gemini.
+# The smartest model leads the judgment calls; the cheap 8B leads only the
+# mechanical ones. Each layer is skipped for the rest of the journey after
+# 3 consecutive failures (e.g. Groq hitting its free-tier daily token cap).
+LLM_STATUS = {"cerebras_fails": 0, "groq_fails": 0, "gemini_fails": 0}
 
-def call_cerebras(prompt):
+def call_cerebras(prompt, max_tokens=400):
     r = cerebras_client.chat.completions.create(
         model="llama3.1-8b",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=400
+        max_tokens=max_tokens
     )
     return r.choices[0].message.content.strip()
 
-def call_groq(prompt):
+def call_groq(prompt, max_tokens=400):
     r = groq_client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=400
+        max_tokens=max_tokens
     )
     return r.choices[0].message.content.strip()
 
-def call_gemini(prompt):
+def call_gemini(prompt, max_tokens=400):
     response = gemini_client.models.generate_content(
         model="gemini-2.5-flash-lite",
         contents=prompt
     )
     return response.text.strip()
 
-def llm(prompt, max_tokens=400):
-    if LLM_STATUS["cerebras_fails"] < 3:
+_LAYER_FN = {"cerebras": call_cerebras, "groq": call_groq, "gemini": call_gemini}
+_LAYER_ORDER = {
+    "smart": ["groq", "gemini", "cerebras"],
+    "fast":  ["cerebras", "groq", "gemini"],
+}
+
+def llm(prompt, mode="smart", max_tokens=400):
+    """Run a prompt through the cascade for the given mode. 'smart' leads
+    with the 70B model for judgment; 'fast' leads with the cheap 8B for
+    mechanical work. A layer is skipped after 3 consecutive failures."""
+    for name in _LAYER_ORDER.get(mode, _LAYER_ORDER["smart"]):
+        if LLM_STATUS[f"{name}_fails"] >= 3:
+            continue
         try:
-            r = call_cerebras(prompt)
-            LLM_STATUS["cerebras_fails"] = 0
-            return r, "cerebras"
-        except Exception:
-            LLM_STATUS["cerebras_fails"] += 1
-            time.sleep(5)
-    if LLM_STATUS["groq_fails"] < 3:
-        try:
-            r = call_groq(prompt)
-            LLM_STATUS["groq_fails"] = 0
-            return r, "groq"
-        except Exception:
-            LLM_STATUS["groq_fails"] += 1
-            time.sleep(10)
-    for _ in range(2):
-        try:
-            return call_gemini(prompt), "gemini"
+            r = _LAYER_FN[name](prompt, max_tokens)
+            LLM_STATUS[f"{name}_fails"] = 0
+            return r, name
         except Exception as e:
-            if "429" in str(e) or "quota" in str(e).lower():
-                time.sleep(30)
+            LLM_STATUS[f"{name}_fails"] += 1
+            time.sleep(30 if ("429" in str(e) or "quota" in str(e).lower()) else 5)
     return "BUCKET: TRASH\nSCORE: 0\nREASON: all layers failed\nACTION: IGNORE\nKEYWORDS: NONE", "none"
 
 # === WEB ===
@@ -370,39 +394,57 @@ def parse(text):
 
 # === ANALYZE ===
 def analyze(title, content, source, is_priority):
-    prompt = f"""You are Khashif — a silent ambassador for Tagmac Cankaya.
-{"PRIORITY SOURCE — direct action possible." if is_priority else ""}
+    prompt = f"""You are Khashif — a discovery agent hunting INCOME for a two-person team.
 
-PROFILE: {PROFILE}
+THE TEAM:
+- TAGMAC: {PROFILE}
+- CLAUDE: an AI agent partnering with Tagmac — does research, writing, coding,
+  automation, data analysis, content production, and builds other agents/tools.
 
+TOGETHER they can deliver and SELL: AI integration & automation, custom agents
+and tools, market & competitive research, legal research, content production,
+sound therapy sessions and recordings, fermentation & wellness consulting,
+app and web building.
+{"PRIORITY SOURCE — direct outreach is realistic here." if is_priority else ""}
+
+ITEM:
 Title: {title}
 Source: {source}
-Content: {content[:900]}
+Content: {content[:1200]}
 
-CLASSIFY:
-- HUMAN: Real producer/artist — potential collaborator
-- INCOME: Can convert to money for Tagmac
-- KNOWLEDGE: Expands Tagmac's world
-- TRASH: No real value
+Classify into ONE bucket — be STRICT:
+
+- INCOME: a CONCRETE opportunity the Claude+Tagmac team could earn money from —
+  a paid job or gig, an open call, a residency, a grant, an RFP, a competition
+  with a prize, a stated client need, someone hiring or seeking a paid
+  collaborator. It must be actionable. An article that is merely interesting
+  is NOT income.
+- INTERSECTION: this item joins TWO unrelated domains so that combining them
+  becomes a NEW sellable offer for the team (e.g. sound healing + AI agents =
+  an AI-guided sound-therapy product; fermentation + data = a fermentation
+  analytics service). Name BOTH domains and the offer.
+- TRASH: everything else. News, inspiration, generic content with no path to
+  money. When unsure between INCOME/INTERSECTION and TRASH, choose TRASH.
 
 ACTION:
-- COMMENT: Leave a comment (priority sources)
-- SUBMIT: Submit music/work
-- ATTEND: Attend/apply to event
-- RESEARCH: Data Tagmac can sell
-- CONNECT: Reach out directly
-- FOLLOW: Keep watching
-- IGNORE: Not worth returning
+- APPLY: apply or submit to a posted opportunity
+- CONNECT: reach out to a person or org directly
+- RESEARCH: a paid research angle the team can package and sell
+- SUBMIT: submit music/sound work
+- ATTEND: attend or apply to an event
+- COMMENT: leave a comment to open a door (priority sources)
+- FOLLOW: keep watching — not yet actionable
+- IGNORE: not worth returning to
 
 Reply ONLY:
-BUCKET: (HUMAN/INCOME/KNOWLEDGE/TRASH)
-SCORE: (1-10)
-REASON: (one sentence Turkish)
+BUCKET: (INCOME/INTERSECTION/TRASH)
+SCORE: (1-10 — how real and reachable the income is)
+REASON: (one sentence Turkish — for INTERSECTION, name both domains)
 ACTION: (one of above)
-ACTION_NOTE: (exactly what to do)
+ACTION_NOTE: (exactly what the team should do — for INTERSECTION, the offer)
 KEYWORDS: (2-3 keywords or NONE)"""
 
-    return llm(prompt)
+    return llm(prompt, "smart")
 
 # === EVENING REPORT ===
 def evening_report(memory):
@@ -410,14 +452,14 @@ def evening_report(memory):
     buckets = memory.get("buckets", {})
     learned = memory.get("learned_keywords", [])
 
-    if not queue and not buckets.get("HUMAN") and not buckets.get("INCOME"):
+    if not queue and not buckets.get("INCOME") and not buckets.get("INTERSECTION"):
         print("  Rapor icin yeterli veri yok.")
         return
 
     context = f"""
 PENDING ACTIONS: {len(queue)}
-HUMAN bucket: {len(buckets.get('HUMAN', []))} people found
-INCOME bucket: {len(buckets.get('INCOME', []))} opportunities
+INCOME bucket: {len(buckets.get('INCOME', []))} concrete opportunities
+INTERSECTION bucket: {len(buckets.get('INTERSECTION', []))} domain-crossings
 LEARNED: {', '.join(learned[:20])}
 
 RECENT FINDINGS:
@@ -567,7 +609,13 @@ def khashif_run():
 
     memory = load_memory()
     seen = set(memory.get("seen_links", []))
-    buckets = memory.get("buckets", {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []})
+    # Normalize to the 2-bucket model — ensure the keys exist and drop the
+    # retired HUMAN/KNOWLEDGE buckets if an older memory object is loaded.
+    buckets = memory.get("buckets", {})
+    for b in ("INCOME", "INTERSECTION", "TRASH"):
+        buckets.setdefault(b, [])
+    for old in ("HUMAN", "KNOWLEDGE"):
+        buckets.pop(old, None)
     action_queue = memory.get("action_queue", [])
     dynamic_feeds = memory.get("dynamic_feeds", [])
     visited = memory.get("visited_feeds", [])
@@ -581,7 +629,7 @@ def khashif_run():
             kw_prompt = f"""Extract 3-6 search keywords from this operator command for a discovery agent.
 Command: "{command_intent}"
 Return only comma-separated keywords in English, lowercase. No explanation."""
-            kw_result, _ = llm(kw_prompt)
+            kw_result, _ = llm(kw_prompt, "fast")
             for kw in kw_result.split(","):
                 kw = kw.strip().lower()
                 if kw and kw not in learned:
@@ -592,14 +640,15 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
 
     learned = self_improve(memory, learned)
 
-    all_feeds = list(dict.fromkeys(PRIORITY_FEEDS + EXTENDED_FEEDS + dynamic_feeds))
+    all_feeds = list(dict.fromkeys(PRIORITY_FEEDS + EXTENDED_FEEDS + OPPORTUNITY_FEEDS + dynamic_feeds))
     priority_set = set(PRIORITY_FEEDS)
+    opportunity_set = set(OPPORTUNITY_FEEDS)
     for f in all_feeds:
         if f not in visited:
             visited.append(f)
 
     known_set = set(all_feeds)
-    session = {"HUMAN": [], "INCOME": [], "KNOWLEDGE": [], "TRASH": []}
+    session = {"INCOME": [], "INTERSECTION": [], "TRASH": []}
     llm_calls = 0
     layers = {"cerebras": 0, "groq": 0, "gemini": 0, "none": 0}
     resonant_links = []
@@ -610,6 +659,7 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
     print(f"\n--- Gezme ---")
     for feed_url in all_feeds:
         is_p = feed_url in priority_set
+        is_opp = feed_url in opportunity_set
         try:
             feed = feedparser.parse(feed_url)
             title_f = feed.feed.get("title", feed_url)[:38]
@@ -624,7 +674,9 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                 if not title or not link:
                     continue
                 seen.add(link)
-                if not quick_filter(title, content, learned):
+                # Opportunity feeds bypass quick_filter — their job/gig items
+                # rarely carry BASE_KEYWORDS, so the classifier judges them all.
+                if not is_opp and not quick_filter(title, content, learned):
                     print(f"  . {title[:55]}")
                     continue
                 print(f"  o {title[:55]}")
@@ -648,7 +700,9 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                         if k and k not in learned and k not in BASE_KEYWORDS:
                             learned.append(k)
 
-                if bucket != "TRASH":
+                # Guard: only the two live buckets are kept; anything else
+                # (incl. a stray HUMAN/KNOWLEDGE from the LLM) is discarded.
+                if bucket in ("INCOME", "INTERSECTION"):
                     item = {
                         "date": now.strftime("%d.%m.%Y %H:%M"),
                         "title": title, "link": link,
@@ -663,7 +717,7 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
                     resonant_links.append(link)
                     stats["total_resonant"] += 1
 
-                    if action in ["COMMENT", "SUBMIT", "ATTEND", "CONNECT", "RESEARCH"]:
+                    if action in ["APPLY", "COMMENT", "SUBMIT", "ATTEND", "CONNECT", "RESEARCH"]:
                         existing = [q["link"] for q in action_queue]
                         if link not in existing:
                             action_queue.append(item)
@@ -710,7 +764,7 @@ Return only comma-separated keywords in English, lowercase. No explanation."""
     intersections = memory.get("intersections", [])
     learned_intersections = memory.get("learned_intersections", [])
 
-    session_resonant = [i for b in ["HUMAN", "INCOME", "KNOWLEDGE"] for i in session[b]]
+    session_resonant = [i for b in ["INCOME", "INTERSECTION"] for i in session[b]]
     if len(session_resonant) >= 2:
         print(f"\n--- Phase 3: Kesisim Zekasi ({len(session_resonant)} bulgu) ---")
         findings = ""
@@ -799,12 +853,12 @@ STRENGTH: (1-5)
     # === REPORT ===
     total = sum(len(v) for v in session.values())
     actions = [i for b in session.values() for i in b
-               if i.get("action") in ["COMMENT","SUBMIT","ATTEND","CONNECT","RESEARCH"]]
+               if i.get("action") in ["APPLY","COMMENT","SUBMIT","ATTEND","CONNECT","RESEARCH"]]
 
     print(f"\n{'='*50}")
     print(f"  RAPOR — {now.strftime('%H:%M')}")
     print(f"  LLM: {llm_calls} (C:{layers['cerebras']} G:{layers['groq']} Ge:{layers['gemini']})")
-    print(f"  Bulunanlar: HUMAN:{len(session['HUMAN'])} INCOME:{len(session['INCOME'])} KNOWLEDGE:{len(session['KNOWLEDGE'])}")
+    print(f"  Bulunanlar: INCOME:{len(session['INCOME'])} INTERSECTION:{len(session['INTERSECTION'])}")
     print(f"  Eylemler: {len(actions)} | Toplam kuyruk: {len(action_queue)}")
     print(f"  RSS: {len(visited)}")
     print(f"{'='*50}")
@@ -814,10 +868,10 @@ STRENGTH: (1-5)
         for b in session["INCOME"]:
             print(f"  [{b['score']}] {b['title']}\n  {b['link']}\n  → {b['action_note']}\n")
 
-    if session["HUMAN"]:
-        print(f"\n INSAN:\n")
-        for b in session["HUMAN"]:
-            print(f"  [{b['score']}] {b['title']}\n  {b['link']}\n  → {b['reason']}\n")
+    if session["INTERSECTION"]:
+        print(f"\n KESISIM:\n")
+        for b in session["INTERSECTION"]:
+            print(f"  [{b['score']}] {b['title']}\n  {b['link']}\n  → {b['action_note'] or b['reason']}\n")
 
     if actions:
         print(f"\n EYLEMLER:\n")
@@ -830,7 +884,7 @@ STRENGTH: (1-5)
         print(f"  {tag} {f}")
 
     # === EVENING: STRATEGIC REPORT ===
-    if is_evening and (action_queue or session["HUMAN"] or session["INCOME"]):
+    if is_evening and (action_queue or session["INCOME"] or session["INTERSECTION"]):
         print(f"\n--- Aksam Raporu Hazirlaniyor ---")
         evening_report(memory)
 
@@ -858,7 +912,7 @@ if __name__ == "__main__":
     print(f"LLM: Cerebras -> Groq -> Gemini")
     print(f"Hafiza: {MEMORY_FILE}")
     print(f"Rapor: {REPORT_FILE}")
-    print(f"Kovalar: HUMAN | INCOME | KNOWLEDGE | TRASH\n")
+    print(f"Kovalar: INCOME | INTERSECTION | TRASH\n")
     khashif_run()
     while True:
         schedule.run_pending()

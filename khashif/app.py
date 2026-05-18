@@ -133,7 +133,7 @@ def run_khashif_task():
         queue = memory.get("action_queue", [])
         high_priority = [
             q for q in queue
-            if q.get("action") in ["COMMENT", "CONNECT", "SUBMIT", "ATTEND"]
+            if q.get("action") in ["APPLY", "CONNECT", "RESEARCH", "SUBMIT", "ATTEND", "COMMENT"]
             and q.get("status") == "pending"
         ][:5]
         khashif_state["pending_questions"] = high_priority
@@ -188,9 +188,8 @@ def run_khashif_task():
             )
 
         buckets_html = (
-            render_bucket("HUMAN", bkts.get("HUMAN", []))
-            + render_bucket("INCOME", bkts.get("INCOME", []))
-            + render_bucket("KNOWLEDGE", bkts.get("KNOWLEDGE", []))
+            render_bucket("INCOME", bkts.get("INCOME", []))
+            + render_bucket("INTERSECTION", bkts.get("INTERSECTION", []))
         )
         buckets_section = (
             "<h3 style='font-size:16px;font-weight:300;font-style:italic;margin:24px 0 8px;'>Kovalar</h3>"
@@ -234,9 +233,8 @@ def run_khashif_task():
 <h2 style='font-size:22px;font-weight:300;font-style:italic;'>Khashif gezdi. 𓆟</h2>
 <p style='font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#a09080;margin-bottom:24px;'>{datetime.now().strftime('%d.%m.%Y %H:%M')}</p>
 <div style='display:flex;gap:12px;margin-bottom:24px;'>
-<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('HUMAN',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>HUMAN</div></div>
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('INCOME',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>INCOME</div></div>
-<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('KNOWLEDGE',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>KNOWLEDGE</div></div>
+<div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(bkts.get('INTERSECTION',[]))}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>INTERSECTION</div></div>
 <div style='background:#f5f0e8;padding:12px 16px;border-radius:6px;flex:1;text-align:center;'><div style='font-size:20px;font-style:italic;'>{len(high_priority)}</div><div style='font-size:9px;letter-spacing:1px;color:#a09080;text-transform:uppercase;'>SORULAR</div></div>
 </div>
 {net_section}
@@ -413,14 +411,12 @@ def get_buckets():
         memory = json.loads(rows[0]["value"])
         b = memory.get("buckets", {})
         return jsonify({
-            "HUMAN": b.get("HUMAN", [])[-20:],
             "INCOME": b.get("INCOME", [])[-20:],
-            "KNOWLEDGE": b.get("KNOWLEDGE", [])[-20:],
+            "INTERSECTION": b.get("INTERSECTION", [])[-20:],
             # True totals — the arrays above are capped at the last 20 items
             "counts": {
-                "HUMAN": len(b.get("HUMAN", [])),
                 "INCOME": len(b.get("INCOME", [])),
-                "KNOWLEDGE": len(b.get("KNOWLEDGE", [])),
+                "INTERSECTION": len(b.get("INTERSECTION", [])),
             },
             "TRASH_count": len(b.get("TRASH", [])),
             "action_queue": memory.get("action_queue", [])[-10:],

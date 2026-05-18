@@ -147,7 +147,7 @@ def generate(memory=None):
 
     # Rezonans içerikler — tüm bucket'lardan son 40
     all_resonant = []
-    for bucket_name in ["HUMAN", "INCOME", "KNOWLEDGE"]:
+    for bucket_name in ["INCOME", "INTERSECTION"]:
         for item in buckets.get(bucket_name, [])[-15:]:
             all_resonant.append({**item, "bucket": bucket_name})
 
@@ -250,14 +250,13 @@ def generate(memory=None):
 
     # colorOf fonksiyonu güncelle
     color_fn = """function colorOf(n) {
-  if (n.action && ['COMMENT','SUBMIT','ATTEND','CONNECT'].includes(n.action)) return '#ffffff';
+  if (n.action && ['APPLY','COMMENT','SUBMIT','ATTEND','CONNECT','RESEARCH'].includes(n.action)) return '#ffffff';
   if (n.type === 'center') return '#c8965a';
   if (n.type === 'seed') return '#c8965a';
   if (n.type === 'dynamic') return '#5ac88a';
   if (n.type === 'intersection') return '#a060c8';
-  if (n.bucket === 'HUMAN') return '#c85a7a';
   if (n.bucket === 'INCOME') return '#c8965a';
-  if (n.bucket === 'KNOWLEDGE') return '#5a8fc8';
+  if (n.bucket === 'INTERSECTION') return '#a060c8';
   return '#c85a7a';
 }"""
 
