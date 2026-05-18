@@ -131,11 +131,13 @@ def run_khashif_task():
 
         bkts = memory.get("buckets", {})
         queue = memory.get("action_queue", [])
+        # Newest 5, newest first — the queue is chronological, so [:5] would
+        # surface the OLDEST (stalest) items. The email wants the freshest.
         high_priority = [
             q for q in queue
             if q.get("action") in ["APPLY", "CONNECT", "RESEARCH", "SUBMIT", "ATTEND", "COMMENT"]
             and q.get("status") == "pending"
-        ][:5]
+        ][-5:][::-1]
         khashif_state["pending_questions"] = high_priority
 
         # Report text — latest persisted report from Supabase (key: report).

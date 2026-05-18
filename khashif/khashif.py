@@ -485,6 +485,9 @@ ACTION:
 - FOLLOW: keep watching — not yet actionable
 - IGNORE: not worth returning to
 
+REASON and ACTION_NOTE must be in clean, natural Turkish — one clear
+sentence each, never mixing in English, Arabic or any other language/script.
+
 Reply ONLY:
 BUCKET: (INCOME/INTERSECTION/TRASH)
 SCORE: (1-10 — how real and reachable the income is)
@@ -912,7 +915,18 @@ STRENGTH: (1-5 — how real and reachable the income is)
     # === SAVE ===
     for b in buckets:
         buckets[b] = buckets[b][-200:]
-    action_queue = action_queue[-100:]
+
+    # Prune the action queue — drop retired-bucket leftovers (HUMAN/KNOWLEDGE)
+    # and items older than 10 days, so the email surfaces only fresh,
+    # well-classified opportunities instead of accumulating stale junk.
+    def _fresh(q):
+        if q.get("bucket") not in ("INCOME", "INTERSECTION"):
+            return False
+        try:
+            return (now - datetime.strptime(q.get("date", ""), "%d.%m.%Y %H:%M")).days <= 10
+        except Exception:
+            return True
+    action_queue = [q for q in action_queue if _fresh(q)][-100:]
 
     memory.update({
         "seen_links": list(seen)[-3000:],
