@@ -219,6 +219,10 @@ canvas { display:block; flex:1; min-height:0; }
   <a href="https://casacaravan.space">casacaravan.space</a> · © 2026
 </footer>
 
+<!-- Door-name label — shown on hover. The CSS + JS expected this element
+     but it was missing, which crashed the canvas mousemove handler. -->
+<div id="door-label"></div>
+
 
 <div id="room-overlay">
   <div id="room-content">
@@ -857,6 +861,7 @@ canvas.addEventListener('mousemove',e=>{
   const m=ndc(e); mv.set(m.x,m.y); ray.setFromCamera(mv,camera);
   const allM=[...doorMeshes,...billboardSigns];
   const h=ray.intersectObjects(allM);
+  if(!lbl)return;
   if(h.length&&h[0].object.userData.door){lbl.textContent=h[0].object.userData.door.name;lbl.classList.add('show');canvas.style.cursor='pointer';}
   else{lbl.classList.remove('show');canvas.style.cursor='default';}
 });
