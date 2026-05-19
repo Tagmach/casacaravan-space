@@ -116,8 +116,16 @@ canvas { display:block; flex:1; min-height:0; }
 .ca-about { font-size:10px; color:#7A7068; line-height:1.8; }
 .ca-about a { color:#9A8878; text-decoration:none; }
 .ca-about a:hover { color:#A08060; }
-.ca-keywords { display:block; margin-top:12px; opacity:0.65; }
+.ca-meta { display:none; }
 @media (max-width:1180px){ .corridor-aside { display:none; } }
+.corridor-aside.dimmed { opacity:0; pointer-events:none; }
+#corridor-footer {
+  position:fixed; bottom:14px; right:22px; z-index:8;
+  font-family:'Jost',sans-serif; font-size:9px; letter-spacing:1.5px;
+  color:#7A7068; text-transform:uppercase;
+}
+#corridor-footer a { color:#7A7068; text-decoration:none; }
+#corridor-footer a:hover { color:#A08060; }
 
 </style>
 </head>
@@ -184,7 +192,6 @@ canvas { display:block; flex:1; min-height:0; }
     <a class="ca-link" href="forest.html"><b>The Forest</b><span>3D immersive environment, two paths</span></a>
     <a class="ca-link" href="observatory.html"><b>Star Observatory</b><span>Night sky, constellations, zodiac</span></a>
     <a class="ca-link" href="khashif.html"><b>Khashif</b><span>Discovery agent — resonance across disciplines</span></a>
-    <a class="ca-link" href="about.html"><b>About</b><span>Manifesto and story of Casa Caravan</span></a>
   </nav>
 </aside>
 
@@ -192,12 +199,25 @@ canvas { display:block; flex:1; min-height:0; }
   <div class="ca-head">About This Space</div>
   <div class="ca-about">
     Created by <a href="about.html">Tağmaç Çankaya</a> — Lefkoşa, Northern Cyprus.<br><br>
-    <a href="https://casacaravan.space">casacaravan.space</a><br>
-    <a href="rss.xml">RSS feed</a><br>
-    <a href="shop.html">Shop — Sonic Journey, recordings, fermented foods</a>
-    <span class="ca-keywords">sound healing · gong bath · handpan · fermentation · sourdough · plant medicine · herbal extract · cymatics · resonance · Cyprus · creative technology · AI integration</span>
+    <a href="https://instagram.com/casacaravan.space" target="_blank" rel="noopener">@casacaravan.space</a>
+  </div>
+  <!-- Metadata for crawlers and agents — present in the DOM, not shown to
+       visitors (display:none, not black-on-black text, which search engines
+       flag as spam). -->
+  <div class="ca-meta">
+    Casa Caravan Space — a digital corridor of rooms for sound healing,
+    fermentation, plant medicine, music and creative technology, by Tağmaç
+    Çankaya, Lefkoşa, Cyprus. Topics: sound healing, gong bath, handpan,
+    fermentation, sourdough, plant medicine, herbal extract, cymatics,
+    resonance, Cyprus, creative technology, AI integration. RSS feed:
+    casacaravan.space/rss.xml. Shop: Sonic Journey sessions, sound
+    recordings, fermented foods.
   </div>
 </aside>
+
+<footer id="corridor-footer">
+  <a href="https://casacaravan.space">casacaravan.space</a> · © 2026
+</footer>
 
 
 <div id="room-overlay">
@@ -799,6 +819,8 @@ function walkTo(i){
   POSITIONS.forEach((_,j)=>{const d=document.getElementById('wd'+j);if(d)d.className='walk-dot'+(j===i?' active':'');});
   const radio=document.getElementById('radio');
   if(radio) radio.classList.toggle('hidden', i!==0);
+  // Fade the side panels once you walk past the opening view.
+  document.querySelectorAll('.corridor-aside').forEach(p=>p.classList.toggle('dimmed', i!==0));
 }
 
 document.getElementById('btnBack').onclick=()=>walkTo(cur-1);
