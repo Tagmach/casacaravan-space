@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiences — Sonic Journey · Casa Caravan Space</title>
+<meta name="description" content="Sonic Journey — an immersive online sound session by Tağmaç Çankaya. Hand-forged gongs, handpan and shakers guide you into deep rest.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://casacaravan.space/experiences.html">
+<link rel="alternate" type="application/rss+xml" title="Casa Caravan Space" href="https://casacaravan.space/rss.xml">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Sonic Journey — immersive sound session",
+  "description": "A 45-minute immersive online sound session: hand-forged gongs, handpan and shakers guiding the listener into restorative Alpha and Theta states.",
+  "provider": {"@type":"Person","name":"Tağmaç Çankaya"},
+  "areaServed": "Online",
+  "url": "https://casacaravan.space/experiences.html"
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#0a0806; --cream:#D2C3AF; --gold:#A08060; --dim:#7A7068;
+  --border:rgba(160,128,96,0.14); --star:#C8A84A;
+}
+body { background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; line-height:1.75; min-height:100vh; }
+a { color:var(--gold); }
+nav {
+  position:sticky; top:0; z-index:10;
+  padding:18px 32px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border); background:rgba(10,8,6,0.95); backdrop-filter:blur(8px);
+}
+.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--cream); text-decoration:none; }
+.nav-back { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; }
+.nav-back:hover { color:var(--gold); }
+.wrap { max-width:660px; margin:0 auto; padding:72px 32px 110px; }
+.label { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--dim); }
+h1 { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(36px,6.5vw,58px); color:var(--cream); margin:14px 0 6px; line-height:1.15; }
+.sub { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold); margin-bottom:40px; }
+p { margin-bottom:20px; color:rgba(210,195,175,0.82); font-size:15px; }
+.divider { width:40px; height:1px; background:var(--gold); opacity:0.4; margin:52px 0; }
+.h2 { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:27px; color:var(--cream); margin-bottom:22px; }
+.opt { display:flex; justify-content:space-between; align-items:baseline; padding:13px 0; border-bottom:1px solid var(--border); }
+.opt:last-of-type { border-bottom:none; }
+.opt-name { font-size:13px; letter-spacing:0.5px; }
+.opt-name .primary { color:var(--cream); }
+.opt-name small { color:var(--dim); }
+.opt-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:21px; color:var(--gold); }
+.book {
+  display:inline-block; margin-top:30px;
+  font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--bg); background:var(--gold); padding:15px 36px; border-radius:100px;
+  text-decoration:none; transition:opacity 0.2s;
+}
+.book:hover { opacity:0.85; }
+.review { padding:18px 0; border-bottom:1px solid rgba(160,128,96,0.09); }
+.review:last-child { border-bottom:none; }
+.review-stars { color:var(--star); font-size:12px; letter-spacing:2px; }
+.review-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--cream); line-height:1.7; margin:7px 0 6px; }
+.review-author { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); }
+.rv-form { margin-top:26px; padding:24px; border:1px solid var(--border); border-radius:10px; }
+.rv-form input, .rv-form textarea {
+  width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--border);
+  border-radius:6px; color:var(--cream); font-family:'Jost',sans-serif; font-size:13px;
+  padding:11px 14px; margin-bottom:12px;
+}
+.rv-form textarea { min-height:92px; resize:vertical; }
+.rv-form input:focus, .rv-form textarea:focus { outline:none; border-color:var(--gold); }
+.star-pick { font-size:26px; letter-spacing:4px; margin-bottom:14px; }
+.star-pick span { cursor:pointer; color:var(--dim); transition:color 0.15s; }
+.star-pick span.on { color:var(--star); }
+.rv-btn {
+  font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--bg); background:var(--gold); border:none;
+  padding:12px 30px; border-radius:100px; cursor:pointer;
+}
+.rv-msg { font-size:12px; color:var(--gold); margin-top:12px; min-height:16px; font-style:italic; }
+footer { text-align:center; padding:38px; font-size:10px; letter-spacing:1.5px; color:var(--dim); border-top:1px solid var(--border); }
+footer a { color:var(--dim); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Casa Caravan Space</a>
+  <a href="corridor-3d.html" class="nav-back">← corridor</a>
+</nav>
+
+<div class="wrap">
+  <span class="label">Experiences</span>
+  <h1>Sonic Journey</h1>
+  <div class="sub">An immersive sound session · online</div>
+
+  <p>A 45-minute immersive sound session designed to be your sanctuary in time and space — not merely a listening event, but a deeply personal expedition into the landscape of your own mind.</p>
+  <p>Tağmaç weaves an organic soundscape with hand-forged gongs — sounds you do not just hear, but feel reverberating through your whole being — handpan, gentle shakers and bells. The layered sound bath encourages your brainwaves to shift from Beta into the restorative Alpha and Theta states.</p>
+  <p>Joined live, from wherever you are. Headphones and a quiet space to lie down are all you need.</p>
+
+  <div class="opt"><span class="opt-name"><span class="primary">Online session</span> &nbsp;<small>live, from anywhere</small></span><span class="opt-price">€60</span></div>
+  <div class="opt"><span class="opt-name">In person — individual &nbsp;<small>Lefkoşa</small></span><span class="opt-price">€75</span></div>
+  <div class="opt"><span class="opt-name">In person — duo &nbsp;<small>per person</small></span><span class="opt-price">€37.50</span></div>
+
+  <a class="book" href="https://wa.me/905338800870?text=Sonic%20Journey%20%E2%80%94%20I%20would%20like%20to%20book%20a%20session" target="_blank" rel="noopener">Book via WhatsApp</a>
+
+  <div class="divider"></div>
+
+  <div class="h2">What people say</div>
+  <div id="reviews">
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I experienced a true journey; an inner journey into a place I had never reached before. My body received the sounds and vibrations, not just through my ears, but through every part of me."</div><div class="review-author">Mehdi Abedi · Dec 2025</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"It was a dance between my mind trying to analyze what is happening, and the moments where all this let go and I dissolved into a deep relaxation — feeling the music on the levels of mind, body, energy, all together in a perfect resonance."</div><div class="review-author">Jana Rutova · Dec 2025</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Goosebumps. Real chills. The strongest feeling came from the shaker, not the gongs. Knowing he made the gongs himself made it even more special."</div><div class="review-author">Rūta Staskeviciute · Jan 2026</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Unexpectedly impactful. Each sound had its own character, texture, and emotion. There is a power in sounds which can change inner and deep feelings."</div><div class="review-author">Tuğberk Emirzade · Mar 2026</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I've joined a number of times and it's been really interesting to see how they've evolved. It feels like being guided through a space with sound — sometimes subtle, sometimes intense, but always with a sense of flow."</div><div class="review-author">Barış Parlan · Mar 2026</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"4 kez katıldım ve gerçekten her seferinde 'iyi ki geldim' dedim. Çıkışta inanılmaz hafiflemişlik hissetmek ve o geceki uyku kalitemde belirgin bir fark."</div><div class="review-author">Ahmet Baba · 2025</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Müthiş ve çok rahatlatıcı bir deneyimdi. Ses ve frekansların hayatımızda ne kadar önemli olduğunu farkettim."</div><div class="review-author">Hasan İlban · 2025</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"I walked in carrying a weight. But the moment the music began, everything shifted. Gentle vibrations delicately untied the emotional knots I didn't know I was carrying."</div><div class="review-author">Nora Abouzi · 2025</div></div>
+    <div class="review"><div class="review-stars">★★★★★</div><div class="review-text">"Letting yourself fall into the embrace of those sounds in a cozy, home-like atmosphere… gratitude to the hands that carried those sounds to us."</div><div class="review-author">Sergen Uysal · 2025</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="h2">Leave a review</div>
+  <p style="font-size:13px;">If you have travelled a Sonic Journey, share what it was for you. Reviews appear here once approved.</p>
+  <div class="rv-form">
+    <input id="rv-name" type="text" placeholder="Your name" maxlength="60" autocomplete="name">
+    <div class="star-pick" id="rv-stars">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+    <textarea id="rv-text" placeholder="Your experience…" maxlength="600"></textarea>
+    <button class="rv-btn" id="rv-btn">Send review</button>
+    <div class="rv-msg" id="rv-msg"></div>
+  </div>
+</div>
+
+<footer><a href="https://casacaravan.space">casacaravan.space</a> · © 2026</footer>
+
+<script>
+const SUPABASE_URL="https://iwfvlatywksvnnxymweb.supabase.co";
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens";
+
+function esc(s){return String(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));}
+
+// Star picker
+let rvRating=5;
+const sp=document.getElementById('rv-stars');
+function paintStars(){ sp.querySelectorAll('span').forEach(s=>s.classList.toggle('on', (+s.dataset.v)<=rvRating)); }
+sp.querySelectorAll('span').forEach(s=>{ s.onclick=()=>{ rvRating=+s.dataset.v; paintStars(); }; });
+paintStars();
+
+// Load approved reviews from Supabase and append after the nine curated ones
+async function loadReviews(){
+  try{
+    const r=await fetch(SUPABASE_URL+"/rest/v1/reviews?approved=eq.true&select=name,rating,text&order=created_at.desc",
+      {headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}});
+    if(!r.ok) return;
+    const rows=await r.json();
+    if(!Array.isArray(rows)) return;
+    const box=document.getElementById('reviews');
+    rows.forEach(rv=>{
+      const stars='★'.repeat(Math.max(1,Math.min(5,rv.rating||5)));
+      const d=document.createElement('div'); d.className='review';
+      d.innerHTML='<div class="review-stars">'+stars+'</div>'+
+        '<div class="review-text">"'+esc(rv.text)+'"</div>'+
+        '<div class="review-author">'+esc(rv.name)+'</div>';
+      box.appendChild(d);
+    });
+  }catch(e){}
+}
+
+// Submit a review — lands in Supabase as unapproved, pending moderation
+async function submitReview(){
+  const name=document.getElementById('rv-name').value.trim();
+  const text=document.getElementById('rv-text').value.trim();
+  const msg=document.getElementById('rv-msg');
+  if(name.length<2||text.length<8){ msg.textContent="Please add your name and a few words."; return; }
+  msg.textContent="Sending…";
+  try{
+    const r=await fetch(SUPABASE_URL+"/rest/v1/reviews",{
+      method:"POST",
+      headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,
+        "Content-Type":"application/json","Prefer":"return=minimal"},
+      body:JSON.stringify({name:name,rating:rvRating,text:text,approved:false})
+    });
+    if(r.ok){
+      msg.textContent="Thank you — your review is received and will appear once approved.";
+      document.getElementById('rv-name').value="";
+      document.getElementById('rv-text').value="";
+      rvRating=5; paintStars();
+    } else {
+      msg.textContent="Could not send right now — please try again later.";
+    }
+  }catch(e){ msg.textContent="Could not send right now — please try again later."; }
+}
+document.getElementById('rv-btn').onclick=submitReview;
+
+loadReviews();
+</script>
+</body>
+</html>
