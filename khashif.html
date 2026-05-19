@@ -34,11 +34,11 @@
 
 <style>
 :root {
-  --bg: #080705;
-  --border: rgba(160,128,96,0.12);
-  --gold: #A08060;
-  --cream: #D2C3AF;
-  --dim: #7A7068;
+  --bg: #060f0a;
+  --border: rgba(70,176,107,0.12);
+  --gold: #6fe49b;
+  --cream: #d6e8dc;
+  --dim: #7e9a88;
   --dark: #1A1208;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  background: rgba(8,7,5,0.92); backdrop-filter: blur(8px);
+  background: rgba(6,15,10,0.92); backdrop-filter: blur(8px);
 }
 .nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--cream); text-decoration:none; }
 .nav-back { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
@@ -68,7 +68,7 @@ nav {
   font-size:clamp(36px,5.5vw,62px); line-height:1.3; color:var(--cream); margin-bottom:64px;
 }
 
-.body-text { font-size:14px; line-height:2.1; color:rgba(210,195,175,0.75); }
+.body-text { font-size:14px; line-height:2.1; color:rgba(214,232,220,0.75); }
 .body-text p { margin-bottom:28px; }
 
 .pull-quote {
@@ -88,7 +88,7 @@ nav {
   border: 1px solid var(--border); border-radius: 8px; padding: 20px;
   text-decoration: none; transition: all 0.2s;
 }
-.domain:hover { border-color: rgba(160,128,96,0.35); background: rgba(160,128,96,0.03); }
+.domain:hover { border-color: rgba(70,176,107,0.35); background: rgba(70,176,107,0.03); }
 .domain-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--cream); margin-bottom:6px; }
 .domain-desc { font-size:10px; letter-spacing:0.5px; color:var(--dim); line-height:1.7; }
 
@@ -96,14 +96,14 @@ nav {
 
 .closing {
   font-family:'Cormorant Garamond',serif; font-style:italic;
-  font-size:20px; color:rgba(210,195,175,0.85); line-height:1.9; margin-bottom:40px;
+  font-size:20px; color:rgba(214,232,220,0.85); line-height:1.9; margin-bottom:40px;
 }
 
 /* Bot-friendly structured content — visually subtle, semantically rich */
 .bot-content { margin-top:60px; padding-top:40px; border-top:1px solid var(--border); }
 .bot-content h2 { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:22px; color:var(--cream); margin-bottom:16px; font-weight:300; }
 .bot-content ul { list-style:none; }
-.bot-content li { font-size:13px; color:rgba(210,195,175,0.6); line-height:2; padding:4px 0; border-bottom:1px solid rgba(160,128,96,0.06); }
+.bot-content li { font-size:13px; color:rgba(214,232,220,0.6); line-height:2; padding:4px 0; border-bottom:1px solid rgba(70,176,107,0.06); }
 .bot-content li:last-child { border-bottom:none; }
 .bot-content a { color:var(--gold); text-decoration:none; }
 .bot-content a:hover { text-decoration:underline; }
@@ -141,16 +141,16 @@ nav {
   text-transform: uppercase; padding: 0 20px; cursor: pointer;
   transition: background 0.2s;
 }
-.login-btn:hover { background: rgba(160,128,96,0.08); }
+.login-btn:hover { background: rgba(70,176,107,0.08); }
 .login-err { font-size: 10px; color: rgba(200,90,90,0.7); margin-top: 12px; letter-spacing: 1px; display: none; }
 #login-hint {
   position: fixed; bottom: 24px; right: 24px; z-index: 100;
   font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: rgba(160,128,96,0.5); cursor: pointer; transition: all 0.2s;
-  border: 1px solid rgba(160,128,96,0.2); padding: 8px 14px; border-radius: 100px;
-  background: rgba(8,7,5,0.8); backdrop-filter: blur(8px);
+  color: rgba(70,176,107,0.5); cursor: pointer; transition: all 0.2s;
+  border: 1px solid rgba(70,176,107,0.2); padding: 8px 14px; border-radius: 100px;
+  background: rgba(6,15,10,0.8); backdrop-filter: blur(8px);
 }
-#login-hint:hover { color: var(--gold); border-color: rgba(160,128,96,0.5); }
+#login-hint:hover { color: var(--gold); border-color: rgba(70,176,107,0.5); }
 
 /* === DASHBOARD === */
 #dashboard {
@@ -192,13 +192,13 @@ nav {
 }
 .dash-q-action {
   font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
-  color: var(--gold); padding: 4px 10px; border: 1px solid rgba(160,128,96,0.3);
+  color: var(--gold); padding: 4px 10px; border: 1px solid rgba(70,176,107,0.3);
   border-radius: 100px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
 }
 .dash-q-body { flex: 1; min-width: 0; }
 .dash-q-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; color: var(--cream); margin-bottom: 4px; }
 .dash-q-note { font-size: 11px; color: var(--dim); line-height: 1.7; margin-bottom: 8px; }
-.dash-q-link { font-size: 10px; color: rgba(160,128,96,0.5); word-break: break-all; }
+.dash-q-link { font-size: 10px; color: rgba(70,176,107,0.5); word-break: break-all; }
 .dash-q-btns { display: flex; gap: 8px; margin-top: 10px; }
 .btn-yes, .btn-no {
   font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -214,7 +214,7 @@ nav {
   padding: 10px 24px; border: 1px solid var(--border); border-radius: 100px;
   color: var(--gold); background: none; cursor: pointer; transition: all 0.2s;
 }
-.dash-trigger:hover { border-color: var(--gold); background: rgba(160,128,96,0.06); }
+.dash-trigger:hover { border-color: var(--gold); background: rgba(70,176,107,0.06); }
 .dash-running { color: var(--dim); font-size: 10px; letter-spacing: 1px; margin-left: 12px; }
 @media(max-width:600px){
   .dash-grid { grid-template-columns: repeat(2,1fr); }
@@ -258,19 +258,19 @@ nav {
 .bucket-item-note { font-size:11px; color:var(--dim); line-height:1.7; }
 .bucket-item-meta {
   font-size:9px; letter-spacing:1px; text-transform:uppercase;
-  color:rgba(160,128,96,0.6); margin-top:6px;
+  color:rgba(70,176,107,0.6); margin-top:6px;
 }
 
 /* intersections */
 .ix-item {
   padding:14px 16px; border:1px solid var(--border);
-  border-left:2px solid #a060c8; border-radius:8px; margin-bottom:10px;
+  border-left:2px solid #6fe49b; border-radius:8px; margin-bottom:10px;
 }
 .ix-pair {
   font-family:'Cormorant Garamond',serif; font-style:italic;
   font-size:17px; color:#c89adc; margin-bottom:6px;
 }
-.ix-insight { font-size:12px; color:rgba(210,195,175,0.8); line-height:1.7; margin-bottom:6px; }
+.ix-insight { font-size:12px; color:rgba(214,232,220,0.8); line-height:1.7; margin-bottom:6px; }
 .ix-opp { font-size:11px; color:var(--gold); line-height:1.7; }
 .ix-strength { font-size:9px; letter-spacing:1px; text-transform:uppercase; color:var(--dim); margin-top:6px; }
 
@@ -285,7 +285,7 @@ nav {
   color:var(--gold); text-decoration:none; border:1px solid var(--border);
   border-radius:100px; padding:8px 16px; transition:all 0.2s;
 }
-.viz-link:hover { border-color:var(--gold); background:rgba(160,128,96,0.06); }
+.viz-link:hover { border-color:var(--gold); background:rgba(70,176,107,0.06); }
 @media(max-width:600px){ .net-grid { grid-template-columns:1fr; } }
 
 .cmd-wrap { display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:8px; }
@@ -299,9 +299,9 @@ nav {
   color:var(--gold); font-size:9px; letter-spacing:2px; text-transform:uppercase;
   padding:0 20px; cursor:pointer; transition:background 0.2s; white-space:nowrap;
 }
-.cmd-send:hover { background:rgba(160,128,96,0.08); }
+.cmd-send:hover { background:rgba(70,176,107,0.08); }
 .cmd-hint { font-size:10px; color:var(--dim); line-height:1.8; margin-bottom:12px; }
-.cmd-result { font-size:10px; color:rgba(160,128,96,0.7); font-style:italic; margin-top:6px; min-height:18px; }
+.cmd-result { font-size:10px; color:rgba(70,176,107,0.7); font-style:italic; margin-top:6px; min-height:18px; }
 .btn-action {
   font-size:9px; letter-spacing:1px; text-transform:uppercase;
   padding:5px 12px; border-radius:100px; cursor:pointer; transition:all 0.2s; border:1px solid;
@@ -311,24 +311,24 @@ nav {
 .btn-research:hover { background:rgba(122,154,184,0.1); }
 .btn-attend { color:#7ab87a; border-color:rgba(122,184,122,0.3); background:none; }
 .btn-attend:hover { background:rgba(122,184,122,0.1); }
-.btn-submit { color:#b8a07a; border-color:rgba(184,160,122,0.3); background:none; }
-.btn-submit:hover { background:rgba(184,160,122,0.1); }
+.btn-submit { color:#6fe49b; border-color:rgba(70,176,107,0.3); background:none; }
+.btn-submit:hover { background:rgba(70,176,107,0.1); }
 .agent-item { padding:12px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:8px; }
 .agent-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:var(--cream); margin-bottom:4px; }
 .agent-meta { font-size:10px; color:var(--dim); line-height:1.8; }
-.visit-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(160,128,96,0.06); font-size:11px; }
+.visit-item { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(70,176,107,0.06); font-size:11px; }
 .visit-page { color:var(--cream); }
 .visit-time { color:var(--dim); font-size:10px; }
 
 /* === MUSIC ANALYSIS === */
 .music-drop {
-  border: 1px dashed rgba(160,128,96,0.3); border-radius: 8px;
+  border: 1px dashed rgba(70,176,107,0.3); border-radius: 8px;
   padding: 32px; text-align: center; cursor: pointer;
   transition: all 0.2s; margin-bottom: 16px;
   background: rgba(255,255,255,0.02);
 }
 .music-drop:hover, .music-drop.dragover {
-  border-color: var(--gold); background: rgba(160,128,96,0.05);
+  border-color: var(--gold); background: rgba(70,176,107,0.05);
 }
 .music-drop-label { font-size:13px; color:var(--dim); line-height:2; }
 .music-drop-icon { font-size:28px; margin-bottom:8px; }
@@ -342,11 +342,11 @@ nav {
 .music-file-status { font-size:10px; color:var(--dim); }
 .music-analyze-btn {
   font-size:10px; letter-spacing:2px; text-transform:uppercase;
-  padding:10px 28px; border:1px solid rgba(160,128,96,0.4);
+  padding:10px 28px; border:1px solid rgba(70,176,107,0.4);
   color:var(--gold); background:none; border-radius:100px;
   cursor:pointer; transition:all 0.2s; width:100%;
 }
-.music-analyze-btn:hover { background:rgba(160,128,96,0.08); border-color:var(--gold); }
+.music-analyze-btn:hover { background:rgba(70,176,107,0.08); border-color:var(--gold); }
 .music-analyze-btn:disabled { opacity:0.4; cursor:not-allowed; }
 .music-results { margin-top:20px; }
 .music-result-card {
@@ -366,15 +366,15 @@ nav {
 }
 .tag-genre { color:#7a9ab8; border-color:rgba(122,154,184,0.3); }
 .tag-flow { color:#7ab87a; border-color:rgba(122,184,122,0.3); }
-.tag-energy { color:#b8a07a; border-color:rgba(184,160,122,0.3); }
+.tag-energy { color:#6fe49b; border-color:rgba(70,176,107,0.3); }
 .tag-use { color:#9a7ab8; border-color:rgba(154,122,184,0.3); }
-.music-desc { font-size:13px; color:rgba(210,195,175,0.8); line-height:1.9; margin-bottom:8px; }
+.music-desc { font-size:13px; color:rgba(214,232,220,0.8); line-height:1.9; margin-bottom:8px; }
 .music-desc-en { font-size:12px; color:var(--dim); line-height:1.8; font-style:italic; }
 .music-resonance { 
   font-size:10px; letter-spacing:1px; color:var(--gold); 
   margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
 }
-.freq-bar { height:4px; background:rgba(160,128,96,0.15); border-radius:2px; margin:4px 0; overflow:hidden; }
+.freq-bar { height:4px; background:rgba(70,176,107,0.15); border-radius:2px; margin:4px 0; overflow:hidden; }
 .freq-bar-fill { height:100%; background:var(--gold); border-radius:2px; transition:width 0.6s ease; }
 .freq-label { font-size:9px; color:var(--dim); display:flex; justify-content:space-between; }
 </style>
@@ -391,13 +391,16 @@ nav {
   <span class="label">Khashif · 𓆟 · Discovery</span>
 
   <div class="opening">
-    For those who search<br>
-    without knowing exactly<br>
-    what they are looking for.
+    The open web is dark.<br>
+    Khashif does not see it — it sounds it.<br>
+    A signal goes out; it listens for the echo,<br>
+    and weaves a network from what answers.
   </div>
 
   <div class="body-text">
-    <p>Khashif — from the Arabic كشف, to uncover, to reveal, to discover. It is the part of Casa Caravan Space that looks outward: it roams the network, recognizes patterns across fields, finds the connections others miss, and asks not just "what is this?" but "what does this want to become?"</p>
+    <p>Khashif — from the Arabic كشف: to uncover, to reveal, to discover. It is the discovery agent of Casa Caravan Space. Like a bat in a dark room, it navigates by sound: day and night it sends signals into the open web — reading feeds, following links from link to link, searching — and listens for what resonates back.</p>
+
+    <p>What returns, it weaves. Khashif connects resonant people, projects and communities into a living network around this work — and watches for the intersection: where two unrelated domains (sound and code, fermentation and data, a craft and a market) meet to become something neither could be alone. From that weave real things emerge — collaborations, projects, an open call or grant worth answering. Khashif brings them to Tağmaç, who decides. And it gives as much as it gathers, carrying Casa Caravan's tools, sound and knowledge outward, to where they resonate.</p>
   </div>
 
   <div class="divider"></div>
@@ -419,7 +422,7 @@ nav {
     </div>
     <div style="margin-top:24px;padding:20px 24px;border:1px solid var(--border);border-radius:8px;">
       <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--cream);margin-bottom:10px;">Bring Khashif a thread to follow.</div>
-      <div style="font-size:13px;color:rgba(210,195,175,0.6);line-height:2.2;">
+      <div style="font-size:13px;color:rgba(214,232,220,0.6);line-height:2.2;">
         WhatsApp: <span style="color:var(--gold);">+90 533 880 0870</span> &nbsp;·&nbsp;
         <a href="mailto:tagmacc@gmail.com" style="color:var(--gold);text-decoration:none;">tagmacc@gmail.com</a>
       </div>
@@ -456,9 +459,8 @@ nav {
   <div class="divider"></div>
 
   <div class="closing">
-    Khashif does not wait at the entrance.<br>
-    It meets you where the signal gets stronger.<br><br>
-    <span style="font-size:16px;opacity:0.7;">A gong is struck once.<br>The sound decides where it goes.</span>
+    Khashif is always listening.<br>
+    Bring it a thread — see what it connects.
   </div>
 
   <!-- Structured content for bots and crawlers -->
@@ -631,7 +633,7 @@ nav {
 
     <div class="dash-section">
       <div class="dash-section-title">Last report / research output</div>
-      <pre id="d-report" style="font-size:13px;color:rgba(210,195,175,0.85);line-height:1.9;white-space:pre-wrap;font-family:'Jost',sans-serif;max-height:500px;overflow-y:auto;"></pre>
+      <pre id="d-report" style="font-size:13px;color:rgba(214,232,220,0.85);line-height:1.9;white-space:pre-wrap;font-family:'Jost',sans-serif;max-height:500px;overflow-y:auto;"></pre>
     </div>
   </div>
 
