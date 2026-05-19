@@ -118,18 +118,6 @@ nav {
 .review-text { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--dark); line-height:1.75; margin-bottom:6px; }
 .review-author { font-size:11px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
 
-/* FOOD GRID */
-.food-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
-.food-card { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:all 0.2s; }
-.food-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(80,60,40,0.08); }
-.food-img { width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--surface); display:block; }
-.food-body { padding:16px; }
-.food-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); margin-bottom:6px; }
-.food-desc { font-size:12px; letter-spacing:0.5px; color:var(--dim); line-height:1.8; margin-bottom:12px; }
-.food-footer { display:flex; align-items:flex-end; justify-content:space-between; }
-.food-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); }
-.shipping-note { font-size:11px; color:var(--dim); margin-top:16px; letter-spacing:1px; }
-
 /* MINI PLAYER */
 #mini-player {
   position:fixed; bottom:0; left:0; right:0; z-index:45;
@@ -191,8 +179,6 @@ input[type=range].vol-slider::-webkit-slider-thumb { -webkit-appearance:none; wi
 .form-input:focus { border-color:rgba(122,92,58,0.4); }
 .form-input::placeholder { color:var(--dim); font-style:italic; }
 textarea.form-input { resize:none; }
-.shipping-notice { font-size:9px; letter-spacing:1px; color:var(--dim); line-height:1.8; padding:14px 16px; border:1px solid var(--border); border-radius:6px; margin-bottom:24px; }
-.shipping-notice strong { color:var(--dark); font-weight:400; }
 
 /* PAYMENT OPTIONS */
 .payment-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
@@ -237,7 +223,6 @@ textarea.form-input { resize:none; }
   .hero,.section{padding-left:20px;padding-right:20px;}
   .hero{flex-direction:column;gap:8px;}
   .music-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
-  .food-grid{grid-template-columns:1fr;}
   .payment-opts{grid-template-columns:1fr 1fr;}
   #cart-bar,#mini-player{padding:12px 20px;}
   .player-progress-wrap,.player-vol-wrap{display:none;}
@@ -271,9 +256,6 @@ textarea.form-input { resize:none; }
 <!-- Sonic Journey moved to its own room: experiences.html -->
 
 <!-- Khashif services moved to khashif.html — its own room -->
-
-<!-- Kitchen items (nut butters, sourdough starter) retired — shop is
-     digital products and online services only. -->
 
 <!-- MINI PLAYER -->
 <div id="mini-player">
@@ -313,7 +295,6 @@ textarea.form-input { resize:none; }
       <div class="order-title">Your Order</div>
       <div class="order-subtitle">review & complete</div>
       <div id="order-items"></div>
-      <div id="order-shipping" style="display:none;" class="shipping-notice"><strong>Delivery</strong> — Cyprus only. Address required. Shipping: <strong>+€5</strong></div>
 
       <div class="form-section">
         <label class="form-label">Contact</label>
@@ -322,10 +303,6 @@ textarea.form-input { resize:none; }
           <input class="form-input" id="f-email" type="email" placeholder="Email" maxlength="100">
           <input class="form-input" id="f-phone" type="tel" placeholder="Phone" maxlength="30">
         </div>
-      </div>
-      <div class="form-section" id="address-section" style="display:none;">
-        <label class="form-label">Delivery Address</label>
-        <div class="form-row"><textarea class="form-input" id="f-address" rows="2" placeholder="Street, city, postcode"></textarea></div>
       </div>
 
       <div class="form-section">
@@ -533,13 +510,13 @@ function removeFromCart(i){
   cart.splice(i,1);
   updateCartBar();renderOrderItems();
 }
-function cartTotal(){return cart.reduce((s,i)=>s+i.price,0)+(cart.some(i=>i.type==='physical')?5:0);}
+function cartTotal(){return cart.reduce((s,i)=>s+i.price,0);}
 function updateCartBar(){
   const bar=document.getElementById('cart-bar');
   if(!cart.length){bar.classList.remove('visible');updateBottom();return;}
   bar.classList.add('visible');
   document.getElementById('cart-count-label').textContent=cart.length+(cart.length===1?' item':' items');
-  document.getElementById('cart-total-label').textContent='— €'+cartTotal().toFixed(2)+(cart.some(i=>i.type==='physical')?' (incl. €5 shipping)':'');
+  document.getElementById('cart-total-label').textContent='— €'+cartTotal().toFixed(2);
   updateBottom();
 }
 function updateBottom(){
@@ -558,11 +535,7 @@ function openOrder(){document.getElementById('order-overlay').classList.add('ope
 function closeOrder(){document.getElementById('order-overlay').classList.remove('open');}
 
 function renderOrderItems(){
-  const hasP=cart.some(i=>i.type==='physical');
-  document.getElementById('order-shipping').style.display=hasP?'block':'none';
-  document.getElementById('address-section').style.display=hasP?'block':'none';
-  let html=cart.map((item,i)=>`<div class="order-item"><div class="order-item-name">${item.name}</div><div class="order-item-price">€${item.price.toFixed(2)}</div><div class="order-item-remove" onclick="removeFromCart(${i})">✕</div></div>`).join('');
-  if(hasP)html+=`<div class="order-item"><div class="order-item-name" style="font-size:12px;color:var(--dim);font-style:normal">Shipping</div><div class="order-item-price">€5.00</div><div></div></div>`;
+  const html=cart.map((item,i)=>`<div class="order-item"><div class="order-item-name">${item.name}</div><div class="order-item-price">€${item.price.toFixed(2)}</div><div class="order-item-remove" onclick="removeFromCart(${i})">✕</div></div>`).join('');
   document.getElementById('order-items').innerHTML=html+`<div class="order-total"><div class="order-total-label">Total</div><div class="order-total-price">€${cartTotal().toFixed(2)}</div></div>`;
 }
 
@@ -687,11 +660,8 @@ async function submitOrder(){
   const email=document.getElementById('f-email').value.trim();
   const phone=document.getElementById('f-phone').value.trim();
   const note=document.getElementById('f-note').value.trim();
-  const address=document.getElementById('f-address')?.value.trim()||'';
-  const hasP=cart.some(i=>i.type==='physical');
   if(!name||!email){alert('Name and email are required.');return;}
   if(!selPayment){alert('Please select a payment method.');return;}
-  if(hasP&&!address){alert('Please enter a delivery address.');return;}
   if(!cart.length)return;
 
   const btn=document.getElementById('send-btn');
@@ -708,7 +678,7 @@ async function submitOrder(){
     product:cart.map(i=>`${i.name} (€${i.price.toFixed(2)})`).join(', '),
     price:cartTotal(),
     payment_method:selPayment,
-    payment_note:[note,hasP?`Address: ${address}`:'',phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '),
+    payment_note:[note,phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '),
     approved:false
   };
 
