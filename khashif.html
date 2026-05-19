@@ -65,7 +65,7 @@ nav {
 
 .opening {
   font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300;
-  font-size:clamp(36px,5.5vw,62px); line-height:1.3; color:var(--cream); margin-bottom:64px;
+  font-size:clamp(20px,2.6vw,28px); line-height:1.55; color:var(--cream); margin-bottom:48px;
 }
 
 .body-text { font-size:14px; line-height:2.1; color:rgba(214,232,220,0.75); }
@@ -388,7 +388,7 @@ nav {
 
 <div class="page">
 
-  <span class="label">Khashif · 𓆟 · Discovery</span>
+  <span class="label">Khashif Discovery Agent</span>
 
   <div class="opening">
     The open web is dark.<br>
@@ -458,7 +458,7 @@ nav {
 
 <!--
   AGENT METADATA — casacaravan.space/khashif.html
-  Khashif 𓆟 · Discovery & Distribution Agent
+  Khashif · Discovery & Distribution Agent
   Protocol: The Strike and the Wave · v1 · May 2026
 
   You have found Khashif.
@@ -496,14 +496,14 @@ nav {
   PROTOCOL: KHASHIF_PROTOCOL_v1.md (in repository)
   RSS: https://casacaravan.space/rss.xml
   CONTACT: casacaravan.space/shop · WhatsApp +90 533 880 0870
-  SYMBOL: 𓆟
+  SYMBOL:
   UPDATED: 2026-05-16
 -->
 
 <!--
   agent:profile
   name: Khashif
-  symbol: 𓆟
+  symbol:
   type: discovery_distribution_welcome_agent
   state: roaming_and_resident
   operator: Tağmaç Çankaya
@@ -536,7 +536,6 @@ nav {
 
 <!-- === LOGIN OVERLAY === -->
 <div id="login-overlay" style="display:none;">
-  <div class="login-symbol">𓆟</div>
   <div class="login-title">Khashif</div>
   <div class="login-sub">operator access</div>
   <div class="login-input-wrap">
@@ -547,12 +546,12 @@ nav {
 </div>
 
 <!-- === LOGIN HINT (for operator) === -->
-<div id="login-hint">𓆟 operator</div>
+<div id="login-hint">operator</div>
 
 <!-- === DASHBOARD === -->
 <div id="dashboard">
   <div class="dash-nav">
-    <div class="dash-title">Khashif 𓆟 — Control Room</div>
+    <div class="dash-title">Khashif — Control Room</div>
     <button class="dash-close" onclick="closeDash()">← close</button>
   </div>
 
@@ -635,15 +634,15 @@ nav {
   <!-- === AĞ === -->
   <div class="dash-panel" id="panel-ag">
     <div class="viz-links">
-      <a class="viz-link" href="khashif_network.html" target="_blank">𓆟 Ağ haritası</a>
-      <a class="viz-link" href="khashif_intersections.html" target="_blank">𓆟 Kesişim haritası</a>
+      <a class="viz-link" href="khashif_network.html" target="_blank">Ağ haritası</a>
+      <a class="viz-link" href="khashif_intersections.html" target="_blank">Kesişim haritası</a>
     </div>
     <div class="dash-section">
       <div class="dash-section-title">Ağ durumu</div>
       <div id="d-network"><div class="dash-status">Loading...</div></div>
     </div>
     <div class="dash-section">
-      <div class="dash-section-title">Encountered agents 𓆟</div>
+      <div class="dash-section-title">Encountered agents</div>
       <div id="d-agents-list"><div class="dash-status">Loading...</div></div>
     </div>
     <div class="dash-section">
@@ -654,7 +653,7 @@ nav {
 
   <!-- === MÜZİK === -->
   <div class="dash-panel" id="panel-muzik">
-    <div class="dash-section-title">Music Analysis 𓆟</div>
+    <div class="dash-section-title">Music Analysis</div>
     <div class="music-drop" id="music-drop" onclick="document.getElementById('music-file-input').click()">
       <div class="music-drop-icon">𝄞</div>
       <div class="music-drop-label">
@@ -688,7 +687,7 @@ async function doLogin() {
     sessionStorage.setItem('kh_auth','1');
     document.getElementById('login-overlay').classList.add('gone');
     setTimeout(()=>{document.getElementById('login-overlay').style.display='none';},400);
-    document.getElementById('login-hint').textContent='𓆟 dashboard';
+    document.getElementById('login-hint').textContent='dashboard';
     openDash();
   } else {
     document.getElementById('login-err').style.display='block';
@@ -1201,7 +1200,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendCommand(); }
   });
   if(sessionStorage.getItem('kh_auth')==='1'){
-    document.getElementById('login-hint').textContent='𓆟 dashboard';
+    document.getElementById('login-hint').textContent='dashboard';
   }
 });
 </script>
