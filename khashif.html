@@ -632,6 +632,7 @@ nav {
     <div class="dash-grid">
       <div class="dash-card"><div class="dash-card-num" id="d-income">—</div><div class="dash-card-label">Income</div></div>
       <div class="dash-card"><div class="dash-card-num" id="d-intersection">—</div><div class="dash-card-label">Intersection</div></div>
+      <div class="dash-card"><div class="dash-card-num" id="d-netbucket">—</div><div class="dash-card-label">Network</div></div>
       <div class="dash-card"><div class="dash-card-num" id="d-questions">—</div><div class="dash-card-label">Waiting</div></div>
     </div>
 
@@ -795,11 +796,13 @@ async function loadDash() {
     const cnt = buckets.counts || {};
     const iC = cnt.INCOME ?? (Array.isArray(buckets.INCOME) ? buckets.INCOME.length : 0);
     const xC = cnt.INTERSECTION ?? (Array.isArray(buckets.INTERSECTION) ? buckets.INTERSECTION.length : 0);
+    const nC = cnt.NETWORK ?? (Array.isArray(buckets.NETWORK) ? buckets.NETWORK.length : 0);
     document.getElementById('d-income').textContent = iC;
     document.getElementById('d-intersection').textContent = xC;
+    document.getElementById('d-netbucket').textContent = nC;
     document.getElementById('d-questions').textContent = questions.count ?? '—';
 
-    const tcK = document.getElementById('tc-kovalar'); if(tcK) tcK.textContent = ' ·'+(hC+iC+kC);
+    const tcK = document.getElementById('tc-kovalar'); if(tcK) tcK.textContent = ' ·'+(iC+xC+nC);
     const tcX = document.getElementById('tc-kesisim'); if(tcX) tcX.textContent = ' ·'+(buckets.learned_intersections ?? (buckets.intersections||[]).length);
     const tcS = document.getElementById('tc-sorular'); if(tcS) tcS.textContent = ' ·'+(questions.count ?? 0);
     const tcD = document.getElementById('tc-derin'); if(tcD) tcD.textContent = ' ·'+((buckets.deep_queue||[]).length);
@@ -884,7 +887,7 @@ function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;
 function renderBuckets(buckets){
   const el = document.getElementById('d-buckets-content');
   if(!el) return;
-  const groups = [['INCOME','Gelir'],['INTERSECTION','Kesişim']];
+  const groups = [['INCOME','Gelir'],['INTERSECTION','Kesişim'],['NETWORK','Ağ']];
   let html = '';
   groups.forEach(([key,label])=>{
     const items = Array.isArray(buckets[key]) ? buckets[key] : [];
