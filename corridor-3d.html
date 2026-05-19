@@ -733,20 +733,22 @@ const bgMesh = new THREE.Mesh(
 );
 bgMesh.position.set(0, 0, GZ-0.08); scene.add(bgMesh);
 
-// "Garden" — white, spanning both glass panels
+// "Garden" — neon-green Cormorant italic, matching the corridor's door signs
 const garC=document.createElement('canvas');
 garC.width=2048; garC.height=512;
 const garX=garC.getContext('2d');
 garX.clearRect(0,0,2048,512);
-garX.fillStyle='rgba(255,255,255,0.95)';
-garX.font='300 230px "Cormorant Garamond",serif';
+garX.fillStyle='rgba(29,210,100,0.95)';
+garX.shadowColor='rgba(29,210,100,0.8)';
+garX.shadowBlur=40;
+garX.font='italic 300 230px "Cormorant Garamond",serif';
 garX.textAlign='center'; garX.textBaseline='middle';
 garX.fillText('Garden',1024,256);
 const garTex=new THREE.CanvasTexture(garC); garTex.needsUpdate=true;
 const garMesh=new THREE.Mesh(
   new THREE.PlaneGeometry(GW*1.058, GH*0.322),
   new THREE.MeshStandardMaterial({map:garTex,transparent:true,alphaTest:0.01,
-    emissiveMap:garTex,emissive:new THREE.Color(0xffffff),emissiveIntensity:2.2,depthWrite:false})
+    emissiveMap:garTex,emissive:new THREE.Color(0x1dd264),emissiveIntensity:2.0,depthWrite:false})
 );
 garMesh.position.set(GW*0.25, gpy+GH*0.56, GZ+0.12); scene.add(garMesh);
 
@@ -772,8 +774,7 @@ function floorChevron(z,glow){
   scene.add(m);
 }
 floorChevron(GZ+1.8,1.15);
-floorChevron(GZ+2.9,0.8);
-floorChevron(GZ+4.0,0.5);
+floorChevron(GZ+3.0,0.7);
 
 
 // Clickable
@@ -782,34 +783,6 @@ const gClick=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
 gClick.position.set(0,gpy,GZ+0.12);
 gClick.userData={door:{name:'The Garden',action:'garden'}};
 scene.add(gClick); doorMeshes.push(gClick);
-
-// ── GARDEN DOORWAY — an arched frame around the opening, matching the
-//    corridor doors; plants flank it. ──
-(()=>{
-  const ghw=GW/2, ghh=GH/2, gAr=GW*0.20, gfo=0.09;
-  const fShape=new THREE.Shape();
-  fShape.moveTo(-ghw-gfo,-ghh);
-  fShape.lineTo(-ghw-gfo, ghh-gAr-gfo);
-  fShape.quadraticCurveTo(-ghw-gfo, ghh+gfo, -ghw+gAr-gfo, ghh+gfo);
-  fShape.lineTo( ghw-gAr+gfo, ghh+gfo);
-  fShape.quadraticCurveTo( ghw+gfo, ghh+gfo, ghw+gfo, ghh-gAr-gfo);
-  fShape.lineTo( ghw+gfo,-ghh);
-  const gHole=new THREE.Path();
-  gHole.moveTo(-ghw,-ghh);
-  gHole.lineTo(-ghw, ghh-gAr);
-  gHole.quadraticCurveTo(-ghw, ghh, -ghw+gAr, ghh);
-  gHole.lineTo( ghw-gAr, ghh);
-  gHole.quadraticCurveTo( ghw, ghh, ghw, ghh-gAr);
-  gHole.lineTo( ghw,-ghh);
-  fShape.holes.push(gHole);
-  const gFrame=new THREE.Mesh(
-    new THREE.ExtrudeGeometry(fShape,{depth:0.07,bevelEnabled:false}),
-    new THREE.MeshStandardMaterial({color:0x6a9a44,roughness:0.7,metalness:0.1,
-      emissive:new THREE.Color(0x1a2c10),emissiveIntensity:0.5})
-  );
-  gFrame.position.set(0,gpy,GZ+0.14);
-  scene.add(gFrame);
-})();
 
 // Two plants flanking the garden doorway
 const leafMat=new THREE.MeshStandardMaterial({color:0x3a6b2c,roughness:0.85,
