@@ -455,7 +455,7 @@ const doors = [
   {name:'Khashif Discovery Agent', color:0x206080,border:0x40a0c8,z:-2, side:'R',action:'khashif'},
   {name:'Fermentation Lab',        color:0x5a9030,border:0x70b040,z:-10,side:'L',action:'fermentation'},
   {name:'Audio Sanctuary',         color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
-  {name:'Work in Progress',        color:0xc06030,border:0xd07040,z:-18,side:'L',action:'wip'},
+  {name:'Experiences',             color:0x6a4a7a,border:0x9a7ab0,z:-18,side:'L',action:'experiences'},
   {name:'Herbal Atelier',          color:0x508028,border:0x78b038,z:-18,side:'R',action:'herbal'},
 ];
 
@@ -898,7 +898,7 @@ canvas.addEventListener('touchend',e=>{
 },{passive:true});
 
 function openD(d){
-  if(d.action==='wip'){return;}
+  if(d.action==='experiences'){window.location.href='experiences.html';return;}
   if(d.action==='khashif'){window.location.href='khashif.html';return;}
   if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
 function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
