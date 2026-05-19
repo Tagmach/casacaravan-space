@@ -750,41 +750,30 @@ const garMesh=new THREE.Mesh(
 );
 garMesh.position.set(GW*0.25, gpy+GH*0.56, GZ+0.12); scene.add(garMesh);
 
-// Floor arrow — pointing toward garden door
+// Floor chevrons — wayfinding toward the garden, in the corridor's warm gold
 const arC=document.createElement('canvas');
-arC.width=512; arC.height=512;
+arC.width=256; arC.height=256;
 const arX=arC.getContext('2d');
-arX.clearRect(0,0,512,512);
-arX.strokeStyle='rgba(210,195,175,0.7)';
-arX.fillStyle='rgba(210,195,175,0.55)';
-arX.lineWidth=6; arX.lineCap='round'; arX.lineJoin='round';
-// Arrow pointing up (toward door)
+arX.clearRect(0,0,256,256);
+arX.strokeStyle='rgba(212,168,112,0.92)';
+arX.lineWidth=22; arX.lineCap='round'; arX.lineJoin='round';
 arX.beginPath();
-arX.moveTo(256,460); arX.lineTo(256,120);
+arX.moveTo(46,168); arX.lineTo(128,74); arX.lineTo(210,168);
 arX.stroke();
-// Arrowhead
-arX.beginPath();
-arX.moveTo(180,220); arX.lineTo(256,80); arX.lineTo(332,220);
-arX.closePath(); arX.fill();
 const arTex=new THREE.CanvasTexture(arC); arTex.needsUpdate=true;
-const arMesh=new THREE.Mesh(
-  new THREE.PlaneGeometry(1.0,1.6),
-  new THREE.MeshStandardMaterial({map:arTex,transparent:true,alphaTest:0.01,
-    emissiveMap:arTex,emissive:new THREE.Color(0xd2c3af),emissiveIntensity:0.6,depthWrite:false})
-);
-arMesh.rotation.x=-Math.PI/2;
-arMesh.position.set(0,-H/2+0.02,GZ+1.8); scene.add(arMesh);
-
-// Two more arrows behind
-[GZ+2.8, GZ+3.8].forEach(az=>{
-  const a2=new THREE.Mesh(
-    new THREE.PlaneGeometry(1.0,1.6),
-    new THREE.MeshStandardMaterial({map:arTex,transparent:true,alphaTest:0.01,
-      emissiveMap:arTex,emissive:new THREE.Color(0xd2c3af),emissiveIntensity:0.6,depthWrite:false})
+function floorChevron(z,glow){
+  const m=new THREE.Mesh(
+    new THREE.PlaneGeometry(0.86,0.86),
+    new THREE.MeshStandardMaterial({map:arTex,transparent:true,alphaTest:0.02,
+      emissiveMap:arTex,emissive:new THREE.Color(0xd4a870),emissiveIntensity:glow,depthWrite:false})
   );
-  a2.rotation.x=-Math.PI/2;
-  a2.position.set(0,-H/2+0.02,az); scene.add(a2);
-});
+  m.rotation.x=-Math.PI/2;
+  m.position.set(0,-H/2+0.02,z);
+  scene.add(m);
+}
+floorChevron(GZ+1.8,1.15);
+floorChevron(GZ+2.9,0.8);
+floorChevron(GZ+4.0,0.5);
 
 
 // Clickable
@@ -793,6 +782,57 @@ const gClick=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),
 gClick.position.set(0,gpy,GZ+0.12);
 gClick.userData={door:{name:'The Garden',action:'garden'}};
 scene.add(gClick); doorMeshes.push(gClick);
+
+// ── GARDEN DOORWAY — an arched frame around the opening, matching the
+//    corridor doors; plants flank it. ──
+(()=>{
+  const ghw=GW/2, ghh=GH/2, gAr=GW*0.20, gfo=0.09;
+  const fShape=new THREE.Shape();
+  fShape.moveTo(-ghw-gfo,-ghh);
+  fShape.lineTo(-ghw-gfo, ghh-gAr-gfo);
+  fShape.quadraticCurveTo(-ghw-gfo, ghh+gfo, -ghw+gAr-gfo, ghh+gfo);
+  fShape.lineTo( ghw-gAr+gfo, ghh+gfo);
+  fShape.quadraticCurveTo( ghw+gfo, ghh+gfo, ghw+gfo, ghh-gAr-gfo);
+  fShape.lineTo( ghw+gfo,-ghh);
+  const gHole=new THREE.Path();
+  gHole.moveTo(-ghw,-ghh);
+  gHole.lineTo(-ghw, ghh-gAr);
+  gHole.quadraticCurveTo(-ghw, ghh, -ghw+gAr, ghh);
+  gHole.lineTo( ghw-gAr, ghh);
+  gHole.quadraticCurveTo( ghw, ghh, ghw, ghh-gAr);
+  gHole.lineTo( ghw,-ghh);
+  fShape.holes.push(gHole);
+  const gFrame=new THREE.Mesh(
+    new THREE.ExtrudeGeometry(fShape,{depth:0.07,bevelEnabled:false}),
+    new THREE.MeshStandardMaterial({color:0x6a9a44,roughness:0.7,metalness:0.1,
+      emissive:new THREE.Color(0x1a2c10),emissiveIntensity:0.5})
+  );
+  gFrame.position.set(0,gpy,GZ+0.14);
+  scene.add(gFrame);
+})();
+
+// Two plants flanking the garden doorway
+const leafMat=new THREE.MeshStandardMaterial({color:0x3a6b2c,roughness:0.85,
+  emissive:new THREE.Color(0x102810),emissiveIntensity:0.55});
+function makePlant(px){
+  const grp=new THREE.Group();
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(0.20,0.14,0.34,14),mat(0x3a2410,0.9));
+  pot.position.y=0.17; grp.add(pot);
+  const soil=new THREE.Mesh(new THREE.CylinderGeometry(0.185,0.185,0.05,14),mat(0x120c05,1));
+  soil.position.y=0.345; grp.add(soil);
+  for(let i=0;i<9;i++){
+    const a=(i/9)*Math.PI*2, len=0.6+Math.random()*0.5;
+    const leaf=new THREE.Mesh(new THREE.ConeGeometry(0.055,len,5),leafMat);
+    leaf.position.set(Math.cos(a)*0.09, 0.36+len*0.40, Math.sin(a)*0.09);
+    leaf.rotation.z=-Math.cos(a)*0.42;
+    leaf.rotation.x=Math.sin(a)*0.42;
+    grp.add(leaf);
+  }
+  grp.position.set(px,-H/2,GZ+0.55);
+  scene.add(grp);
+}
+makePlant(-(GW/2+0.42));
+makePlant(GW/2+0.42);
 
 // ── WALK ─────────────────────────────────────────────────────────
 const POSITIONS=[2.5,-6,-14,-20];
