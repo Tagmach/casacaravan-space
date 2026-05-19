@@ -96,6 +96,29 @@ canvas { display:block; flex:1; min-height:0; }
 .rs-opt.active{color:#c8a84a;}
 .rs-sep{border-top:1px solid #2E2A26;margin:4px 0;}
 
+/* ── CORRIDOR SIDE PANELS — rooms + about, in the dark side margins ── */
+.corridor-aside {
+  position:fixed; top:50%; transform:translateY(-50%);
+  width:208px; max-height:80vh; overflow-y:auto; z-index:8;
+  font-family:'Jost',sans-serif; padding:20px 18px;
+  background:rgba(10,8,6,0.5); backdrop-filter:blur(3px);
+  opacity:0.72; transition:opacity 0.3s;
+}
+.corridor-aside:hover { opacity:1; }
+#corridor-rooms { left:0; border-right:1px solid rgba(62,56,48,0.55); }
+#corridor-about { right:0; border-left:1px solid rgba(62,56,48,0.55); }
+.ca-head { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:#A08060; margin-bottom:14px; letter-spacing:0.04em; }
+.ca-link { display:block; text-decoration:none; padding:6px 0; border-bottom:1px solid rgba(62,56,48,0.4); }
+.ca-link:last-child { border-bottom:none; }
+.ca-link b { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:400; font-size:13px; color:#D2C3AF; }
+.ca-link span { display:block; font-size:9px; color:#7A7068; line-height:1.5; margin-top:2px; }
+.ca-link:hover b { color:#A08060; }
+.ca-about { font-size:10px; color:#7A7068; line-height:1.8; }
+.ca-about a { color:#9A8878; text-decoration:none; }
+.ca-about a:hover { color:#A08060; }
+.ca-keywords { display:block; margin-top:12px; opacity:0.65; }
+@media (max-width:1180px){ .corridor-aside { display:none; } }
+
 </style>
 </head>
 <body>
@@ -146,6 +169,35 @@ canvas { display:block; flex:1; min-height:0; }
     <button class="walk-btn" id="btnFwd">&#8595;</button>
   </div>
 </div>
+
+<!-- Side panels — rooms + about, in the corridor's dark side margins.
+     Visible, clickable, and bot-friendly (semantic nav for crawlers
+     and agents arriving into the space). -->
+<aside id="corridor-rooms" class="corridor-aside">
+  <nav aria-label="Rooms in the Corridor">
+    <div class="ca-head">Rooms in the Corridor</div>
+    <a class="ca-link" href="shop.html"><b>Shop</b><span>Sonic Journey sessions, recordings, fermented foods</span></a>
+    <a class="ca-link" href="garden.html"><b>The Garden</b><span>Night space — moon phase, ambient sound, live chat</span></a>
+    <a class="ca-link" href="audio_sanctuary.html"><b>Audio Sanctuary</b><span>Browser recording studio, cymatics visualizer</span></a>
+    <a class="ca-link" href="fermentation_lab.html"><b>Fermentation Lab</b><span>Calculators for sourdough, kombucha, kefir, kimchi</span></a>
+    <a class="ca-link" href="herbal_atelier.html"><b>Herbal Atelier</b><span>Plant extract calculator and herbal guide</span></a>
+    <a class="ca-link" href="forest.html"><b>The Forest</b><span>3D immersive environment, two paths</span></a>
+    <a class="ca-link" href="observatory.html"><b>Star Observatory</b><span>Night sky, constellations, zodiac</span></a>
+    <a class="ca-link" href="khashif.html"><b>Khashif</b><span>Discovery agent — resonance across disciplines</span></a>
+    <a class="ca-link" href="about.html"><b>About</b><span>Manifesto and story of Casa Caravan</span></a>
+  </nav>
+</aside>
+
+<aside id="corridor-about" class="corridor-aside">
+  <div class="ca-head">About This Space</div>
+  <div class="ca-about">
+    Created by <a href="about.html">Tağmaç Çankaya</a> — Lefkoşa, Northern Cyprus.<br><br>
+    <a href="https://casacaravan.space">casacaravan.space</a><br>
+    <a href="rss.xml">RSS feed</a><br>
+    <a href="shop.html">Shop — Sonic Journey, recordings, fermented foods</a>
+    <span class="ca-keywords">sound healing · gong bath · handpan · fermentation · sourdough · plant medicine · herbal extract · cymatics · resonance · Cyprus · creative technology · AI integration</span>
+  </div>
+</aside>
 
 
 <div id="room-overlay">
