@@ -95,10 +95,15 @@ function resize() {
 
 // Initialize positions
 function initPositions() {
+  if (!NODES.length) return;
   const nodeMap = {};
   NODES.forEach(n => nodeMap[n.id] = n);
 
-  let srcIndex = 0;
+  // Center first — content nodes read src.x below; when their source is
+  // 'tagmac' (the common fall-through when the original feed isn't on the
+  // map), src.x must already be a number, not undefined → NaN.
+  NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
+
   const sources = NODES.filter(n => n.type !== 'center' && n.type !== 'content');
   sources.forEach((n, i) => {
     const angle = (i / sources.length) * Math.PI * 2;
@@ -112,12 +117,12 @@ function initPositions() {
     const src = nodeMap[n.source];
     const angle = Math.random() * Math.PI * 2;
     const dist = 50 + Math.random() * 60;
-    n.x = (src ? src.x : W/2) + Math.cos(angle)*dist;
-    n.y = (src ? src.y : H/2) + Math.sin(angle)*dist;
+    const sx = (src && Number.isFinite(src.x)) ? src.x : W/2;
+    const sy = (src && Number.isFinite(src.y)) ? src.y : H/2;
+    n.x = sx + Math.cos(angle)*dist;
+    n.y = sy + Math.sin(angle)*dist;
     n.vx = 0; n.vy = 0;
   });
-
-  NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
 }
 
 function sizeOf(n) {
@@ -209,7 +214,7 @@ function draw() {
 
   // Nodes
   NODES.forEach(n => {
-    if (!n.x) return;
+    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) return;
     const r = sizeOf(n);
     const color = colorOf(n);
     const isHov = hoveredNode && hoveredNode.id === n.id;
@@ -263,7 +268,7 @@ function draw() {
 function getNodeAt(mx, my) {
   let best = null, bestD = 22;
   NODES.forEach(n => {
-    if (!n.x) return;
+    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) return;
     const d = Math.sqrt((n.x-mx)**2 + (n.y-my)**2);
     if (d < bestD) { bestD = d; best = n; }
   });
