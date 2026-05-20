@@ -24,18 +24,18 @@
 <canvas id="canvas"></canvas>
 <div id="ui">
   <div id="title">Khashif · Resonance Network</div>
-  <div id="updated">son gezi: 16.05.2026 01:55</div>
+  <div id="updated">yükleniyor…</div>
   <div id="stats">
-    28 düğüm · 27 bağlantı<br>
-    0 rezonans · 0 jakelu eylemi<br>
-    33 RSS · 80 kelime
+    0 düğüm · 0 bağlantı<br>
+    0 rezonans · 0 kesişim<br>
+    0 RSS · 0 kelime
   </div>
   <div id="legend">
     <div class="leg"><div class="leg-dot" style="background:#46b06b;"></div>öncelikli kaynak</div>
     <div class="leg"><div class="leg-dot" style="background:#2f6b45;"></div>genişletilmiş kaynak</div>
     <div class="leg"><div class="leg-dot" style="background:#6fe49b;"></div>dinamik (crawl)</div>
     <div class="leg"><div class="leg-dot" style="background:#bdf2d0;"></div>rezonans içerik</div>
-    <div class="leg"><div class="leg-dot" style="background:#ffffff;box-shadow:0 0 5px #fff;"></div>jakelu eylemi</div>
+    <div class="leg"><div class="leg-dot" style="background:#ffffff;box-shadow:0 0 5px #fff;"></div>yapılmış eylem</div>
   </div>
   <div id="keywords">musiccommunity, collaborativecomposition, müzik altyapısı, sound sanatı, deneyimsel müzik., instant pot, fermentation tools, fermente</div>
   <div id="info">her gezi sonunda otomatik güncellenir<br>khashif_network_viz.py</div>
@@ -275,8 +275,30 @@ function getNodeAt(mx, my) {
   return best;
 }
 
+// Where a dot leads when clicked.
+//   center   → casacaravan.space (already in node.url)
+//   content  → the article URL (already in node.url)
+//   seed/dynamic → the parent domain (strip /feed/, /rss, .xml suffixes —
+//                  the raw RSS XML is unreadable, the site root is what
+//                  the operator actually wants to see)
+//   intersection → a Google search for the pairing label
+function linkFor(n) {
+  if (!n) return null;
+  if (n.type === 'intersection' && n.label) {
+    return 'https://www.google.com/search?q=' + encodeURIComponent(n.label);
+  }
+  if ((n.type === 'seed' || n.type === 'dynamic') && n.url) {
+    try {
+      const u = new URL(n.url);
+      return u.protocol + '//' + u.host + '/';
+    } catch(e) { return n.url; }
+  }
+  return n.url || null;
+}
+
 canvas.addEventListener('mousemove', e => {
   hoveredNode = getNodeAt(e.clientX, e.clientY);
+  canvas.style.cursor = (hoveredNode && linkFor(hoveredNode)) ? 'pointer' : 'default';
   if (hoveredNode) {
     tooltip.style.display = 'block';
     tooltip.style.left = (e.clientX + 18) + 'px';
@@ -299,11 +321,13 @@ canvas.addEventListener('mousemove', e => {
 
 canvas.addEventListener('click', e => {
   const n = getNodeAt(e.clientX, e.clientY);
-  if (n && n.url) window.open(n.url, '_blank');
+  const href = linkFor(n);
+  if (href) window.open(href, '_blank', 'noopener');
 });
 
 canvas.addEventListener('mouseleave', () => {
   hoveredNode = null;
+  canvas.style.cursor = 'default';
   tooltip.style.display = 'none';
 });
 
