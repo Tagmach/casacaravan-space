@@ -130,6 +130,13 @@ function sizeOf(n) {
   if (n.type === 'priority') return 11 + Math.min(n.connections * 1.2, 8);
   if (n.type === 'extended') return 8 + Math.min(n.connections, 5);
   if (n.type === 'dynamic') return 7;
+  if (n.type === 'intersection') {
+    // weight = count * avg_strength. A first-sighting weak pair (~1)
+    // sits at ~10px; a recurring strong pair (~50) grows to ~22px;
+    // capped at 28 so even the heaviest does not eclipse the center.
+    const w = parseFloat(n.weight) || 1;
+    return Math.min(28, 8 + Math.sqrt(w) * 2);
+  }
   const s = parseFloat(n.score) || 5;
   return 4 + s * 0.5;
 }
@@ -305,14 +312,17 @@ canvas.addEventListener('mousemove', e => {
     tooltip.style.top = Math.min(e.clientY - 10, H - 180) + 'px';
     const n = hoveredNode;
     const actionColor = ['COMMENT','SUBMIT','ATTEND'].includes(n.action) ? '#fff' : 'rgba(214,232,220,0.5)';
+    const isIx = n.type === 'intersection';
     tooltip.innerHTML = `
       <div style="color:#46b06b;font-weight:600;margin-bottom:6px;font-size:13px;">${n.type==='center'?'Tagmac Çankaya':n.label}</div>
       <div style="color:rgba(214,232,220,0.5);font-size:11px;">tür: ${n.type}</div>
+      ${isIx ? `<div style="color:rgba(214,232,220,0.7);font-size:11px;margin-top:2px;">${n.connections||1} kez keşfedildi · ort. güç ${n.avg_strength||'—'}/5</div>` : ''}
       ${n.score ? `<div style="color:rgba(214,232,220,0.5);font-size:11px;">skor: ${n.score}/10</div>` : ''}
-      ${n.action ? `<div style="color:${actionColor};font-size:11px;margin-top:4px;">→ ${n.action}</div>` : ''}
-      ${n.reason ? `<div style="color:rgba(214,232,220,0.4);font-size:10px;margin-top:4px;font-style:italic;">${n.reason.substring(0,100)}</div>` : ''}
+      ${n.action && !isIx ? `<div style="color:${actionColor};font-size:11px;margin-top:4px;">→ ${n.action}</div>` : ''}
+      ${n.reason ? `<div style="color:rgba(214,232,220,0.4);font-size:10px;margin-top:4px;font-style:italic;">${n.reason.substring(0,140)}</div>` : ''}
+      ${isIx && n.opportunity ? `<div style="color:rgba(70,176,107,0.6);font-size:10px;margin-top:4px;">→ ${n.opportunity.substring(0,140)}</div>` : ''}
       ${n.url ? `<div style="color:rgba(70,176,107,0.4);font-size:10px;margin-top:4px;">${n.url.substring(0,50)}</div>` : ''}
-      <div style="color:rgba(214,232,220,0.25);font-size:10px;margin-top:4px;">bağlantı: ${n.connections}</div>
+      ${!isIx ? `<div style="color:rgba(214,232,220,0.25);font-size:10px;margin-top:4px;">bağlantı: ${n.connections}</div>` : ''}
     `;
   } else {
     tooltip.style.display = 'none';
