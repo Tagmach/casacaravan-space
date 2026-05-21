@@ -71,6 +71,7 @@ nav {
 .track-card.playing .track-play-overlay { opacity:1; }
 .track-info { padding:10px 10px 8px; }
 .track-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:var(--dark); margin-bottom:6px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track-note { font-size:10px; letter-spacing:0.3px; color:var(--dim); line-height:1.5; margin-bottom:8px; font-style:italic; }
 .track-footer { display:flex; align-items:center; justify-content:space-between; }
 .track-price { font-size:13px; color:var(--gold); }
 .track-add {
@@ -423,7 +424,7 @@ const tracks=[
   {title:'I Know',file:'I know.mp3'},
   {title:'Keeping It Together',file:'Keeping it together - handpan song Ocak 2025.mp3'},
   {title:'Late Afternoon',file:'late afternoon - synth impro. first play record.mp3'},
-  {title:'Monkey & Gong',file:'monkey & gong.mp3'},
+  {title:'Monkey & Gong',file:'monkey & gong.mp3',note:'played to howler monkeys recorded by Oscar Marin in Colombia'},
   {title:'Purnima',file:'Purnima.mp3'},
   {title:'Synth Impro.',file:'Synth Impro..mp3'},
   {title:'Trot',file:'Trot.mp3'},
@@ -443,6 +444,7 @@ tracks.forEach((t,i)=>{
     </div>
     <div class="track-info">
       <div class="track-name" title="${t.title}">${t.title}</div>
+      ${t.note ? `<div class="track-note">${t.note}</div>` : ''}
       <div class="track-footer">
         <span class="track-price">€1</span>
         <button class="track-add" id="ta-${i}" onclick="event.stopPropagation();trackAdd(${i})">+ Add</button>
