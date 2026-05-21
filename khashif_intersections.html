@@ -424,17 +424,37 @@ let learnedPairs = [];
 let activeFilter = null;
 
 async function loadData() {
+  // Reads from the public 'network' key (anon SELECT is allowed there
+  // by RLS), and maps the type='intersection' nodes into the shape the
+  // rest of this page expects. The earlier 'main' fetch broke after
+  // RLS hardening on 20 May 2026 — main is server-only now.
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/khashif_memory?key=eq.main&select=value`,
+      `${SUPABASE_URL}/rest/v1/khashif_memory?key=eq.network&select=value`,
       { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } }
     );
     const rows = await res.json();
     if (!rows || !rows[0]) { showEmpty(); return; }
 
-    const memory = JSON.parse(rows[0].value);
-    allIntersections = memory.intersections || [];
-    learnedPairs = memory.learned_intersections || [];
+    const network = JSON.parse(rows[0].value);
+    const ixNodes = (network.nodes || []).filter(n => n.type === 'intersection');
+
+    // Derive domains from the label ("A + B" → ["A", "B"])
+    allIntersections = ixNodes.map(n => {
+      const parts = (n.label || '').split(/\s*\+\s*/).map(s => s.trim()).filter(Boolean);
+      return {
+        label: n.label || '',
+        domains: parts,
+        insight: n.reason || '',
+        opportunity: n.opportunity || '',
+        strength: Math.round(parseFloat(n.avg_strength) || 1),
+        date: n.last_seen || (network.updated || '').slice(0, 10),
+        count: n.connections || 1
+      };
+    });
+
+    // learned_intersections = list of unique labels seen at least once
+    learnedPairs = Array.from(new Set(allIntersections.map(i => i.label)));
 
     render();
   } catch(e) {
