@@ -60,7 +60,9 @@ nav {
 .track-artwork {
   width:100%; aspect-ratio:1; background:var(--surface);
   display:flex; align-items:center; justify-content:center; position:relative;
+  overflow:hidden;
 }
+.track-art-img { width:100%; height:100%; object-fit:cover; display:block; }
 .track-artwork-placeholder { font-size:32px; opacity:0.2; }
 .track-play-overlay {
   position:absolute; inset:0; background:rgba(0,0,0,0.3);
@@ -416,19 +418,20 @@ const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 const STORAGE=SUPA_URL+'/storage/v1/object/public/music/';
 
 
+const ART='https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/artwork/';
 const tracks=[
-  {title:'And You',file:'And you(v3).mp3'},
-  {title:'Fox Tail — Goodbye 2025',file:'Fox tail - goodbye 2025.mp3'},
-  {title:'Half',file:'Half.mp3'},
-  {title:"I Don't Know",file:"I Don't Know.mp3"},
-  {title:'I Know',file:'I know.mp3'},
-  {title:'Keeping It Together',file:'Keeping it together - handpan song Ocak 2025.mp3'},
-  {title:'Late Afternoon',file:'late afternoon - synth impro. first play record.mp3'},
-  {title:'Monkey & Gong',file:'monkey & gong.mp3',note:'played to howler monkeys recorded by Oscar Marin in Colombia'},
-  {title:'Purnima',file:'Purnima.mp3'},
-  {title:'Synth Impro.',file:'Synth Impro..mp3'},
-  {title:'Trot',file:'Trot.mp3'},
-  {title:'Vocal & Shruti',file:'Vocal & Shruti.mp3'},
+  {title:'And You',                file:'And you(v3).mp3',                                       art:ART+'And_you.png'},
+  {title:'Fox Tail — Goodbye 2025',file:'Fox tail - goodbye 2025.mp3',                           art:ART+'Fox_tail.png'},
+  {title:'Half',                   file:'Half.mp3',                                              art:ART+'Half.jpg'},
+  {title:"I Don't Know",           file:"I Don't Know.mp3"},
+  {title:'I Know',                 file:'I know.mp3',                                            art:ART+'I_know.jpeg'},
+  {title:'Keeping It Together',    file:'Keeping it together - handpan song Ocak 2025.mp3'},
+  {title:'Late Afternoon',         file:'late afternoon - synth impro. first play record.mp3',   art:ART+'Late_afternoon.png'},
+  {title:'Monkey & Gong',          file:'monkey & gong.mp3',                                     art:ART+'Gong_and_monkeys.png', note:'played to howler monkeys recorded by Oscar Marin in Colombia'},
+  {title:'Purnima',                file:'Purnima.mp3',                                           art:ART+'purnima.jpeg'},
+  {title:'Synth Impro.',           file:'Synth Impro..mp3',                                      art:ART+'snyth_impro..jpeg'},
+  {title:'Trot',                   file:'Trot.mp3',                                              art:ART+'Trot.jpg'},
+  {title:'Vocal & Shruti',         file:'Vocal & Shruti.mp3',                                    art:ART+'Vocal_and_shrunti.jpeg'},
 ];
 
 // Build music grid
@@ -439,7 +442,7 @@ tracks.forEach((t,i)=>{
   card.id='tc-'+i;
   card.innerHTML=`
     <div class="track-artwork">
-      <div class="track-artwork-placeholder">𝄞</div>
+      ${t.art ? `<img class="track-art-img" src="${t.art}" alt="${t.title}" loading="lazy">` : `<div class="track-artwork-placeholder">𝄞</div>`}
       <div class="track-play-overlay" id="tpo-${i}">▶</div>
     </div>
     <div class="track-info">
