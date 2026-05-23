@@ -5,39 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Khashif · Resonance Network</title>
 <style>
+  /* Khashif green palette — VOID/MOSS/GROVE/SIGNAL/PULSE/ECHO/GLOW */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #060f0a; color: #d6e8dc; font-family: monospace; overflow: hidden; }
   canvas { display: block; }
   #ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-  #title { position: absolute; top: 20px; left: 24px; font-size: 13px; color: rgba(70,176,107,0.7); letter-spacing: 0.15em; text-transform: uppercase; }
-  #updated { position: absolute; top: 40px; left: 24px; font-size: 10px; color: rgba(70,176,107,0.35); }
-  #stats { position: absolute; top: 20px; right: 24px; text-align: right; font-size: 11px; color: rgba(214,232,220,0.4); line-height: 2; }
+  #title { position: absolute; top: 20px; left: 24px; font-size: 13px; color: rgba(70,176,107,0.85); letter-spacing: 0.15em; text-transform: uppercase; }
+  #updated { position: absolute; top: 40px; left: 24px; font-size: 10px; color: rgba(189,242,208,0.4); }
+  #stats { position: absolute; top: 20px; right: 24px; text-align: right; font-size: 11px; color: rgba(214,232,220,0.55); line-height: 2; }
   #legend { position: absolute; bottom: 24px; left: 24px; display: flex; flex-direction: column; gap: 7px; }
-  .leg { display: flex; align-items: center; gap: 9px; font-size: 11px; color: rgba(214,232,220,0.5); }
+  .leg { display: flex; align-items: center; gap: 9px; font-size: 11px; color: rgba(214,232,220,0.6); }
   .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  #info { position: absolute; bottom: 24px; right: 24px; font-size: 10px; color: rgba(70,176,107,0.3); text-align: right; line-height: 1.8; max-width: 300px; }
-  #tooltip { position: fixed; background: rgba(6,15,10,0.95); border: 0.5px solid rgba(70,176,107,0.35); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #d6e8dc; pointer-events: none; display: none; max-width: 280px; line-height: 1.6; z-index: 100; }
-  #keywords { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(70,176,107,0.25); text-align: center; max-width: 400px; }
+  #info { position: absolute; bottom: 24px; right: 24px; font-size: 10px; color: rgba(189,242,208,0.35); text-align: right; line-height: 1.8; max-width: 300px; }
+  #tooltip { position: fixed; background: rgba(6,15,10,0.97); border: 0.5px solid rgba(70,176,107,0.45); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #d6e8dc; pointer-events: none; display: none; max-width: 280px; line-height: 1.6; z-index: 100; }
+  #keywords { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 10px; color: rgba(189,242,208,0.3); text-align: center; max-width: 400px; }
 </style>
 </head>
 <body>
 <canvas id="canvas"></canvas>
 <div id="ui">
   <div id="title">Khashif · Resonance Network</div>
-  <div id="updated">yükleniyor…</div>
+  <div id="updated">son gezi: —</div>
   <div id="stats">
-    0 düğüm · 0 bağlantı<br>
-    0 rezonans · 0 kesişim<br>
-    0 RSS · 0 kelime
+    — düğüm · — bağlantı<br>
+    — rezonans · — kesişim<br>
+    — RSS · — kelime
   </div>
   <div id="legend">
-    <div class="leg"><div class="leg-dot" style="background:#46b06b;"></div>öncelikli kaynak</div>
-    <div class="leg"><div class="leg-dot" style="background:#2f6b45;"></div>genişletilmiş kaynak</div>
+    <div class="leg"><div class="leg-dot" style="background:#46b06b;box-shadow:0 0 6px rgba(70,176,107,0.6);"></div>Tagmac · merkez</div>
+    <div class="leg"><div class="leg-dot" style="background:#2f6b45;"></div>öncelikli kaynak</div>
     <div class="leg"><div class="leg-dot" style="background:#6fe49b;"></div>dinamik (crawl)</div>
     <div class="leg"><div class="leg-dot" style="background:#bdf2d0;"></div>rezonans içerik</div>
-    <div class="leg"><div class="leg-dot" style="background:#ffffff;box-shadow:0 0 5px #fff;"></div>yapılmış eylem</div>
+    <div class="leg"><div class="leg-dot" style="background:#1a3a28;border:1px solid #2f6b45;"></div>alan (domain konsepti)</div>
+    <div class="leg"><div class="leg-dot" style="background:#46b06b;border:1.5px solid #6fe49b;box-shadow:0 0 6px rgba(111,228,155,0.7);"></div>kesişim (su+un=ekmek)</div>
+    <div class="leg"><div class="leg-dot" style="background:#ffffff;box-shadow:0 0 5px #fff;"></div>aksiyon eylemi</div>
   </div>
-  <div id="keywords">musiccommunity, collaborativecomposition, müzik altyapısı, sound sanatı, deneyimsel müzik., instant pot, fermentation tools, fermente</div>
   <div id="info">her gezi sonunda otomatik güncellenir<br>khashif_network_viz.py</div>
 </div>
 <div id="tooltip"></div>
@@ -67,7 +69,6 @@ async function loadNetworkData() {
         `${s.node_count||0} düğüm · ${s.edge_count||0} bağlantı<br>` +
         `${s.resonant_count||0} rezonans · ${s.intersection_count||0} kesişim<br>` +
         `${s.feed_count||0} RSS · ${s.keyword_count||0} kelime`;
-      document.getElementById('keywords').textContent = kw;
     }
   } catch(e) {
     console.error("Network data load failed:", e);
@@ -95,15 +96,10 @@ function resize() {
 
 // Initialize positions
 function initPositions() {
-  if (!NODES.length) return;
   const nodeMap = {};
   NODES.forEach(n => nodeMap[n.id] = n);
 
-  // Center first — content nodes read src.x below; when their source is
-  // 'tagmac' (the common fall-through when the original feed isn't on the
-  // map), src.x must already be a number, not undefined → NaN.
-  NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
-
+  let srcIndex = 0;
   const sources = NODES.filter(n => n.type !== 'center' && n.type !== 'content');
   sources.forEach((n, i) => {
     const angle = (i / sources.length) * Math.PI * 2;
@@ -117,37 +113,37 @@ function initPositions() {
     const src = nodeMap[n.source];
     const angle = Math.random() * Math.PI * 2;
     const dist = 50 + Math.random() * 60;
-    const sx = (src && Number.isFinite(src.x)) ? src.x : W/2;
-    const sy = (src && Number.isFinite(src.y)) ? src.y : H/2;
-    n.x = sx + Math.cos(angle)*dist;
-    n.y = sy + Math.sin(angle)*dist;
+    n.x = (src ? src.x : W/2) + Math.cos(angle)*dist;
+    n.y = (src ? src.y : H/2) + Math.sin(angle)*dist;
     n.vx = 0; n.vy = 0;
   });
+
+  NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
 }
 
 function sizeOf(n) {
-  if (n.type === 'center') return 20;
-  if (n.type === 'priority') return 11 + Math.min(n.connections * 1.2, 8);
-  if (n.type === 'extended') return 8 + Math.min(n.connections, 5);
-  if (n.type === 'dynamic') return 7;
+  if (n.type === 'center') return 22;
+  if (n.type === 'seed') return 12 + Math.min(n.connections * 0.8, 6);
+  if (n.type === 'dynamic') return 8;
+  if (n.type === 'domain') return 7 + Math.min((n.connections || 1) * 0.6, 5);
   if (n.type === 'intersection') {
-    // weight = count * avg_strength. A first-sighting weak pair (~1)
-    // sits at ~10px; a recurring strong pair (~50) grows to ~22px;
-    // capped at 28 so even the heaviest does not eclipse the center.
-    const w = parseFloat(n.weight) || 1;
-    return Math.min(28, 8 + Math.sqrt(w) * 2);
+    // weight = count × avg_strength; recurring weighty pairs grow bigger
+    const w = parseFloat(n.weight) || 2;
+    return 10 + Math.min(w * 0.8, 14);
   }
+  // content (resonant items)
   const s = parseFloat(n.score) || 5;
-  return 4 + s * 0.5;
+  return 4 + s * 0.4;
 }
 
 function colorOf(n) {
   if (n.action && ['COMMENT','SUBMIT','ATTEND'].includes(n.action)) return '#ffffff';
-  if (n.type === 'center') return '#46b06b';
-  if (n.type === 'priority') return '#46b06b';
-  if (n.type === 'extended') return '#2f6b45';
-  if (n.type === 'dynamic') return '#6fe49b';
-  return '#bdf2d0';
+  if (n.type === 'center')       return '#46b06b';   // SIGNAL — the call
+  if (n.type === 'seed')         return '#2f6b45';   // GROVE — established priority sources
+  if (n.type === 'dynamic')      return '#6fe49b';   // PULSE — newly discovered
+  if (n.type === 'domain')       return '#1a3a28';   // MOSS — domain concept anchors
+  if (n.type === 'intersection') return '#46b06b';   // SIGNAL with halo (see draw())
+  return '#bdf2d0';                                  // ECHO — returning resonance (content)
 }
 
 function forceStep() {
@@ -193,49 +189,110 @@ function draw() {
   time += 0.012;
   ctx.clearRect(0, 0, W, H);
 
-  // Stars
+  // Stars — ECHO-tinted shimmer
   stars.forEach(s => {
     const a = 0.15 + 0.12 * Math.sin(time*0.4 + s.phase);
     ctx.beginPath();
     ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(214,232,220,${a})`;
+    ctx.fillStyle = `rgba(189,242,208,${a})`;
     ctx.fill();
   });
 
   const nodeMap = {};
   NODES.forEach(n => nodeMap[n.id] = n);
 
-  // Edges
+  // Edges — kind-aware coloring + width:
+  //   resonance (content↔content via shared keywords): ECHO, very thin, soft
+  //   bridge (domain↔intersection): PULSE, thicker
+  //   domain_pull (content↔domain): GROVE, thin
+  //   feed / backbone / domain_anchor: SIGNAL, default
   EDGES.forEach(e => {
     const a = nodeMap[e.from], b = nodeMap[e.to];
     if (!a || !b) return;
     const isHovRelated = hoveredNode && (hoveredNode.id === e.from || hoveredNode.id === e.to);
-    const alpha = isHovRelated ? 0.35 : hoveredNode ? 0.03 : 0.10 * e.strength;
+
+    let baseColor;        // 'r,g,b,' template
+    let widthMult = 1;
+    let baseAlphaMult = 1;
+    switch (e.kind) {
+      case 'resonance':
+        // ECHO — content↔content via shared keywords/title-words
+        baseColor = '189,242,208,';
+        widthMult = 0.75;
+        baseAlphaMult = 1.2;
+        break;
+      case 'intersection_pull':
+        // PULSE — intersection node pulling its STRICT related content
+        // (matches BOTH halves of the intersection label — high-quality bridge)
+        baseColor = '111,228,155,';
+        widthMult = 1.2;
+        baseAlphaMult = 1.7;
+        break;
+      case 'intersection_touch':
+        // ECHO faint — intersection node weakly pulling topically nearby
+        // content (matches ONE half of the label — softer web threads)
+        baseColor = '189,242,208,';
+        widthMult = 0.55;
+        baseAlphaMult = 0.55;
+        break;
+      case 'bridge':
+        baseColor = '111,228,155,';   // PULSE — domain↔intersection
+        widthMult = 1.2;
+        baseAlphaMult = 1.4;
+        break;
+      case 'domain_pull':
+        baseColor = '47,107,69,';     // GROVE
+        widthMult = 0.7;
+        baseAlphaMult = 0.6;
+        break;
+      default:
+        baseColor = '70,176,107,';    // SIGNAL
+        widthMult = 1;
+        baseAlphaMult = 1;
+    }
+
+    // Boost baseline visibility — every edge should be perceptible without
+    // hover. The web has to *look* like a web before any interaction.
+    const minAlpha = 0.16 * baseAlphaMult;
+    const baseAlpha = Math.max(minAlpha, 0.32 * e.strength * baseAlphaMult);
+    const alpha = isHovRelated
+      ? Math.min(0.85, 0.65 * baseAlphaMult)
+      : hoveredNode
+        ? 0.05
+        : Math.min(0.6, baseAlpha);
+
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
-    ctx.strokeStyle = `rgba(70,176,107,${alpha})`;
-    ctx.lineWidth = isHovRelated ? 1 : 0.5;
+    ctx.strokeStyle = `rgba(${baseColor}${alpha})`;
+    ctx.lineWidth = (isHovRelated ? 1.4 : 0.7) * widthMult;
     ctx.stroke();
   });
 
   // Nodes
   NODES.forEach(n => {
-    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) return;
+    if (!n.x) return;
     const r = sizeOf(n);
     const color = colorOf(n);
     const isHov = hoveredNode && hoveredNode.id === n.id;
     const pulse = Math.sin(time * 1.2 + (n.x + n.y) * 0.008) * 0.25 + 0.75;
     const isAction = n.action && ['COMMENT','SUBMIT','ATTEND'].includes(n.action);
 
-    // Glow
-    if (isAction || n.type === 'center' || n.type === 'priority') {
-      const glowColor = isAction ? 'rgba(255,255,255,' : n.type === 'center' ? 'rgba(200,150,90,' : 'rgba(90,143,200,';
-      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * (isAction ? 4 : 3));
-      g.addColorStop(0, glowColor + (isAction ? '0.12)' : '0.08)'));
+    // Glow — center, intersections, and action nodes get a radial halo
+    if (isAction || n.type === 'center' || n.type === 'intersection') {
+      let glowColor, glowMult, peakAlpha;
+      if (isAction) {
+        glowColor = 'rgba(255,255,255,'; glowMult = 4; peakAlpha = '0.15)';
+      } else if (n.type === 'center') {
+        glowColor = 'rgba(70,176,107,';  glowMult = 3.5; peakAlpha = '0.14)';
+      } else {  // intersection — PULSE halo
+        glowColor = 'rgba(111,228,155,'; glowMult = 3; peakAlpha = '0.18)';
+      }
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * glowMult);
+      g.addColorStop(0, glowColor + peakAlpha);
       g.addColorStop(1, glowColor + '0)');
       ctx.beginPath();
-      ctx.arc(n.x, n.y, r * (isAction ? 4 : 3), 0, Math.PI*2);
+      ctx.arc(n.x, n.y, r * glowMult, 0, Math.PI*2);
       ctx.fillStyle = g;
       ctx.fill();
     }
@@ -250,20 +307,38 @@ function draw() {
 
     if (n.type !== 'content' || isHov) {
       ctx.strokeStyle = color;
-      ctx.lineWidth = isHov ? 1 : 0.5;
+      ctx.lineWidth = isHov ? 1.2 : 0.5;
+      ctx.stroke();
+    }
+
+    // Intersection ring — concentric PULSE outline marking the bridge nodes
+    if (n.type === 'intersection') {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, displayR + 3, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(111,228,155,0.55)';
+      ctx.lineWidth = 1;
       ctx.stroke();
     }
 
     // Labels
     if (n.type === 'center') {
-      ctx.font = 'bold 12px monospace';
+      ctx.font = 'bold 13px monospace';
       ctx.fillStyle = '#46b06b';
       ctx.textAlign = 'center';
-      ctx.fillText('Tagmac', n.x, n.y + r + 14);
+      ctx.fillText('Tagmac', n.x, n.y + r + 16);
+    } else if (n.type === 'intersection') {
+      // Intersection labels are prominent — the su+un=ekmek bridges
+      const full = n.label || '';
+      const maxLen = 38;
+      const label = full.length > maxLen ? full.substring(0, maxLen - 1) + '…' : full;
+      ctx.font = 'bold 11px monospace';
+      ctx.fillStyle = 'rgba(189,242,208,0.85)';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, n.x, n.y + r + 16);
     } else if (n.type !== 'content') {
-      const label = n.label.replace(/\.[a-z]{2,}$/, '').replace('.wordpress', '').replace('.blogspot', '');
+      const label = (n.label || '').replace(/\.[a-z]{2,}$/, '').replace('.wordpress', '').replace('.blogspot', '');
       ctx.font = '9px monospace';
-      ctx.fillStyle = 'rgba(214,232,220,0.45)';
+      ctx.fillStyle = 'rgba(214,232,220,0.55)';
       ctx.textAlign = 'center';
       ctx.fillText(label, n.x, n.y + r + 12);
     }
@@ -275,69 +350,54 @@ function draw() {
 function getNodeAt(mx, my) {
   let best = null, bestD = 22;
   NODES.forEach(n => {
-    if (!Number.isFinite(n.x) || !Number.isFinite(n.y)) return;
+    if (!n.x) return;
     const d = Math.sqrt((n.x-mx)**2 + (n.y-my)**2);
     if (d < bestD) { bestD = d; best = n; }
   });
   return best;
 }
 
-// Where a dot leads when clicked.
-//   center   → casacaravan.space (already in node.url)
-//   content  → the article URL (already in node.url)
-//   seed/dynamic → the parent domain (strip /feed/, /rss, .xml suffixes —
-//                  the raw RSS XML is unreadable, the site root is what
-//                  the operator actually wants to see)
-//   intersection → a Google search for the pairing label
-function linkFor(n) {
-  if (!n) return null;
-  if (n.type === 'intersection' && n.label) {
-    return 'https://www.google.com/search?q=' + encodeURIComponent(n.label);
-  }
-  if ((n.type === 'seed' || n.type === 'dynamic') && n.url) {
-    try {
-      const u = new URL(n.url);
-      return u.protocol + '//' + u.host + '/';
-    } catch(e) { return n.url; }
-  }
-  return n.url || null;
-}
-
 canvas.addEventListener('mousemove', e => {
   hoveredNode = getNodeAt(e.clientX, e.clientY);
-  canvas.style.cursor = (hoveredNode && linkFor(hoveredNode)) ? 'pointer' : 'default';
   if (hoveredNode) {
     tooltip.style.display = 'block';
     tooltip.style.left = (e.clientX + 18) + 'px';
     tooltip.style.top = Math.min(e.clientY - 10, H - 180) + 'px';
     const n = hoveredNode;
-    const actionColor = ['COMMENT','SUBMIT','ATTEND'].includes(n.action) ? '#fff' : 'rgba(214,232,220,0.5)';
-    const isIx = n.type === 'intersection';
+    const actionColor = ['COMMENT','SUBMIT','ATTEND'].includes(n.action) ? '#fff' : 'rgba(210,195,175,0.5)';
+    const isIntersection = n.type === 'intersection';
     tooltip.innerHTML = `
-      <div style="color:#46b06b;font-weight:600;margin-bottom:6px;font-size:13px;">${n.type==='center'?'Tagmac Çankaya':n.label}</div>
-      <div style="color:rgba(214,232,220,0.5);font-size:11px;">tür: ${n.type}</div>
-      ${isIx ? `<div style="color:rgba(214,232,220,0.7);font-size:11px;margin-top:2px;">${n.connections||1} kez keşfedildi · ort. güç ${n.avg_strength||'—'}/5</div>` : ''}
+      <div style="color:${isIntersection ? '#6fe49b' : '#46b06b'};font-weight:600;margin-bottom:6px;font-size:13px;">${n.type==='center'?'Tagmac Çankaya':n.label}</div>
+      <div style="color:rgba(214,232,220,0.5);font-size:11px;">tür: ${n.type}${isIntersection && n.avg_strength ? ` · ortalama güç ${n.avg_strength}/5` : ''}</div>
       ${n.score ? `<div style="color:rgba(214,232,220,0.5);font-size:11px;">skor: ${n.score}/10</div>` : ''}
-      ${n.action && !isIx ? `<div style="color:${actionColor};font-size:11px;margin-top:4px;">→ ${n.action}</div>` : ''}
+      ${isIntersection && n.weight ? `<div style="color:rgba(189,242,208,0.6);font-size:11px;">ağırlık: ${n.weight} (kesişim ne sıklıkla tekrar etti × ortalama güç)</div>` : ''}
+      ${n.action ? `<div style="color:${actionColor};font-size:11px;margin-top:4px;">→ ${n.action}</div>` : ''}
       ${n.reason ? `<div style="color:rgba(214,232,220,0.4);font-size:10px;margin-top:4px;font-style:italic;">${n.reason.substring(0,140)}</div>` : ''}
-      ${isIx && n.opportunity ? `<div style="color:rgba(70,176,107,0.6);font-size:10px;margin-top:4px;">→ ${n.opportunity.substring(0,140)}</div>` : ''}
-      ${n.url ? `<div style="color:rgba(70,176,107,0.4);font-size:10px;margin-top:4px;">${n.url.substring(0,50)}</div>` : ''}
-      ${!isIx ? `<div style="color:rgba(214,232,220,0.25);font-size:10px;margin-top:4px;">bağlantı: ${n.connections}</div>` : ''}
+      ${n.opportunity ? `<div style="color:rgba(189,242,208,0.6);font-size:10px;margin-top:4px;">fırsat: ${n.opportunity.substring(0,140)}</div>` : ''}
+      ${n.url ? `<div style="color:rgba(70,176,107,0.55);font-size:10px;margin-top:4px;">${n.url.substring(0,60)}</div>` : ''}
+      <div style="color:rgba(214,232,220,0.3);font-size:10px;margin-top:4px;">bağlantı: ${n.connections}${isIntersection && n.last_seen ? ` · son görüldü: ${n.last_seen}` : ''}</div>
     `;
   } else {
     tooltip.style.display = 'none';
   }
 });
 
+// KILL-SWITCH (23 May 2026 debug): canvas click does NOTHING.
+// Pure visualization mode. If Google search still opens after this,
+// the source is 100% outside this file (browser extension, cached
+// other tab, or deployed page being viewed instead of localhost).
 canvas.addEventListener('click', e => {
+  e.preventDefault();
+  e.stopPropagation();
   const n = getNodeAt(e.clientX, e.clientY);
-  const href = linkFor(n);
-  if (href) window.open(href, '_blank', 'noopener');
+  if (n) {
+    console.log('[khashif viz DEBUG] click detected, type=' + n.type + ', label="' + (n.label || '') + '", url="' + (n.url || '') + '" — opening BLOCKED by kill-switch');
+  }
+  return false;
 });
 
 canvas.addEventListener('mouseleave', () => {
   hoveredNode = null;
-  canvas.style.cursor = 'default';
   tooltip.style.display = 'none';
 });
 
