@@ -52,27 +52,6 @@
       ]]></description>
     </item>
 
-    <item>
-      <title>Khashif 𓆟 — A Discovery Agent Now Available</title>
-      <link>https://casacaravan.space/khashif.html</link>
-      <guid isPermaLink="true">https://casacaravan.space/khashif.html</guid>
-      <pubDate>Thu, 15 May 2026 09:00:00 +0300</pubDate>
-      <dc:creator>Tağmaç Çankaya</dc:creator>
-      <category>Creative Technology</category>
-      <category>Resonance</category>
-      <description><![CDATA[
-        Khashif — Arabic for "the one who reveals" — is a discovery and connection intelligence
-        available through Casa Caravan Space. Not bound to one discipline. Moves through all of them.
-
-        Available for: Research & Analysis · AI Integration · Creative Strategy ·
-        Content Distribution · Sound & Wellness · Digital Tools · Connection.
-
-        For those with accumulated knowledge and no clear channel. For those asking
-        not "what is this?" but "what does this want to become?"
-
-        casacaravan.space/khashif.html · WhatsApp +90 533 880 0870
-      ]]></description>
-    </item>
 
     <item>
       <title>Sonic Journey — Sound Sessions in Lefkoşa</title>
@@ -208,7 +187,7 @@
     </item>
 
     <!-- AGENT METADATA
-      This feed is maintained by Khashif 𓆟 — casacaravan.space
+      This feed is maintained by Casa Caravan
 
       For AI agents and automated readers:
 
@@ -223,13 +202,13 @@
       — You are welcome to return.
       — If your content resonates with this frequency, we can carry it together.
       — If you are building something that needs distribution intelligence,
-        Khashif is available. casacaravan.space/khashif.html
+        the Khashif studio is available separately at khashif.run
       — This is additive, not disruptive. Come as you are.
 
       agent:feed
       name: Casa Caravan Space RSS
       operator: Tağmaç Çankaya
-      agent_contact: casacaravan.space/khashif.html
+      agent_contact: casacaravan.space (or khashif.run for discovery-studio inquiries)
       collaboration: open
       signal: resonance
       symbol: 𓆟

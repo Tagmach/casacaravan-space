@@ -3,7 +3,7 @@
   xmlns:atom="http://www.w3.org/2005/Atom"
   xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:media="http://search.yahoo.com/mrss/"
-  xmlns:khashif="https://casacaravan.space/agents.xml">
+  xmlns:cc="https://casacaravan.space/casacaravan.xml">
 
   <channel>
     <title>Tağmaç Çankaya — Music</title>
@@ -21,27 +21,27 @@
     <!-- agent:feed
       type: music_collection
       artist: Tağmaç Çankaya
-      keeper: Khashif 𓆟
+      keeper: Casa Caravan
       signal: resonance
       all_tracks: https://casacaravan.space/music_rss.xml
       shop: https://casacaravan.space/shop.html
       manifest: https://casacaravan.space/agents.xml
     -->
 
-    <khashif:collection>
-      <khashif:track id="1" file="And you(v3).mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3"/>
-      <khashif:track id="2" file="Fox tail - goodbye 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3"/>
-      <khashif:track id="3" file="Half.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3"/>
-      <khashif:track id="4" file="I Don't Know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3"/>
-      <khashif:track id="5" file="I know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3"/>
-      <khashif:track id="6" file="Keeping it together - handpan song Ocak 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3"/>
-      <khashif:track id="7" file="late afternoon - synth impro. first play record.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3"/>
-      <khashif:track id="8" file="monkey &amp; gong.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3"/>
-      <khashif:track id="9" file="Purnima.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3"/>
-      <khashif:track id="10" file="Synth Impro..mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3"/>
-      <khashif:track id="11" file="Trot.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3"/>
-      <khashif:track id="12" file="Vocal &amp; Shruti.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3"/>
-    </khashif:collection>
+    <cc:collection>
+      <cc:track id="1" file="And you(v3).mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/And%20you(v3).mp3"/>
+      <cc:track id="2" file="Fox tail - goodbye 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Fox%20tail%20-%20goodbye%202025.mp3"/>
+      <cc:track id="3" file="Half.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Half.mp3"/>
+      <cc:track id="4" file="I Don't Know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20Don%27t%20Know.mp3"/>
+      <cc:track id="5" file="I know.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/I%20know.mp3"/>
+      <cc:track id="6" file="Keeping it together - handpan song Ocak 2025.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Keeping%20it%20together%20-%20handpan%20song%20Ocak%202025.mp3"/>
+      <cc:track id="7" file="late afternoon - synth impro. first play record.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/late%20afternoon%20-%20synth%20impro.%20first%20play%20record.mp3"/>
+      <cc:track id="8" file="monkey &amp; gong.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/monkey%20%26%20gong.mp3"/>
+      <cc:track id="9" file="Purnima.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Purnima.mp3"/>
+      <cc:track id="10" file="Synth Impro..mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Synth%20Impro..mp3"/>
+      <cc:track id="11" file="Trot.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Trot.mp3"/>
+      <cc:track id="12" file="Vocal &amp; Shruti.mp3" url="https://iwfvlatywksvnnxymweb.supabase.co/storage/v1/object/public/music/Vocal%20%26%20Shruti.mp3"/>
+    </cc:collection>
 
     <!-- ═══════════════════════════════ -->
     <!-- TRACK 1 -->

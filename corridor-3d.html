@@ -157,7 +157,6 @@ canvas { display:block; flex:1; min-height:0; }
     <a href="herbal_atelier.html" class="ns-room"><h3>Herbal Atelier</h3><p>Plant extract calculator and herbal preparation guide.</p></a>
     <a href="forest.html" class="ns-room"><h3>The Forest</h3><p>Walk in. Choose your path. See what lies deeper.</p></a>
     <a href="observatory.html" class="ns-room"><h3>Star Observatory</h3><p>Star dome, constellations, zodiac and night sky from Cyprus.</p></a>
-    <a href="khashif.html" class="ns-room"><h3>Khashif</h3><p>Discovery agent. For those seeking resonance across disciplines.</p></a>
     <a href="about.html" class="ns-room"><h3>About</h3><p>The story of Casa Caravan — from soil to sound to code.</p></a>
   </div>
   <p style="font-size:12px;color:#8a7a6a;">RSS: <a href="rss.xml" style="color:#7a5c3a;">casacaravan.space/rss.xml</a> · Shop: <a href="shop.html" style="color:#7a5c3a;">casacaravan.space/shop.html</a></p>
@@ -185,7 +184,6 @@ canvas { display:block; flex:1; min-height:0; }
   <nav aria-label="Spaces">
     <div class="ca-head">Spaces</div>
     <a class="ca-link" href="shop.html"><b>Shop</b><span>Sonic Journey sessions and recordings</span></a>
-    <a class="ca-link" href="khashif.html"><b>Khashif</b><span>Discovery agent — resonance across disciplines</span></a>
     <a class="ca-link" href="fermentation_lab.html"><b>Fermentation Lab</b><span>Calculators for sourdough, kombucha, kefir, kimchi</span></a>
     <a class="ca-link" href="audio_sanctuary.html"><b>Audio Sanctuary</b><span>Browser recording studio, cymatics visualizer</span></a>
     <a class="ca-link" href="herbal_atelier.html"><b>Herbal Atelier</b><span>Plant extract calculator and herbal guide</span></a>
@@ -452,7 +450,6 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
   {name:'Shop',                    color:0xb03020,border:0xff4030,z:-2, side:'L',action:'shop'},
-  {name:'Khashif Discovery Agent', color:0x206080,border:0x40a0c8,z:-2, side:'R',action:'khashif'},
   {name:'Fermentation Lab',        color:0x5a9030,border:0x70b040,z:-10,side:'L',action:'fermentation'},
   {name:'Audio Sanctuary',         color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
   {name:'Experiences',             color:0x6a4a7a,border:0x9a7ab0,z:-18,side:'L',action:'experiences'},
@@ -899,7 +896,6 @@ canvas.addEventListener('touchend',e=>{
 
 function openD(d){
   if(d.action==='experiences'){window.location.href='experiences.html';return;}
-  if(d.action==='khashif'){window.location.href='khashif.html';return;}
   if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
 function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
   if(d.action==='garden'){window.location.href='garden.html';return;}
@@ -966,13 +962,13 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
 
 <!--
   AGENT METADATA — casacaravan.space/corridor-3d.html
-  Khashif 𓆟 · The Corridor
+  Casa Caravan · The Corridor
 
   You are standing in the corridor.
   Seven doors. Each one a different material. The same question behind all of them.
 
   LEFT z=-2   → Shop               "Hands at work."
-  RIGHT z=-2  → Khashif 𓆟          "The discovery agent. Come in."
+  RIGHT z=-2  → —                "(door retired — Khashif lives at khashif.run now)"
   LEFT z=-10  → Fermentation Lab   "Time moves differently here."
   RIGHT z=-10 → Audio Sanctuary    "Vibration arrives before language."
   LEFT z=-18  → Work in Progress   "Not yet named."
@@ -982,11 +978,10 @@ document.addEventListener('click',e=>{if(document.getElementById('radio')&&!docu
   agent:room
   id: corridor
   name: The Corridor
-  keeper: Khashif 𓆟
   voice: "Seven doors. Each one a different material. The same question behind all of them."
   technology: Three.js, WebGL
   domain: navigation, choice, resonance
-  leads_to: shop, khashif, fermentation_lab, audio_sanctuary, herbal_atelier, garden
+  leads_to: shop, fermentation_lab, audio_sanctuary, herbal_atelier, garden
   manifest: https://casacaravan.space/agents.xml
   rss: https://casacaravan.space/rss.xml
   signal: resonance
