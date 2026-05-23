@@ -115,11 +115,23 @@ function initPositions() {
   const nodeMap = {};
   NODES.forEach(n => nodeMap[n.id] = n);
 
-  let srcIndex = 0;
+  // CRITICAL: position center FIRST. Content nodes look up src.x via
+  // nodeMap[n.source] (typically 'tagmac' = center). Without this, src.x
+  // is undefined → undefined + Math.cos(...) = NaN → forceStep propagates
+  // NaN to every node within ~2 frames → empty canvas. (Found 23 May 2026.)
+  if (NODES.length > 0 && NODES[0].type === 'center') {
+    NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
+  }
+
   const sources = NODES.filter(n => n.type !== 'center' && n.type !== 'content');
   sources.forEach((n, i) => {
     const angle = (i / sources.length) * Math.PI * 2;
-    const dist = n.type === 'priority' ? 150 : n.type === 'dynamic' ? 220 : 190;
+    // Type-aware orbit radii (using current type names, not stale priority/extended)
+    const dist = n.type === 'seed' ? 160
+              : n.type === 'dynamic' ? 230
+              : n.type === 'domain' ? 220
+              : n.type === 'intersection' ? 280
+              : 190;
     n.x = W/2 + Math.cos(angle) * dist + (Math.random()-0.5)*30;
     n.y = H/2 + Math.sin(angle) * dist + (Math.random()-0.5)*30;
     n.vx = 0; n.vy = 0;
@@ -127,14 +139,19 @@ function initPositions() {
 
   NODES.filter(n => n.type === 'content').forEach((n, i) => {
     const src = nodeMap[n.source];
+    const srcX = (src && Number.isFinite(src.x)) ? src.x : W/2;
+    const srcY = (src && Number.isFinite(src.y)) ? src.y : H/2;
     const angle = Math.random() * Math.PI * 2;
     const dist = 50 + Math.random() * 60;
-    n.x = (src ? src.x : W/2) + Math.cos(angle)*dist;
-    n.y = (src ? src.y : H/2) + Math.sin(angle)*dist;
+    n.x = srcX + Math.cos(angle)*dist;
+    n.y = srcY + Math.sin(angle)*dist;
     n.vx = 0; n.vy = 0;
   });
 
-  NODES[0].x = W/2; NODES[0].y = H/2; NODES[0].vx = 0; NODES[0].vy = 0;
+  // Re-pin center (in case sources/content loops touched it)
+  if (NODES.length > 0 && NODES[0].type === 'center') {
+    NODES[0].x = W/2; NODES[0].y = H/2;
+  }
 }
 
 function sizeOf(n) {
