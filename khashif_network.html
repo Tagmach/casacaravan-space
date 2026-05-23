@@ -41,6 +41,7 @@
     <div class="leg"><div class="leg-dot" style="background:#ffffff;box-shadow:0 0 5px #fff;"></div>aksiyon eylemi</div>
   </div>
   <div id="info">her gezi sonunda otomatik güncellenir<br>khashif_network_viz.py</div>
+  <div id="diag" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:#6fe49b;text-align:center;font-family:monospace;">BOOT · loading network data…</div>
 </div>
 <div id="tooltip"></div>
 
@@ -52,29 +53,44 @@ let NODES = [];
 let EDGES = [];
 
 async function loadNetworkData() {
+  const diag = document.getElementById('diag');
   try {
+    if (diag) diag.textContent = 'BOOT · fetching Supabase…';
     const res = await fetch(
       `${SUPABASE_URL}/rest/v1/khashif_memory?key=eq.network&select=value`,
       { headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` } }
     );
+    if (diag) diag.textContent = 'BOOT · fetch=' + res.status + ' · parsing…';
     const data = await res.json();
     if (data && data[0] && data[0].value) {
       const network = JSON.parse(data[0].value);
       NODES = network.nodes || [];
       EDGES = network.edges || [];
       const s = network.stats || {};
-      const kw = (network.keywords || []).join(", ");
       document.getElementById('updated').textContent = `son gezi: ${network.updated || '—'}`;
       document.getElementById('stats').innerHTML =
         `${s.node_count||0} düğüm · ${s.edge_count||0} bağlantı<br>` +
         `${s.resonant_count||0} rezonans · ${s.intersection_count||0} kesişim<br>` +
         `${s.feed_count||0} RSS · ${s.keyword_count||0} kelime`;
+      if (diag) diag.textContent = 'BOOT · loaded ' + NODES.length + ' nodes, ' + EDGES.length + ' edges · initializing…';
+    } else {
+      if (diag) diag.textContent = 'BOOT · ERR data shape unexpected (data='+JSON.stringify(data).slice(0,80)+'…)';
+      console.error('Unexpected data shape:', data);
     }
   } catch(e) {
+    if (diag) diag.textContent = 'BOOT · ERR fetch failed: ' + e.message;
     console.error("Network data load failed:", e);
   }
-  initPositions();
-  draw();
+  try {
+    initPositions();
+    if (diag) diag.textContent = 'BOOT · positioned, starting draw…';
+    draw();
+    // Fade out diag after 3s if draw succeeded
+    setTimeout(() => { if (diag) diag.style.transition = 'opacity 1s'; if (diag) diag.style.opacity = '0'; }, 3000);
+  } catch(err) {
+    if (diag) diag.textContent = 'BOOT · ERR draw failed: ' + err.message;
+    console.error('init/draw error:', err);
+  }
 }
 
 const canvas = document.getElementById('canvas');
@@ -403,7 +419,9 @@ canvas.addEventListener('mouseleave', () => {
 
 window.addEventListener('resize', () => {
   resize();
-  NODES[0].x = W/2; NODES[0].y = H/2;
+  if (NODES.length > 0) {
+    NODES[0].x = W/2; NODES[0].y = H/2;
+  }
 });
 
 resize();
