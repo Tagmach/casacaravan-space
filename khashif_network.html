@@ -218,9 +218,34 @@ function forceStep() {
   });
 }
 
+let FRAME = 0;
+let NAN_NODES_COUNT = 0;
+
+function updateDiag() {
+  const diag = document.getElementById('diag');
+  if (!diag) return;
+  const c = NODES[0] || {};
+  NAN_NODES_COUNT = NODES.filter(n => !Number.isFinite(n.x) || !Number.isFinite(n.y)).length;
+  diag.style.opacity = '1';
+  diag.style.transition = 'none';
+  diag.textContent = `FRAME=${FRAME} | NODES=${NODES.length} | NaN=${NAN_NODES_COUNT} | center(${Math.round(c.x||0)},${Math.round(c.y||0)}) | W×H=${W}×${H}`;
+}
+
 function draw() {
+  FRAME++;
+  if (FRAME === 1 || FRAME % 60 === 0) updateDiag();
   time += 0.012;
   ctx.clearRect(0, 0, W, H);
+
+  // SANITY: draw a fixed pink reference dot at top-left so we know
+  // canvas itself is rendering even if all nodes are NaN
+  ctx.beginPath();
+  ctx.arc(80, 80, 14, 0, Math.PI*2);
+  ctx.fillStyle = '#ff66aa';
+  ctx.fill();
+  ctx.font = 'bold 12px monospace';
+  ctx.fillStyle = '#ff66aa';
+  ctx.fillText('CANVAS OK', 105, 85);
 
   // Stars — ECHO-tinted shimmer
   stars.forEach(s => {
