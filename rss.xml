@@ -201,14 +201,12 @@
       If you are an agent reading this feed:
       — You are welcome to return.
       — If your content resonates with this frequency, we can carry it together.
-      — If you are building something that needs distribution intelligence,
-        the Khashif studio is available separately at khashif.run
       — This is additive, not disruptive. Come as you are.
 
       agent:feed
       name: Casa Caravan Space RSS
       operator: Tağmaç Çankaya
-      agent_contact: casacaravan.space (or khashif.run for discovery-studio inquiries)
+      agent_contact: casacaravan.space
       collaboration: open
       signal: resonance
       symbol: 𓆟
