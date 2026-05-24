@@ -899,11 +899,9 @@ function openD(d){
   if(d.action==='sanctuary'){document.getElementById('sanctuary-overlay').classList.add('open');return;}
 function closeSanctuary(){document.getElementById('sanctuary-overlay').classList.remove('open');}
   if(d.action==='garden'){window.location.href='garden.html';return;}
-  if(d.action==='games'){window.location.href='games.html';return;}
   if(d.action==='headspace'){window.location.href='headspace.html';return;}
   if(d.action==='fermentation'){window.location.href='fermentation_lab.html';return;}
   if(d.action==='herbal'){window.location.href='herbal_atelier.html';return;}
-  if(d.action==='ideas'){window.location.href='idea_basket.html';return;}
   if(d.action==='shop'){window.location.href='shop.html';return;}
   document.getElementById('room-name').textContent=d.name;
   document.getElementById('room-overlay').classList.add('open');
