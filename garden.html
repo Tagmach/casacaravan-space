@@ -165,6 +165,34 @@ html, body {
   #header-back { padding: 5px 12px; font-size: 8px; }
 }
 
+/* Landscape phones: forest-entry triangle needs repositioning + contrast boost
+   (the portrait @media block above doesn't fire when phone is in landscape) */
+@media (orientation: landscape) and (max-height: 500px) {
+  #forest-path {
+    top: auto !important;
+    bottom: 14%;
+    left: 50% !important;
+    z-index: 9;
+  }
+  .path-ring,
+  .path-ring svg.triangle-btn {
+    width: 72px;
+    height: 72px;
+  }
+  .triangle-btn path {
+    fill: rgba(6, 10, 14, 0.85);
+    stroke: rgba(46, 200, 145, 0.95);
+    stroke-width: 1.5;
+  }
+  .path-ring svg.triangle-btn {
+    filter: drop-shadow(0 0 12px rgba(29, 158, 117, 0.55)) !important;
+  }
+  .path-label {
+    font-size: 12px;
+    color: rgba(210, 195, 175, 0.85);
+  }
+}
+
 /* Moon */
 #moon {
   position: absolute;
