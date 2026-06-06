@@ -313,32 +313,6 @@ function updateFX(){
 function updateEQ(i,val){
   document.getElementById(`eqVal${i}`).textContent=(val>0?'+':'')+val;
   if(eqNodes[i])eqNodes[i].gain.value=parseFloat(val);
-  checkSmiley();
-}
-
-// ── Key IV — EQ Smiley face: [+8,+4,-8,-8,+4,+8] ─────────────────
-const SMILEY=[8,3,-5,-5,3,8];
-const TOLERANCE=5;
-let smileyTimer=null;
-function getEQVals(){return EQ_BANDS.map((_,i)=>parseInt(document.getElementById('eqVal'+i)?.textContent||0));}
-function checkSmiley(){
-  if(typeof CC_KEYS==='undefined'||!CC_KEYS.isPlaying()||CC_KEYS.hasKey(4))return;
-  const match=SMILEY.every((v,i)=>Math.abs(getEQVals()[i]-v)<=TOLERANCE);
-  const ff=document.getElementById('key4-ff');
-  if(match&&!ff){
-    const el=document.createElement('div');
-    el.id='key4-ff';
-    el.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#c8a84a;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);cursor:pointer;z-index:100;animation:ff4b 1.8s ease-in-out infinite;';
-    el.onclick=()=>{CC_KEYS.award(4);el.remove();};
-    el.title='✦';
-    const s=document.createElement('style');
-    s.textContent='@keyframes ff4b{0%,100%{opacity:1;box-shadow:0 0 10px #c8a84a,0 0 28px rgba(200,168,74,0.6);}50%{opacity:0.2;box-shadow:none;}}';
-    document.head.appendChild(s);
-    document.body.appendChild(el);
-  }else if(!match){
-    if(smileyTimer){clearTimeout(smileyTimer);smileyTimer=null;}
-    if(ff)ff.remove();
-  }
 }
 
 async function toggleRecord(){
