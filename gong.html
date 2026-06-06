@@ -139,6 +139,60 @@ nav {
 
 .disclaimer { max-width:860px; margin:0 auto; padding:30px 40px 60px; font-size:11px; line-height:1.9; color:var(--dim); text-align:center; }
 
+/* CART BAR + ORDER (mirrors the shop) */
+#cart-bar { position:fixed; bottom:0; left:0; right:0; z-index:46; background:rgba(26,18,8,0.97); border-top:1px solid rgba(160,128,96,0.15); backdrop-filter:blur(12px); padding:14px 40px; display:flex; align-items:center; justify-content:space-between; transform:translateY(100%); transition:transform 0.35s ease, bottom 0.35s ease; }
+#cart-bar.visible { transform:translateY(0); }
+.cart-summary { font-size:11px; color:rgba(160,128,96,0.7); }
+.cart-summary strong { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; color:#D2C3AF; font-weight:300; margin-right:8px; }
+.btn-checkout { font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:10px 24px; border:1px solid rgba(160,128,96,0.4); color:#A08060; background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; }
+.btn-checkout:hover { background:rgba(160,128,96,0.08); border-color:#A08060; }
+.buy-btn.add.in-cart { background:var(--gold); color:#fff; border-color:var(--gold); }
+#order-overlay { position:fixed; inset:0; z-index:60; background:rgba(245,240,232,0.98); display:none; align-items:flex-start; justify-content:center; overflow-y:auto; }
+#order-overlay.open { display:flex; }
+#order-content { max-width:520px; width:100%; padding:80px 40px 60px; }
+.order-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:32px; color:var(--dark); margin-bottom:8px; }
+.order-subtitle { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-bottom:40px; }
+#order-items { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:32px; }
+.order-item { display:flex; justify-content:space-between; align-items:center; padding:14px 20px; border-bottom:1px solid rgba(80,60,40,0.06); gap:12px; }
+.order-item:last-child { border-bottom:none; }
+.order-item-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px; color:var(--dark); flex:1; }
+.order-item-price { font-size:13px; color:var(--gold); white-space:nowrap; }
+.order-item-remove { font-size:11px; color:var(--dim); cursor:pointer; padding:2px 6px; }
+.order-total { display:flex; justify-content:space-between; padding:16px 20px; border-top:1px solid var(--border); background:var(--surface); }
+.order-total-label { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); }
+.order-total-price { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:20px; color:var(--dark); }
+.form-section { margin-bottom:24px; }
+.form-label { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:var(--dim); margin-bottom:12px; display:block; }
+.form-row { display:flex; flex-direction:column; gap:10px; }
+.form-input { background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--dark); padding:12px 16px; font-family:'Cormorant Garamond',serif; font-size:16px; outline:none; width:100%; transition:border-color 0.2s; }
+.form-input:focus { border-color:rgba(122,92,58,0.4); }
+.form-input::placeholder { color:var(--dim); font-style:italic; }
+textarea.form-input { resize:none; }
+.payment-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.payment-opt { border:1px solid var(--border); border-radius:6px; padding:12px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.payment-opt:hover { border-color:rgba(122,92,58,0.3); }
+.payment-opt.selected { border-color:var(--gold); background:rgba(122,92,58,0.04); }
+.payment-opt-name { font-size:10px; letter-spacing:1px; color:var(--dark); text-transform:uppercase; }
+.payment-opt-detail { font-size:8px; color:var(--dim); margin-top:4px; }
+.payment-detail-panel { display:none; margin-top:16px; padding:20px; border:1px solid var(--border); border-radius:8px; background:var(--surface); }
+.payment-detail-panel.open { display:block; }
+.pdp-title { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin-bottom:14px; }
+.pdp-row { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+.pdp-row:last-child { margin-bottom:0; }
+.pdp-label { font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); }
+.pdp-value { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--dark); word-break:break-all; line-height:1.5; }
+.pdp-note { font-size:9px; color:var(--dim); margin-top:8px; line-height:1.7; padding-top:12px; border-top:1px solid var(--border); }
+.copy-btn { display:inline-flex; align-items:center; gap:6px; margin-top:6px; font-size:8px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); background:none; border:1px solid rgba(122,92,58,0.3); border-radius:100px; padding:4px 12px; cursor:pointer; transition:all 0.2s; }
+.copy-btn:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.copy-btn.copied { color:#2a7a4a; border-color:#2a7a4a; }
+.btn-send { font-family:'Jost',sans-serif; font-size:9px; letter-spacing:2.5px; text-transform:uppercase; padding:14px 32px; border:1px solid rgba(122,92,58,0.4); color:var(--gold); background:none; border-radius:100px; cursor:pointer; transition:all 0.2s; width:100%; margin-top:8px; }
+.btn-send:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.btn-send:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-back-order { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); background:none; border:1px solid var(--border); padding:10px 22px; border-radius:100px; cursor:pointer; margin-top:12px; width:100%; }
+#order-confirm { display:none; text-align:center; padding:60px 0; }
+.confirm-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:36px; color:var(--dark); margin-bottom:16px; }
+.confirm-text { font-size:12px; color:var(--dim); line-height:2; max-width:360px; margin:0 auto 40px; }
+
 /* PREVIEW PLAYER BAR */
 #player {
   position:fixed; bottom:0; left:0; right:0; z-index:45;
@@ -161,8 +215,10 @@ nav {
   .section,.disclaimer{padding-left:20px;padding-right:20px;}
   .listen{padding:32px 22px;}
   .tier-grid{grid-template-columns:1fr 1fr;}
-  #player{padding:12px 20px;}
+  #player,#cart-bar{padding:12px 20px;}
   .pl-bar-wrap{display:none;}
+  .payment-opts{grid-template-columns:1fr 1fr;}
+  #order-content{padding:60px 20px 40px;}
 }
 </style>
 </head>
@@ -196,44 +252,28 @@ nav {
 <section class="section">
   <div class="section-head">
     <span class="section-title">The gong recordings</span>
-    <span class="section-note">listen free</span>
+    <span class="section-note">listen free · €1 each</span>
   </div>
-  <p class="section-intro">Raw recordings of Tağmaç's upcycled gongs — different mallets, different metals, different rooms. Free to listen, free to keep. Press play.</p>
+  <p class="section-intro">Raw recordings of Tağmaç's upcycled gongs — different mallets, different metals, different rooms. Press play to listen free; take any one home for €1. Add it to your basket and check out — we'll confirm and send your file.</p>
   <div class="free-list" id="free-gongs"></div>
 </section>
 
-<!-- RECORDINGS -->
-<section class="section tier">
-  <div class="section-head">
-    <span class="section-title">Recordings</span>
-    <span class="section-note">single pieces</span>
-  </div>
-  <p class="section-intro">Individual gong recordings — a single sounding, captured clean. Preview here; the full file is delivered instantly after purchase.</p>
-  <div class="tier-grid" id="grid-recordings"></div>
-  <div class="tier-empty" id="empty-recordings">New recordings land here as they're made. The first ones are being recorded now.</div>
-</section>
-
-<!-- LOOPS -->
-<section class="section tier">
+<!-- LOOPS (coming) -->
+<section class="section">
   <div class="section-head">
     <span class="section-title">Meditation Loops</span>
-    <span class="section-note">seamless · long-form</span>
+    <span class="section-note">coming soon</span>
   </div>
-  <p class="section-intro">Long, seamless gong loops for meditation, focus or sleep — no gaps, no fade-outs. The same loops power the breathing sessions in the <a href="https://tagmacwellness.app" style="color:var(--gold);">Tagmac Wellness</a> app.</p>
-  <div class="tier-grid" id="grid-loops"></div>
-  <div class="tier-empty" id="empty-loops">Seamless loops are in production. Sign up to the corridor's RSS to hear when the first lands.</div>
+  <p class="section-intro">Long, seamless gong loops for meditation, focus or sleep — no gaps, no fade-outs. The same loops power the breathing sessions in the <a href="https://tagmacwellness.app" style="color:var(--gold);">Tagmac Wellness</a> app. In production now.</p>
 </section>
 
-<!-- STEMS -->
-<section class="section tier">
+<!-- STEMS (coming) -->
+<section class="section">
   <div class="section-head">
     <span class="section-title">Stems for Creators</span>
-    <span class="section-note">licensable</span>
+    <span class="section-note">coming soon</span>
   </div>
-  <p class="section-intro">Clean, isolated gong stems you can license and build into your own work — meditation tracks, films, apps, games.</p>
-  <div class="tier-grid" id="grid-stems"></div>
-  <div class="tier-empty" id="empty-stems">Licensable stems are coming. Want a specific gong sound for a project? <a href="shop.html" style="color:var(--gold);">Ask in the shop.</a></div>
-  <div class="license-note"><b>How licensing works:</b> a stem purchase includes a standard license to use the sound in your own commercial or personal work. You can't resell the stem itself as-is. Need an exclusive or a custom recording? Reach out and we'll sort it.</div>
+  <p class="section-intro">Clean, isolated gong stems to license and build into your own work — meditation tracks, films, apps, games. Want a specific gong sound for a project? Reach out on WhatsApp +90 533 880 0870.</p>
 </section>
 
 <!-- THE MAKING (first-hand) -->
@@ -295,6 +335,116 @@ nav {
   Casa Caravan · Lefkoşa, Cyprus. The gong is offered as a sound and wellness practice. It is not a medical device or treatment, and nothing here is medical advice. If you have a health condition, talk to a professional.
 </p>
 
+<!-- CART BAR -->
+<div id="cart-bar">
+  <div class="cart-summary">
+    <strong id="cart-count-label"></strong>
+    <span id="cart-total-label"></span>
+  </div>
+  <button class="btn-checkout" onclick="openOrder()">Checkout →</button>
+</div>
+
+<!-- ORDER OVERLAY (mirrors the shop) -->
+<div id="order-overlay">
+  <div id="order-content">
+    <div id="order-form-view">
+      <div class="order-title">Your Order</div>
+      <div class="order-subtitle">review & complete</div>
+      <div id="order-items"></div>
+
+      <div class="form-section">
+        <label class="form-label">Contact</label>
+        <div class="form-row">
+          <input class="form-input" id="f-name" type="text" placeholder="Your name" maxlength="80">
+          <input class="form-input" id="f-email" type="email" placeholder="Email" maxlength="100">
+          <input class="form-input" id="f-phone" type="tel" placeholder="Phone" maxlength="30">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Payment Method</label>
+        <div class="payment-opts">
+          <div class="payment-opt" onclick="selectPayment('Bank Transfer',this,'iban-detail')">
+            <div class="payment-opt-name">Bank Transfer</div>
+            <div class="payment-opt-detail">IBAN · TR & LT</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Revolut',this,'revolut-detail')">
+            <div class="payment-opt-name">Revolut</div>
+            <div class="payment-opt-detail">IBAN · LT62</div>
+          </div>
+          <div class="payment-opt" onclick="selectPayment('Ethereum',this,'eth-detail')">
+            <div class="payment-opt-name">Ethereum</div>
+            <div class="payment-opt-detail">ETH · ERC-20</div>
+          </div>
+        </div>
+
+        <div class="payment-detail-panel" id="iban-detail">
+          <div class="pdp-title">Bank Transfer — TR IBAN</div>
+          <div class="pdp-row"><div class="pdp-label">Beneficiary</div><div class="pdp-value">TAGMACH CHANKAYA</div></div>
+          <div class="pdp-row">
+            <div class="pdp-label">IBAN</div>
+            <div class="pdp-value">TR20 0006 4000 0016 8130 0605 15</div>
+            <button class="copy-btn" onclick="copyText('TR200006400000168130060515',this)">Copy IBAN</button>
+          </div>
+          <div class="pdp-note">After sending, include your order reference in the payment description. We will confirm once received.</div>
+        </div>
+
+        <div class="payment-detail-panel" id="revolut-detail">
+          <div class="pdp-title">Revolut — International Transfer</div>
+          <div class="pdp-row"><div class="pdp-label">Beneficiary</div><div class="pdp-value">TAGMACH CHANKAYA</div></div>
+          <div class="pdp-row">
+            <div class="pdp-label">IBAN</div>
+            <div class="pdp-value">LT62 3250 0984 5562 5476</div>
+            <button class="copy-btn" onclick="copyText('LT623250098455625476',this)">Copy IBAN</button>
+          </div>
+          <div class="pdp-row">
+            <div class="pdp-label">BIC / SWIFT</div>
+            <div class="pdp-value">REVOLT21</div>
+            <button class="copy-btn" onclick="copyText('REVOLT21',this)">Copy BIC</button>
+          </div>
+          <div class="pdp-row"><div class="pdp-label">Bank</div><div class="pdp-value">Revolut Bank UAB · Konstitucijos ave. 21B, 08130 Vilnius, Lithuania</div></div>
+          <div class="pdp-note">Send exactly the order total in EUR. Include your name in the reference field.</div>
+        </div>
+
+        <div class="payment-detail-panel" id="eth-detail">
+          <div class="pdp-title">Ethereum — ERC-20</div>
+          <div class="pdp-row">
+            <div class="pdp-label">Recipient Address</div>
+            <div class="pdp-value">0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894</div>
+            <button class="copy-btn" onclick="copyText('0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894',this)">Copy Address</button>
+          </div>
+          <div class="pdp-row" style="margin-top:12px;">
+            <button class="copy-btn" id="eth-connect-btn" onclick="connectPhantom()" style="font-size:9px;padding:8px 16px;">Connect Wallet</button>
+            <div id="eth-wallet-info" style="margin-top:10px;display:none;">
+              <div class="pdp-label">Connected</div>
+              <div class="pdp-value" id="eth-connected-addr" style="font-size:12px;word-break:break-all;"></div>
+            </div>
+          </div>
+          <div id="eth-price-row" class="pdp-row" style="margin-top:12px;display:none;">
+            <div class="pdp-label">Amount to send</div>
+            <div class="pdp-value" id="eth-amount" style="font-size:18px;"></div>
+            <div style="font-size:9px;color:var(--dim);margin-top:4px;" id="eth-rate-note"></div>
+          </div>
+          <div class="pdp-note">Send ETH or ERC-20 stablecoins (USDC/USDT) on Ethereum mainnet only. After sending, paste your transaction hash in the note field below. We will confirm once the transaction is verified.</div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Note (optional)</label>
+        <div class="form-row"><textarea class="form-input" id="f-note" rows="2" placeholder="Special requests, TX hash for ETH…"></textarea></div>
+      </div>
+
+      <button class="btn-send" id="send-btn" onclick="submitOrder()">Send Order →</button>
+      <button class="btn-back-order" onclick="closeOrder()">← back</button>
+    </div>
+    <div id="order-confirm">
+      <div class="confirm-title">Order received.</div>
+      <p class="confirm-text">We'll be in touch shortly to confirm your order and send your gong recordings.<br><br>With love and health.</p>
+      <button class="btn-back-order" onclick="closeOrder();resetCart();">← back to the gong</button>
+    </div>
+  </div>
+</div>
+
 <!-- PREVIEW PLAYER -->
 <div id="player">
   <button class="pl-btn" id="plBtn" onclick="playerToggle()">⏸</button>
@@ -305,62 +455,13 @@ nav {
   <div class="pl-bar-wrap"><div class="pl-bar" id="plBar"></div></div>
 </div>
 
-<!-- Gumroad overlay: instant delivery. When a product has a real `gumroad` URL,
-     the Buy button opens the Gumroad overlay in-page (no leaving casacaravan). -->
-<script src="https://gumroad.com/js/gumroad.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-/* ── PRODUCT CATALOGUE ──────────────────────────────────────────────
-   Drop a new gong product in by adding one entry. Fields:
-     title   — display name
-     note    — short line under the title (optional)
-     price   — display price string (e.g. "€2")
-     preview — public audio URL for the 30–60s preview (Supabase music bucket or /space file)
-     gumroad — Gumroad product permalink (e.g. "https://tagmac.gumroad.com/l/gong-1").
-               Leave "" → button shows "Coming soon" until the product exists.
-   Instant delivery is handled entirely by Gumroad once `gumroad` is set. */
-const CATALOGUE = {
-  recordings: [
-    // { title:'First Strike', note:'single sounding · 1:40', price:'€2',
-    //   preview:'gong_entrance.mp3', gumroad:'https://tagmac.gumroad.com/l/gong-first-strike' },
-  ],
-  loops: [
-    // { title:'Gong Drift — 30 min', note:'seamless · for sleep', price:'€5',
-    //   preview:'gong_entrance.mp3', gumroad:'' },
-  ],
-  stems: [
-    // { title:'Upcycled Gong Stem Pack', note:'5 isolated stems · 48kHz WAV', price:'€20',
-    //   preview:'gong_entrance.mp3', gumroad:'' },
-  ],
-};
+const SUPA_URL='https://iwfvlatywksvnnxymweb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3ZnZsYXR5d2tzdm5ueHltd2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5ODE0NDEsImV4cCI6MjA5MjU1NzQ0MX0.nHjA1dQHZG6ey9XwpvbN3mjQmAv4DZ4CB1CkC7hWens';
+const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-function renderTier(key){
-  const grid = document.getElementById('grid-'+key);
-  const empty = document.getElementById('empty-'+key);
-  const items = CATALOGUE[key] || [];
-  if(!items.length){ empty.style.display='block'; return; }
-  empty.style.display='none';
-  grid.innerHTML = items.map((p,i)=>{
-    const buy = p.gumroad
-      ? `<a class="buy-btn gumroad-button" href="${p.gumroad}">Buy</a>`
-      : `<span class="buy-btn soon">Coming soon</span>`;
-    const prev = p.preview
-      ? `<button class="prod-preview" id="pv-${key}-${i}" onclick="preview('${key}',${i})" aria-label="Preview">▶</button>`
-      : '';
-    return `<div class="prod-card">
-      <div class="prod-top">
-        <div class="prod-name">${p.title}</div>
-        ${p.note?`<div class="prod-note">${p.note}</div>`:''}
-      </div>
-      <div class="prod-foot">
-        <div class="prod-meta">${prev}<span class="prod-price">${p.price||''}</span></div>
-        ${buy}
-      </div>
-    </div>`;
-  }).join('');
-}
-['recordings','loops','stems'].forEach(renderTier);
-
-/* ── FREE GONG RECORDINGS (listen + download free) ── */
+/* ── GONG RECORDINGS (listen free · buy €1) ── */
 const FREE_GONGS = [
   { title:'Upcycled Water Tank Gong', note:'made from a reclaimed water tank · 51 cm · 138 Hz · C#', file:'gong-upcycled-water-tank-138hz.mp3' },
   { title:'Gong Sounds #1 — Friction Mallet', note:'a long, drawn tone played with a friction mallet', file:'gong-1-friction-mallet.mp3' },
@@ -372,13 +473,14 @@ const FREE_GONGS = [
 ];
 const fgEl = document.getElementById('free-gongs');
 fgEl.innerHTML = FREE_GONGS.map((g,i)=>`
-  <div class="free-row" id="fr-${i}" onclick="playFree(${i})">
-    <button class="free-play" id="pv-free-${i}" aria-label="Play ${g.title}">▶</button>
+  <div class="free-row" id="fr-${i}">
+    <button class="free-play" id="pv-free-${i}" onclick="playFree(${i})" aria-label="Play ${g.title}">▶</button>
     <div class="free-body">
       <div class="free-name">${g.title}</div>
       <div class="free-note">${g.note}</div>
     </div>
-    <a class="free-dl" href="gong-sounds/${g.file}" download onclick="event.stopPropagation()">Download</a>
+    <span class="prod-price">€1</span>
+    <button class="buy-btn add" id="ga-${i}" onclick="gongAdd(${i})">+ Add</button>
   </div>`).join('');
 
 function clearFreeRows(){
@@ -411,29 +513,133 @@ function strikeGong(){
   gong.onended = ()=>{ document.getElementById('gongMeta').textContent = 'recorded in Lefkoşa · upcycled, hand-tuned'; };
 }
 
-/* ── PREVIEW PLAYER ── */
+/* ── LISTEN PLAYER (free preview of the gong recordings) ── */
 const pa = new Audio();
 let curId = null;
-function preview(key,i){
-  const p = CATALOGUE[key][i];
-  const src = /^https?:/.test(p.preview) ? p.preview : p.preview;
-  if(curId){ const o=document.getElementById('pv-'+curId); if(o) o.textContent='▶'; o?.classList.remove('playing'); }
-  const id = key+'-'+i;
-  if(curId===id && !pa.paused){ pa.pause(); document.getElementById('pv-'+id).textContent='▶'; return; }
-  curId = id;
-  pa.src = src; pa.play().catch(()=>{});
-  document.getElementById('plTitle').textContent = p.title;
-  document.getElementById('plSub').textContent = key.slice(0,-1)+' preview';
-  document.getElementById('player').classList.add('visible');
-  const b=document.getElementById('pv-'+id); if(b){ b.textContent='⏸'; b.classList.add('playing'); }
-  document.getElementById('plBtn').textContent='⏸';
-}
 function playerToggle(){
   if(pa.paused){ pa.play().catch(()=>{}); document.getElementById('plBtn').textContent='⏸'; }
   else { pa.pause(); document.getElementById('plBtn').textContent='▶'; }
 }
 pa.addEventListener('timeupdate',()=>{ if(pa.duration) document.getElementById('plBar').style.width=(pa.currentTime/pa.duration*100)+'%'; });
 pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='▶'; if(curId){const o=document.getElementById('pv-'+curId); if(o){o.textContent='▶';o.classList.remove('playing');}} clearFreeRows(); });
+
+/* ── CART + ORDER (mirrors shop.html: cart → Supabase orders → Resend → manual confirm) ── */
+let cart=[], selPayment=null;
+const inCart=new Set();
+const ETH_RECIPIENT='0xeE9cc0F4dDeBffb701b6F43EEDaAb2bdD11C1894';
+let ethAmountWei=null, ethConnectedAddr=null;
+
+function gongAdd(i){
+  const key='g'+i, btn=document.getElementById('ga-'+i);
+  if(inCart.has(key)){ inCart.delete(key); cart=cart.filter(x=>x.id!==key); btn.textContent='+ Add'; btn.classList.remove('in-cart'); }
+  else{ inCart.add(key); cart.push({id:key,name:FREE_GONGS[i].title+' (gong recording)',price:1,type:'digital'}); btn.textContent='✓'; btn.classList.add('in-cart'); }
+  updateCartBar();
+}
+function removeFromCart(idx){
+  const item=cart[idx];
+  if(item?.id){ inCart.delete(item.id); const b=document.getElementById('ga-'+item.id.slice(1)); if(b){ b.textContent='+ Add'; b.classList.remove('in-cart'); } }
+  cart.splice(idx,1);
+  updateCartBar(); renderOrderItems();
+}
+function cartTotal(){ return cart.reduce((s,i)=>s+i.price,0); }
+function updateCartBar(){
+  const bar=document.getElementById('cart-bar');
+  if(!cart.length){ bar.classList.remove('visible'); updateBottom(); return; }
+  bar.classList.add('visible');
+  document.getElementById('cart-count-label').textContent=cart.length+(cart.length===1?' item':' items');
+  document.getElementById('cart-total-label').textContent='— €'+cartTotal().toFixed(2);
+  updateBottom();
+}
+function updateBottom(){
+  const pl=document.getElementById('player');
+  const ph=pl.classList.contains('visible')?pl.offsetHeight:0;
+  document.getElementById('cart-bar').style.bottom=ph+'px';
+}
+function resetCart(){
+  cart=[]; inCart.clear();
+  document.querySelectorAll('.buy-btn.add').forEach(b=>{ b.textContent='+ Add'; b.classList.remove('in-cart'); });
+  updateCartBar(); selPayment=null;
+  document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.payment-detail-panel').forEach(p=>p.classList.remove('open'));
+}
+function openOrder(){ document.getElementById('order-overlay').classList.add('open'); document.getElementById('order-form-view').style.display='block'; document.getElementById('order-confirm').style.display='none'; renderOrderItems(); }
+function closeOrder(){ document.getElementById('order-overlay').classList.remove('open'); }
+function renderOrderItems(){
+  const html=cart.map((item,i)=>`<div class="order-item"><div class="order-item-name">${item.name}</div><div class="order-item-price">€${item.price.toFixed(2)}</div><div class="order-item-remove" onclick="removeFromCart(${i})">✕</div></div>`).join('');
+  document.getElementById('order-items').innerHTML=html+`<div class="order-total"><div class="order-total-label">Total</div><div class="order-total-price">€${cartTotal().toFixed(2)}</div></div>`;
+}
+function selectPayment(method,el,panelId){
+  selPayment=method;
+  document.querySelectorAll('.payment-opt').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.payment-detail-panel').forEach(p=>p.classList.remove('open'));
+  el.classList.add('selected');
+  document.getElementById(panelId).classList.add('open');
+  if(method==='Ethereum') fetchEthPrice();
+}
+async function fetchEthPrice(){
+  const row=document.getElementById('eth-price-row'), amountEl=document.getElementById('eth-amount'), rateEl=document.getElementById('eth-rate-note');
+  const total=cartTotal();
+  if(!total){ row.style.display='none'; return; }
+  try{
+    amountEl.textContent='Loading…'; row.style.display='block';
+    const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur');
+    const d=await r.json(); const rate=d?.ethereum?.eur;
+    if(!rate) throw new Error('no rate');
+    const ethAmount=total/rate;
+    ethAmountWei='0x'+Math.floor(ethAmount*1e18).toString(16);
+    amountEl.textContent=ethAmount.toFixed(6)+' ETH';
+    rateEl.textContent='1 ETH = €'+rate.toLocaleString()+' · Total: €'+total.toFixed(2);
+  }catch(e){ amountEl.textContent='—'; rateEl.textContent='Rate unavailable. Check current ETH price before sending.'; }
+}
+async function connectPhantom(){
+  const btn=document.getElementById('eth-connect-btn');
+  if(!window.ethereum){ alert('No Ethereum wallet detected. Please install Phantom or MetaMask.'); return; }
+  try{
+    btn.textContent='Connecting…';
+    const accounts=await window.ethereum.request({method:'eth_requestAccounts'});
+    ethConnectedAddr=accounts[0];
+    document.getElementById('eth-connected-addr').textContent=ethConnectedAddr;
+    document.getElementById('eth-wallet-info').style.display='block';
+    btn.textContent='Connected ✓'; btn.classList.add('copied');
+    const note=document.getElementById('f-note');
+    if(note && !note.value.includes('Wallet:')) note.value=(note.value?note.value+' | ':'')+'Wallet: '+ethConnectedAddr;
+  }catch(e){ btn.textContent='Connect Wallet'; if(e.code!==4001) alert('Connection failed: '+e.message); }
+}
+async function sendEthTransaction(){
+  if(!ethConnectedAddr){ alert('Please connect your wallet first.'); return false; }
+  if(!ethAmountWei){ alert('ETH amount not calculated yet. Please wait a moment.'); return false; }
+  try{
+    const txHash=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:ethConnectedAddr,to:ETH_RECIPIENT,value:ethAmountWei,gas:'0x5208'}]});
+    const note=document.getElementById('f-note');
+    if(note) note.value=(note.value?note.value+' | ':'')+'TX: '+txHash;
+    return true;
+  }catch(e){ alert(e.code===4001?'Transaction cancelled.':'Transaction failed: '+e.message); return false; }
+}
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{ const o=btn.textContent; btn.textContent='Copied ✓'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent=o; btn.classList.remove('copied'); },2000); });
+}
+async function sendNotification(orderData){
+  try{ await fetch(SUPA_URL+'/functions/v1/send-order-notification',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},body:JSON.stringify(orderData)}); }catch(e){ console.error('Notification failed:',e); }
+}
+async function submitOrder(){
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const note=document.getElementById('f-note').value.trim();
+  if(!name||!email){ alert('Name and email are required.'); return; }
+  if(!selPayment){ alert('Please select a payment method.'); return; }
+  if(!cart.length) return;
+  const btn=document.getElementById('send-btn'); btn.disabled=true; btn.textContent='Sending…';
+  if(selPayment==='Ethereum'){ const ok=await sendEthTransaction(); if(!ok){ btn.disabled=false; btn.textContent='Send Order →'; return; } }
+  const orderData={ name, email, product:cart.map(i=>`${i.name} (€${i.price.toFixed(2)})`).join(', '), price:cartTotal(), payment_method:selPayment, payment_note:[note,phone?`Phone: ${phone}`:''].filter(Boolean).join(' | '), approved:false };
+  await sendNotification({...orderData,phone});
+  try{
+    await supa.from('orders').insert(orderData);
+    document.getElementById('order-form-view').style.display='none';
+    document.getElementById('order-confirm').style.display='block';
+  }catch(e){ alert('Something went wrong. Please try again.'); }
+  finally{ btn.disabled=false; btn.textContent='Send Order →'; }
+}
 </script>
 
 <!-- schema.org — honest: a music collection + FAQ. No health claims. -->
