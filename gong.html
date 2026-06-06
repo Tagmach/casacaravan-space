@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Gong — Recordings, Loops & Stems | Casa Caravan</title>
-<meta name="description" content="Hand-forged gong sound by Tağmaç Çankaya. Listen free, then take it with you: gong recordings, seamless meditation loops, and licensable stems for creators. Lefkoşa, Cyprus.">
+<meta name="description" content="Upcycled gong sound by Tağmaç Çankaya — discarded metal reworked into a tuned gong. Listen free, then take it with you: gong recordings, seamless meditation loops, and licensable stems for creators. Lefkoşa, Cyprus.">
 <link rel="canonical" href="https://casacaravan.space/gong.html">
 <meta property="og:type" content="music.album">
 <meta property="og:title" content="The Gong — Casa Caravan">
-<meta property="og:description" content="Hand-forged gong sound. Listen free, then take it with you — recordings, meditation loops, and licensable stems.">
+<meta property="og:description" content="Upcycled gong sound — discarded metal given a new voice. Listen free, then take it with you — recordings, meditation loops, and licensable stems.">
 <meta property="og:url" content="https://casacaravan.space/gong.html">
 <meta property="og:image" content="https://casacaravan.space/og-image.png">
 <link rel="alternate" type="application/rss+xml" title="Casa Caravan — Sound" href="https://casacaravan.space/feeds/sound.xml">
@@ -79,6 +79,19 @@ nav {
 .gong-btn.ringing { animation:ring 2.4s ease-out; }
 @keyframes ring { 0%{box-shadow:0 0 0 0 rgba(232,192,137,0.45);} 100%{box-shadow:0 0 0 90px rgba(232,192,137,0);} }
 .listen-meta { font-size:10px; letter-spacing:1.5px; color:#7A7068; text-transform:uppercase; }
+
+/* FREE GONG LIST */
+.free-list { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+.free-row { display:flex; align-items:center; gap:16px; padding:14px 18px; background:var(--card); border:1px solid var(--border); border-radius:10px; cursor:pointer; transition:all 0.2s; }
+.free-row:hover { box-shadow:0 4px 14px rgba(80,60,40,0.07); }
+.free-row.playing { border-color:var(--gold); background:rgba(122,92,58,0.04); }
+.free-play { width:38px; height:38px; border-radius:50%; border:1px solid rgba(122,92,58,0.35); background:none; color:var(--gold); font-size:13px; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.free-row.playing .free-play { background:var(--gold); color:#fff; border-color:var(--gold); }
+.free-body { flex:1; min-width:0; }
+.free-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); line-height:1.25; }
+.free-note { font-size:11px; letter-spacing:0.3px; color:var(--dim); margin-top:3px; }
+.free-dl { font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); text-decoration:none; border:1px solid rgba(122,92,58,0.3); border-radius:100px; padding:6px 12px; flex-shrink:0; transition:all 0.2s; }
+.free-dl:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
 
 /* PRODUCT TIERS */
 .tier { padding-top:8px; }
@@ -164,7 +177,7 @@ nav {
 <header class="hero">
   <div class="hero-kicker">Casa Caravan · The Gong</div>
   <h1 class="hero-title">The Gong</h1>
-  <p class="hero-lead">A gong bath is a slow wash of sound from a single struck disc of bronze — the kind Tağmaç hand-forges and tunes in Lefkoşa. You don't listen to it so much as sit inside it.</p>
+  <p class="hero-lead">A gong bath is a slow wash of sound from a single struck disc of metal — the kind Tağmaç upcycles from discarded metal and tunes by hand in Lefkoşa. You don't listen to it so much as sit inside it.</p>
   <p class="hero-sub">Listen free below · take it with you as a recording, a meditation loop, or a stem to build with.</p>
 </header>
 
@@ -175,8 +188,18 @@ nav {
     <button class="gong-btn" id="gongBtn" onclick="strikeGong()">strike</button>
     <div class="listen-title">One strike, then stillness.</div>
     <p class="listen-desc">Press once. Let it ring out fully before you press again. The full-length recordings and seamless loops are below.</p>
-    <div class="listen-meta" id="gongMeta">recorded in Lefkoşa · hand-forged bronze</div>
+    <div class="listen-meta" id="gongMeta">recorded in Lefkoşa · upcycled, hand-tuned</div>
   </div>
+</section>
+
+<!-- FREE GONG RECORDINGS -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">The gong recordings</span>
+    <span class="section-note">listen free</span>
+  </div>
+  <p class="section-intro">Raw recordings of Tağmaç's upcycled gongs — different mallets, different metals, different rooms. Free to listen, free to keep. Press play.</p>
+  <div class="free-list" id="free-gongs"></div>
 </section>
 
 <!-- RECORDINGS -->
@@ -219,8 +242,8 @@ nav {
     <span class="section-title">How the gong is made</span>
   </div>
   <div class="making-body">
-    <p>Tağmaç makes gongs by hand. A flat disc of bronze is hammered, heated and tuned until it holds a voice — a fundamental note with a cloud of overtones around it. <em>Every gong is different;</em> the hammering decides what it will say.</p>
-    <p>That's why these recordings aren't interchangeable with a sample pack. They're a particular instrument, made by the person striking it, recorded in the room it was tuned in. When you hear a long shimmer that never quite resolves, that's the overtones beating against each other — the thing a gong does that almost nothing else does.</p>
+    <p>Tağmaç makes gongs by <em>upcycling</em> — taking discarded, salvaged metal and giving it a new voice. The metal is shaped, worked and tuned by hand until it holds a note: a fundamental with a cloud of overtones around it. <em>Every gong is different;</em> what the metal once was, and how it's worked, decides what it will say.</p>
+    <p>That's why these recordings aren't interchangeable with a sample pack. Each one is a particular instrument — something discarded, reworked by the person striking it, recorded in the room it was tuned in. When you hear a long shimmer that never quite resolves, that's the overtones beating against each other — the thing a gong does that almost nothing else does.</p>
   </div>
 </section>
 
@@ -305,7 +328,7 @@ const CATALOGUE = {
     //   preview:'gong_entrance.mp3', gumroad:'' },
   ],
   stems: [
-    // { title:'Bronze Stem Pack', note:'5 isolated stems · 48kHz WAV', price:'€20',
+    // { title:'Upcycled Gong Stem Pack', note:'5 isolated stems · 48kHz WAV', price:'€20',
     //   preview:'gong_entrance.mp3', gumroad:'' },
   ],
 };
@@ -337,6 +360,45 @@ function renderTier(key){
 }
 ['recordings','loops','stems'].forEach(renderTier);
 
+/* ── FREE GONG RECORDINGS (listen + download free) ── */
+const FREE_GONGS = [
+  { title:'Upcycled Water Tank Gong', note:'made from a reclaimed water tank · 51 cm · 138 Hz · C#', file:'gong-upcycled-water-tank-138hz.mp3' },
+  { title:'Gong Sounds #1 — Friction Mallet', note:'a long, drawn tone played with a friction mallet', file:'gong-1-friction-mallet.mp3' },
+  { title:'Gong Sounds #2 — Small Mallet', note:'struck with a small mallet', file:'gong-2-small-mallet.mp3' },
+  { title:'Gong Sounds #3 — Deep Bass', note:'the low end, building', file:'gong-3-deep-bass.mp3' },
+  { title:'Gong Sounds #4 — Exploration', note:'open exploration of a self-made gong', file:'gong-4-exploration.mp3' },
+  { title:'Gong Sounds #5 — Handmade, 41 cm', note:'a handmade 41 cm gong', file:'gong-5-handmade-41cm.mp3' },
+  { title:'Gong Sounds #7 — In the Forest', note:'recorded outdoors, with forest background', file:'gong-7-forest.mp3' },
+];
+const fgEl = document.getElementById('free-gongs');
+fgEl.innerHTML = FREE_GONGS.map((g,i)=>`
+  <div class="free-row" id="fr-${i}" onclick="playFree(${i})">
+    <button class="free-play" id="pv-free-${i}" aria-label="Play ${g.title}">▶</button>
+    <div class="free-body">
+      <div class="free-name">${g.title}</div>
+      <div class="free-note">${g.note}</div>
+    </div>
+    <a class="free-dl" href="gong-sounds/${g.file}" download onclick="event.stopPropagation()">Download</a>
+  </div>`).join('');
+
+function clearFreeRows(){
+  FREE_GONGS.forEach((_,i)=>{ const r=document.getElementById('fr-'+i); if(r) r.classList.remove('playing'); const b=document.getElementById('pv-free-'+i); if(b) b.textContent='▶'; });
+}
+function playFree(i){
+  const g = FREE_GONGS[i], id = 'free-'+i;
+  if(curId===id && !pa.paused){ pa.pause(); document.getElementById('pv-free-'+i).textContent='▶'; document.getElementById('fr-'+i).classList.remove('playing'); document.getElementById('plBtn').textContent='▶'; return; }
+  if(curId){ const o=document.getElementById('pv-'+curId); if(o){o.textContent='▶';o.classList.remove('playing');} }
+  clearFreeRows();
+  curId = id;
+  pa.src = 'gong-sounds/'+g.file; pa.play().catch(()=>{});
+  document.getElementById('plTitle').textContent = g.title;
+  document.getElementById('plSub').textContent = 'upcycled gong · free';
+  document.getElementById('player').classList.add('visible');
+  document.getElementById('pv-free-'+i).textContent='⏸';
+  document.getElementById('fr-'+i).classList.add('playing');
+  document.getElementById('plBtn').textContent='⏸';
+}
+
 /* ── FREE GONG (uses the existing entrance sound — real, works today) ── */
 const gong = new Audio('gong_entrance.mp3');
 gong.preload = 'auto';
@@ -346,7 +408,7 @@ function strikeGong(){
   gong.play().catch(()=>{});
   btn.classList.remove('ringing'); void btn.offsetWidth; btn.classList.add('ringing');
   document.getElementById('gongMeta').textContent = 'ringing…';
-  gong.onended = ()=>{ document.getElementById('gongMeta').textContent = 'recorded in Lefkoşa · hand-forged bronze'; };
+  gong.onended = ()=>{ document.getElementById('gongMeta').textContent = 'recorded in Lefkoşa · upcycled, hand-tuned'; };
 }
 
 /* ── PREVIEW PLAYER ── */
@@ -371,7 +433,7 @@ function playerToggle(){
   else { pa.pause(); document.getElementById('plBtn').textContent='▶'; }
 }
 pa.addEventListener('timeupdate',()=>{ if(pa.duration) document.getElementById('plBar').style.width=(pa.currentTime/pa.duration*100)+'%'; });
-pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='▶'; if(curId){const o=document.getElementById('pv-'+curId); if(o){o.textContent='▶';o.classList.remove('playing');}} });
+pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='▶'; if(curId){const o=document.getElementById('pv-'+curId); if(o){o.textContent='▶';o.classList.remove('playing');}} clearFreeRows(); });
 </script>
 
 <!-- schema.org — honest: a music collection + FAQ. No health claims. -->
@@ -386,7 +448,7 @@ pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='
       "albumProductionType":"https://schema.org/StudioAlbum",
       "genre":["Sound Healing","Ambient","Gong"],
       "byArtist":{"@type":"MusicGroup","name":"Tağmaç Çankaya","url":"https://audius.co/tagmac"},
-      "description":"Hand-forged gong recordings, seamless meditation loops, and licensable stems by Tağmaç Çankaya, Lefkoşa, Cyprus."
+      "description":"Upcycled gong recordings, seamless meditation loops, and licensable stems by Tağmaç Çankaya — discarded metal reworked into tuned gongs in Lefkoşa, Cyprus."
     },
     {
       "@type":"FAQPage",
@@ -403,15 +465,16 @@ pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='
   AGENT METADATA — casacaravan.space/gong.html
   Casa Caravan · The Gong
 
-  Hand-forged gong sound by Tağmaç Çankaya, Lefkoşa, Cyprus. Listen free, then
+  Upcycled gong sound by Tağmaç Çankaya, Lefkoşa, Cyprus — discarded metal
+  reworked into tuned gongs. Listen free, then
   take it with you: gong recordings, seamless meditation loops, and licensable
   stems for creators. The loops also power the Tagmac Wellness breathing app.
 
   agent:room
   id: gong
   name: The Gong
-  voice: "A gong bath is a slow wash of sound from a single struck disc of bronze."
-  domain: sound_healing, gong, meditation, ambient, sound_licensing
+  voice: "A gong bath is a slow wash of sound from a single struck disc of upcycled metal."
+  domain: sound_healing, gong, meditation, ambient, sound_licensing, upcycling
   products: gong_recordings, meditation_loops, licensable_stems
   delivery: instant (Gumroad)
   related: shop.html, tagmacwellness.app, audius.co/tagmac
