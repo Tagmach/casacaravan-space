@@ -252,9 +252,9 @@ textarea.form-input { resize:none; }
 <section class="section">
   <div class="section-head">
     <span class="section-title">The gong recordings</span>
-    <span class="section-note">listen free · €1 each</span>
+    <span class="section-note">free preview · €1 each</span>
   </div>
-  <p class="section-intro">Raw recordings of Tağmaç's upcycled gongs — different mallets, different metals, different rooms. Press play to listen free; take any one home for €1. Add it to your basket and check out — we'll confirm and send your file.</p>
+  <p class="section-intro">Raw recordings of Tağmaç's upcycled gongs — different mallets, different metals, different rooms. Press play for a short free preview; buy any one for €1 and we'll send you the full recording. Add it to your basket and check out.</p>
   <div class="free-list" id="free-gongs"></div>
 </section>
 
@@ -462,14 +462,15 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const supa=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 /* ── GONG RECORDINGS (listen free · buy €1) ── */
+// Public site serves a short PREVIEW only; the full recording is delivered privately after purchase.
 const FREE_GONGS = [
-  { title:'Upcycled Water Tank Gong', note:'made from a reclaimed water tank · 51 cm · 138 Hz · C#', file:'gong-upcycled-water-tank-138hz.mp3' },
-  { title:'Gong Sounds #1 — Friction Mallet', note:'a long, drawn tone played with a friction mallet', file:'gong-1-friction-mallet.mp3' },
-  { title:'Gong Sounds #2 — Small Mallet', note:'struck with a small mallet', file:'gong-2-small-mallet.mp3' },
-  { title:'Gong Sounds #3 — Deep Bass', note:'the low end, building', file:'gong-3-deep-bass.mp3' },
-  { title:'Gong Sounds #4 — Exploration', note:'open exploration of a self-made gong', file:'gong-4-exploration.mp3' },
-  { title:'Gong Sounds #5 — Handmade, 41 cm', note:'a handmade 41 cm gong', file:'gong-5-handmade-41cm.mp3' },
-  { title:'Gong Sounds #7 — In the Forest', note:'recorded outdoors, with forest background', file:'gong-7-forest.mp3' },
+  { title:'Upcycled Water Tank Gong', note:'made from a reclaimed water tank · 51 cm · 138 Hz · C#', file:'gong-upcycled-water-tank-138hz-preview.mp3' },
+  { title:'Gong Sounds #1 — Friction Mallet', note:'a long, drawn tone played with a friction mallet', file:'gong-1-friction-mallet-preview.mp3' },
+  { title:'Gong Sounds #2 — Small Mallet', note:'struck with a small mallet', file:'gong-2-small-mallet-preview.mp3' },
+  { title:'Gong Sounds #3 — Deep Bass', note:'the low end, building', file:'gong-3-deep-bass-preview.mp3' },
+  { title:'Gong Sounds #4 — Exploration', note:'open exploration of a self-made gong', file:'gong-4-exploration-preview.mp3' },
+  { title:'Gong Sounds #5 — Handmade, 41 cm', note:'a handmade 41 cm gong', file:'gong-5-handmade-41cm-preview.mp3' },
+  { title:'Gong Sounds #7 — In the Forest', note:'recorded outdoors, with forest background', file:'gong-7-forest-preview.mp3' },
 ];
 const fgEl = document.getElementById('free-gongs');
 fgEl.innerHTML = FREE_GONGS.map((g,i)=>`
@@ -494,7 +495,7 @@ function playFree(i){
   curId = id;
   pa.src = 'gong-sounds/'+g.file; pa.play().catch(()=>{});
   document.getElementById('plTitle').textContent = g.title;
-  document.getElementById('plSub').textContent = 'upcycled gong · free';
+  document.getElementById('plSub').textContent = 'preview · full recording with purchase';
   document.getElementById('player').classList.add('visible');
   document.getElementById('pv-free-'+i).textContent='⏸';
   document.getElementById('fr-'+i).classList.add('playing');
