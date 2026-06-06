@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Gong — Recordings, Loops & Stems | Casa Caravan</title>
+<meta name="description" content="Hand-forged gong sound by Tağmaç Çankaya. Listen free, then take it with you: gong recordings, seamless meditation loops, and licensable stems for creators. Lefkoşa, Cyprus.">
+<link rel="canonical" href="https://casacaravan.space/gong.html">
+<meta property="og:type" content="music.album">
+<meta property="og:title" content="The Gong — Casa Caravan">
+<meta property="og:description" content="Hand-forged gong sound. Listen free, then take it with you — recordings, meditation loops, and licensable stems.">
+<meta property="og:url" content="https://casacaravan.space/gong.html">
+<meta property="og:image" content="https://casacaravan.space/og-image.png">
+<link rel="alternate" type="application/rss+xml" title="Casa Caravan — Sound" href="https://casacaravan.space/feeds/sound.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F0E8;
+  --surface: #EDE8DE;
+  --border: rgba(80,60,40,0.12);
+  --gold: #7A5C3A;
+  --cream: #2A1F14;
+  --dim: #8A7A6A;
+  --dark: #1A1208;
+  --card: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(245,240,232,0.95); backdrop-filter: blur(8px);
+}
+.nav-logo { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--dark); text-decoration:none; }
+.nav-back { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+.nav-back:hover { color:var(--dark); }
+
+/* HERO — immersive gong */
+.hero {
+  padding: 130px 40px 56px; max-width: 860px; margin: 0 auto; text-align: center;
+}
+.hero-kicker { font-size:10px; letter-spacing:4px; color:var(--dim); text-transform:uppercase; margin-bottom:22px; }
+.hero-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(44px,8vw,82px); color:var(--dark); line-height:1.05; margin-bottom:24px; }
+.hero-lead { font-family:'Cormorant Garamond',serif; font-size:clamp(18px,2.6vw,23px); line-height:1.7; color:var(--cream); max-width:640px; margin:0 auto; }
+.hero-sub { font-size:12px; letter-spacing:1px; color:var(--dim); margin-top:20px; line-height:1.9; }
+
+.section { max-width:860px; margin:0 auto; padding:44px 40px; border-top:1px solid var(--border); }
+.section-head { display:flex; align-items:baseline; gap:14px; margin-bottom:10px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:30px; font-weight:300; color:var(--dark); }
+.section-note { font-size:10px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; }
+.section-intro { font-size:14px; line-height:1.9; color:var(--cream); max-width:620px; margin:14px 0 28px; }
+
+/* FREE LISTEN — the open door */
+.listen {
+  background: linear-gradient(160deg,#1A1208,#2A1F14);
+  border-radius: 14px; padding: 40px; text-align:center; color:#E8DECF;
+  margin: 8px auto 0;
+}
+.listen-eyebrow { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:#A08060; margin-bottom:14px; }
+.listen-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:28px; color:#E8DECF; margin-bottom:8px; }
+.listen-desc { font-size:13px; line-height:1.8; color:#B7A88F; max-width:460px; margin:0 auto 26px; }
+.gong-btn {
+  width:118px; height:118px; border-radius:50%; margin:0 auto 22px;
+  border:1px solid rgba(200,160,96,0.45); background:radial-gradient(circle at 50% 42%,#3a2a16,#1a1208);
+  color:#E8C089; font-size:13px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.3s;
+  box-shadow:0 0 0 0 rgba(232,192,137,0.25);
+}
+.gong-btn:hover { border-color:#E8C089; box-shadow:0 0 36px 0 rgba(232,192,137,0.18); }
+.gong-btn.ringing { animation:ring 2.4s ease-out; }
+@keyframes ring { 0%{box-shadow:0 0 0 0 rgba(232,192,137,0.45);} 100%{box-shadow:0 0 0 90px rgba(232,192,137,0);} }
+.listen-meta { font-size:10px; letter-spacing:1.5px; color:#7A7068; text-transform:uppercase; }
+
+/* PRODUCT TIERS */
+.tier { padding-top:8px; }
+.tier-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px; margin-top:6px; }
+.prod-card { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; transition:all 0.2s; display:flex; flex-direction:column; }
+.prod-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(80,60,40,0.08); }
+.prod-top { padding:16px 16px 8px; flex:1; }
+.prod-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:var(--dark); margin-bottom:5px; line-height:1.25; }
+.prod-note { font-size:11px; letter-spacing:0.2px; color:var(--dim); line-height:1.6; }
+.prod-foot { display:flex; align-items:center; justify-content:space-between; padding:10px 16px 14px; gap:8px; }
+.prod-meta { display:flex; align-items:center; gap:10px; }
+.prod-preview { font-size:15px; color:var(--gold); background:none; border:none; cursor:pointer; line-height:1; }
+.prod-preview.playing { color:var(--dark); }
+.prod-price { font-size:13px; color:var(--gold); }
+.buy-btn {
+  font-size:9px; letter-spacing:1.5px; text-transform:uppercase; padding:7px 14px;
+  border:1px solid rgba(122,92,58,0.35); border-radius:100px; color:var(--gold);
+  background:none; cursor:pointer; transition:all 0.2s; text-decoration:none; white-space:nowrap;
+}
+.buy-btn:hover { background:rgba(122,92,58,0.06); border-color:var(--gold); }
+.buy-btn.soon { opacity:0.5; cursor:default; pointer-events:none; }
+.tier-empty { font-size:13px; color:var(--dim); font-style:italic; padding:22px 0; line-height:1.8; }
+
+/* STEMS license note */
+.license-note { font-size:11px; line-height:1.8; color:var(--dim); margin-top:16px; padding:14px 18px; background:var(--surface); border-radius:8px; border:1px solid var(--border); }
+.license-note b { color:var(--cream); font-weight:400; }
+
+/* MAKING — first-hand */
+.making-body { font-size:15px; line-height:1.95; color:var(--cream); }
+.making-body p { margin-bottom:16px; }
+.making-body em { font-style:italic; color:var(--gold); }
+
+/* FAQ */
+.faq-item { padding:18px 0; border-bottom:1px solid var(--border); }
+.faq-item:last-child { border-bottom:none; }
+.faq-q { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:var(--dark); margin-bottom:8px; }
+.faq-a { font-size:14px; line-height:1.9; color:var(--cream); }
+
+/* LINKS OUT */
+.outlinks { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:6px; }
+.outlink { display:block; padding:20px; border:1px solid var(--border); border-radius:10px; text-decoration:none; transition:all 0.2s; background:var(--card); }
+.outlink:hover { box-shadow:0 4px 16px rgba(80,60,40,0.08); }
+.outlink-name { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:19px; color:var(--dark); margin-bottom:6px; }
+.outlink-desc { font-size:12px; color:var(--dim); line-height:1.7; }
+
+.disclaimer { max-width:860px; margin:0 auto; padding:30px 40px 60px; font-size:11px; line-height:1.9; color:var(--dim); text-align:center; }
+
+/* PREVIEW PLAYER BAR */
+#player {
+  position:fixed; bottom:0; left:0; right:0; z-index:45;
+  background:rgba(26,18,8,0.97); border-top:1px solid rgba(160,128,96,0.2);
+  backdrop-filter:blur(12px); padding:12px 40px;
+  display:flex; align-items:center; gap:18px;
+  transform:translateY(100%); transition:transform 0.35s ease;
+}
+#player.visible { transform:translateY(0); }
+.pl-btn { width:34px; height:34px; border-radius:50%; border:1px solid rgba(160,128,96,0.3); background:none; color:#A08060; font-size:13px; cursor:pointer; flex-shrink:0; }
+.pl-info { flex:1; min-width:0; }
+.pl-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:#D2C3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pl-sub { font-size:9px; letter-spacing:1.5px; color:rgba(160,128,96,0.6); text-transform:uppercase; margin-top:2px; }
+.pl-bar-wrap { flex:2; height:2px; background:rgba(160,128,96,0.15); border-radius:2px; min-width:0; }
+.pl-bar { height:100%; background:#A08060; border-radius:2px; width:0%; }
+
+@media(max-width:600px){
+  nav{padding:14px 20px;}
+  .hero{padding:110px 20px 44px;}
+  .section,.disclaimer{padding-left:20px;padding-right:20px;}
+  .listen{padding:32px 22px;}
+  .tier-grid{grid-template-columns:1fr 1fr;}
+  #player{padding:12px 20px;}
+  .pl-bar-wrap{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="corridor-3d.html" class="nav-logo">Casa Caravan Space</a>
+  <a href="corridor-3d.html" class="nav-back">← corridor</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-kicker">Casa Caravan · The Gong</div>
+  <h1 class="hero-title">The Gong</h1>
+  <p class="hero-lead">A gong bath is a slow wash of sound from a single struck disc of bronze — the kind Tağmaç hand-forges and tunes in Lefkoşa. You don't listen to it so much as sit inside it.</p>
+  <p class="hero-sub">Listen free below · take it with you as a recording, a meditation loop, or a stem to build with.</p>
+</header>
+
+<!-- FREE LISTEN -->
+<section class="section">
+  <div class="listen">
+    <div class="listen-eyebrow">Listen free</div>
+    <button class="gong-btn" id="gongBtn" onclick="strikeGong()">strike</button>
+    <div class="listen-title">One strike, then stillness.</div>
+    <p class="listen-desc">Press once. Let it ring out fully before you press again. The full-length recordings and seamless loops are below.</p>
+    <div class="listen-meta" id="gongMeta">recorded in Lefkoşa · hand-forged bronze</div>
+  </div>
+</section>
+
+<!-- RECORDINGS -->
+<section class="section tier">
+  <div class="section-head">
+    <span class="section-title">Recordings</span>
+    <span class="section-note">single pieces</span>
+  </div>
+  <p class="section-intro">Individual gong recordings — a single sounding, captured clean. Preview here; the full file is delivered instantly after purchase.</p>
+  <div class="tier-grid" id="grid-recordings"></div>
+  <div class="tier-empty" id="empty-recordings">New recordings land here as they're made. The first ones are being recorded now.</div>
+</section>
+
+<!-- LOOPS -->
+<section class="section tier">
+  <div class="section-head">
+    <span class="section-title">Meditation Loops</span>
+    <span class="section-note">seamless · long-form</span>
+  </div>
+  <p class="section-intro">Long, seamless gong loops for meditation, focus or sleep — no gaps, no fade-outs. The same loops power the breathing sessions in the <a href="https://tagmacwellness.app" style="color:var(--gold);">Tagmac Wellness</a> app.</p>
+  <div class="tier-grid" id="grid-loops"></div>
+  <div class="tier-empty" id="empty-loops">Seamless loops are in production. Sign up to the corridor's RSS to hear when the first lands.</div>
+</section>
+
+<!-- STEMS -->
+<section class="section tier">
+  <div class="section-head">
+    <span class="section-title">Stems for Creators</span>
+    <span class="section-note">licensable</span>
+  </div>
+  <p class="section-intro">Clean, isolated gong stems you can license and build into your own work — meditation tracks, films, apps, games.</p>
+  <div class="tier-grid" id="grid-stems"></div>
+  <div class="tier-empty" id="empty-stems">Licensable stems are coming. Want a specific gong sound for a project? <a href="shop.html" style="color:var(--gold);">Ask in the shop.</a></div>
+  <div class="license-note"><b>How licensing works:</b> a stem purchase includes a standard license to use the sound in your own commercial or personal work. You can't resell the stem itself as-is. Need an exclusive or a custom recording? Reach out and we'll sort it.</div>
+</section>
+
+<!-- THE MAKING (first-hand) -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">How the gong is made</span>
+  </div>
+  <div class="making-body">
+    <p>Tağmaç makes gongs by hand. A flat disc of bronze is hammered, heated and tuned until it holds a voice — a fundamental note with a cloud of overtones around it. <em>Every gong is different;</em> the hammering decides what it will say.</p>
+    <p>That's why these recordings aren't interchangeable with a sample pack. They're a particular instrument, made by the person striking it, recorded in the room it was tuned in. When you hear a long shimmer that never quite resolves, that's the overtones beating against each other — the thing a gong does that almost nothing else does.</p>
+  </div>
+</section>
+
+<!-- FAQ (honest, no medical overclaim) -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">About the gong</span>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What is a gong bath?</div>
+    <div class="faq-a">A session where a gong (and often other instruments) is played continuously while you rest. The sound is rich and enveloping, and many people find it deeply relaxing. It's a wellness and contemplative practice — not a medical treatment, and we don't make health claims for it.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Can I use these recordings for meditation or sleep?</div>
+    <div class="faq-a">Yes — that's what the seamless loops are for. They're designed to run for a long time without breaks. Use them however helps you: meditation, focus, winding down. Volume low is usually plenty.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What's the difference between a recording, a loop, and a stem?</div>
+    <div class="faq-a">A <b>recording</b> is a single gong sounding, captured as-is. A <b>loop</b> is a long, seamless version made to run continuously. A <b>stem</b> is a clean, isolated sound licensed for you to build into your own work.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Where can I hear a gong live?</div>
+    <div class="faq-a">Tağmaç runs <a href="shop.html" style="color:var(--gold);">Sonic Journey</a> sound sessions in Lefkoşa, Cyprus — in person and online. A gong bath in the room is a different thing from headphones; the vibration is physical.</div>
+  </div>
+</section>
+
+<!-- LINKS OUT -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-title">From here</span>
+  </div>
+  <div class="outlinks">
+    <a href="shop.html" class="outlink">
+      <div class="outlink-name">Sonic Journey →</div>
+      <div class="outlink-desc">Live and online sound sessions with gong and handpan. Lefkoşa, Cyprus.</div>
+    </a>
+    <a href="https://tagmacwellness.app" class="outlink" rel="noopener">
+      <div class="outlink-name">Tagmac Wellness →</div>
+      <div class="outlink-desc">A breathing app the gong loops were made for. Breathe with the sound.</div>
+    </a>
+    <a href="https://audius.co/tagmac" class="outlink" rel="noopener">
+      <div class="outlink-name">Music on Audius →</div>
+      <div class="outlink-desc">Tağmaç's full catalogue — handpan, synth and gong, free to stream.</div>
+    </a>
+  </div>
+</section>
+
+<p class="disclaimer">
+  Casa Caravan · Lefkoşa, Cyprus. The gong is offered as a sound and wellness practice. It is not a medical device or treatment, and nothing here is medical advice. If you have a health condition, talk to a professional.
+</p>
+
+<!-- PREVIEW PLAYER -->
+<div id="player">
+  <button class="pl-btn" id="plBtn" onclick="playerToggle()">⏸</button>
+  <div class="pl-info">
+    <div class="pl-title" id="plTitle">—</div>
+    <div class="pl-sub" id="plSub">preview</div>
+  </div>
+  <div class="pl-bar-wrap"><div class="pl-bar" id="plBar"></div></div>
+</div>
+
+<!-- Gumroad overlay: instant delivery. When a product has a real `gumroad` URL,
+     the Buy button opens the Gumroad overlay in-page (no leaving casacaravan). -->
+<script src="https://gumroad.com/js/gumroad.js"></script>
+<script>
+/* ── PRODUCT CATALOGUE ──────────────────────────────────────────────
+   Drop a new gong product in by adding one entry. Fields:
+     title   — display name
+     note    — short line under the title (optional)
+     price   — display price string (e.g. "€2")
+     preview — public audio URL for the 30–60s preview (Supabase music bucket or /space file)
+     gumroad — Gumroad product permalink (e.g. "https://tagmac.gumroad.com/l/gong-1").
+               Leave "" → button shows "Coming soon" until the product exists.
+   Instant delivery is handled entirely by Gumroad once `gumroad` is set. */
+const CATALOGUE = {
+  recordings: [
+    // { title:'First Strike', note:'single sounding · 1:40', price:'€2',
+    //   preview:'gong_entrance.mp3', gumroad:'https://tagmac.gumroad.com/l/gong-first-strike' },
+  ],
+  loops: [
+    // { title:'Gong Drift — 30 min', note:'seamless · for sleep', price:'€5',
+    //   preview:'gong_entrance.mp3', gumroad:'' },
+  ],
+  stems: [
+    // { title:'Bronze Stem Pack', note:'5 isolated stems · 48kHz WAV', price:'€20',
+    //   preview:'gong_entrance.mp3', gumroad:'' },
+  ],
+};
+
+function renderTier(key){
+  const grid = document.getElementById('grid-'+key);
+  const empty = document.getElementById('empty-'+key);
+  const items = CATALOGUE[key] || [];
+  if(!items.length){ empty.style.display='block'; return; }
+  empty.style.display='none';
+  grid.innerHTML = items.map((p,i)=>{
+    const buy = p.gumroad
+      ? `<a class="buy-btn gumroad-button" href="${p.gumroad}">Buy</a>`
+      : `<span class="buy-btn soon">Coming soon</span>`;
+    const prev = p.preview
+      ? `<button class="prod-preview" id="pv-${key}-${i}" onclick="preview('${key}',${i})" aria-label="Preview">▶</button>`
+      : '';
+    return `<div class="prod-card">
+      <div class="prod-top">
+        <div class="prod-name">${p.title}</div>
+        ${p.note?`<div class="prod-note">${p.note}</div>`:''}
+      </div>
+      <div class="prod-foot">
+        <div class="prod-meta">${prev}<span class="prod-price">${p.price||''}</span></div>
+        ${buy}
+      </div>
+    </div>`;
+  }).join('');
+}
+['recordings','loops','stems'].forEach(renderTier);
+
+/* ── FREE GONG (uses the existing entrance sound — real, works today) ── */
+const gong = new Audio('gong_entrance.mp3');
+gong.preload = 'auto';
+function strikeGong(){
+  const btn = document.getElementById('gongBtn');
+  gong.currentTime = 0;
+  gong.play().catch(()=>{});
+  btn.classList.remove('ringing'); void btn.offsetWidth; btn.classList.add('ringing');
+  document.getElementById('gongMeta').textContent = 'ringing…';
+  gong.onended = ()=>{ document.getElementById('gongMeta').textContent = 'recorded in Lefkoşa · hand-forged bronze'; };
+}
+
+/* ── PREVIEW PLAYER ── */
+const pa = new Audio();
+let curId = null;
+function preview(key,i){
+  const p = CATALOGUE[key][i];
+  const src = /^https?:/.test(p.preview) ? p.preview : p.preview;
+  if(curId){ const o=document.getElementById('pv-'+curId); if(o) o.textContent='▶'; o?.classList.remove('playing'); }
+  const id = key+'-'+i;
+  if(curId===id && !pa.paused){ pa.pause(); document.getElementById('pv-'+id).textContent='▶'; return; }
+  curId = id;
+  pa.src = src; pa.play().catch(()=>{});
+  document.getElementById('plTitle').textContent = p.title;
+  document.getElementById('plSub').textContent = key.slice(0,-1)+' preview';
+  document.getElementById('player').classList.add('visible');
+  const b=document.getElementById('pv-'+id); if(b){ b.textContent='⏸'; b.classList.add('playing'); }
+  document.getElementById('plBtn').textContent='⏸';
+}
+function playerToggle(){
+  if(pa.paused){ pa.play().catch(()=>{}); document.getElementById('plBtn').textContent='⏸'; }
+  else { pa.pause(); document.getElementById('plBtn').textContent='▶'; }
+}
+pa.addEventListener('timeupdate',()=>{ if(pa.duration) document.getElementById('plBar').style.width=(pa.currentTime/pa.duration*100)+'%'; });
+pa.addEventListener('ended',()=>{ document.getElementById('plBtn').textContent='▶'; if(curId){const o=document.getElementById('pv-'+curId); if(o){o.textContent='▶';o.classList.remove('playing');}} });
+</script>
+
+<!-- schema.org — honest: a music collection + FAQ. No health claims. -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"MusicAlbum",
+      "name":"The Gong — Casa Caravan",
+      "url":"https://casacaravan.space/gong.html",
+      "albumProductionType":"https://schema.org/StudioAlbum",
+      "genre":["Sound Healing","Ambient","Gong"],
+      "byArtist":{"@type":"MusicGroup","name":"Tağmaç Çankaya","url":"https://audius.co/tagmac"},
+      "description":"Hand-forged gong recordings, seamless meditation loops, and licensable stems by Tağmaç Çankaya, Lefkoşa, Cyprus."
+    },
+    {
+      "@type":"FAQPage",
+      "mainEntity":[
+        {"@type":"Question","name":"What is a gong bath?","acceptedAnswer":{"@type":"Answer","text":"A session where a gong is played continuously while you rest. The sound is rich and enveloping and many people find it deeply relaxing. It is a wellness and contemplative practice, not a medical treatment."}},
+        {"@type":"Question","name":"Can I use these recordings for meditation or sleep?","acceptedAnswer":{"@type":"Answer","text":"Yes. The seamless loops are designed to run for a long time without breaks for meditation, focus or winding down."}},
+        {"@type":"Question","name":"What is the difference between a recording, a loop, and a stem?","acceptedAnswer":{"@type":"Answer","text":"A recording is a single gong sounding captured as-is. A loop is a long seamless version made to run continuously. A stem is a clean isolated sound licensed for you to build into your own work."}}
+      ]
+    }
+  ]
+}
+</script>
+<!--
+  AGENT METADATA — casacaravan.space/gong.html
+  Casa Caravan · The Gong
+
+  Hand-forged gong sound by Tağmaç Çankaya, Lefkoşa, Cyprus. Listen free, then
+  take it with you: gong recordings, seamless meditation loops, and licensable
+  stems for creators. The loops also power the Tagmac Wellness breathing app.
+
+  agent:room
+  id: gong
+  name: The Gong
+  voice: "A gong bath is a slow wash of sound from a single struck disc of bronze."
+  domain: sound_healing, gong, meditation, ambient, sound_licensing
+  products: gong_recordings, meditation_loops, licensable_stems
+  delivery: instant (Gumroad)
+  related: shop.html, tagmacwellness.app, audius.co/tagmac
+  manifest: https://casacaravan.space/agents.xml
+  signal: resonance
+  updated: 2026-06-05
+-->
+</body>
+</html>

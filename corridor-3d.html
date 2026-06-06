@@ -151,6 +151,7 @@ canvas { display:block; flex:1; min-height:0; }
   </div>
   <div class="ns-rooms">
     <a href="shop.html" class="ns-room"><h3>Shop</h3><p>Sonic Journey sessions, handcrafted foods, music recordings. €1–€75.</p></a>
+    <a href="gong.html" class="ns-room"><h3>The Gong</h3><p>Hand-forged gong sound — listen free, then take it home as recordings, meditation loops or licensable stems.</p></a>
     <a href="garden.html" class="ns-room"><h3>The Garden</h3><p>A night space with live chat, real moon phase, ambient forest sounds and radio.</p></a>
     <a href="audio_sanctuary.html" class="ns-room"><h3>Audio Sanctuary</h3><p>Browser recording studio — reverb, EQ, 48kHz. No install, no account.</p></a>
     <a href="fermentation_lab.html" class="ns-room"><h3>Fermentation Lab</h3><p>Recipe calculators for sourdough, kombucha, kefir, kimchi and more.</p></a>
@@ -184,6 +185,7 @@ canvas { display:block; flex:1; min-height:0; }
   <nav aria-label="Spaces">
     <div class="ca-head">Spaces</div>
     <a class="ca-link" href="shop.html"><b>Shop</b><span>Sonic Journey sessions and recordings</span></a>
+    <a class="ca-link" href="gong.html"><b>The Gong</b><span>Hand-forged gong recordings, loops and stems — listen free</span></a>
     <a class="ca-link" href="fermentation_lab.html"><b>Fermentation Lab</b><span>Calculators for sourdough, kombucha, kefir, kimchi</span></a>
     <a class="ca-link" href="audio_sanctuary.html"><b>Audio Sanctuary</b><span>Browser recording studio, cymatics visualizer</span></a>
     <a class="ca-link" href="herbal_atelier.html"><b>Herbal Atelier</b><span>Plant extract calculator and herbal guide</span></a>
@@ -450,6 +452,7 @@ fillLight.position.set(0, 2, 6); scene.add(fillLight);
 // ── DOORS ─────────────────────────────────────────────────────────
 const doors = [
   {name:'Shop',                    color:0xb03020,border:0xff4030,z:-2, side:'L',action:'shop'},
+  {name:'The Gong',                color:0x9a6a28,border:0xe8c089,z:-2, side:'R',action:'gong'},
   {name:'Fermentation Lab',        color:0x5a9030,border:0x70b040,z:-10,side:'L',action:'fermentation'},
   {name:'Audio Sanctuary',         color:0xc89030,border:0xe8a830,z:-10,side:'R',action:'sanctuary'},
   {name:'Experiences',             color:0x6a4a7a,border:0x9a7ab0,z:-18,side:'L',action:'experiences'},
@@ -903,6 +906,7 @@ function closeSanctuary(){document.getElementById('sanctuary-overlay').classList
   if(d.action==='fermentation'){window.location.href='fermentation_lab.html';return;}
   if(d.action==='herbal'){window.location.href='herbal_atelier.html';return;}
   if(d.action==='shop'){window.location.href='shop.html';return;}
+  if(d.action==='gong'){window.location.href='gong.html';return;}
   document.getElementById('room-name').textContent=d.name;
   document.getElementById('room-overlay').classList.add('open');
 }
