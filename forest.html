@@ -30,23 +30,48 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 @keyframes fb{to{color:rgba(116,176,40,0.5);border-color:rgba(74,122,26,0.35);}}
 #btn:hover{border-color:rgba(122,176,60,0.7)!important;color:rgba(160,220,80,0.85)!important;}
 
-/* Path choice */
-#path-choice{position:fixed;bottom:80px;left:0;right:0;z-index:10;display:flex;justify-content:space-between;padding:0 12%;opacity:0;animation:fp 1.5s ease forwards 8s;}
-@keyframes fp{to{opacity:1;}}
-.path-btn{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:300;font-style:italic;color:rgba(160,140,100,0.6);background:none;border:none;cursor:pointer;transition:all 0.4s;padding:8px 16px;letter-spacing:1px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.path-btn:hover{color:rgba(210,195,175,0.95);}
-.path-btn.dim{color:rgba(80,70,60,0)!important;pointer-events:none;}
-.path-arr{font-size:22px;opacity:0.5;transition:opacity 0.3s;}
-.path-btn:hover .path-arr{opacity:1;}
-
-/* Phone light overlay */
+/* Flashlight overlay — a bright cone, everything else dark */
 #phone-light{position:fixed;inset:0;z-index:5;pointer-events:none;
-  background:radial-gradient(ellipse 18% 35% at 50% 60%, rgba(255,255,240,0.12) 0%, rgba(0,0,0,0) 100%);
-  opacity:0;transition:opacity 1.5s;}
+  background:radial-gradient(circle 24vh at 50% 60%, rgba(255,248,228,0.16) 0%, rgba(255,248,228,0.05) 26%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.86) 100%);
+  opacity:0;transition:opacity 1.6s;}
 #phone-light.on{opacity:1;}
 
-/* Red tree indicator */
-#red-path-hint{position:fixed;right:20%;bottom:120px;z-index:10;font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;color:rgba(180,60,40,0.4);opacity:0;transition:opacity 1s;letter-spacing:1px;pointer-events:none;}
+/* Eyes-closed blackout */
+#blackout{position:fixed;inset:0;z-index:8;background:#000;opacity:0;pointer-events:none;transition:opacity 1.6s;}
+#blackout.on{opacity:1;}
+
+/* Stage prompt — poetic line + action button */
+#stage-prompt{position:fixed;left:0;right:0;bottom:84px;z-index:11;text-align:center;padding:0 10%;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(15px,2.3vw,20px);
+  color:rgba(214,200,176,0);line-height:1.7;transition:color 1.4s;pointer-events:none;}
+#stage-prompt.show{color:rgba(214,200,176,0.92);pointer-events:auto;}
+.forest-btn{display:inline-block;margin-top:16px;font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:15px;letter-spacing:1px;color:rgba(160,140,100,0.85);background:none;
+  border:1px solid rgba(122,176,60,0.3);border-radius:100px;padding:9px 22px;cursor:pointer;transition:all 0.4s;}
+.forest-btn:hover{color:rgba(220,205,180,0.98);border-color:rgba(122,176,60,0.65);}
+
+/* Wisdom reveal */
+#wisdom{position:fixed;left:0;right:0;top:42%;z-index:11;text-align:center;padding:0 14%;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,3vw,26px);
+  color:rgba(238,222,170,0);text-shadow:0 0 24px rgba(180,150,60,0.5);
+  transition:color 1.6s;pointer-events:none;letter-spacing:0.5px;line-height:1.5;}
+#wisdom.show{color:rgba(238,222,170,0.95);}
+
+/* Arrival — the gift */
+#arrival{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 32% 58%, rgba(48,14,8,0.42), rgba(2,4,2,0.93));
+  opacity:0;pointer-events:none;transition:opacity 2.4s;}
+#arrival.show{opacity:1;pointer-events:auto;}
+.arr-inner{max-width:440px;text-align:center;padding:40px;}
+.arr-line{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(22px,4vw,30px);color:rgba(232,212,178,0.96);line-height:1.5;margin-bottom:26px;}
+.arr-gift{font-family:'Jost',sans-serif;font-weight:300;font-size:13px;color:rgba(190,175,150,0.85);line-height:1.9;margin-bottom:24px;}
+.arr-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:22px;}
+.arr-links a{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(200,168,74,0.95);text-decoration:none;border:1px solid rgba(200,168,74,0.35);border-radius:100px;padding:9px 20px;transition:all 0.3s;}
+.arr-links a:hover{background:rgba(200,168,74,0.08);border-color:rgba(200,168,74,0.7);}
+.arr-email{font-family:'Jost',sans-serif;font-size:12px;color:rgba(190,175,150,0.82);line-height:1.8;letter-spacing:0.3px;}
+.arr-email b{color:rgba(232,212,178,0.95);font-weight:400;}
+.arr-back{margin-top:26px;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(150,140,120,0.6);background:none;border:none;cursor:pointer;}
+.arr-back:hover{color:rgba(200,190,170,0.9);}
 
 </style>
 </head>
@@ -59,12 +84,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:#010402;font-family:
 <div id="words">Turn off the light.<br>Wait.<br>Your sight will return.</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-<div id="path-choice">
-  <button class="path-btn" onclick="choosePath('red')"><span class="path-arr">↙</span>deeper in</button>
-  <button class="path-btn" onclick="choosePath('phone')"><span class="path-arr">↘</span>turn on your flashlight</button>
-</div>
 <div id="phone-light"></div>
-<div id="red-path-hint">something red, far right</div>
+<div id="blackout"></div>
+<div id="stage-prompt"></div>
+<div id="wisdom"></div>
+<div id="arrival">
+  <div class="arr-inner">
+    <div class="arr-line">You remember this tree.<br>It is the edge of the village.<br>You found your way — in the dark.</div>
+    <div class="arr-gift">A gift, for finding it: choose one piece of sound to keep.<br>Tell us which, and we'll send it to you.</div>
+    <div class="arr-links">
+      <a href="shop.html">a song · Music</a>
+      <a href="gong.html">a gong recording</a>
+    </div>
+    <div class="arr-email">email <b>info@casacaravan.space</b><br>with the name of your chosen piece</div>
+    <button class="arr-back" onclick="history.back()">← back to the garden</button>
+  </div>
+</div>
 
 <button id="btn" onclick="history.back()">Not yet. Back to the garden.</button>
 <button id="sound-btn" onclick="toggleCricket()">♪ crickets</button>
@@ -454,29 +489,18 @@ function animate(){
   const dt = clock.getDelta();
   camT += dt;
 
-  // Walk forward
-  const targetZ = currentPath === 'center' ? Math.min(camT * 0.6, 5) : 
-                  currentPath === 'phone' ? Math.min(5 + (camT - pathStartT) * 1.0, 20) :
-                  Math.min(5 + (camT - pathStartT) * 1.2, 21); // z=-21, ağacın önünde dur
-  camera.position.z = -targetZ;
-
-  if(currentPath === 'center'){
-    camera.position.x = Math.sin(camT*0.18)*0.06;
-    camera.position.y = 1.7 + Math.sin(camT*0.12)*0.02;
-    camera.lookAt(0, 1.6, -12);
-  } else if(currentPath === 'red'){
-    // Kırmızı ağaç x:-10, z:-24 — direkt bak, X'e de doğru ilerle
-    camera.position.x += (camTargetX - camera.position.x)*0.02;
-    camera.position.y = 1.7 + Math.sin(camT*0.08)*0.01;
-    camera.lookAt(-10, 2.5, -24); // ağacın gövdesine bak
-  } else {
-    // Phone path — sağa git
-    camera.position.x += (camTargetX - camera.position.x)*0.025;
-    camera.position.y = 1.7 + Math.sin(camT*0.12)*0.015;
-    camera.lookAt(camera.position.x + 2, 1.6, camera.position.z - 8);
+  // Intro / flashlight: drift gently inward
+  if(stage === 'intro' || stage === 'flashlight'){
+    camTarget.z += (-4 - camTarget.z) * 0.004;
   }
 
-  // Firefly movement
+  // Camera eases toward its target + looks at the look-target
+  camera.position.x += (camTarget.x - camera.position.x) * 0.03;
+  camera.position.z += (camTarget.z - camera.position.z) * 0.03;
+  camera.position.y = 1.7 + Math.sin(camT*0.11)*0.02;
+  camera.lookAt(lookTarget.x, lookTarget.y, lookTarget.z);
+
+  // Ambient fireflies drift
   const pos = ffGeo.attributes.position.array;
   ffData.forEach((ff,i)=>{
     ff.x+=ff.vx; ff.y+=ff.vy; ff.z+=ff.vz;
@@ -488,15 +512,25 @@ function animate(){
     pos[i*3]=ff.x; pos[i*3+1]=ff.y; pos[i*3+2]=ff.z;
   });
   ffGeo.attributes.position.needsUpdate=true;
+  ffMat.opacity = (0.3 + Math.abs(Math.sin(camT*1.8))*0.65) * (ffPoints.visible ? 1 : 0);
 
-  // Firefly blink
-  ffMat.opacity = 0.3 + Math.abs(Math.sin(camT*1.8))*0.65;
+  // Special wisdom-lights: gentle bob; the active one glows brightest, taken ones fade
+  lights.forEach((L,i)=>{
+    if(!L.sprite.visible) return;
+    L.sprite.position.y = L.pos.y + Math.sin(camT*1.3 + i)*0.12;
+    const targetOp = L.taken ? 0.12 : (i===activeLight ? 0.85 + Math.sin(camT*2.2)*0.15 : 0.4);
+    L.mat.opacity += (targetOp - L.mat.opacity)*0.06;
+    const sc = L.taken ? 0.5 : (i===activeLight ? 1.05 : 0.7);
+    L.sprite.scale.setScalar(L.sprite.scale.x + (sc - L.sprite.scale.x)*0.06);
+  });
 
-  // Deep glow pulse
-  deepGlow.intensity = 1.8 + Math.sin(camT*0.4)*0.7;
-  // Red tree glow pulse
-  if(redPathActive) redGlow.intensity = 1.5 + Math.sin(camT*0.6)*0.8;
-  // Old camera path targeting removed — handled above
+  // Deep glow pulse (kept calm during the flashlight)
+  if(stage !== 'intro' && stage !== 'flashlight') deepGlow.intensity = 1.8 + Math.sin(camT*0.4)*0.7;
+
+  // Red tree blooms on arrival
+  if(stage === 'arrive') redBloom = Math.min(redBloom + dt*0.4, 1);
+  redGlow.intensity = redBloom * (1.5 + Math.sin(camT*0.6)*0.8);
+  redCanopyMat.emissiveIntensity = 0.3 + redBloom*0.5;
 
   renderer.render(scene, camera);
 }
@@ -540,33 +574,122 @@ scene.add(col);
   scene.add(b);
 });
 
-// ── PATH SYSTEM ───────────────────────────────────────────────────
-let currentPath = 'center';
-let camTargetX = 0;
-let phoneLightOn = false;
-let redPathActive = false;
-let pathStartT = 0;
+// ── THE FOREST GAME — the story, lived as a passage ───────────────
+// intro → flashlight (the false help) → surrender → follow the fireflies → arrive (red tree).
+let stage = 'intro';
+const camTarget  = {x:0, y:1.7, z:0};
+const lookTarget = {x:0, y:1.6, z:-12};
+let redBloom = 0;
+let activeLight = 0;
 
-function choosePath(path){
-  currentPath = path;
-  pathStartT = camT;
-  if(path === 'phone'){
-    phoneLightOn = true;
-    document.getElementById('phone-light').classList.add('on');
-    document.getElementById('path-choice').style.opacity='0';
-    document.getElementById('path-choice').style.pointerEvents='none';
-    camTargetX = 7;  // phone = sağ
-  } else if(path === 'red'){
-    redPathActive = true;
-    document.getElementById('path-choice').style.opacity='0';
-    document.getElementById('path-choice').style.pointerEvents='none';
-    document.getElementById('red-path-hint').style.opacity='1';
-    camTargetX = -9;  // red tree = sol x:-10
+// remember the night's light levels (to dim under the flashlight, lift on surrender)
+const moon0 = moon.intensity;
+const ambLight = scene.children.find(o=>o.isAmbientLight);
+const amb0 = ambLight ? ambLight.intensity : 2.2;
+
+// Wisdom-lights: gold fireflies that lead deeper toward the red tree.
+// (DRAFT wisdoms — about finding the way in the dark; operator to distil.)
+const WISDOMS = [
+  "The flashlight shows your feet, and hides the forest.",
+  "Close your eyes. Let them learn the dark.",
+  "The moon was lighting the way the whole time.",
+  "You cannot be lost in a place that is home.",
+  "Follow what glows — not what you grip.",
+];
+const LIGHT_POS = [[1.5,1.6,-7],[-0.5,1.8,-11],[-2.5,1.5,-15],[-5,1.9,-19],[-8,1.7,-22]];
+const goldTex = (()=>{ const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');
+  const g=x.createRadialGradient(32,32,0,32,32,32);
+  g.addColorStop(0,'rgba(255,242,205,1)');g.addColorStop(0.25,'rgba(232,200,120,0.9)');g.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=g;x.fillRect(0,0,64,64); return new THREE.CanvasTexture(c); })();
+const lights = LIGHT_POS.map(([x,y,z],i)=>{
+  const mat = new THREE.SpriteMaterial({map:goldTex, transparent:true, opacity:0, depthWrite:false, blending:THREE.AdditiveBlending});
+  const sprite = new THREE.Sprite(mat);
+  sprite.position.set(x,y,z); sprite.scale.setScalar(0.7); sprite.visible=false;
+  scene.add(sprite);
+  return {sprite, mat, pos:new THREE.Vector3(x,y,z), w:WISDOMS[i], taken:false};
+});
+
+// ── UI ──
+const promptEl = document.getElementById('stage-prompt');
+const wisdomEl = document.getElementById('wisdom');
+function setPrompt(html){ promptEl.innerHTML = html; promptEl.classList.add('show'); }
+function hidePrompt(){ promptEl.classList.remove('show'); }
+let wisdomTimer = null;
+function showWisdom(text){
+  wisdomEl.textContent = text; wisdomEl.classList.add('show');
+  clearTimeout(wisdomTimer);
+  wisdomTimer = setTimeout(()=> wisdomEl.classList.remove('show'), 5200);
+}
+
+// ── intro → the instinct: turn on the flashlight ──
+setTimeout(()=>{
+  if(stage!=='intro') return;
+  const w=document.getElementById('words'); if(w){ w.style.transition='opacity 1.4s'; w.style.opacity='0'; }
+  setPrompt("Night fell, and you don't know the way.<br><button class=\"forest-btn\" onclick=\"flashlightOn()\">turn on your flashlight</button>");
+}, 6500);
+
+function flashlightOn(){
+  if(stage!=='intro') return;
+  stage='flashlight';
+  document.getElementById('phone-light').classList.add('on');
+  moon.intensity = 0.18; if(ambLight) ambLight.intensity = 0.5; deepGlow.intensity = 0.2;
+  ffPoints.visible = false;
+  setPrompt("You see your feet — but the forest went dark, and you feel it watching.<br><button class=\"forest-btn\" onclick=\"surrender()\">turn it off · close your eyes · wait</button>");
+}
+
+function surrender(){
+  if(stage!=='flashlight') return;
+  stage='surrender';
+  hidePrompt();
+  document.getElementById('phone-light').classList.remove('on');
+  const black = document.getElementById('blackout');
+  black.classList.add('on');                                  // eyes closed
+  setTimeout(()=> setPrompt("…let your eyes learn the dark…"), 900);
+  setTimeout(()=>{
+    black.classList.remove('on');
+    moon.intensity = moon0*1.5; if(ambLight) ambLight.intensity = amb0; deepGlow.intensity = 2.5;
+    ffPoints.visible = true;
+    stage='follow';
+    lights[0].sprite.visible = true;
+    lookTarget.x=lights[0].pos.x; lookTarget.y=lights[0].pos.y; lookTarget.z=lights[0].pos.z;
+    setPrompt("The moon was lighting the way all along.<br>You are part of the forest now — follow the light.");
+    setTimeout(hidePrompt, 4600);
+  }, 3200);
+}
+
+// ── follow: tap the glowing light to go deeper + hear a wisdom ──
+const _proj = new THREE.Vector3();
+function screenPos(v3){ _proj.copy(v3).project(camera); return {x:(_proj.x*0.5+0.5)*innerWidth, y:(-_proj.y*0.5+0.5)*innerHeight}; }
+addEventListener('pointerdown', (e)=>{
+  if(stage!=='follow') return;
+  const L = lights[activeLight]; if(!L || !L.sprite.visible) return;
+  const sp = screenPos(L.pos);
+  const dx = e.clientX - sp.x, dy = e.clientY - sp.y;
+  const R = Math.min(innerWidth,innerHeight)*0.17;
+  if(dx*dx + dy*dy <= R*R) collectLight();
+});
+
+function collectLight(){
+  const L = lights[activeLight]; L.taken = true;
+  showWisdom(L.w);
+  camTarget.x = L.pos.x*0.6; camTarget.z = L.pos.z + 3.2;   // walk toward where it glowed
+  activeLight++;
+  if(activeLight < lights.length){
+    const N = lights[activeLight];
+    N.sprite.visible = true;
+    lookTarget.x=N.pos.x; lookTarget.y=N.pos.y; lookTarget.z=N.pos.z;
+  } else {
+    lookTarget.x=-10; lookTarget.y=2.5; lookTarget.z=-24;     // the great red tree
+    setTimeout(arrive, 2800);
   }
 }
 
-// Override animate to include path camera
-const _origAnimate = animate;
+function arrive(){
+  stage='arrive';
+  camTarget.x=-7; camTarget.z=-17;
+  lookTarget.x=-10; lookTarget.y=2.5; lookTarget.z=-24;
+  document.getElementById('arrival').classList.add('show');
+}
 
 animate();
 
